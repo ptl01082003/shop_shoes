@@ -1,9 +1,20 @@
 import fs from "fs"; 
 import { NextFunction, Request, Response } from "express";
+import { getAllVaiTro } from "../models/VaiTro";
+
+export const getVAITRO = async (req: Request, res: Response) => {
+  try {
+    const users = await getAllVaiTro();
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: 'Error getting users', error });
+  }
+};
 
  const uploadController = {
   single: async (req: Request, res: Response, next: NextFunction) => {
     try {
+      
     } catch (error) {
       next(error);
     }
