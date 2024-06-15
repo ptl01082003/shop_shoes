@@ -1,25 +1,20 @@
-import { Query } from './../../node_modules/mysql2/typings/mysql/index.d';
-// const db = require('ConnectDB');
-// const VaiTro  = function (vaitro) {
-//     this.Ma = vaitro.Ma;
-//     this.Ten = vaitro.Ten;
-    
-// }
+
+// models/User.ts
+import { databaseService } from '../config/ConnectDB';
+export class VaiTro {
+  public Ma :string;
+  public Ten: string;
 
 
+  constructor(Ma: string, Ten: string) {
+    this.Ma = Ma;
+    this.Ten = Ten;
+  }
 
-// VaiTro.getall = function name(params) {
-    
-// }
+  public static async findAll(): Promise<VaiTro[]> {
+    const sql = 'SELECT * FROM vaitro';
+    const rows = await databaseService.query(sql);
+    return rows.map((row: any) => new VaiTro(row.Ma, row.Ten));
+  }
 
-import {databaseService} from "../config/ConnectDB";
-
-interface VaiTro {
-  Ma: string;
-  Ten: string;
 }
-
-export const getAllVaiTro = async (): Promise<VaiTro[]> => {
-  const rows = await databaseService.query('SELECT * FROM vaitro');
-  return rows;
-};
