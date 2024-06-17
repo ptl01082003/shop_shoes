@@ -1,13 +1,12 @@
+
 import "dotenv/config";
 import cors from "cors";
 import express from "express";
-import { appRouter } from "./router/appRouter";
-import { databaseService } from "./config/ConnectDB";
+import sequelize from "./config/ConnectDB copy";
+import {appRouter} from "./router/appRouter";
 
 
 export const app = express();
-
-app.use(express.json());
 
 app.use(
   cors({
@@ -18,14 +17,12 @@ app.use(
 
 app.use("/public", express.static("public"));
 
-databaseService.connect();
 
 appRouter();
 
 // app.use("*", (req, res) => {
 //   res.status(404).json({ mess: "404 Not Found" });
 // });
-
 
 
 
