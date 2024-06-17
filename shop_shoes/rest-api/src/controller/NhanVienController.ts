@@ -1,7 +1,7 @@
 import fs from "fs"; 
 import { NextFunction, Request, Response } from "express";
 import { getAllNhanVien } from "../models/NhanVien";
-import {databaseService} from "../config/ConnectDB";
+
 export const getNHANVIEN = async (req: Request, res: Response) => {
   try {
     const vaitro = await getAllNhanVien();

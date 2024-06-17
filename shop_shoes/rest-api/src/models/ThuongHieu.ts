@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/ConnectDB copy";
-
+import DongSP from "../models/DongSanPham";
 // Định nghĩa các thuộc tính của Thuong Hiệu
 interface ThuongHieuAttributes {
   id: string;
@@ -50,5 +50,5 @@ ThuongHieu.init({
     // updatedAt: 'updatedAt', // Tên cột updatedAt trong cơ sở dữ liệu
   }
 );
-
+ThuongHieu.hasMany(DongSP)
 export default ThuongHieu;

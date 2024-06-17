@@ -2,7 +2,7 @@ import { NextFunction } from 'express';
 import { Query } from 'mysql2';
 
 
-import {databaseService} from "../config/ConnectDB";
+
 
 export class KhachHang {
  public UserName: string;
