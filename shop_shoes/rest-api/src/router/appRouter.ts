@@ -3,26 +3,28 @@ import { app } from "../app";
 import express from "express";
 import { checkAuth } from "../middleware/checkAuth";
 import { uploadRouter } from "./uploadRouter";
-import ThuongHieuRouter from '../router/ThuongHieuRouter';
-import DongSPRouter from '../router/DongSanPhamRouter';
-import MauSacRouter from './MauSacRouter';
-import KieuDangRouter from './KieuDangRouter';
-import ChatLieuRouter from './ChatLieuRouter';
-import XuatXuRouter from './XuatXuRouter';
-import SanPhamRouter from './SanPhamRouter';
+import OriginRouter from './OriginRouter';
+import MaterialRouter from './MaterialRouter';
+import StyleRouter from './StyleRouter';
+import ColourRouter from './ColourRouter';
+import ProductLineRouter from './ProductLineRouter';
+import TrademarkRouter from './TrademarkRouter';
+import Productouter from './ProductRouter';
+
+
 
 const router = express.Router();
 
 export function appRouter() {
   //PUBLIC ROUTER
 
-  router.use("/xuat-xu", XuatXuRouter);
-  router.use("/chat-lieu", ChatLieuRouter);
-  router.use("/kieu-dang", KieuDangRouter);
-  router.use("/mau-sac", MauSacRouter);
-  router.use("/dong-sp", DongSPRouter);
-  router.use("/thuong-hieu", ThuongHieuRouter);
-  router.use("/san-pham", SanPhamRouter);
+  router.use("/origin",OriginRouter);
+  router.use("/material", MaterialRouter);
+  router.use("/style", StyleRouter);
+  router.use("/clour", ColourRouter);
+  router.use("/productline", ProductLineRouter);
+  router.use("/trademark", TrademarkRouter);
+  router.use("/product", Productouter);
   router.use(checkAuth);
   router.use("/uploads", uploadRouter);
 
