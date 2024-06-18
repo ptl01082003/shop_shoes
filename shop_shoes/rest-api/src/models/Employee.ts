@@ -1,5 +1,5 @@
 
-import  from "../config/ConnectDB copy";
+import sequelize  from "../config/ConnectDB copy";
 
 interface Employee {
   VaiTro: string;
@@ -14,7 +14,7 @@ interface Employee {
 
 }
 
-// export const getAllNhanVien = async (): Promise<NhanVien[]> => {
-//   const rows = await databaseService.query('SELECT * FROM NhanVien');
+// export const getAllNhanVien = async (): Promise<Employee[]> => {
+//   const rows = await sequelize.query('SELECT * FROM NhanVien');
 //   return rows;
 // };

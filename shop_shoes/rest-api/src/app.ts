@@ -5,6 +5,9 @@ import express from "express";
 import sequelize from "./config/ConnectDB copy";
 import {appRouter} from "./router/appRouter";
 
+import bodyParser from "body-parser";
+
+
 
 export const app = express();
 

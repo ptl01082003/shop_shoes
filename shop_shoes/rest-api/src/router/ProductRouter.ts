@@ -1,12 +1,13 @@
 import { Router } from 'express';
-import { getProduct } from '../controller/ProductController';
+import ProductController from '../controller/ProductController';
 
 
 const Productouter = Router();
 
-Productouter.get('/', getProduct);
-// ChatLieuRouter.post('/', createChatLieu);
-// ChatLieuRouter.put('/:id', updateChatLieu);
-// ChatLieuRouter.delete('/:id', deleteChatLieu);
+Productouter.get('/', ProductController.getProduct);
+Productouter.put('/:id', ProductController.getProductById);
+Productouter.post('/', ProductController.createProduct);
+Productouter.put('/:id', ProductController.updateProduct);
+Productouter.delete('/:id', ProductController.deleteProduct);
 
 export default Productouter;

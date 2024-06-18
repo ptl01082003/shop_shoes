@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import { getTrademark, createTrademark, updateTrademark, deleteTrademark } from '../controller/TrademarkController';
+import  TrademarkController from '../controller/TrademarkController';
 
 const TrademarkRouter = Router();
 
-TrademarkRouter.get('/', getTrademark);
-TrademarkRouter.post('/', createTrademark);
-TrademarkRouter.put('/:id', updateTrademark);
-TrademarkRouter.delete('/:id', deleteTrademark);
+TrademarkRouter.get('/', TrademarkController.getTrademark);
+TrademarkRouter.post('/', TrademarkController.createTrademark);
+TrademarkRouter.put('/:id', TrademarkController.updateTrademark);
+TrademarkRouter.delete('/:id', TrademarkController.deleteTrademark);
 
 export default TrademarkRouter;

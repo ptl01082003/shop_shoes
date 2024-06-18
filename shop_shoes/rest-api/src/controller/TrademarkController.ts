@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
 import Trademark from '../models/Trademark';
 
+const TrademarkController ={
 // Lấy danh sách tất cả các thương hiệu
-export const getTrademark = async (req: Request, res: Response) => {
+ getTrademark : async (req: Request, res: Response) => {
   try {
     const trademark = await Trademark.findAll({
         attributes: ['id', 'Ten', 'NgayTao', 'NgayCapNhat'], // Chỉ lấy các trường cần thiết
@@ -11,10 +12,10 @@ export const getTrademark = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({ message: 'Lỗi nội bộ xảy ra trên server' });
   }
-};
+},
 
 // Tạo một thương hiệu mới
-export const createTrademark = async (req: Request, res: Response) => {
+ createTrademark : async (req: Request, res: Response) => {
   try {
     const { Ten, NgayTao, NgayCapNhat } = req.body;
     const trademark = await Trademark.create({ Ten, NgayTao, NgayCapNhat });
@@ -22,10 +23,10 @@ export const createTrademark = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({ message: 'Lỗi nội bộ xảy ra trên server' });
   }
-};
+},
 
 // Cập nhật một thương hiệu
-export const updateTrademark = async (req: Request, res: Response) => {
+ updateTrademark : async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { Ten, NgayTao, NgayCapNhat } = req.body;
@@ -39,10 +40,10 @@ export const updateTrademark = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({ message: 'Lỗi nội bộ xảy ra trên server' });
   }
-};
+},
 
 // Xóa một thương hiệu
-export const deleteTrademark = async (req: Request, res: Response) => {
+ deleteTrademark : async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const trademark = await Trademark.findByPk(id);
@@ -55,4 +56,7 @@ export const deleteTrademark = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({ message: 'Lỗi nội bộ xảy ra trên server' });
   }
-};
+},
+}
+
+export default TrademarkController;

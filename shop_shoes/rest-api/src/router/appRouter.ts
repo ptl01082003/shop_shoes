@@ -9,7 +9,9 @@ import StyleRouter from './StyleRouter';
 import ColourRouter from './ColourRouter';
 import ProductLineRouter from './ProductLineRouter';
 import TrademarkRouter from './TrademarkRouter';
-import Productouter from './ProductRouter';
+import Productouter from "../router/ProductRouter";
+import ParseMiddleware from '../middleware/Parser';
+import bodyParser from 'body-parser';
 
 
 
@@ -17,7 +19,10 @@ const router = express.Router();
 
 export function appRouter() {
   //PUBLIC ROUTER
+  app.use(bodyParser.json());
 
+  // Parse application/x-www-form-urlencoded
+  app.use(bodyParser.urlencoded({ extended: true }));
   router.use("/origin",OriginRouter);
   router.use("/material", MaterialRouter);
   router.use("/style", StyleRouter);
@@ -27,7 +32,7 @@ export function appRouter() {
   router.use("/product", Productouter);
   router.use(checkAuth);
   router.use("/uploads", uploadRouter);
-
+ 
   //PRIVATE ROUTER
 
   app.use(`/api/${process.env.API_VERSION}`, router);

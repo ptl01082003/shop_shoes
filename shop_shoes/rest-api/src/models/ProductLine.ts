@@ -1,7 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/ConnectDB copy";
-import { Product } from "./Product";
-import ThuongHieu from "./Trademark";
+
+import Trademark from "./Trademark";
 
 // Định nghĩa các thuộc tính của Thuong Hiệu
 interface ProductLineAttributes {
@@ -60,6 +60,6 @@ ProductLine.init({
     // updatedAt: 'updatedAt', // Tên cột updatedAt trong cơ sở dữ liệu
   }
 );
-ProductLine.belongsTo(ThuongHieu, { foreignKey: "ThuongHieu", as: "ThuongHieuEXEC" });
+ProductLine.belongsTo(Trademark, { foreignKey: "ThuongHieu", as: "ThuongHieuEXEC" });
 
 export default ProductLine;

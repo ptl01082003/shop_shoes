@@ -4,7 +4,7 @@ import { Query } from 'mysql2';
 
 
 
-export class KhachHang {
+export class Customer {
  public UserName: string;
  public Password: string;
  public HovaTen: string;
