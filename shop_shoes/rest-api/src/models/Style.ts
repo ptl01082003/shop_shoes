@@ -2,7 +2,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/ConnectDB copy";
 import { Product } from "./Product";
 
-// Định nghĩa các thuộc tính của Thuong Hiệu
+// Định nghĩa các thuộc tính của Kiểu dáng
 interface StyleAttributes {
   id: string;
   Ten?: string;
@@ -46,6 +46,7 @@ Style.init({
   },
   {
     sequelize,
+    modelName: "Style",
     tableName: "KieuDang",
     timestamps: false, // Không  Cho phép Sequelize sử dụng các cột createdAt và updatedAt
     // createdAt: 'createdAt', // Tên cột createdAt trong cơ sở dữ liệu

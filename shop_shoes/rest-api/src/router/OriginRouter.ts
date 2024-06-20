@@ -4,6 +4,7 @@ import OriginController from '../controller/OriginController';
 const OriginRouter = Router();
 
 OriginRouter.get('/', OriginController.getOrigin);
+OriginRouter.get('/:id', OriginController.getOriginById);
 OriginRouter.post('/', OriginController.createOrigin);
 OriginRouter.put('/:id', OriginController.updateOrigin);
 OriginRouter.delete('/:id', OriginController.deleteOrigin);

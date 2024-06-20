@@ -5,24 +5,24 @@ import { Product } from "./Product";
 
 // Định nghĩa các thuộc tính của Thuong Hiệu
 interface ColourAttributes {
-  id: string;
+  Ma: string;
   Ten?: string;
   NgayTao?: Date;
   NgayCapNhat?: Date;
 }
 
 // Một số thuộc tính không bắt buộc khi tạo Thuong Hiệu
-interface ColourCreationAttributes extends Optional<ColourAttributes, "id"> {}
+interface ColourCreationAttributes extends Optional<ColourAttributes, "Ma"> {}
 
 class Colour extends Model<ColourAttributes, ColourCreationAttributes> implements ColourAttributes {
-  public id!: string;
+  public Ma!: string;
   public Ten?: string;
   public NgayTao?: Date;
   public NgayCapNhat?: Date;
 }
 
 Colour.init({
-    id: {
+    Ma: {
       type: DataTypes.STRING(36),
       defaultValue: DataTypes.UUIDV4, // Sử dụng UUID cho id
       primaryKey: true,
@@ -52,11 +52,7 @@ Colour.init({
     timestamps: false, // Không  Cho phép Sequelize sử dụng các cột createdAt và updatedAt
     // createdAt: 'createdAt', // Tên cột createdAt trong cơ sở dữ liệu
     // updatedAt: 'updatedAt', // Tên cột updatedAt trong cơ sở dữ liệu
-   
-   
-  
-  
-}
+  }
 );
 
 

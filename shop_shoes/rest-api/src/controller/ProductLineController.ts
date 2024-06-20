@@ -23,6 +23,21 @@ const ProductLineController = {
     res.status(500).json({ message: 'Lỗi nội bộ xảy ra trên server' });
   }
 },
+getProductLineById: async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  console.log("ma:", id); // In ra giá trị của ma để kiểm tra
+  try {
+    const productLine = await ProductLine.findByPk(id);
+    if (productLine) {
+      res.status(200).json(productLine);
+    } else {
+      res.status(404).json({ error: "Colour not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
+  }
+},
 
 
 
@@ -30,7 +45,7 @@ const ProductLineController = {
   createProductLine : async (req: Request, res: Response) => {
   try {
     const { Ten, NgayTao, NgayCapNhat,ThuongHieuId } = req.body;
-    const productLine = await ProductLine.create({ });
+    const productLine = await ProductLine.create({Ten, NgayTao, NgayCapNhat,ThuongHieuId  });
     res.status(201).json(productLine);
   } catch (error) {
     res.status(500).json({ message: 'Lỗi nội bộ xảy ra trên server' });

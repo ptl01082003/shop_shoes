@@ -12,6 +12,22 @@ const OriginController = {
   }
 },
 
+getOriginById: async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  console.log("id:", id); // In ra giá trị của ma để kiểm tra
+  try {
+    const origin  = await Origin.findByPk(id);
+    if (origin) {
+      res.status(200).json(origin);
+    } else {
+      res.status(404).json({ error: "Colour not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
+  }
+},
+
 // Tạo một thương hiệu mới
  createOrigin : async (req: Request, res: Response) => {
   try {

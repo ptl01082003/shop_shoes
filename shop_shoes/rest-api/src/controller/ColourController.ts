@@ -7,6 +7,7 @@ const ColourController = {
       const colour = await Colour.findAll();
       res.status(200).json(colour);
     } catch (error) {
+      console.log(error);
       res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
     }
   },
@@ -35,9 +36,9 @@ const ColourController = {
       // Kiểm tra và lấy dữ liệu từ body của yêu cầu
       const Ten = req.body?.Ten;
       console.log(Ten)
-      const NgayTao = req.body?.NgayTao;
+      const NgayTao = new Date();
       console.log(NgayTao)
-      const NgayCapNhat = req.body?.NgayCapNhat;
+      const NgayCapNhat = new Date();
       console.log(NgayCapNhat)
       // Kiểm tra xem liệu có thiếu dữ liệu không
       if (!Ten || !NgayTao || !NgayCapNhat) {

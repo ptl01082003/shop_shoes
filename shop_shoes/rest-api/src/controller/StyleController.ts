@@ -12,6 +12,22 @@ const StyleController = {
   }
 },
 
+getStyleById: async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  console.log("ma:", id); // In ra giá trị của ma để kiểm tra
+  try {
+    const style = await Style.findByPk(id);
+    if (style) {
+      res.status(200).json(style);
+    } else {
+      res.status(404).json({ error: "Colour not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
+  }
+},
+
 // Tạo một thương hiệu mới
  createStyle : async (req: Request, res: Response) => {
   try {

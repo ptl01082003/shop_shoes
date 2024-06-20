@@ -11,6 +11,22 @@ const MaterialController = {
   }
 },
 
+getMaterialById: async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  console.log("id:", id); // In ra giá trị của ma để kiểm tra
+  try {
+    const material  = await Material.findByPk(id);
+    if (material) {
+      res.status(200).json(material);
+    } else {
+      res.status(404).json({ error: "Colour not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
+  }
+},
+
 // Tạo một thương hiệu mới
  createMaterial : async (req: Request, res: Response) => {
   try {

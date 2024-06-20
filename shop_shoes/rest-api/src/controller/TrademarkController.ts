@@ -14,7 +14,24 @@ const TrademarkController ={
   }
 },
 
+getTrademarkById: async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  console.log("ma:", id); // In ra giá trị của ma để kiểm tra
+  try {
+    const trademark = await Trademark.findByPk(id);
+    if (trademark) {
+      res.status(200).json(trademark);
+    } else {
+      res.status(404).json({ error: "Colour not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
+  }
+},
+
 // Tạo một thương hiệu mới
+
  createTrademark : async (req: Request, res: Response) => {
   try {
     const { Ten, NgayTao, NgayCapNhat } = req.body;
