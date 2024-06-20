@@ -1,18 +1,34 @@
 import { Request, Response } from 'express';
 import Material from '../models/Material';
-
+const MaterialController = {
 // Lấy danh sách tất cả các thương hiệu
-export const getMaterial = async (req: Request, res: Response) => {
+ getMaterial : async (req: Request, res: Response) => {
   try {
     const material = await Material.findAll();
     res.status(200).json(material);
   } catch (error) {
     res.status(500).json({ message: 'Lỗi nội bộ xảy ra trên server' });
   }
-};
+},
+
+getMaterialById: async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  console.log("id:", id); // In ra giá trị của ma để kiểm tra
+  try {
+    const material  = await Material.findByPk(id);
+    if (material) {
+      res.status(200).json(material);
+    } else {
+      res.status(404).json({ error: "Colour not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
+  }
+},
 
 // Tạo một thương hiệu mới
-export const createMaterial = async (req: Request, res: Response) => {
+ createMaterial : async (req: Request, res: Response) => {
   try {
     const { Ten, NgayTao, NgayCapNhat } = req.body;
     const material = await Material.create({ Ten, NgayTao, NgayCapNhat });
@@ -20,10 +36,10 @@ export const createMaterial = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({ message: 'Lỗi nội bộ xảy ra trên server' });
   }
-};
+},
 
 // Cập nhật một thương hiệu
-export const updateMaterial = async (req: Request, res: Response) => {
+ updateMaterial : async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { Ten, NgayTao, NgayCapNhat } = req.body;
@@ -37,10 +53,10 @@ export const updateMaterial = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({ message: 'Lỗi nội bộ xảy ra trên server' });
   }
-};
+},
 
 // Xóa một thương hiệu
-export const deleteMaterial = async (req: Request, res: Response) => {
+ deleteMaterial : async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const material = await Material.findByPk(id);
@@ -53,4 +69,8 @@ export const deleteMaterial = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({ message: 'Lỗi nội bộ xảy ra trên server' });
   }
-};
+},
+}
+
+
+export default  MaterialController;

@@ -1,6 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/ConnectDB copy";
-import DongSP from "./ProductLine";
+import ProductLine from "../models/ProductLine"; // Đảm bảo import đúng đường dẫn đến model ProductLine
+
 // Định nghĩa các thuộc tính của Thuong Hiệu
 interface TrademarkAttributes {
   id: string;
@@ -19,36 +20,40 @@ class Trademark extends Model<TrademarkAttributes, TrademarkCreationAttributes> 
   public NgayCapNhat?: Date;
 }
 
-Trademark.init({
+Trademark.init(
+  {
     id: {
       type: DataTypes.STRING(36),
-      defaultValue: DataTypes.UUIDV4, // Sử dụng UUID cho id
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
-      field: 'id',
+      allowNull: false,
+      field: "id",
     },
     Ten: {
       type: DataTypes.STRING(200),
-      allowNull: true, // `Ten` là không bắt buộc
-      field: 'Ten',
+      allowNull: true,
+      field: "Ten",
     },
     NgayTao: {
       type: DataTypes.DATE,
-      allowNull: true, // Có thể để null nếu không bắt buộc
-      field: 'NgayTao',
+      allowNull: true,
+      field: "NgayTao",
     },
     NgayCapNhat: {
       type: DataTypes.DATE,
-      allowNull: true, // Có thể để null nếu không bắt buộc
-      field: 'NgayCapNhat',
+      allowNull: true,
+      field: "NgayCapNhat",
     },
   },
   {
     sequelize,
+    modelName: "Trademark",
     tableName: "ThuongHieu",
-    timestamps: false, // Không  Cho phép Sequelize sử dụng các cột createdAt và updatedAt
-    // createdAt: 'createdAt', // Tên cột createdAt trong cơ sở dữ liệu
-    // updatedAt: 'updatedAt', // Tên cột updatedAt trong cơ sở dữ liệu
+    timestamps: false,
   }
 );
 
+
 export default Trademark;
+
+

@@ -1,41 +1,59 @@
 import { Request, Response } from 'express';
-import DongSP from '../models/ProductLine';
-import ProductLine from '../models/ProductLine';
 
+import ProductLine from '../models/ProductLine';
+import Trademark from '../models/Trademark';
+const ProductLineController = {
 // Lấy danh sách tất cả các thương hiệu
-export const getProductLine = async (req: Request, res: Response) => {
+  getProductLine : async (req: Request, res: Response) => {
   try {
     const productLine = await ProductLine.findAll({
       include: [
         {
-          model: ProductLine,
+          model: Trademark,
           as: "ThuongHieuEXEC", // Đặt theo as đã được định nghĩa trong mối quan hệ belongsTo
           attributes: ["Ten"], // Chỉ lấy trường Tên từ bảng MauSac
         },
-        
+     
       ],
-      attributes: ["Ten","NgayTao","NgayCapNhat"],
+      attributes: ["id","ten","ngaytao","ngaycapnhat"],
      
     });
     res.status(200).json(productLine);
   } catch (error) {
     res.status(500).json({ message: 'Lỗi nội bộ xảy ra trên server' });
   }
-};
+},
+getProductLineById: async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  console.log("ma:", id); // In ra giá trị của ma để kiểm tra
+  try {
+    const productLine = await ProductLine.findByPk(id);
+    if (productLine) {
+      res.status(200).json(productLine);
+    } else {
+      res.status(404).json({ error: "Colour not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
+  }
+},
+
+
 
 // Tạo một thương hiệu mới
-export const createProductLine = async (req: Request, res: Response) => {
+  createProductLine : async (req: Request, res: Response) => {
   try {
     const { Ten, NgayTao, NgayCapNhat,ThuongHieuId } = req.body;
-    const productLine = await ProductLine.create({ Ten, NgayTao, NgayCapNhat ,ThuongHieuId});
+    const productLine = await ProductLine.create({Ten, NgayTao, NgayCapNhat,ThuongHieuId  });
     res.status(201).json(productLine);
   } catch (error) {
     res.status(500).json({ message: 'Lỗi nội bộ xảy ra trên server' });
   }
-};
+},
 
 // Cập nhật một thương hiệu
-export const updateProductLine = async (req: Request, res: Response) => {
+  updateProductLine : async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { Ten, NgayTao, NgayCapNhat,ThuongHieuId } = req.body;
@@ -49,10 +67,10 @@ export const updateProductLine = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({ message: 'Lỗi nội bộ xảy ra trên server' });
   }
-};
+},
 
 // Xóa một thương hiệu
-export const deleteProductLine = async (req: Request, res: Response) => {
+ deleteProductLine : async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const productLine = await ProductLine.findByPk(id);
@@ -65,4 +83,6 @@ export const deleteProductLine = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({ message: 'Lỗi nội bộ xảy ra trên server' });
   }
-};
+}
+}
+export default ProductLineController;

@@ -1,11 +1,12 @@
 import { Router } from 'express';
-import { getStyle, createStyle, updateStyle, deleteStyle } from '../controller/StyleController';
+import StyleController from '../controller/StyleController';
 
 const StyleRouter = Router();
 
-StyleRouter.get('/', getStyle);
-StyleRouter.post('/', createStyle);
-StyleRouter.put('/:id', updateStyle);
-StyleRouter.delete('/:id', deleteStyle);
+StyleRouter.get('/', StyleController.getStyle);
+StyleRouter.put('/:id', StyleController.getStyleById);
+StyleRouter.post('/', StyleController.createStyle);
+StyleRouter.put('/:id', StyleController.updateStyle);
+StyleRouter.delete('/:id', StyleController.deleteStyle);
 
 export default StyleRouter;

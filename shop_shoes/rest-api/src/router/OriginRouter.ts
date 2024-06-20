@@ -1,11 +1,12 @@
 import { Router } from 'express';
-import { getOrigin, createOrigin, updateOrigin, deleteOrigin } from '../controller/OriginController';
+import OriginController from '../controller/OriginController';
 
 const OriginRouter = Router();
 
-OriginRouter.get('/', getOrigin);
-OriginRouter.post('/', createOrigin);
-OriginRouter.put('/:id', updateOrigin);
-OriginRouter.delete('/:id', deleteOrigin);
+OriginRouter.get('/', OriginController.getOrigin);
+OriginRouter.get('/:id', OriginController.getOriginById);
+OriginRouter.post('/', OriginController.createOrigin);
+OriginRouter.put('/:id', OriginController.updateOrigin);
+OriginRouter.delete('/:id', OriginController.deleteOrigin);
 
 export default OriginRouter;

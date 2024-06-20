@@ -1,7 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/ConnectDB copy";
 
-// Định nghĩa các thuộc tính của Thuong Hiệu
+// Định nghĩa các thuộc tính của Xuất xứ
 interface OriginAttributes {
   id: string;
   Ten?: string;

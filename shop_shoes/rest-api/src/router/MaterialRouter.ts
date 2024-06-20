@@ -1,11 +1,12 @@
 import { Router } from 'express';
-import { getMaterial, createMaterial, updateMaterial, deleteMaterial } from '../controller/MaterialController';
+import MaterialController  from '../controller/MaterialController';
 
 const MaterialRouter = Router();
 
-MaterialRouter.get('/', getMaterial);
-MaterialRouter.post('/', createMaterial);
-MaterialRouter.put('/:id', updateMaterial);
-MaterialRouter.delete('/:id', deleteMaterial);
+MaterialRouter.get('/', MaterialController.getMaterial);
+MaterialRouter.get('/:id', MaterialController.getMaterialById);
+MaterialRouter.post('/', MaterialController.createMaterial);
+MaterialRouter.put('/:id', MaterialController.updateMaterial);
+MaterialRouter.delete('/:id', MaterialController.deleteMaterial);
 
 export default MaterialRouter;

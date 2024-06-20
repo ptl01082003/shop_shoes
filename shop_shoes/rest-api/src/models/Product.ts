@@ -24,6 +24,12 @@ interface ProductAttributes {
   TrangThai: boolean;
 }
 
+//   public readonly MauSac?: Colour;
+  // public readonly DongSP?: ProductLine;
+  // public readonly KieuDang?: Style;
+  // public readonly ChatLieu?: Material;
+  // public readonly XuatXu?: Origin;
+
 // Một số thuộc tính không bắt buộc khi tạo Thuong Hiệu
 interface ProductCreationAttributes extends Optional<ProductAttributes, "id"> {}
 
