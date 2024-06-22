@@ -1,5 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/ConnectDB copy";
+import Staff from "./Staff";
 
 // Định nghĩa các thuộc tính của Thuong Hiệu
 interface AnnouncementAttributes {
@@ -37,7 +38,7 @@ Announcement.init(
     NhanVien: {
       type: DataTypes.STRING(20),
       allowNull: true,
-      field: "KhachHang",
+      field: "NhanVien",
     },
     LoaiThongBao: {
       type: DataTypes.STRING(255),
@@ -65,4 +66,5 @@ Announcement.init(
   }
 );
 
+Announcement.belongsTo(Staff, { foreignKey: "NhanVien", as: "NhanVienEXEC" });
 export default Announcement;

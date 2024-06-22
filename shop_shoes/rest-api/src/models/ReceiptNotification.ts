@@ -1,6 +1,8 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import sequelize from "../config/ConnectDB copy";
-import Trademark from "../models/Trademark"; // Đảm bảo import đúng đường dẫn đến model Trademark
+import sequelize from "../config/ConnectDB copy";// Đảm bảo import đúng đường dẫn đến model Trademark
+import Staff from "./Staff";
+import Announcement from "./Announcement";
+
 
 // Định nghĩa các thuộc tính của Dòng Sản Phẩm
 interface ReceiptNotificationAttributes {
@@ -33,8 +35,8 @@ ReceiptNotification.init(
       type: DataTypes.BIGINT,
       autoIncrement: true,
       allowNull: false,
-
-      field: "KhuyenMai",
+      primaryKey: true,
+      field: "id",
     },
     ThongBao: {
       type: DataTypes.STRING(36),
@@ -44,7 +46,7 @@ ReceiptNotification.init(
     TrangThai: {
       type: DataTypes.BOOLEAN,
       allowNull: true,
-      field: "ThongBao",
+      field: "TrangThai",
     },
     NhanVien: {
       type: DataTypes.STRING(20),
@@ -63,13 +65,12 @@ ReceiptNotification.init(
     //       throw new Error('Either both latitude and longitude, or neither!');
     //     }
     //   },
-    // },
+    // },   
   }
 );
 
-// ReceiptNotification.belongsTo(Trademark, {
-//   foreignKey: "ThuongHieu",
-//   as: "ThuongHieuEXEC",
-// });
+ReceiptNotification.belongsTo(Staff, { foreignKey: 'NhanVien', as: 'NhanVienEXEC' });
+
+ReceiptNotification.belongsTo(Announcement, { foreignKey: 'ThongBao', as: 'ThongBaoEXEC' });
 
 export default ReceiptNotification;

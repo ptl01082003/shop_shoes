@@ -1,5 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/ConnectDB copy";
+import { Product } from "./Product";
+import Size from "./Size";
 
 
 // Định nghĩa các thuộc tính của Thuong Hiệu
@@ -42,7 +44,7 @@ ProductDetails.init(
       type: DataTypes.STRING(50),
       defaultValue: DataTypes.UUIDV4, // Sử dụng UUID cho id
       primaryKey: true,
-      field: "Ma",
+      field: "id",
     },
     SanPham: {
       type: DataTypes.STRING(36),
@@ -53,13 +55,19 @@ ProductDetails.init(
     Size: {
       type: DataTypes.FLOAT,
         allowNull: true, // Sử dụng UUID cho id
-      field: "DongSP",
+      field: "Size",
+     
+    },
+    SoLuong: {
+      type: DataTypes.BIGINT,
+        allowNull: true, // Sử dụng UUID cho id
+      field: "SoLuong",
      
     },
     TrangThai: {
       type: DataTypes.BOOLEAN,
         allowNull: true, // Sử dụng UUID cho id
-      field: "KieuDang",
+      field: "TrangThai",
     
     },
     NgayTao: {
@@ -86,17 +94,7 @@ ProductDetails.init(
   }
 );
 
-// Thiết lập mối quan hệ: ProductDetails thuộc về MauSac, DongSP, KieuDang, ChatLieu, XuatXu
-// ProductDetails.belongsTo(Colour, { foreignKey: "MauSac", as: "MauSacEXEC" });
-// ProductDetails.belongsTo(ProductDetailsLine, { foreignKey: "DongSP", as: "DongSPEXEC" });
-// ProductDetails.belongsTo(Style, { foreignKey: "KieuDang", as: "KieuDangEXEC" });
-// ProductDetails.belongsTo(Material, { foreignKey: "ChatLieu", as: "ChatLieuEXEC" });
-// ProductDetails.belongsTo(Origin, { foreignKey: "XuatXu", as: "XuatXuEXEC" });
-
-// MauSac.hasMany(ProductDetails, { foreignKey: "MauSacMa", as: "MauSacEXEC" });
-// DongSP.hasMany(ProductDetails, { foreignKey: "DongSPId", as: "DongSPEXEC" });
-// KieuDang.hasMany(ProductDetails, { foreignKey: "KieuDangId", as: "KieuDangEXEC" });
-// ChatLieu.hasMany(ProductDetails, { foreignKey: "ChatLieuId", as: "ChatLieuEXEC" });
-// XuatXu.hasMany(ProductDetails, { foreignKey: "XuatXuId", as: "XuatXuEXEC" });
+ProductDetails.belongsTo(Product, { foreignKey: "SanPham", as: "SanPhamEXEC" });
+ProductDetails.belongsTo(Size, { foreignKey: "Size", as: "SizeEXEC" });
 
 export default ProductDetails ;

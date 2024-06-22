@@ -2,6 +2,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/ConnectDB copy";
 import { Product } from "./Product";
+import OrderDetails from "./OrderDetails";
 
 // Định nghĩa các thuộc tính của Thuong Hiệu
 interface CommentAttributes {
@@ -76,13 +77,14 @@ Comment.init({
   {
     sequelize,
     modelName: 'Comment',
-    tableName: "MauSac",
+    tableName: "nhanxet",
     timestamps: false, // Không  Cho phép Sequelize sử dụng các cột createdAt và updatedAt
     // createdAt: 'createdAt', // Tên cột createdAt trong cơ sở dữ liệu
     // updatedAt: 'updatedAt', // Tên cột updatedAt trong cơ sở dữ liệu
   }
 );
 
+Comment.belongsTo(OrderDetails, { foreignKey: "ChiTietDonHang", as: "ChiTietDonHangEXEC" });
 
 
 export default Comment;

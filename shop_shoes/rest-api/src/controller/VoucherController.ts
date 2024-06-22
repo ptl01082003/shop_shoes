@@ -1,25 +1,25 @@
 import { Request, Response } from 'express';
-import Role from '../models/Role';
+import Voucher from '../models/Voucher';
 
-const RoleController = {  
+const VoucherController = {  
 // Lấy danh sách tất cả các thương hiệu
- getRole : async (req: Request, res: Response) => {
+ getVoucher : async (req: Request, res: Response) => {
   try {
-    const role = await Role.findAll();
-    res.status(200).json(role);
+    const voucher = await Voucher.findAll();
+    res.status(200).json(voucher);
   } catch (error) {
     res.status(500).json({ message: 'Lỗi nội bộ xảy ra trên server' });
   }
 },
 
-getRoleById: async (req: Request, res: Response) => {
+getVoucherById: async (req: Request, res: Response) => {
   const { id } = req.params;
 
   console.log("ma:", id); // In ra giá trị của ma để kiểm tra
   try {
-    const role = await Role.findByPk(id);
-    if (role) {
-      res.status(200).json(role);
+    const voucher = await Voucher.findByPk(id);
+    if (voucher) {
+      res.status(200).json(voucher);
     } else {
       res.status(404).json({ error: "Colour not found" });
     }
@@ -30,11 +30,11 @@ getRoleById: async (req: Request, res: Response) => {
 
 
 // Tạo một thương hiệu mới
- createRole : async (req: Request, res: Response) => {
+ createVoucher : async (req: Request, res: Response) => {
   try {
     const { Ma,Ten } = req.body;
-    const role = await Role.create();
-    res.status(201).json(role);
+    const voucher = await Voucher.create();
+    res.status(201).json(voucher);
   } catch (error) {
     res.status(500).json({ message: 'Lỗi nội bộ xảy ra trên server' });
   }
@@ -42,14 +42,14 @@ getRoleById: async (req: Request, res: Response) => {
 
 
 // Cập nhật một thương hiệu
- updateRole : async (req: Request, res: Response) => {
+ updateVoucher : async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { Ten} = req.body;
-    const role = await Role.findByPk(id);
-    if (role) {
-      await role.update({ });
-      res.status(200).json(role);
+    const voucher = await Voucher.findByPk(id);
+    if (voucher) {
+      await voucher.update({ });
+      res.status(200).json(voucher);
     } else {
       res.status(404).json({ message: 'Dòng sản phầm không tìm thấy' });
     }
@@ -59,12 +59,12 @@ getRoleById: async (req: Request, res: Response) => {
 },
 
 // Xóa một thương hiệu
- deleteRole : async (req: Request, res: Response) => {
+ deleteVoucher : async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const role = await Role.findByPk(id);
-    if (role) {
-      await role.destroy();
+    const voucher = await Voucher.findByPk(id);
+    if (voucher) {
+      await voucher.destroy();
       res.status(200).json({ message: 'Dòng sản phầm đã được xóa' });
     } else {
       res.status(404).json({ message: 'Dòng sản phầm không tìm thấy' });
@@ -76,4 +76,4 @@ getRoleById: async (req: Request, res: Response) => {
 
 }
 
-export default RoleController;
+export default VoucherController;

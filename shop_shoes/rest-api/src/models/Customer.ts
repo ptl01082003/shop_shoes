@@ -34,7 +34,7 @@ Customer.init({
       type: DataTypes.STRING(20),
        // Sử dụng UUID cho id
       primaryKey: true,
-      field: 'Ma',
+      field: 'userName',
     },
     Password: {
       type: DataTypes.STRING(255),

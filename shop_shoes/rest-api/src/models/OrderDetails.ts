@@ -1,6 +1,8 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/ConnectDB copy";
 import { Product } from "./Product";
+import ProductDetails from "./ProductDetails";
+import Order from "./Order";
 
 // Định nghĩa các thuộc tính của Thuong Hiệu
 interface OrderDetailsAttributes {
@@ -71,5 +73,8 @@ OrderDetails.init(
     // updatedAt: 'updatedAt', // Tên cột updatedAt trong cơ sở dữ liệu
   }
 );
+
+OrderDetails.belongsTo(ProductDetails, { foreignKey: "ChiTietSanPham", as: "ChiTietSanPhamEXEC" });
+OrderDetails.belongsTo(Order, { foreignKey: "DonHang", as: "DonHangEXEC" });
 
 export default OrderDetails;

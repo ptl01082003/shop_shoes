@@ -1,5 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/ConnectDB copy";
+import ProductDetails from "./ProductDetails";
+import Customer from "./Customer";
 
 // Định nghĩa các thuộc tính của Thuong Hiệu
 interface CartAttributes {
@@ -57,5 +59,9 @@ Cart.init(
     // updatedAt: 'updatedAt', // Tên cột updatedAt trong cơ sở dữ liệu
   }
 );
+
+Cart.belongsTo(ProductDetails, { foreignKey: "ChiTietSanPham", as: "ChiTietSanPhamEXEC" });
+Cart.belongsTo(Customer, { foreignKey: "KhachHang", as: "KhachHangEXEC" });
+
 
 export default Cart;

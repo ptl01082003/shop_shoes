@@ -46,7 +46,7 @@ Voucher.init(
       type: DataTypes.STRING(36),
       allowNull:true, // Sử dụng UUID cho id
       primaryKey: true,
-      field: "id",
+      field: "Ma",
     },
     MoTa: {
       type: DataTypes.STRING(200),
