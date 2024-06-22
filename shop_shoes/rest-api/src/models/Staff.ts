@@ -81,6 +81,6 @@ Staff.init({
   tableName: "nhanvien",
   timestamps: false,
 });
-Staff.belongsTo(Role, { foreignKey: 'VaiTro', as: 'VaiTroEXEC' });
+Staff.belongsTo(Role, { foreignKey: 'VaiTro', as: 'VaiTroEXEC'});
 
 export default Staff;

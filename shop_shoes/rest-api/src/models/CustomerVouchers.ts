@@ -1,6 +1,8 @@
 
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/ConnectDB copy";
+import Customer from "../models/Customer";
+import Voucher from "../models/Voucher";
 
 
 // Định nghĩa các thuộc tính của Thuong Hiệu
@@ -41,6 +43,8 @@ CustomerVouchers.init({
   }
 );
 
+CustomerVouchers.belongsTo(Voucher, { foreignKey: "Voucher", as: "VoucherEXEC" });
+CustomerVouchers.belongsTo(Customer, { foreignKey: "KhachHang", as: "KhachHangEXEC" });
 
 
 export default CustomerVouchers;

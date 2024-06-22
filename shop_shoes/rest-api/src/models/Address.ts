@@ -1,5 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/ConnectDB copy";
+import Customer from "./Customer";
 
 // Định nghĩa các thuộc tính của Thuong Hiệu
 interface AddressAttributes {
@@ -122,5 +123,6 @@ Address.init(
     // updatedAt: 'updatedAt', // Tên cột updatedAt trong cơ sở dữ liệu
   }
 );
+Address.belongsTo(Customer, { foreignKey: "KhachHang", as: "KhachHangEXEC" });
 
 export default Address;

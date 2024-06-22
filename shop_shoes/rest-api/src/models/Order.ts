@@ -1,6 +1,9 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/ConnectDB copy";
 import { Product } from "./Product";
+import Voucher from "./Voucher";
+import Customer from "./Customer";
+import Staff from "./Staff";
 
 // Định nghĩa các thuộc tính của Thuong Hiệu
 interface OrderAttributes {
@@ -120,17 +123,17 @@ Order.init(
       QuanHuyen_Code: {
         type: DataTypes.INTEGER,
         allowNull: true, // `Ten` là không bắt buộc
-        field: "SanPham",
+        field: "quanhuyen_code",
       },
       XaPhuong_Name: {
         type: DataTypes.STRING(255),
         allowNull: true, // Có thể để null nếu không bắt buộc
-        field: "ten",
+        field: "XaPhuong_Name",
       },
       XaPhuong_Code: {
         type: DataTypes.STRING(255),
         allowNull: true, // Có thể để null nếu không bắt buộc
-        field: "ViTriAnh",
+        field: "XaPhuong_Code",
       },
       DiaChiChiTiet: {
         type: DataTypes.STRING(255),
@@ -202,7 +205,7 @@ Order.init(
       Loai: {
         type: DataTypes.INTEGER,
         allowNull: true, // `Ten` là không bắt buộc
-        field: "SanPham",
+        field: "Loai",
       },
       NhanVien: {
         type: DataTypes.STRING(45),
@@ -220,5 +223,10 @@ Order.init(
     // updatedAt: 'updatedAt', // Tên cột updatedAt trong cơ sở dữ liệu
   }
 );
+
+
+Order.belongsTo(Voucher, { foreignKey: "Voucher", as: "VoucherEXEC" });
+Order.belongsTo(Customer, { foreignKey: "KhachHang", as: "KhachHangEXEC" });
+Order.belongsTo(Staff, { foreignKey: "NhanVien", as: "NhanVienEXEC" });
 
 export default Order;

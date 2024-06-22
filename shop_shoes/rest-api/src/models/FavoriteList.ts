@@ -2,6 +2,8 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/ConnectDB copy";
 import { Product } from "./Product";
+import Staff from "./Staff";
+import Customer from "./Customer";
 
 // Định nghĩa các thuộc tính của Thuong Hiệu
 interface FavoriteListAttributes {
@@ -49,6 +51,9 @@ FavoriteList.init({
     // updatedAt: 'updatedAt', // Tên cột updatedAt trong cơ sở dữ liệu
   }
 );
+
+FavoriteList.belongsTo(Product, { foreignKey: "SanPham", as: "SanPhamEXEC" });
+FavoriteList.belongsTo(Customer, { foreignKey: "KhachHang", as: "KhachHangEXEC" });
 
 
 
