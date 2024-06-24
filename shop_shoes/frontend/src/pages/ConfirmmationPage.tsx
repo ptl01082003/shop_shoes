@@ -392,7 +392,7 @@ export default function Confirmmation() {
                     name="EMAIL"
                     placeholder="Enter Email"
                     type="email"
-                  />
+                  />@
                   <button className="click-btn btn btn-default">
                     <i className="fa fa-long-arrow-right" aria-hidden="true" />
                   </button>

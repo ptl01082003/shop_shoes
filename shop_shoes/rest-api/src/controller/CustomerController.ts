@@ -35,11 +35,11 @@ const CustomerController = {
     try {
       // Kiểm tra và lấy dữ liệu từ body của yêu cầu
       const Ten = req.body?.Ten;
-      console.log(Ten)
+      console.log(Ten);
       const NgayTao = new Date();
-      console.log(NgayTao)
+      console.log(NgayTao);
       const NgayCapNhat = new Date();
-      console.log(NgayCapNhat)
+      console.log(NgayCapNhat);
       // Kiểm tra xem liệu có thiếu dữ liệu không
       if (!Ten || !NgayTao || !NgayCapNhat) {
         return res
@@ -48,7 +48,7 @@ const CustomerController = {
       }
 
       // Tạo màu mới trong cơ sở dữ liệu
-      const customer = await Customer.create({ });
+      const customer = await Customer.create({});
 
       // Trả về kết quả thành công
       res.status(201).json(customer);
@@ -84,14 +84,14 @@ const CustomerController = {
       const { id } = req.params;
       console.log("id :", id);
       const Ten = req.body?.Ten;
-      console.log(Ten)
+      console.log(Ten);
       const NgayTao = req.body?.NgayTao;
-      console.log(NgayTao)
+      console.log(NgayTao);
       const NgayCapNhat = req.body?.NgayCapNhat;
-      console.log(NgayCapNhat)
+      console.log(NgayCapNhat);
       const customer = await Customer.findByPk(id);
       if (customer) {
-        await customer.update({  });
+        await customer.update({});
         res.status(200).json(customer);
       } else {
         res.status(404).json({ message: "Dòng sản phầm không tìm thấy" });
@@ -120,7 +120,6 @@ const CustomerController = {
       res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
     }
   },
-  
 };
 
 export default CustomerController;

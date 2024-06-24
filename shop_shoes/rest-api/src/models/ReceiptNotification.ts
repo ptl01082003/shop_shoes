@@ -34,7 +34,6 @@ ReceiptNotification.init(
     id: {
       type: DataTypes.BIGINT,
       autoIncrement: true,
-      allowNull: false,
       primaryKey: true,
       field: "id",
     },

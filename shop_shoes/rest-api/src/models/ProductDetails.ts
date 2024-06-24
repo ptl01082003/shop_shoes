@@ -82,7 +82,6 @@ ProductDetails.init(
       field: "ngaycapnhap",
       
     },
-    
   },
   {
     sequelize,
