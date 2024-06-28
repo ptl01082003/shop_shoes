@@ -8,7 +8,7 @@ import Size from "./Size";
 interface ProductDetailsAttributes {
   id: string;
   SanPham?: string;
-  Size?: string;
+  Size?: number;
   SoLuong?: string;
   TrangThai?: boolean;
   NgayTao?: Date;
@@ -31,7 +31,7 @@ class ProductDetails
 {
     id!: string;
     SanPham?: string;
-    Size?: string;
+    Size?: number;
     SoLuong?: string;
     TrangThai?: boolean;
     NgayTao?: Date;

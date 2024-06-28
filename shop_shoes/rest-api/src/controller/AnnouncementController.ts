@@ -34,22 +34,20 @@ const AnnouncementController = {
   createAnnouncement: async (req: Request, res: Response) => {
     try {
       // Kiểm tra và lấy dữ liệu từ body của yêu cầu
-      const Ten = req.body?.Ten;
-      console.log(Ten)
-      const NgayTao = new Date();
-      console.log(NgayTao)
-      const NgayCapNhat = new Date();
-      console.log(NgayCapNhat)
+       const ThoiGian = new Date();
+      const { NhanVien, LoaiThongBao, NoiDung, url } = req.body;
+  
       // Kiểm tra xem liệu có thiếu dữ liệu không
-      if (!Ten || !NgayTao || !NgayCapNhat) {
-        return res
-          .status(400)
-          .json({ message: "Thiếu thông tin cần thiết trong yêu cầu" });
-      }
-
-      // Tạo màu mới trong cơ sở dữ liệu
-      const announcement = await Announcement.create({ });
-
+ 
+      // Tạo thông báo mới trong cơ sở dữ liệu
+      const announcement = await Announcement.create({
+        NhanVien,
+        LoaiThongBao,
+        NoiDung,
+        ThoiGian, // Chuyển đổi ThoiGian từ dạng string sang Date nếu cần thiết
+        url,
+      });
+  
       // Trả về kết quả thành công
       res.status(201).json(announcement);
     } catch (error) {
@@ -82,17 +80,27 @@ const AnnouncementController = {
     console.log("createColour called");
     try {
       const { id } = req.params;
-      console.log("id :", id);
-      const Ten = req.body?.Ten;
-      console.log(Ten)
-      const NgayTao = req.body?.NgayTao;
-      console.log(NgayTao)
-      const NgayCapNhat = req.body?.NgayCapNhat;
-      console.log(NgayCapNhat)
-      const announcement = await Announcement.findByPk(id);
-      if (announcement) {
-        await announcement.update({  });
-        res.status(200).json(announcement);
+    console.log("id :", id);
+    
+    // Lấy các giá trị cần cập nhật từ req.body
+    const { NhanVien, LoaiThongBao, NoiDung, ThoiGian, url } = req.body;
+    
+    // Tìm thông báo theo id
+    const announcement = await Announcement.findByPk(id);
+
+    // Kiểm tra xem thông báo có tồn tại không
+    if (announcement) {
+      // Cập nhật thông báo với các giá trị mới từ req.body
+      await announcement.update({
+        NhanVien,
+        LoaiThongBao,
+        NoiDung,
+        ThoiGian: ThoiGian ? new Date(ThoiGian) : announcement.ThoiGian, // Cập nhật ThoiGian nếu được cung cấp
+        url,
+      });
+
+      // Trả về thông báo đã được cập nhật thành công
+      res.status(200).json(announcement);
       } else {
         res.status(404).json({ message: "Dòng sản phầm không tìm thấy" });
       }

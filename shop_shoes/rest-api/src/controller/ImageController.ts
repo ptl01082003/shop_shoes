@@ -31,25 +31,25 @@ const ImageController = {
   },
 
   // Tạo một thương hiệu mới
- createImage : async (req : Request, res : Response) => {
+  createImage: async (req: Request, res: Response) => {
     try {
       const { SanPham, Ten, ViTriAnh } = req.body;
-  
+
       // Tìm sản phẩm với primary key là SanPham (giả sử SanPham là khóa chính của Product)
       const sanPham = await Product.findByPk(SanPham);
-  
+
       // Kiểm tra nếu không tìm thấy sản phẩm
       if (!sanPham) {
         return res.status(404).json({ message: "Sản phẩm không tồn tại" });
       }
-  
+
       // Tạo hình ảnh mới và liên kết với sản phẩm đã tìm thấy
       const newImage = await Image.create({
         Ten,
         ViTriAnh,
-        SanPham: sanPham.id // Sử dụng sanPham.id để liên kết với sản phẩm
+        SanPham: sanPham.id, // Sử dụng sanPham.id để liên kết với sản phẩm
       });
-  
+
       // Trả về kết quả thành công
       res.status(201).json(newImage);
     } catch (error) {
@@ -58,53 +58,39 @@ const ImageController = {
       res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
     }
   },
-  
-  // createImage: async (req: Request, res: Response) => {
-  //   try {
-  //     const { SanPham, Ten, ViTriAnh } = req.body;
-
-  //     const sanPham = SanPham ? await Product.findByPk(SanPham) : undefined;
-  //     console.log(sanPham);
-  //     if (!sanPham) {
-  //       return res.status(404).json({ message: "Product not found" });
-  //     }
-
-  //     const imageData = {
-  //       SanPham,
-  //       Ten,
-  //       ViTriAnh,
-  //     };
-
-  //     const image = await Image.create(imageData,);
-
-  //     res.status(201).json(image);
-  //   } catch (error) {
-  //     console.log(error);
-  //     res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
-  //   }
-  // },
 
   // Cập nhật một thương hiệu
   updateImage: async (req: Request, res: Response) => {
-    console.log("createColour called");
     try {
-      const { id } = req.params;
-      console.log("id :", id);
-      const Ten = req.body?.Ten;
-      console.log(Ten);
-      const NgayTao = req.body?.NgayTao;
-      console.log(NgayTao);
-      const NgayCapNhat = req.body?.NgayCapNhat;
-      console.log(NgayCapNhat);
-      const colour = await Image.findByPk(id);
-      if (colour) {
-        await colour.update({});
-        res.status(200).json(colour);
-      } else {
-        res.status(404).json({ message: "Dòng sản phầm không tìm thấy" });
+      const { id } = req.params; // Lấy id từ tham số URL
+      const { SanPham, Ten, ViTriAnh } = req.body; // Lấy các trường cần cập nhật từ req.body
+
+      // Tìm hình ảnh dựa trên id
+      const image = await Image.findByPk(id);
+
+      // Kiểm tra nếu không tìm thấy hình ảnh
+      if (!image) {
+        return res.status(404).json({ message: "Hình ảnh không tồn tại" });
       }
+
+      // Cập nhật thông tin hình ảnh nếu có các trường cần cập nhật
+      if (Ten) {
+        image.Ten = Ten;
+      }
+      if (SanPham) {
+        image.SanPham = SanPham;
+      }
+      if (ViTriAnh) {
+        image.ViTriAnh = ViTriAnh;
+      }
+
+      // Lưu các thay đổi vào cơ sở dữ liệu
+      await image.save();
+
+      // Trả về thông tin hình ảnh đã cập nhật
+      res.status(200).json(image);
     } catch (error) {
-      console.log(error);
+      console.error("Error updating image:", error);
       res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
     }
   },

@@ -34,21 +34,28 @@ const PromotionController = {
   createPromotion: async (req: Request, res: Response) => {
     try {
       // Kiểm tra và lấy dữ liệu từ body của yêu cầu
+      const Ma = req.body?.Ma;
       const Ten = req.body?.Ten;
-      console.log(Ten)
+      const Loai = req.body?.Loai;
+      const MucGiam = req.body?.MucGiam;
+      const NgayBatDau = req.body?.NgayBatDau;
+      const NgayKetThuc = req.body?.NgayKetThuc;
+      const TrangThai = req.body?.TrangThai;
+     
       const NgayTao = new Date();
-      console.log(NgayTao)
       const NgayCapNhat = new Date();
-      console.log(NgayCapNhat)
+
       // Kiểm tra xem liệu có thiếu dữ liệu không
       if (!Ten || !NgayTao || !NgayCapNhat) {
         return res
           .status(400)
           .json({ message: "Thiếu thông tin cần thiết trong yêu cầu" });
-      }
+    }
 
+
+    console.log(req.body)
       // Tạo màu mới trong cơ sở dữ liệu
-      const colour = await Promotion.create({ Ten, NgayTao, NgayCapNhat });
+      const colour = await Promotion.create({ Ma,Ten,Loai,MucGiam,NgayBatDau,NgayKetThuc,NgayTao,NgayCapNhat,TrangThai });
 
       // Trả về kết quả thành công
       res.status(201).json(colour);
@@ -58,24 +65,7 @@ const PromotionController = {
       res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
     }
   },
-  //  createColour : async (req: Request, res: Response) => {
-  //   console.log('createColour called');
-  //   try {
-  //     const Ten = req.body.Ten;
-  //     const NgayTao = req.body.NgayTao;
-  //     const NgayCapNhat = req.body.NgayCapNhat;
-  //     if (!Ten || !NgayTao || !NgayCapNhat) {
-  //       return res.status(400).json({ message: 'Thiếu thông tin cần thiết trong yêu cầu' });
-  //     }
-  //     console.log('Request body:', req.body);
-  //     const colour = await Colour.create({ Ten, NgayTao, NgayCapNhat });
-  //     console.log('Colour created:', colour);
-  //     res.status(201).json(colour);
-  //   } catch (error) {
-  //     console.log(error);
-  //     res.status(500).json({ message: 'Lỗi nội bộ xảy ra trên server' });
-  //   }
-  // },
+  
 
   // Cập nhật một thương hiệu
   updatePromotion: async (req: Request, res: Response) => {
@@ -83,15 +73,19 @@ const PromotionController = {
     try {
       const { id } = req.params;
       console.log("id :", id);
+      
       const Ten = req.body?.Ten;
-      console.log(Ten)
+      const Loai = req.body?.Loai;
+      const MucGiam = req.body?.MucGiam;
+      const NgayBatDau = req.body?.NgayBatDau;
+      const NgayKetThuc = req.body?.NgayKetThuc;
+      const TrangThai = req.body?.TrangThai;
       const NgayTao = req.body?.NgayTao;
-      console.log(NgayTao)
-      const NgayCapNhat = req.body?.NgayCapNhat;
-      console.log(NgayCapNhat)
+      const NgayCapNhat = req.body?.NgayBatDau;
+
       const colour = await Promotion.findByPk(id);
       if (colour) {
-        await colour.update({ Ten, NgayTao, NgayCapNhat });
+        await colour.update({ Ten,Loai,MucGiam,NgayBatDau,NgayKetThuc,NgayTao,NgayCapNhat,TrangThai });
         res.status(200).json(colour);
       } else {
         res.status(404).json({ message: "Dòng sản phầm không tìm thấy" });

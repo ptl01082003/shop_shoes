@@ -34,179 +34,56 @@ const FavoriteListController = {
 
   createFavoriteList: async (req: Request, res: Response) => {
     try {
-      // const MauSacId = req.body?.MauSacId;
-      // const DongSPId = req.body?.DongSPId;
-      // const KieuDangId = req.body?.KieuDangId;
-      // const ChatLieuId = req.body?.ChatLieuId;
-      // const XuatXuId = req.body?.XuatXuId;
-      // //////////////////////////// /////////////////////
-      // const Ten = req.body?.Ten;
-      // const GiaNhap = req.body?.GiaNhap;
-      // const GiaBan = req.body?.GiaBan;
-      // const MoTa = req.body?.MoTa;
-      // const HienThi = req.body?.HienThi;
-      // const TrangThai = req.body?.TrangThai;
-      // ////////////////////////////////
-      // const NgayTao = new Date(); // Lấy ngày hiện tại
-      // const NgayCapNhat = new Date(); // Lấy ngày hiện tại
-      // const id = req.body?.id;
+      const { SanPham, KhachHang } = req.body;
+console.log(req.body)
+      // Tìm sản phẩm với primary key là SanPham (giả sử SanPham là khóa chính của Product)
+      const sanPham = await FavoriteList.findByPk(SanPham);
+      const khachhang = await FavoriteList.findByPk(KhachHang);
+      const existingEntry = await FavoriteList.findOne({ where: { KhachHang, SanPham } });
+      if (existingEntry) {
+        return res.status(409).json({ message: "Sản phẩm khuyến mại đã tồn tại" });
+      }
 
-      // console.log("NgayTao:", NgayTao);
-      // console.log("NgayCapNhat:", NgayCapNhat);
-
-      // const mauSac = MauSacId ? await Colour.findByPk(MauSacId) : undefined;
-      // const dongSP = DongSPId ? await ProductLine.findByPk(DongSPId) : undefined;
-      // const kieuDang = KieuDangId? await Style.findByPk(KieuDangId) : undefined;
-      // const chatLieu = ChatLieuId ? await Material.findByPk(ChatLieuId): undefined;
-      // const xuatXu = XuatXuId ? await Origin.findByPk(XuatXuId) : undefined;
-
-      const dataFromClient = req.body;
-      
-      console.log("req.body:", dataFromClient);
-      // const productData: any = {
-      //   Ten,
-      //   GiaNhap,
-      //   GiaBan,
-      //   MoTa,
-      //   NgayTao,
-      //   NgayCapNhat,
-      //   HienThi,
-      //   TrangThai,
-      // };
-
-      // if (mauSac) {
-      //   productData.MauSac = mauSac.Ten;
-      // }
-      // if (dongSP) {
-      //   productData.DongSP = dongSP.Ten;
-      // }
-      // if (kieuDang) {
-      //   productData.KieuDang = kieuDang.Ten;
-      // }
-      // if (chatLieu) {
-      //   productData.ChatLieu = chatLieu.Ten;
-      // }
-      // if (xuatXu) {
-      //   productData.XuatXu = xuatXu.Ten;
-      // }
-    
-      const address = await FavoriteList.create();
+      // Tạo hình ảnh mới và liên kết với sản phẩm đã tìm thấy
+      const newImage = await FavoriteList.create({
+        KhachHang,
+        SanPham // Sử dụng sanPham.id để liên kết với sản phẩm
+      });
 
       // Trả về kết quả thành công
-      res.status(201).json(address);
+      res.status(201).json(newImage);
     } catch (error) {
-      console.log(error);
-      // Xử lý lỗi nếu có lỗi xảy ra trong quá trình tạo màu
-      console.error("Error creating colour:", error);
+      // Xử lý lỗi nếu có lỗi xảy ra trong quá trình tạo hình ảnh
+      console.error("Error creating image:", error);
       res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
     }
   },
-  //  createColour : async (req: Request, res: Response) => {
-  //   console.log('createColour called');
-  //   try {
-  //     const Ten = req.body.Ten;
-  //     const NgayTao = req.body.NgayTao;
-  //     const NgayCapNhat = req.body.NgayCapNhat;
-  //     if (!Ten || !NgayTao || !NgayCapNhat) {
-  //       return res.status(400).json({ message: 'Thiếu thông tin cần thiết trong yêu cầu' });
-  //     }
-  //     console.log('Request body:', req.body);
-  //     const colour = await Colour.create({ Ten, NgayTao, NgayCapNhat });
-  //     console.log('Colour created:', colour);
-  //     res.status(201).json(colour);
-  //   } catch (error) {
-  //     console.log(error);
-  //     res.status(500).json({ message: 'Lỗi nội bộ xảy ra trên server' });
-  //   }
-  // },
 
   // Cập nhật một thương hiệu
   updateFavoriteList: async (req: Request, res: Response) => {
+    console.log("createColour called");
     try {
-      const {
-        id,
-        MauSacId,
-        DongSPId,
-        KieuDangId,
-        ChatLieuId,
-        XuatXuId,
-        Ten,
-        GiaNhap,
-        GiaBan,
-        MoTa,
-        NgayTao,
-        HienThi,
-        TrangThai,
-      } = req.body;
-
-      // Kiểm tra id sản phẩm cần cập nhật và các thuộc tính bắt buộc không được thiếu
-      if (
-        !id ||
-        !MauSacId ||
-        !DongSPId ||
-        !KieuDangId ||
-        !ChatLieuId ||
-        !XuatXuId ||
-        !Ten ||
-        !GiaNhap ||
-        !GiaBan ||
-        !MoTa ||
-        !NgayTao ||
-        !HienThi ||
-        !TrangThai
-      ) {
-        return res
-          .status(400)
-          .json({ message: "Thiếu thông tin cần thiết trong yêu cầu" });
+       const { SanPham, KhachHang } = req.body;
+      const sanPham = await FavoriteList.findByPk(SanPham);
+      const khachhang = await FavoriteList.findByPk(KhachHang);
+      const updateData = req.body;
+  
+      // Tìm sản phẩm khuyến mại dựa trên khóa chính
+      const promotionProduct = await FavoriteList.findOne({ where: { KhachHang, SanPham } });
+  
+      // Kiểm tra nếu không tìm thấy sản phẩm khuyến mại
+      if (!promotionProduct) {
+        return res.status(404).json({ message: "Sản phẩm khuyến mại không tồn tại" });
       }
-
-      // Tìm sản phẩm cần cập nhật trong cơ sở dữ liệu
-      const existingProduct = await FavoriteList.findByPk(id);
-      if (!existingProduct) {
-        return res
-          .status(404)
-          .json({ message: "Không tìm thấy sản phẩm cần cập nhật" });
-      }
-
-      // Tìm các đối tượng tương ứng từ cơ sở dữ liệu
-      const mauSac = await FavoriteList.findByPk(MauSacId);
-      if (!mauSac) {
-        return res
-          .status(404)
-          .json({ message: "Không tìm thấy thông tin màu sắc" });
-      }
-
-      const dongSP = await FavoriteList.findByPk(DongSPId);
-      const kieuDang = await FavoriteList.findByPk(KieuDangId);
-      const chatLieu = await FavoriteList.findByPk(ChatLieuId);
-      const xuatXu = await FavoriteList.findByPk(XuatXuId);
-
-      // Kiểm tra xem các đối tượng khác đã được tìm thấy chưa
-      if (!dongSP || !kieuDang || !chatLieu || !xuatXu) {
-        return res.status(404).json({
-          message:
-            "Không tìm thấy thông tin dòng sản phẩm, kiểu dáng, chất liệu hoặc xuất xứ",
-        });
-      }
-
-      // Cập nhật sản phẩm trong cơ sở dữ liệu
-      await existingProduct.update({
-        // MauSac: mauSac.id,
-        // DongSP: dongSP.id,
-        // KieuDang: kieuDang.id,
-        // ChatLieu: chatLieu.id,
-        // XuatXu: xuatXu.id,
-      
-      });
-
+  
+      // Cập nhật sản phẩm khuyến mại với dữ liệu mới
+      await promotionProduct.update(updateData);
+  
       // Trả về kết quả thành công
-      res.status(200).json({
-        message: "Cập nhật sản phẩm thành công",
-        product: existingProduct,
-      });
+      res.status(200).json(promotionProduct);
     } catch (error) {
-      // Xử lý lỗi nếu có lỗi xảy ra trong quá trình cập nhật sản phẩm
-      console.error("Error updating product:", error);
+      // Xử lý lỗi nếu có lỗi xảy ra trong quá trình cập nhật sản phẩm khuyến mại
+      console.error("Error updating promotion product:", error);
       res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
     }
   },

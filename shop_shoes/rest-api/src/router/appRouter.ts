@@ -42,7 +42,7 @@ export function appRouter() {
 
   router.use("/anh",ImageRouter);
   router.use("/khuyenmai-sanpham",PromotionProductRouter);
-  router.use("/khuyenmai",PromotionRouter);
+  router.use("/khuyen-mai",PromotionRouter);
   router.use("/size",SizeRouter);
   router.use("/nhan-xet",CommentRouter);
   router.use("/donhang-chitiet",OrderDetailsRouter);
