@@ -38,6 +38,7 @@ Promotion.init(
     Ma: {
       type: DataTypes.STRING(36),
       allowNull: false,
+      // defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
       field: "Ma",
     },
@@ -89,19 +90,9 @@ Promotion.init(
     modelName: "Promotion",
     tableName: "khuyenmai",
     timestamps: false,
-    // validate: {
-    //   bothCoordsOrNone() {
-    //     if ((this.latitude === null) !== (this.longitude === null)) {
-    //       throw new Error('Either both latitude and longitude, or neither!');
-    //     }
-    //   },
-    // },
+   
   }
 );
 
-// Promotion.belongsTo(Trademark, {
-//   foreignKey: "ThuongHieu",
-//   as: "ThuongHieuEXEC",
-// });
 
 export default Promotion;

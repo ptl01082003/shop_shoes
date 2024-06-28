@@ -1,6 +1,8 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/ConnectDB copy";
 import Trademark from "../models/Trademark"; // Đảm bảo import đúng đường dẫn đến model Trademark
+import Promotion from "./Promotion";
+import { Product } from "./Product";
 
 // Định nghĩa các thuộc tính của Dòng Sản Phẩm
 interface PromotionProductAttributes {
@@ -56,5 +58,8 @@ PromotionProduct.init(
 //   foreignKey: "ThuongHieu",
 //   as: "ThuongHieuEXEC",
 // });
+
+PromotionProduct.belongsTo(Promotion, { foreignKey: "KhuyenMai", as: "KhuyenMaiEXEC" });
+PromotionProduct.belongsTo(Product, { foreignKey: "SanPham", as: "SanPhamEXEC" });
 
 export default PromotionProduct;

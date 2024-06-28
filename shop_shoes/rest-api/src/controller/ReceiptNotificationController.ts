@@ -36,21 +36,15 @@ const ReceiptNotificationController = {
   createReceiptNotification: async (req: Request, res: Response) => {
     try {
       // Kiểm tra và lấy dữ liệu từ body của yêu cầu
-      const Ten = req.body?.Ten;
-      console.log(Ten)
-      const NgayTao = new Date();
-      console.log(NgayTao)
-      const NgayCapNhat = new Date();
-      console.log(NgayCapNhat)
-      // Kiểm tra xem liệu có thiếu dữ liệu không
-      if (!Ten || !NgayTao || !NgayCapNhat) {
-        return res
-          .status(400)
-          .json({ message: "Thiếu thông tin cần thiết trong yêu cầu" });
-      }
+      const { ThongBao, TrangThai, NhanVien } = req.body;
+    console.log(ThongBao, TrangThai, NhanVien);
 
       // Tạo màu mới trong cơ sở dữ liệu
-      const receiptNotification = await ReceiptNotification.create({ });
+      const receiptNotification = await ReceiptNotification.create({
+        ThongBao,
+        TrangThai,
+        NhanVien,
+      });
 
       // Trả về kết quả thành công
       res.status(201).json(receiptNotification);
@@ -81,23 +75,29 @@ const ReceiptNotificationController = {
 
   // Cập nhật một thương hiệu
   updateReceiptNotification: async (req: Request, res: Response) => {
-    console.log("createColour called");
-    try {
-      const { id } = req.params;
-      console.log("id :", id);
-      const Ten = req.body?.Ten;
-      console.log(Ten)
-      const NgayTao = req.body?.NgayTao;
-      console.log(NgayTao)
-      const NgayCapNhat = req.body?.NgayCapNhat;
-      console.log(NgayCapNhat)
-      const receiptNotification = await ReceiptNotification.findByPk(id);
-      if (receiptNotification) {
-        await receiptNotification.update({  });
-        res.status(200).json(receiptNotification);
-      } else {
-        res.status(404).json({ message: "Dòng sản phầm không tìm thấy" });
-      }
+    console.log("updateReceiptNotification called");
+  try {
+    const { id } = req.params;
+    console.log("id :", id);
+
+    // Lấy các thuộc tính cần cập nhật từ body của yêu cầu
+    const { ThongBao, TrangThai, NhanVien } = req.body;
+
+    // Tìm bản ghi ReceiptNotification theo ID
+    const receiptNotification = await ReceiptNotification.findByPk(id);
+
+    // Nếu không tìm thấy, trả về lỗi 404
+    if (!receiptNotification) {
+      return res.status(404).json({ message: "Không tìm thấy ReceiptNotification" });
+    }
+
+
+
+    // Cập nhật bản ghi với các trường đã được cung cấp
+    await receiptNotification.update({ThongBao,TrangThai,NhanVien});
+
+    // Trả về kết quả thành công
+    res.status(200).json(receiptNotification);
     } catch (error) {
       console.log(error);
       res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });

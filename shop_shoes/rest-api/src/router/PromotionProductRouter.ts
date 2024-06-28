@@ -6,8 +6,8 @@ const PromotionProductRouter = Router();
 
 PromotionProductRouter.get('/', PromotionProductController.getPromotionProduct);
 PromotionProductRouter.post('/', PromotionProductController.createPromotionProduct);
-PromotionProductRouter.get('/:id', PromotionProductController.getPromotionProductById);
-PromotionProductRouter.put('/:id', PromotionProductController.updatePromotionProduct);
-PromotionProductRouter.delete('/:id', PromotionProductController.deletePromotionProduct);
+PromotionProductRouter.get('/:KhuyenMai/:SanPham', PromotionProductController.getPromotionProductById);
+PromotionProductRouter.put('/:KhuyenMai/:SanPham', PromotionProductController.updatePromotionProduct);
+PromotionProductRouter.delete('/:KhuyenMai/:SanPham', PromotionProductController.deletePromotionProduct);
 
 export default PromotionProductRouter;

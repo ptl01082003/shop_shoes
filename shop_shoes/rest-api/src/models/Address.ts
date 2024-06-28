@@ -110,19 +110,19 @@ Address.init(
         field: "macDinh",
       },
      
-     
-
-     
   },
   {
     sequelize,
     modelName: "Address",
     tableName: "diachi",
     timestamps: false, // Không  Cho phép Sequelize sử dụng các cột createdAt và updatedAt
-    // createdAt: 'createdAt', // Tên cột createdAt trong cơ sở dữ liệu
-    // updatedAt: 'updatedAt', // Tên cột updatedAt trong cơ sở dữ liệu
+    
+
   }
 );
+
+
 Address.belongsTo(Customer, { foreignKey: "KhachHang", as: "KhachHangEXEC" });
+
 
 export default Address;

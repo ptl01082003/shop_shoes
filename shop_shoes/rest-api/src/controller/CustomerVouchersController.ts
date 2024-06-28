@@ -4,123 +4,115 @@ import CustomerVouchers from "../models/CustomerVouchers";
 const CustomerVouchersController = {
   getCustomerVouchers: async (req: Request, res: Response) => {
     try {
-      const  customerVouchers = await CustomerVouchers.findAll();
+      const customerVouchers = await CustomerVouchers.findAll();
       res.status(200).json(customerVouchers);
     } catch (error) {
       console.log(error);
       res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
     }
+  
   },
 
   //// lấy id
   getCustomerVouchersById: async (req: Request, res: Response) => {
-    const { id } = req.params;
-
-    console.log("ma:", id); // In ra giá trị của ma để kiểm tra
     try {
-      const customerVouchers = await CustomerVouchers.findByPk(id);
-      if (customerVouchers) {
-        res.status(200).json(customerVouchers);
+      const { Voucher, KhachHang } = req.params;
+  
+      // Tìm kiếm CustomerVoucher dựa trên Voucher và KhachHang
+      const customerVoucher = await CustomerVouchers.findOne({
+        where: {
+          Voucher,
+          KhachHang,
+        },
+      });
+  
+      if (customerVoucher) {
+        // Trả về Voucher và KhachHang
+        res.status(200).json({
+          Voucher: customerVoucher.Voucher,
+          KhachHang: customerVoucher.KhachHang,
+        });
       } else {
-        res.status(404).json({ error: "Colour not found" });
+        res.status(404).json({ message: "Customer voucher không tồn tại" });
       }
     } catch (error) {
+      console.log(error);
       res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
     }
   },
 
   // Tạo một thương hiệu mới
 
-  createCustomerVouchers: async (req: Request, res: Response) => {
+  createCustomerVoucher: async (req: Request, res: Response) => {
     try {
-      // Kiểm tra và lấy dữ liệu từ body của yêu cầu
-      const Ten = req.body?.Ten;
-      console.log(Ten)
-      const NgayTao = new Date();
-      console.log(NgayTao)
-      const NgayCapNhat = new Date();
-      console.log(NgayCapNhat)
-      // Kiểm tra xem liệu có thiếu dữ liệu không
-      if (!Ten || !NgayTao || !NgayCapNhat) {
-        return res
-          .status(400)
-          .json({ message: "Thiếu thông tin cần thiết trong yêu cầu" });
-      }
-
-      // Tạo màu mới trong cơ sở dữ liệu
-      const customerVouchers = await CustomerVouchers.create({ });
-
-      // Trả về kết quả thành công
-      res.status(201).json(customerVouchers);
+      const { Voucher, KhachHang } = req.body;
+  
+      const customerVoucher = await CustomerVouchers.create({
+        Voucher,
+        KhachHang,
+      });
+  
+      res.status(201).json(customerVoucher);
     } catch (error) {
-      // Xử lý lỗi nếu có lỗi xảy ra trong quá trình tạo màu
-      console.error("Error creating colour:", error);
+      console.log(error);
       res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
     }
   },
-  //  createColour : async (req: Request, res: Response) => {
-  //   console.log('createColour called');
-  //   try {
-  //     const Ten = req.body.Ten;
-  //     const NgayTao = req.body.NgayTao;
-  //     const NgayCapNhat = req.body.NgayCapNhat;
-  //     if (!Ten || !NgayTao || !NgayCapNhat) {
-  //       return res.status(400).json({ message: 'Thiếu thông tin cần thiết trong yêu cầu' });
-  //     }
-  //     console.log('Request body:', req.body);
-  //     const colour = await Colour.create({ Ten, NgayTao, NgayCapNhat });
-  //     console.log('Colour created:', colour);
-  //     res.status(201).json(colour);
-  //   } catch (error) {
-  //     console.log(error);
-  //     res.status(500).json({ message: 'Lỗi nội bộ xảy ra trên server' });
-  //   }
-  // },
-
-  // Cập nhật một thương hiệu
-  updateCustomerVouchers: async (req: Request, res: Response) => {
-    console.log("createColour called");
+  
+  updateCustomerVoucher: async (req: Request, res: Response) => {
     try {
-      const { id } = req.params;
-      console.log("id :", id);
-      const Ten = req.body?.Ten;
-      console.log(Ten)
-      const NgayTao = req.body?.NgayTao;
-      console.log(NgayTao)
-      const NgayCapNhat = req.body?.NgayCapNhat;
-      console.log(NgayCapNhat)
-      const customerVouchers = await CustomerVouchers.findByPk(id);
-      if (customerVouchers) {
-        await customerVouchers.update({  });
-        res.status(200).json(customerVouchers);
+      const { Voucher, KhachHang } = req.params;
+      const { newVoucher, newKhachHang } = req.body;
+  
+      const customerVoucher = await CustomerVouchers.findOne({
+        where: {
+          Voucher,
+          KhachHang,
+        },
+      });
+  
+      if (customerVoucher) {
+        await customerVoucher.update({
+          Voucher: newVoucher || customerVoucher.Voucher,
+          KhachHang: newKhachHang || customerVoucher.KhachHang,
+        });
+  
+        res.status(200).json(customerVoucher);
       } else {
-        res.status(404).json({ message: "Dòng sản phầm không tìm thấy" });
+        res.status(404).json({ message: "Customer voucher không tìm thấy" });
       }
     } catch (error) {
       console.log(error);
       res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
     }
   },
+  
 
   // Xóa một thương hiệu
   deleteCustomerVouchers: async (req: Request, res: Response) => {
-    console.log("createColour called");
+    console.log("deleteCustomerVouchers called");
     try {
-      const { id } = req.params;
-      const customerVouchers = await CustomerVouchers.findByPk(id);
-      console.log(customerVouchers);
-      console.log("createColour called");
-      if (customerVouchers) {
-        await customerVouchers.destroy();
-        res.status(200).json({ message: "Dòng sản phầm đã được xóa" });
+      const { Voucher, KhachHang } = req.params;
+    
+      
+      const customerVoucher = await CustomerVouchers.findOne({
+        where: {
+          Voucher,
+          KhachHang,
+        },
+      });
+      
+      if (customerVoucher) {
+        await customerVoucher.destroy();
+        res.status(200).json({ message: "Customer Voucher has been deleted" });
       } else {
-        res.status(404).json({ message: "Dòng sản phầm không tìm thấy" });
+        res.status(404).json({ message: "Customer Voucher not found" });
       }
     } catch (error) {
-      res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
+      console.error('Error deleting CustomerVoucher record:', error);
+      res.status(500).json({ message: "Internal server error occurred" });
     }
   },
-  
-};
+}
 
 export default CustomerVouchersController;

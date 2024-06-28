@@ -12,7 +12,7 @@ const CustomerController = {
     }
   },
 
-  //// lấy id
+  ////   lấy id
   getCustomerById: async (req: Request, res: Response) => {
     const { id } = req.params;
 
@@ -34,21 +34,25 @@ const CustomerController = {
   createCustomer: async (req: Request, res: Response) => {
     try {
       // Kiểm tra và lấy dữ liệu từ body của yêu cầu
-      const Ten = req.body?.Ten;
-      console.log(Ten)
-      const NgayTao = new Date();
-      console.log(NgayTao)
-      const NgayCapNhat = new Date();
-      console.log(NgayCapNhat)
-      // Kiểm tra xem liệu có thiếu dữ liệu không
-      if (!Ten || !NgayTao || !NgayCapNhat) {
-        return res
-          .status(400)
-          .json({ message: "Thiếu thông tin cần thiết trong yêu cầu" });
-      }
+      const UserName = req.body?.UserName;
+      const Password = req.body?.Password;
+      const HovaTen = req.body?.HovaTen;
+      const NgaySinh = req.body?.NgaySinh;
+      const GioiTinh = req.body?.GioiTinh;
+      const SoDienThoai = req.body?.SoDienThoai;
+      const Email = req.body?.Email;
+      const AnhDaiDien = req.body?.AnhDaiDien;
+
+
+      // // Kiểm tra xem liệu có thiếu dữ liệu không
+      // if (!Ten || !NgayTao || !NgayCapNhat) {
+      //   return res
+      //     .status(400)
+      //     .json({ message: "Thiếu thông tin cần thiết trong yêu cầu" });
+      // }
 
       // Tạo màu mới trong cơ sở dữ liệu
-      const customer = await Customer.create({ });
+      const customer = await Customer.create({UserName,Password,HovaTen,NgaySinh,GioiTinh,SoDienThoai,Email,AnhDaiDien});
 
       // Trả về kết quả thành công
       res.status(201).json(customer);
@@ -58,40 +62,23 @@ const CustomerController = {
       res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
     }
   },
-  //  createColour : async (req: Request, res: Response) => {
-  //   console.log('createColour called');
-  //   try {
-  //     const Ten = req.body.Ten;
-  //     const NgayTao = req.body.NgayTao;
-  //     const NgayCapNhat = req.body.NgayCapNhat;
-  //     if (!Ten || !NgayTao || !NgayCapNhat) {
-  //       return res.status(400).json({ message: 'Thiếu thông tin cần thiết trong yêu cầu' });
-  //     }
-  //     console.log('Request body:', req.body);
-  //     const colour = await Colour.create({ Ten, NgayTao, NgayCapNhat });
-  //     console.log('Colour created:', colour);
-  //     res.status(201).json(colour);
-  //   } catch (error) {
-  //     console.log(error);
-  //     res.status(500).json({ message: 'Lỗi nội bộ xảy ra trên server' });
-  //   }
-  // },
 
   // Cập nhật một thương hiệu
   updateCustomer: async (req: Request, res: Response) => {
     console.log("createColour called");
     try {
       const { id } = req.params;
-      console.log("id :", id);
-      const Ten = req.body?.Ten;
-      console.log(Ten)
-      const NgayTao = req.body?.NgayTao;
-      console.log(NgayTao)
-      const NgayCapNhat = req.body?.NgayCapNhat;
-      console.log(NgayCapNhat)
+      const UserName = req.body?.UserName;
+      const Password = req.body?.Password;
+      const HovaTen = req.body?.HovaTen;
+      const NgaySinh = req.body?.NgaySinh;
+      const GioiTinh = req.body?.GioiTinh;
+      const SoDienThoai = req.body?.SoDienThoai;
+      const Email = req.body?.Email;
+      const AnhDaiDien = req.body?.AnhDaiDien;
       const customer = await Customer.findByPk(id);
       if (customer) {
-        await customer.update({  });
+        await customer.update({UserName,Password,HovaTen,NgaySinh,GioiTinh,SoDienThoai,Email,AnhDaiDien});
         res.status(200).json(customer);
       } else {
         res.status(404).json({ message: "Dòng sản phầm không tìm thấy" });
@@ -120,7 +107,6 @@ const CustomerController = {
       res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
     }
   },
-  
 };
 
 export default CustomerController;

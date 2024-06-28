@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Voucher from '../models/Voucher';
+import CustomerVouchers from '../models/CustomerVouchers';
 
 const VoucherController = {  
 // Lấy danh sách tất cả các thương hiệu
@@ -13,15 +14,26 @@ const VoucherController = {
 },
 
 getVoucherById: async (req: Request, res: Response) => {
-  const { id } = req.params;
-
-  console.log("ma:", id); // In ra giá trị của ma để kiểm tra
+  
   try {
-    const voucher = await Voucher.findByPk(id);
-    if (voucher) {
-      res.status(200).json(voucher);
+    const { Voucher, KhachHang } = req.params;
+
+    // Tìm kiếm CustomerVoucher dựa trên Voucher và KhachHang
+    const customerVoucher = await CustomerVouchers.findOne({
+      where: {
+        Voucher,
+        KhachHang,
+      },
+    });
+
+    if (customerVoucher) {
+      // Trả về Voucher và KhachHang
+      res.status(200).json({
+        Voucher: customerVoucher.Voucher,
+        KhachHang: customerVoucher.KhachHang,
+      });
     } else {
-      res.status(404).json({ error: "Colour not found" });
+      res.status(404).json({ message: "Customer voucher không tồn tại" });
     }
   } catch (error) {
     res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
@@ -30,33 +42,96 @@ getVoucherById: async (req: Request, res: Response) => {
 
 
 // Tạo một thương hiệu mới
- createVoucher : async (req: Request, res: Response) => {
+createVoucher: async (req: Request, res: Response) => {
   try {
-    const { Ma,Ten } = req.body;
-    const voucher = await Voucher.create();
+    const {
+      Ma,
+      MoTa,
+      LoaiMucGiam,
+      MucGiam,
+      GiaTriDonHang,
+      MucGiamToiDa,
+      NgayBatDau,
+      NgayKetThuc,
+      SoLuong,
+      TrangThaiXoa,
+      HinhThucThanhToan,
+      TrangThai,
+      DoiTuongSuDung
+    } = req.body;
+
+    const voucher = await Voucher.create({
+      Ma,
+      MoTa,
+      LoaiMucGiam,
+      MucGiam,
+      GiaTriDonHang,
+      MucGiamToiDa,
+      NgayBatDau,
+      NgayKetThuc,
+      SoLuong,
+      TrangThaiXoa,
+      HinhThucThanhToan,
+      TrangThai,
+      DoiTuongSuDung
+    });
+
     res.status(201).json(voucher);
   } catch (error) {
-    res.status(500).json({ message: 'Lỗi nội bộ xảy ra trên server' });
+    console.log(error);
+    res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
   }
 },
+
 
 
 // Cập nhật một thương hiệu
- updateVoucher : async (req: Request, res: Response) => {
+updateVoucher: async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { Ten} = req.body;
+    const {
+      MoTa,
+      LoaiMucGiam,
+      MucGiam,
+      GiaTriDonHang,
+      MucGiamToiDa,
+      NgayBatDau,
+      NgayKetThuc,
+      SoLuong,
+      TrangThaiXoa,
+      HinhThucThanhToan,
+      TrangThai,
+      DoiTuongSuDung
+    } = req.body;
+
     const voucher = await Voucher.findByPk(id);
+
     if (voucher) {
-      await voucher.update({ });
+      await voucher.update({
+        MoTa,
+        LoaiMucGiam,
+        MucGiam,
+        GiaTriDonHang,
+        MucGiamToiDa,
+        NgayBatDau,
+        NgayKetThuc,
+        SoLuong,
+        TrangThaiXoa,
+        HinhThucThanhToan,
+        TrangThai,
+        DoiTuongSuDung
+      });
+
       res.status(200).json(voucher);
     } else {
-      res.status(404).json({ message: 'Dòng sản phầm không tìm thấy' });
+      res.status(404).json({ message: "Voucher không tìm thấy" });
     }
   } catch (error) {
-    res.status(500).json({ message: 'Lỗi nội bộ xảy ra trên server' });
+    console.log(error);
+    res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
   }
 },
+
 
 // Xóa một thương hiệu
  deleteVoucher : async (req: Request, res: Response) => {

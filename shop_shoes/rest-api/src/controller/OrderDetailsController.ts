@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import OrderDetails from "../models/OrderDetails";
+import ProductDetails from "../models/ProductDetails";
+import Order from "../models/Order";
 
 const OrderDetailsController = {
   getOrderDetails: async (req: Request, res: Response) => {
@@ -15,7 +17,6 @@ const OrderDetailsController = {
   //// lấy id
   getOrderDetailsById: async (req: Request, res: Response) => {
     const { id } = req.params;
-
     console.log("ma:", id); // In ra giá trị của ma để kiểm tra
     try {
       const colour = await OrderDetails.findByPk(id);
@@ -34,48 +35,37 @@ const OrderDetailsController = {
   createOrderDetails: async (req: Request, res: Response) => {
     try {
       // Kiểm tra và lấy dữ liệu từ body của yêu cầu
-      const Ten = req.body?.Ten;
-      console.log(Ten)
-      const NgayTao = new Date();
-      console.log(NgayTao)
-      const NgayCapNhat = new Date();
-      console.log(NgayCapNhat)
-      // Kiểm tra xem liệu có thiếu dữ liệu không
-      if (!Ten || !NgayTao || !NgayCapNhat) {
-        return res
-          .status(400)
-          .json({ message: "Thiếu thông tin cần thiết trong yêu cầu" });
-      }
+      const ChiTietSanPham = req.body?.ChiTietSanPham;
+      const DonHang = req.body?.DonHang;
+      const SoLuong = req.body?.SoLuong;
+      const DonGia = req.body?.DonGia;
+      const DonGiaSauGiam = req.body?.DonGiaSauGiam;
 
+
+      const oder = await Order.findByPk(DonHang);
+      
+      const productdetails = await ProductDetails.findByPk(ChiTietSanPham);
+    
+      
+      
       // Tạo màu mới trong cơ sở dữ liệu
-      const colour = await OrderDetails.create({  });
+      const oderdtails = await OrderDetails.create({
+        ChiTietSanPham: productdetails?.id,
+        DonHang: oder?.Ma,
+        SoLuong,
+        DonGia,
+        DonGiaSauGiam,
+      });
 
       // Trả về kết quả thành công
-      res.status(201).json(colour);
+      res.status(201).json(oderdtails);
     } catch (error) {
       // Xử lý lỗi nếu có lỗi xảy ra trong quá trình tạo màu
       console.error("Error creating colour:", error);
       res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
     }
   },
-  //  createColour : async (req: Request, res: Response) => {
-  //   console.log('createColour called');
-  //   try {
-  //     const Ten = req.body.Ten;
-  //     const NgayTao = req.body.NgayTao;
-  //     const NgayCapNhat = req.body.NgayCapNhat;
-  //     if (!Ten || !NgayTao || !NgayCapNhat) {
-  //       return res.status(400).json({ message: 'Thiếu thông tin cần thiết trong yêu cầu' });
-  //     }
-  //     console.log('Request body:', req.body);
-  //     const colour = await Colour.create({ Ten, NgayTao, NgayCapNhat });
-  //     console.log('Colour created:', colour);
-  //     res.status(201).json(colour);
-  //   } catch (error) {
-  //     console.log(error);
-  //     res.status(500).json({ message: 'Lỗi nội bộ xảy ra trên server' });
-  //   }
-  // },
+  
 
   // Cập nhật một thương hiệu
   updateOrderDetails: async (req: Request, res: Response) => {
@@ -83,15 +73,17 @@ const OrderDetailsController = {
     try {
       const { id } = req.params;
       console.log("id :", id);
-      const Ten = req.body?.Ten;
-      console.log(Ten)
-      const NgayTao = req.body?.NgayTao;
-      console.log(NgayTao)
-      const NgayCapNhat = req.body?.NgayCapNhat;
-      console.log(NgayCapNhat)
+      const ChiTietSanPham = req.body?.ChiTietSanPham;
+      const DonHang = req.body?.DonHang;
+      const SoLuong = req.body?.SoLuong;
+      const DonGia = req.body?.DonGia;
+      const DonGiaSauGiam = req.body?.DonGiaSauGiam;
+
       const colour = await OrderDetails.findByPk(id);
       if (colour) {
-        await colour.update({  });
+        await colour.update({ ChiTietSanPham,DonHang
+          ,SoLuong,DonGia,DonGiaSauGiam
+         });
         res.status(200).json(colour);
       } else {
         res.status(404).json({ message: "Dòng sản phầm không tìm thấy" });

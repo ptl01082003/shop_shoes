@@ -34,7 +34,7 @@ OrderDetails.init(
   {
     id: {
       type: DataTypes.STRING(255),
-      // Sử dụng UUID cho id
+      defaultValue:DataTypes.UUIDV4,
       primaryKey: true,
       field: "id",
     },

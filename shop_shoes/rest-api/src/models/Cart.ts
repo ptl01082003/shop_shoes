@@ -8,7 +8,7 @@ interface CartAttributes {
   id: string;
   ChiTietSanPham?: string;
   KhachHang?: string;
-  soluong?: number;
+  SoLuong?: number;
 
 }
 
@@ -22,7 +22,7 @@ class Cart
     id!: string;
     ChiTietSanPham?: string;
     KhachHang?: string;
-    soluong?: number;
+    SoLuong?: number;
   
 }
 
@@ -30,7 +30,7 @@ Cart.init(
   {
     id: {
       type: DataTypes.STRING(36),
-     
+      defaultValue : DataTypes.UUIDV4,
       primaryKey: true,
       field: "id",
     },
@@ -44,7 +44,7 @@ Cart.init(
       allowNull: true,
       field: "KhachHang",
     },
-    soluong: {
+    SoLuong: {
       type: DataTypes.INTEGER,
       allowNull: true,
       field: "soluong",

@@ -38,32 +38,33 @@ export function appRouter() {
 
   // Parse application/x-www-form-urlencoded
   app.use(bodyParser.urlencoded({ extended: true }));
-  /////////////////////////////
-  router.use("/image",ImageRouter);
-  router.use("/promotion-product",PromotionProductRouter);
-  router.use("/promotion",PromotionRouter);
+  /////////////////////////////\
+
+  router.use("/anh",ImageRouter);
+  router.use("/khuyenmai-sanpham",PromotionProductRouter);
+  router.use("/khuyen-mai",PromotionRouter);
   router.use("/size",SizeRouter);
-  router.use("/comment",CommentRouter);
-  router.use("/order-details",OrderDetailsRouter);
-  router.use("/product-details",ProductDetailsRouter);
-  router.use("/order",OrderRouter);
-  router.use("/cart",CartRouter);
-  router.use("/favorite-List",FavoriteListRouter);
-  router.use("/address",AddressRouter);
-  router.use("/customer-Vouchers",CustomerVouchersRouter);
-  router.use("/customer", CustomerRouter);
+  router.use("/nhan-xet",CommentRouter);
+  router.use("/donhang-chitiet",OrderDetailsRouter);
+  router.use("/sanpham-chitiet",ProductDetailsRouter);
+  router.use("/don-hang",OrderRouter);
+  router.use("/gio-hang",CartRouter);
+  router.use("/ds-yeuthich",FavoriteListRouter);
+  router.use("/dia-chi",AddressRouter);
+  router.use("/voucher-khachhang",CustomerVouchersRouter);
+  router.use("/khach-hang", CustomerRouter);
   router.use("/voucher", VoucherRouter);
-  router.use("/receipt-Notification", ReceiptNotificationRouter);
-  router.use("/role", RoleRouter);
-  router.use("/staff", StaffRouter);
-  router.use("/announcement", AnnouncementRouter);
-  router.use("/origin", OriginRouter);
-  router.use("/material", MaterialRouter);
-  router.use("/style", StyleRouter);
-  router.use("/colour", ColourRouter);
-  router.use("/productline", ProductLineRouter);
-  router.use("/trademark", TrademarkRouter);
-  router.use("/product", ProductRouter);
+  router.use("/thongbao-nhan", ReceiptNotificationRouter);
+  router.use("/vai-tro", RoleRouter);
+  router.use("/nhan-vien", StaffRouter);
+  router.use("/thong-bao", AnnouncementRouter);
+  router.use("/xuat-xu", OriginRouter);
+  router.use("/chat-lieu", MaterialRouter);
+  router.use("/kieu-dang", StyleRouter);
+  router.use("/mau-sac", ColourRouter);
+  router.use("/dong-sp", ProductLineRouter);
+  router.use("/thuong-hieu", TrademarkRouter);
+  router.use("/san-pham", ProductRouter);
   router.use(checkAuth);
   router.use("/uploads", uploadRouter);
 

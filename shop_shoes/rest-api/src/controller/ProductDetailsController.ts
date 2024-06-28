@@ -1,5 +1,8 @@
 import { Request, Response } from "express";
 import ProductDetails from "../models/ProductDetails";
+import { Product } from "../models/Product";
+import Size from "../models/Size";
+import OrderDetails from "../models/OrderDetails";
 
 const ProductDetailsController = {
   getProductDetails: async (req: Request, res: Response) => {
@@ -34,67 +37,61 @@ const ProductDetailsController = {
   createProductDetails: async (req: Request, res: Response) => {
     try {
       // Kiểm tra và lấy dữ liệu từ body của yêu cầu
-      const Ten = req.body?.Ten;
-      console.log(Ten)
+      const SanPham = req.body?.SanPham;
+      const Sizeid = req.body?.Size;
+      console.log(Sizeid);
+      const SoLuong = req.body?.SoLuong;
+      const TrangThai = req.body?.TrangThai;
       const NgayTao = new Date();
-      console.log(NgayTao)
-      const NgayCapNhat = new Date();
-      console.log(NgayCapNhat)
-      // Kiểm tra xem liệu có thiếu dữ liệu không
-      if (!Ten || !NgayTao || !NgayCapNhat) {
-        return res
-          .status(400)
-          .json({ message: "Thiếu thông tin cần thiết trong yêu cầu" });
-      }
+      const NgayCapNhap = new Date();
+
+      const sanpham = await Product.findByPk(SanPham);
+
+      const size = await Size.findByPk(Sizeid);
+      console.log(size);
 
       // Tạo màu mới trong cơ sở dữ liệu
-      const colour = await ProductDetails.create({ });
+      const oderdtails = await ProductDetails.create({
+        SanPham: sanpham?.id,
+        Size: size?.Ma,
+        SoLuong,
+        TrangThai,
+        NgayTao,
+        NgayCapNhap,
+      });
 
       // Trả về kết quả thành công
-      res.status(201).json(colour);
+      res.status(201).json(oderdtails);
     } catch (error) {
       // Xử lý lỗi nếu có lỗi xảy ra trong quá trình tạo màu
       console.error("Error creating colour:", error);
       res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
     }
   },
-  //  createColour : async (req: Request, res: Response) => {
-  //   console.log('createColour called');
-  //   try {
-  //     const Ten = req.body.Ten;
-  //     const NgayTao = req.body.NgayTao;
-  //     const NgayCapNhat = req.body.NgayCapNhat;
-  //     if (!Ten || !NgayTao || !NgayCapNhat) {
-  //       return res.status(400).json({ message: 'Thiếu thông tin cần thiết trong yêu cầu' });
-  //     }
-  //     console.log('Request body:', req.body);
-  //     const colour = await Colour.create({ Ten, NgayTao, NgayCapNhat });
-  //     console.log('Colour created:', colour);
-  //     res.status(201).json(colour);
-  //   } catch (error) {
-  //     console.log(error);
-  //     res.status(500).json({ message: 'Lỗi nội bộ xảy ra trên server' });
-  //   }
-  // },
 
   // Cập nhật một thương hiệu
   updateProductDetails: async (req: Request, res: Response) => {
-    console.log("create Colour called");
+    console.log("updateProductDetails called");
     try {
       const { id } = req.params;
       console.log("id :", id);
-      const Ten = req.body?.Ten;
-      console.log(Ten)
-      const NgayTao = req.body?.NgayTao;
-      console.log(NgayTao)
-      const NgayCapNhat = req.body?.NgayCapNhat;
-      console.log(NgayCapNhat)
-      const colour = await ProductDetails.findByPk(id);
-      if (colour) {
-        await colour.update({ });
-        res.status(200).json(colour);
+      
+      const { SanPham, Size, SoLuong, TrangThai, NgayTao, NgayCapNhap } = req.body;
+  
+      const productDetails = await ProductDetails.findByPk(id);
+  
+      if (productDetails) {
+        await productDetails.update({
+          SanPham,
+          Size: Size, // Corrected typo
+          SoLuong,
+          TrangThai,
+          NgayTao,
+          NgayCapNhap,
+        });
+        res.status(200).json(productDetails);
       } else {
-        res.status(404).json({ message: "Dòng sản phầm không tìm thấy" });
+        res.status(404).json({ message: "Dòng sản phẩm không tìm thấy" });
       }
     } catch (error) {
       console.log(error);
@@ -120,7 +117,6 @@ const ProductDetailsController = {
       res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
     }
   },
-  
 };
 
 export default ProductDetailsController;
