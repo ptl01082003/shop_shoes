@@ -1,8 +1,5 @@
-rest_api/node_modules
-rest_api/.env
+shop_shoes/dashboard/node_modules
 
-frontend/node_modules
-frontend/.env
+shop_shoes/frontend/node_modules
 
-
-dashboard/node_modules
+shop_shoes/rest-api/node_modules
