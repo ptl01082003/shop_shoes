@@ -3,8 +3,9 @@ import { NextFunction, Request, Response } from "express";
 import querystring from "querystring";
 import crypto from "crypto";
 import moment from "moment";
+import axios from "axios";
 
-const VnpayController = {
+const PaymentOnlineController = {
   order: async (req: Request, res: Response, next: NextFunction) => {
     try {
       process.env.TZ = "Asia/Ho_Chi_Minh";
@@ -64,12 +65,66 @@ const VnpayController = {
         process.env["vnp_HashSecret"] as string
       );
       var signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
-      //kiểm tra tính toàn vẹn dữ liệu của giao dịch , sử dụng các tham số trên url trả về 
-      //thực hiện tuần tự các bước như yêu cầu thanh toán và check với mã băm trả về 
+      //kiểm tra tính toàn vẹn dữ liệu của giao dịch , sử dụng các tham số trên url trả về
+      //thực hiện tuần tự các bước như yêu cầu thanh toán và check với mã băm trả về
       if (secureHash === signed) {
       } else {
-          //check đơn hàng tại đây và lưu vào database
+        //check đơn hàng tại đây và lưu vào database
       }
+    } catch (error) {
+      next(error);
+    }
+  },
+  momo: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
+      const partnerCode = "MOMO";
+      const accessKey = "F8BBA842ECF85";
+      const secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
+      const requestId = partnerCode + new Date().getTime();
+      const orderId = requestId;
+      const orderInfo = "Thanh toán đơn hàng test";
+      const redirectUrl = "https://yourdomain.com/return";
+      const ipnUrl = "https://yourdomain.com/notify";
+      const amount = "10000";
+      const requestType = "payWithATM";
+      const extraData = "";
+      // Chuẩn bị data để ký
+      const rawSignature = `accessKey=${accessKey}&amount=${amount}&extraData=${extraData}&ipnUrl=${ipnUrl}&orderId=${orderId}&orderInfo=${orderInfo}&partnerCode=${partnerCode}&redirectUrl=${redirectUrl}&requestId=${requestId}&requestType=${requestType}`;
+
+      // Tạo chữ ký
+      const signature = crypto
+        .createHmac("sha256", secretKey)
+        .update(rawSignature)
+        .digest("hex");
+
+      // Dữ liệu gửi đi
+      const requestBody = {
+        partnerCode: partnerCode,
+        accessKey: accessKey,
+        requestId: requestId,
+        amount: amount,
+        orderId: orderId,
+        orderInfo: orderInfo,
+        redirectUrl: redirectUrl,
+        ipnUrl: ipnUrl,
+        extraData: extraData,
+        requestType: requestType,
+        signature: signature,
+        lang: "vi",
+      };
+
+      // Gửi yêu cầu thanh toán đến MoMo
+      axios
+        .post(endpoint, requestBody)
+        .then((response) => {
+          console.log(response.data);
+          // Xử lý response, ví dụ như redirect người dùng đến MoMo payment URL
+          res.redirect(response.data.payUrl);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     } catch (error) {
       next(error);
     }
@@ -85,4 +140,4 @@ function sortObject(obj: any) {
   return sorted;
 }
 
-export default VnpayController;
+export default PaymentOnlineController;
