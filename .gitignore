@@ -1,5 +1,1 @@
-shop_shoes/dashboard/node_modules
-
-shop_shoes/frontend/node_modules
-
-shop_shoes/rest-api/node_modules
+**/node_modules/

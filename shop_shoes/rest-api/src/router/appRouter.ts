@@ -11,10 +11,14 @@ import routerColor from "./ColorsRouter";
 import routerStyle from "./StylesRouter";
 import routerMaterial from "./MaterialsRouter";
 import routerOrigin from "./OriginsRouter";
+import vnpayRouter from "./VnpayRouter";
 
 const router = express.Router();
 
 export function appRouter() {
+  
+  router.use("/payment-orders", vnpayRouter)
+
   router.use("/auth", routerAuth);
 
   // router.use("/uploads", uploadRouter);
