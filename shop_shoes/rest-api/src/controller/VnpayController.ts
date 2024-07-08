@@ -23,8 +23,9 @@ const VnpayController = {
       vnp_Params["vnp_TxnRef"] = orderId;
       vnp_Params["vnp_TmnCode"] = process.env["vnp_TmnCode"];
       vnp_Params["vnp_OrderInfo"] = "tuyendev";
+      vnp_Params["vnp_BankCode"] = "NCB";
       vnp_Params["vnp_OrderType"] = "other";
-      vnp_Params["vnp_Amount"] = 200 * 100;
+      vnp_Params["vnp_Amount"] = 1000000 * 100;
       vnp_Params["vnp_ReturnUrl"] = process.env["vnp_ReturnUrl"];
       vnp_Params["vnp_IpAddr"] = ipAddr;
       vnp_Params["vnp_CreateDate"] = createDate;
@@ -40,8 +41,35 @@ const VnpayController = {
       vnp_Params["vnp_SecureHash"] = signed;
       const vnpUrlWithParams =
         process.env["vnp_Url"] + "?" + querystring.stringify(vnp_Params);
-      console.log("vnpUrlWithParams", vnpUrlWithParams);
       res.redirect(vnpUrlWithParams);
+    } catch (error) {
+      next(error);
+    }
+  },
+  checkout: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      let vnp_Params: any = req.query;
+
+      const secureHash = vnp_Params["vnp_SecureHash"];
+
+      delete vnp_Params["vnp_SecureHash"];
+      delete vnp_Params["vnp_ResponseCode"];
+      delete vnp_Params["vnp_TransactionStatus"];
+
+      vnp_Params = sortObject(vnp_Params);
+
+      var signData = querystring.stringify(vnp_Params);
+      var hmac = crypto.createHmac(
+        "sha512",
+        process.env["vnp_HashSecret"] as string
+      );
+      var signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
+      //kiểm tra tính toàn vẹn dữ liệu của giao dịch , sử dụng các tham số trên url trả về 
+      //thực hiện tuần tự các bước như yêu cầu thanh toán và check với mã băm trả về 
+      if (secureHash === signed) {
+      } else {
+          //check đơn hàng tại đây và lưu vào database
+      }
     } catch (error) {
       next(error);
     }
