@@ -18,6 +18,7 @@ import routerSizeColor from "./SizeColorRouter";
 import routerProductDetail from "./ProductDetailsRouter";
 // =======
 import PaymentOnlineRouter from "./PaymentOnlineRouter";
+import routerImage from "./ImagesRouter";
 // >>>>>>> 005a7aac0d39b7c54e22149b51747d4fbe8822a8
 
 const router = express.Router();
@@ -35,17 +36,16 @@ export function appRouter() {
   // router.use("/uploads", uploadRouter);
   router.use("/brand", routerBrands);
   router.use("/product-line", routerProductLine);
-  // router.use("/product-colors", routerProductColors);
   router.use("/product", routerProduct);
   router.use("/color", routerColor);
   router.use("/style", routerStyle);
   router.use("/material", routerMaterial);
   router.use("/origin", routerOrigin);
-  // router.use("/product-color", routerProductColors);
-  // router.use("/product-size", routerProductSize);
   router.use("/size", routerSize);
   router.use("/size-color", routerSizeColor);
   router.use("/product-detail", routerProductDetail);
+  router.use("/image", routerImage);
+
   //PRIVATE ROUTER
 
   app.use(`/api/${process.env.API_VERSION}`, router);

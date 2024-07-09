@@ -1,7 +1,5 @@
 import path from "path";
 import { Sequelize } from "sequelize-typescript";
-import { Colors } from "../models/Colors";
-import { Product } from "../models/Product";
 
 export async function connectDB() {
   const sequelize = new Sequelize({
@@ -14,7 +12,7 @@ export async function connectDB() {
     models: [path.resolve("./src/models")],
   });
   await sequelize.authenticate();
-  await sequelize.sync({ force: false });
+  await sequelize.sync({ force: true });
   // const a = await Product.findOne({
   //   where: { productID: 7 },
   //   include: [
