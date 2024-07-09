@@ -10,23 +10,24 @@ import {
 } from "sequelize-typescript";
 import { Product } from "./Product";
 import { Colors } from "./Colors";
+import { Sizes } from "./Sizes";
 
 @Table({
-  tableName: "product_colors",
-  modelName: "ProductColors",
+  tableName: "size_color",
+  modelName: "SizeColor",
   timestamps: true,
 })
-export class ProductColors extends Model {
-  @ForeignKey(() => Product)
+export class SizeColor extends Model {
+  @ForeignKey(() => Sizes)
   @Column
-  public productID!: number;
+  public sizeID!: number;
 
   @ForeignKey(() => Colors)
   @Column
   public colorID!: number;
 
-  @BelongsTo(() => Product)
-  public product!: Product;
+  @BelongsTo(() => Sizes)
+  public size!: Sizes;
 
   @BelongsTo(() => Colors)
   public color!: Colors;

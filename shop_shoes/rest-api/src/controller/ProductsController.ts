@@ -74,6 +74,7 @@ const ProductsController = {
       const products = await Product.findAll({ where: whereClause });
       res.json({ data: products });
     } catch (error) {
+      console.log(error);
       next(error);
     }
   },
@@ -88,6 +89,7 @@ const ProductsController = {
         res.status(404).json({ message: "Product not found" });
       }
     } catch (error) {
+      console.log(error);
       next(error);
     }
   },
@@ -132,6 +134,7 @@ const ProductsController = {
         res.status(404).json({ message: "Product not found" });
       }
     } catch (error) {
+      console.log(error);
       next(error);
     }
   },
@@ -147,6 +150,7 @@ const ProductsController = {
         res.status(404).json({ message: "Product not found" });
       }
     } catch (error) {
+      console.log(error);
       next(error);
     }
   },

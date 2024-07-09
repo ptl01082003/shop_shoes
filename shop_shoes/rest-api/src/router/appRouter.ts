@@ -6,31 +6,37 @@ import { checkAuth } from "../middleware/checkAuth";
 import routerAuth from "./AuthRouter";
 import routerBrands from "./BrandsRouter";
 import routerProductLine from "./ProductLinesRouter";
-import routerProductColors from "./ProductLine";
 import routerColor from "./ColorsRouter";
 import routerStyle from "./StylesRouter";
 import routerMaterial from "./MaterialsRouter";
 import routerOrigin from "./OriginsRouter";
 import vnpayRouter from "./VnpayRouter";
+import routerProduct from "./ProductsRouter";
+import routerSize from "./SizeRouter";
+import routerSizeColor from "./SizeColorRouter";
+import routerProductDetail from "./ProductDetailsRouter";
 
 const router = express.Router();
 
 export function appRouter() {
-  
-  router.use("/payment-orders", vnpayRouter)
+  router.use("/payment-orders", vnpayRouter);
 
   router.use("/auth", routerAuth);
 
   // router.use("/uploads", uploadRouter);
-  router.use("/brands", routerBrands);
+  router.use("/brand", routerBrands);
   router.use("/product-line", routerProductLine);
-  router.use("/product-colors", routerProductColors);
-  router.use("/product", routerProductColors);
+  // router.use("/product-colors", routerProductColors);
+  router.use("/product", routerProduct);
   router.use("/color", routerColor);
   router.use("/style", routerStyle);
   router.use("/material", routerMaterial);
   router.use("/origin", routerOrigin);
-  router.use("/product-color", routerProductColors);
+  // router.use("/product-color", routerProductColors);
+  // router.use("/product-size", routerProductSize);
+  router.use("/size", routerSize);
+  router.use("/size-color", routerSizeColor);
+  router.use("/product-detail", routerProductDetail);
   //PRIVATE ROUTER
 
   app.use(`/api/${process.env.API_VERSION}`, router);

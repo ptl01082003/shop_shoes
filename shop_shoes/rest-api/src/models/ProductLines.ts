@@ -9,7 +9,7 @@ import {
   PrimaryKey,
   Table,
 } from "sequelize-typescript";
-import { ProductColors } from "./ProductColors";
+
 import { Colors } from "./Colors";
 import { Brands } from "./Brands";
 
