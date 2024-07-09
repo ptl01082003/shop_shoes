@@ -10,16 +10,25 @@ import routerColor from "./ColorsRouter";
 import routerStyle from "./StylesRouter";
 import routerMaterial from "./MaterialsRouter";
 import routerOrigin from "./OriginsRouter";
-import vnpayRouter from "./VnpayRouter";
+// <<<<<<< HEAD
+// import vnpayRouter from "./VnpayRouter";
 import routerProduct from "./ProductsRouter";
 import routerSize from "./SizeRouter";
 import routerSizeColor from "./SizeColorRouter";
 import routerProductDetail from "./ProductDetailsRouter";
+// =======
+import PaymentOnlineRouter from "./PaymentOnlineRouter";
+// >>>>>>> 005a7aac0d39b7c54e22149b51747d4fbe8822a8
 
 const router = express.Router();
 
 export function appRouter() {
-  router.use("/payment-orders", vnpayRouter);
+  // <<<<<<< HEAD
+  //   router.use("/payment-orders", vnpayRouter);
+  // =======
+
+  //   router.use("/payment-orders", PaymentOnlineRouter)
+  // >>>>>>> 005a7aac0d39b7c54e22149b51747d4fbe8822a8
 
   router.use("/auth", routerAuth);
 
