@@ -19,6 +19,8 @@ import routerProductDetail from "./ProductDetailsRouter";
 // =======
 import PaymentOnlineRouter from "./PaymentOnlineRouter";
 import routerImage from "./ImagesRouter";
+import routerPromotions from "./PromotionsRouter";
+import routerProductPromotion from "./ProductPromotionRouter";
 // >>>>>>> 005a7aac0d39b7c54e22149b51747d4fbe8822a8
 
 const router = express.Router();
@@ -45,7 +47,8 @@ export function appRouter() {
   router.use("/size-color", routerSizeColor);
   router.use("/product-detail", routerProductDetail);
   router.use("/image", routerImage);
-
+  router.use("/promotion", routerPromotions);
+  router.use("/product-promotion", routerProductPromotion);
   //PRIVATE ROUTER
 
   app.use(`/api/${process.env.API_VERSION}`, router);

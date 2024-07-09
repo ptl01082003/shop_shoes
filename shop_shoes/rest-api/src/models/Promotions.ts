@@ -1,6 +1,7 @@
 import {
   AutoIncrement,
   Column,
+  DataType,
   Model,
   PrimaryKey,
   Table,
@@ -20,6 +21,15 @@ export class Promotions extends Model {
   @Column
   public promotionName!: string;
 
+  @Column(DataType.DOUBLE)
+  public promotionDiscount!: number;
+
   @Column
-  public promotion!: string;
+  public startDay!: Date;
+
+  @Column
+  public endDay!: Date;
+
+  @Column
+  public status!: boolean;
 }

@@ -8,7 +8,8 @@ class Redis {
       this.redis = createClient();
       await this.redis.connect();
       console.log("create new a connection to redis server");
-      console.log(test);
+      // const test = await this.redis.get("test");
+      // console.log(test);
     } catch (error) {
       console.log("error connecting to redis server:: ", error);
     }
