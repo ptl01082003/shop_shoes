@@ -10,10 +10,8 @@ import {
   PrimaryKey,
   Table,
 } from "sequelize-typescript";
-import { ProductColors } from "./ProductColors";
-import { Colors } from "./Colors";
 import { Sizes } from "./Sizes";
-import { ProductSizes } from "./ProductSizes";
+
 import { ProductLines } from "./ProductLines";
 import { Styles } from "./Styles";
 import { Origins } from "./Origins";
@@ -32,9 +30,6 @@ export class Product extends Model {
 
   @Column
   public productName!: string;
-
-  @Column
-  public productNumber?: number;
 
   @Column(DataType.DECIMAL(16, 2))
   public productImportPrice!: number;
@@ -79,6 +74,6 @@ export class Product extends Model {
   // @BelongsToMany(() => Colors, () => ProductColors)
   // public colors!: Colors[];
 
-  @BelongsToMany(() => Sizes, () => ProductSizes)
-  public size!: Sizes[];
+  // @BelongsToMany(() => Sizes, () => ProductSizes)
+  // public size!: Sizes[];
 }
