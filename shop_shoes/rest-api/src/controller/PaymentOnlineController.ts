@@ -23,7 +23,7 @@ const PaymentOnlineController = {
       vnp_Params["vnp_CurrCode"] = "VND";
       vnp_Params["vnp_TxnRef"] = orderId;
       vnp_Params["vnp_TmnCode"] = process.env["vnp_TmnCode"];
-      vnp_Params["vnp_OrderInfo"] = "tuyendev";
+      vnp_Params["vnp_OrderInfo"] = "test 123";
       vnp_Params["vnp_BankCode"] = "NCB";
       vnp_Params["vnp_OrderType"] = "other";
       vnp_Params["vnp_Amount"] = 1000000 * 100;
@@ -54,8 +54,6 @@ const PaymentOnlineController = {
       const secureHash = vnp_Params["vnp_SecureHash"];
 
       delete vnp_Params["vnp_SecureHash"];
-      delete vnp_Params["vnp_ResponseCode"];
-      delete vnp_Params["vnp_TransactionStatus"];
 
       vnp_Params = sortObject(vnp_Params);
 
@@ -65,6 +63,7 @@ const PaymentOnlineController = {
         process.env["vnp_HashSecret"] as string
       );
       var signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
+      res.json({check: signed === secureHash})
       //kiểm tra tính toàn vẹn dữ liệu của giao dịch , sử dụng các tham số trên url trả về
       //thực hiện tuần tự các bước như yêu cầu thanh toán và check với mã băm trả về
       if (secureHash === signed) {

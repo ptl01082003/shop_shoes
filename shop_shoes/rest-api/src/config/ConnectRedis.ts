@@ -7,6 +7,8 @@ class Redis {
     try {
       this.redis = createClient();
       await this.redis.connect();
+      console.log("create new a connection to redis server");
+      this.redis.set("tuyen", "hehe")
     } catch (error) {
       console.log("error connecting to redis server:: ", error);
     }

@@ -18,9 +18,9 @@ app.use(
 
 app.use("/public", express.static("public"));
 
-// redis.initial();
+redis.initial();
 
-// connectDB();
+  connectDB();
 
 //PUBLIC ROUTER
 app.use(bodyParser.json());
