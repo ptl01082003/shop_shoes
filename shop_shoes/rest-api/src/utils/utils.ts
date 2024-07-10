@@ -9,3 +9,14 @@ export function generateUniqueUserId() {
   const userId = min + (randomNumber % min);
   return userId;
 }
+
+
+export function genaratorProductsId() {
+  const min = 100000;
+  const randomNumber = parseInt(
+    crypto.lib.WordArray.random(4).toString(crypto.enc.Hex),
+    16
+  );
+  const productsId = min + (randomNumber % min);
+  return productsId;
+}

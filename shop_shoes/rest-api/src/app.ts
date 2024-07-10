@@ -6,6 +6,24 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { connectDB } from "./config/ConnectDB";
 import { redis } from "./config/ConnectRedis";
+import { Send } from "express-serve-static-core";
+declare global {
+  namespace Express {
+    interface Request {
+      userId?: number;
+    }
+    interface Response {
+      json: Send<
+        {
+          code: number;
+          data: any;
+          message: string;
+        },
+        this
+      >;
+    }
+  }
+}
 
 export const app = express();
 
@@ -20,7 +38,7 @@ app.use("/public", express.static("public"));
 
 redis.initial();
 
-  connectDB();
+connectDB();
 
 //PUBLIC ROUTER
 app.use(bodyParser.json());

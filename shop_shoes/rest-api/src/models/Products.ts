@@ -1,11 +1,10 @@
 import {
   AutoIncrement,
+  BeforeCreate,
   BelongsTo,
-  BelongsToMany,
   Column,
   DataType,
   ForeignKey,
-  HasMany,
   Model,
   PrimaryKey,
   Table,
@@ -16,6 +15,7 @@ import { Styles } from "./Styles";
 import { Origins } from "./Origins";
 import { Materials } from "./Materials";
 import { Colors } from "./Colors";
+import { genaratorProductsId } from "../utils/utils";
 
 @Table({
   tableName: "products",
@@ -24,7 +24,6 @@ import { Colors } from "./Colors";
 })
 export class Products extends Model {
   @PrimaryKey
-  @AutoIncrement
   @Column
   public productsID!: number;
 
@@ -77,4 +76,9 @@ export class Products extends Model {
 
   @BelongsTo(() => Colors)
   public color?: Colors;
+
+  @BeforeCreate
+  static genaratorUserId(instance: Products) {
+    instance.productsID = genaratorProductsId();
+  }
 }

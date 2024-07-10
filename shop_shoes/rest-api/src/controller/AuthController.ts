@@ -1,10 +1,7 @@
 import bcrypt from "bcrypt";
+import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { Request, Response, NextFunction } from "express";
-import { Roles } from "../models/Roles";
 import { Users } from "../models/Users";
-import { redis } from "../config/ConnectRedis";
-// import client from "../config/ConnectRedis";
 
 let arrSecret: any[] = [];
 
