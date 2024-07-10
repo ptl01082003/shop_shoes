@@ -7,7 +7,7 @@ import {
   PrimaryKey,
   Table,
 } from "sequelize-typescript";
-import { Product } from "./Products";
+import { Products } from "./Products";
 
 @Table({
   tableName: "images",
@@ -23,10 +23,10 @@ export class Images extends Model {
   @Column
   public imagePath!: string;
 
-  @ForeignKey(() => Product)
+  @ForeignKey(() => Products)
   @Column
   public productID?: number;
 
-  @BelongsTo(() => Product)
-  public product?: Product;
+  @BelongsTo(() => Products)
+  public product?: Products;
 }

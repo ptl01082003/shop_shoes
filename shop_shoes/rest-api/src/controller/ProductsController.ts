@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { Op } from "sequelize";
-import { Product } from "../models/Products";
+import { Products } from "../models/Products";
 
 const ProductsController = {
   addProduct: async (req: Request, res: Response, next: NextFunction) => {
@@ -36,7 +36,7 @@ const ProductsController = {
         return res.status(400).json({ message: "Missing required fields" });
       }
 
-      const product = await Product.create({
+      const product = await Products.create({
         productName,
         productNumber,
         productImportPrice,
@@ -71,7 +71,7 @@ const ProductsController = {
         whereClause.productLineID = productLineID;
       }
 
-      const products = await Product.findAll({ where: whereClause });
+      const products = await Products.findAll({ where: whereClause });
       res.json({ data: products });
     } catch (error) {
       console.log(error);
@@ -82,7 +82,7 @@ const ProductsController = {
   getProductById: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const product = await Product.findByPk(id);
+      const product = await Products.findByPk(id);
       if (product) {
         res.json({ data: product });
       } else {
@@ -115,7 +115,7 @@ const ProductsController = {
         return res.status(400).json({ message: "Missing required fields" });
       }
 
-      const product = await Product.findByPk(id);
+      const product = await Products.findByPk(id);
       if (product) {
         await product.update({
           productName,
@@ -142,7 +142,7 @@ const ProductsController = {
   deleteProduct: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const product = await Product.findByPk(id);
+      const product = await Products.findByPk(id);
       if (product) {
         await product.destroy();
         res.json({ message: "Product deleted successfully" });

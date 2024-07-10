@@ -21,7 +21,7 @@ const ProductDetailsController = {
 
       const sizeColorEntries = sizeColors.map((entry: any) => ({
         ...entry,
-        productDetailID: productDetail.pDetailID,
+        productDetailID: productDetail.productID,
       }));
 
       await SizeColor.bulkCreate(sizeColorEntries);

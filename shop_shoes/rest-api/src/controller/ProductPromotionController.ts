@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { ProductPromotion } from "../models/ProductPromotion";
-import { Product } from "../models/Products";
+import { Products } from "../models/Products";
 import { Promotions } from "../models/Promotions";
 
 const ProductPromotionController = {
@@ -18,7 +18,7 @@ const ProductPromotionController = {
       }
 
       // Kiểm tra sự tồn tại của Product và Promotions
-      const product = await Product.findByPk(productID);
+      const product = await Products.findByPk(productID);
       const promotion = await Promotions.findByPk(promotionID);
 
       if (!product || !promotion) {
@@ -49,7 +49,7 @@ const ProductPromotionController = {
   ) => {
     try {
       const productPromotions = await ProductPromotion.findAll({
-        include: [Product, Promotions],
+        include: [Products, Promotions],
       });
       res.json({ data: productPromotions });
     } catch (error) {
@@ -67,7 +67,7 @@ const ProductPromotionController = {
       const { productID, promotionID } = req.params;
       const productPromotion = await ProductPromotion.findOne({
         where: { productID, promotionID },
-        include: [Product, Promotions],
+        include: [Products, Promotions],
       });
       if (productPromotion) {
         res.json({ data: productPromotion });

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { Images } from "../models/Images";
-import { Product } from "../models/Products";
+import { Products } from "../models/Products";
 import { Op } from "sequelize";
 
 const ImagesController = {
@@ -37,7 +37,7 @@ const ImagesController = {
       // Find all images with optional Product association
       const images = await Images.findAll({
         where: whereClause,
-        include: [Product],
+        include: [Products],
       });
 
       res.json({ data: images });
@@ -50,7 +50,7 @@ const ImagesController = {
   getImageById: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const image = await Images.findByPk(id, { include: [Product] });
+      const image = await Images.findByPk(id, { include: [Products] });
       if (image) {
         res.json({ data: image });
       } else {

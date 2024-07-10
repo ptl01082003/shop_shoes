@@ -7,7 +7,7 @@ import {
   PrimaryKey,
   Table,
 } from "sequelize-typescript";
-import { Product } from "./Products";
+import { Products } from "./Products";
 import { Promotions } from "./Promotions";
 
 @Table({
@@ -16,7 +16,7 @@ import { Promotions } from "./Promotions";
   timestamps: true,
 })
 export class ProductPromotion extends Model {
-  @ForeignKey(() => Product)
+  @ForeignKey(() => Products)
   @Column
   public productID!: number;
 
@@ -24,8 +24,8 @@ export class ProductPromotion extends Model {
   @Column
   public promotionID!: number;
 
-  @BelongsTo(() => Product)
-  public product!: Product;
+  @BelongsTo(() => Products)
+  public product!: Products;
 
   @BelongsTo(() => Promotions)
   public promotion!: Promotions;
