@@ -1,7 +1,6 @@
 import express from "express";
 import { app } from "../app";
 import { checkAuth } from "../middleware/checkAuth";
-import { decodeToken } from "../middleware/decodeToken";
 import routerAuth from "./AuthRouter";
 import routerBrands from "./BrandsRouter";
 import routerColor from "./ColorsRouter";
@@ -20,19 +19,15 @@ import cartsRouter from "./CartsRouter";
 const router = express.Router();
 
 export function appRouter() {
-
   router.use("/auth", routerAuth);
 
-  // Private router 
-
   router.use(checkAuth);
-  router.use(decodeToken);
 
   router.use("/carts", cartsRouter);
 
   router.use("/brand", routerBrands);
   router.use("/product-line", routerProductLine);
-  router.use("/product", routerProduct);
+  router.use("/products", routerProduct);
   router.use("/color", routerColor);
   router.use("/style", routerStyle);
   router.use("/material", routerMaterial);
