@@ -24,6 +24,9 @@ import routerProductPromotion from "./ProductPromotionRouter";
 import routerCustomers from "./CustomersRouter";
 import routerAddress from "./AddressRouter";
 import routerFavoritesList from "./FavoritesListRouter";
+import routerVoucher from "./VoucherRouter";
+import routerVoucherCustomers from "./VoucherCustomer";
+import routerCarts from "./CartsRouter";
 // >>>>>>> 005a7aac0d39b7c54e22149b51747d4fbe8822a8
 
 const router = express.Router();
@@ -54,6 +57,11 @@ export function appRouter() {
   router.use("/customer", routerCustomers);
   router.use("/address", routerAddress);
   router.use("/favorite-list", routerFavoritesList);
+  router.use("/voucher", routerVoucher);
+  router.use("/voucher-customer", routerVoucherCustomers);
+
+  router.use("/cart", routerCarts);
+
   //PRIVATE ROUTER
 
   app.use(`/api/${process.env.API_VERSION}`, router);

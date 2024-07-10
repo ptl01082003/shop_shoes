@@ -22,14 +22,6 @@ const ProductDetailsController = {
         productID,
         pDetailStatus,
       });
-
-      const sizeColorEntries = sizeColors.map((entry: any) => ({
-        ...entry,
-        productDetailID: productDetail.pDetailID,
-      }));
-
-      await SizeColor.bulkCreate(sizeColorEntries);
-
       res.json({
         data: productDetail,
         message: "Product detail created successfully",
