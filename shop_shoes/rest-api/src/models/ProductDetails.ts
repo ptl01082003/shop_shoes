@@ -8,8 +8,8 @@ import {
   PrimaryKey,
   Table,
 } from "sequelize-typescript";
-import { Product } from "./Product";
 import { SizeColor } from "./SizeColor";
+import { Products } from "./Products";
 
 @Table({
   tableName: "product_details",
@@ -20,20 +20,17 @@ export class ProductDetails extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  pDetailID!: number;
+  productDetailsId!: number;
 
   @Column
-  pDetailQuantity?: number;
+  status?: boolean;
 
-  @Column
-  pDetailStatus?: boolean;
-
-  @ForeignKey(() => Product)
+  @ForeignKey(() => Products)
   @Column
   productID!: number;
 
-  @BelongsTo(() => Product)
-  product!: Product;
+  @BelongsTo(() => Products)
+  products!: Products;
 
   @HasMany(() => SizeColor)
   sizeColors!: SizeColor[];

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { ProductPromotion } from "../models/ProductPromotion";
-import { Product } from "../models/Product";
+import { Product } from "../models/Products";
 import { Promotions } from "../models/Promotions";
 
 const ProductPromotionController = {

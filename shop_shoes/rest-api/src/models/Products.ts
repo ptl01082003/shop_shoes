@@ -10,7 +10,6 @@ import {
   PrimaryKey,
   Table,
 } from "sequelize-typescript";
-import { Sizes } from "./Sizes";
 
 import { ProductLines } from "./ProductLines";
 import { Styles } from "./Styles";
@@ -22,14 +21,14 @@ import { Materials } from "./Materials";
   modelName: "Products",
   timestamps: true,
 })
-export class Product extends Model {
+export class Products extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  public productID!: number;
+  public productsID!: number;
 
   @Column
-  public productName!: string;
+  public productsName!: string;
 
   @Column(DataType.DECIMAL(16, 2))
   public productImportPrice!: number;
@@ -70,10 +69,4 @@ export class Product extends Model {
 
   @BelongsTo(() => Materials)
   public material?: Materials;
-
-  // @BelongsToMany(() => Colors, () => ProductColors)
-  // public colors!: Colors[];
-
-  // @BelongsToMany(() => Sizes, () => ProductSizes)
-  // public size!: Sizes[];
 }

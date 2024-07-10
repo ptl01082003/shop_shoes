@@ -15,8 +15,8 @@ export class Sizes extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  public sizeID!: number;
+  public sizeId!: number;
 
   @Column
-  public sizeLength!: string;
+  public sizeName!: string;
 }

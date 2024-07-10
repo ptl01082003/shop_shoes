@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { Images } from "../models/Images";
-import { Product } from "../models/Product";
+import { Product } from "../models/Products";
 import { Op } from "sequelize";
 
 const ImagesController = {

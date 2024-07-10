@@ -7,7 +7,7 @@ import {
   PrimaryKey,
   Table,
 } from "sequelize-typescript";
-import { Product } from "./Product";
+import { Product } from "./Products";
 import { Promotions } from "./Promotions";
 
 @Table({

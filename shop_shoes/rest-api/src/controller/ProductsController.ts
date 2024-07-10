@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { Op } from "sequelize";
-import { Product } from "../models/Product";
+import { Product } from "../models/Products";
 
 const ProductsController = {
   addProduct: async (req: Request, res: Response, next: NextFunction) => {

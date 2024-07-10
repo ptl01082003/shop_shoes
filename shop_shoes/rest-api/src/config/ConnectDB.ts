@@ -13,16 +13,5 @@ export async function connectDB() {
   });
   await sequelize.authenticate();
   await sequelize.sync({ force: true });
-  // const a = await Product.findOne({
-  //   where: { productID: 7 },
-  //   include: [
-  //     {
-  //       model: Colors,
-  //       through: { attributes: [] },
-  //       attributes: ["colorName"],
-  //     },
-  //   ],
-  // });
-  // console.log("sản phẩm:: ", JSON.stringify(a));
   console.log("Connection has been established successfully.");
 }
