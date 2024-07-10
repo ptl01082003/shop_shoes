@@ -1,16 +1,13 @@
-// models/ProductColors.ts
 import {
-  AutoIncrement,
   BelongsTo,
   Column,
   ForeignKey,
   Model,
-  PrimaryKey,
   Table,
 } from "sequelize-typescript";
-import { Product } from "./Product";
-import { Colors } from "./Colors";
 import { Sizes } from "./Sizes";
+import { Colors } from "./Colors";
+import { ProductDetails } from "./ProductDetails";
 
 @Table({
   tableName: "size_color",
@@ -20,15 +17,22 @@ import { Sizes } from "./Sizes";
 export class SizeColor extends Model {
   @ForeignKey(() => Sizes)
   @Column
-  public sizeID!: number;
+  sizeID!: number;
 
   @ForeignKey(() => Colors)
   @Column
-  public colorID!: number;
+  colorID!: number;
+
+  @ForeignKey(() => ProductDetails)
+  @Column
+  productDetailID!: number;
 
   @BelongsTo(() => Sizes)
   public size!: Sizes;
 
   @BelongsTo(() => Colors)
   public color!: Colors;
+
+  @BelongsTo(() => ProductDetails)
+  public productDetail!: ProductDetails;
 }

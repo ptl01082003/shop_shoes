@@ -3,13 +3,13 @@ import ProductDetailsController from "../controller/ProductDetailsController";
 
 const routerProductDetail = Router();
 
-routerProductDetail.post("/", ProductDetailsController.addProductDetails);
+routerProductDetail.post("/", ProductDetailsController.addProductDetail);
 routerProductDetail.get("/", ProductDetailsController.getProductDetails);
-routerProductDetail.get("/:id", ProductDetailsController.getProductDetailsById);
-routerProductDetail.put("/:id", ProductDetailsController.updateProductDetails);
+routerProductDetail.get("/:id", ProductDetailsController.getProductDetailById);
+routerProductDetail.put("/:id", ProductDetailsController.updateProductDetail);
 routerProductDetail.delete(
   "/:id",
-  ProductDetailsController.deleteProductDetails
+  ProductDetailsController.deleteProductDetail
 );
 
 export default routerProductDetail;

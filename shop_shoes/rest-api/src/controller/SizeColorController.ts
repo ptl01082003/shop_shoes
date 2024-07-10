@@ -4,16 +4,24 @@ import { SizeColor } from "../models/SizeColor";
 const SizeColorController = {
   addSizeColor: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { sizeID, colorID } = req.body;
+      const { productDetailID, sizesColors } = req.body;
 
       // Kiểm tra dữ liệu đầu vào
-      if (!sizeID || !colorID) {
+      if (!productDetailID || !sizesColors || !Array.isArray(sizesColors)) {
         return res.status(400).json({ message: "Missing required fields" });
       }
 
-      const sizeColor = await SizeColor.create({ sizeID, colorID });
+      const sizeColorEntries = sizesColors.map((entry: any) => ({
+        ...entry,
+        productDetailID,
+      }));
 
-      res.json({ data: sizeColor, message: "Add new size-color successfully" });
+      const sizeColors = await SizeColor.bulkCreate(sizeColorEntries);
+
+      res.json({
+        data: sizeColors,
+        message: "Add new size-color(s) successfully",
+      });
     } catch (error) {
       console.log(error);
       next(error);

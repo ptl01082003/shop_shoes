@@ -1,149 +1,147 @@
 import { Request, Response, NextFunction } from "express";
 import { ProductDetails } from "../models/ProductDetails";
 import { SizeColor } from "../models/SizeColor";
-import { Product } from "../models/Product";
 
-class ProductDetailsController {
-  public async addProductDetails(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
+const ProductDetailsController = {
+  addProductDetail: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { pDetailQuantity, pDetailStatus, sizeColorID, productID } =
+      const { pDetailQuantity, pDetailStatus, productID, sizeColors } =
         req.body;
 
       // Kiểm tra dữ liệu đầu vào
-      if (!sizeColorID || !productID) {
+      if (!productID || !Array.isArray(sizeColors)) {
         return res.status(400).json({ message: "Missing required fields" });
       }
 
-      // Kiểm tra xem sizeColorID và productID có tồn tại không
-      const sizeColor = await SizeColor.findByPk(sizeColorID);
-      const product = await Product.findByPk(productID);
-      if (!sizeColor || !product) {
-        return res
-          .status(404)
-          .json({ message: "SizeColor or Product not found" });
-      }
-
-      const productDetails = await ProductDetails.create({
+      const productDetail = await ProductDetails.create({
         pDetailQuantity,
         pDetailStatus,
-        sizeColorID,
         productID,
       });
 
+      const sizeColorEntries = sizeColors.map((entry: any) => ({
+        ...entry,
+        productDetailID: productDetail.pDetailID,
+      }));
+
+      await SizeColor.bulkCreate(sizeColorEntries);
+
       res.json({
-        data: productDetails,
-        message: "Add new product details successfully",
+        data: productDetail,
+        message: "Product detail created successfully",
       });
     } catch (error) {
       console.log(error);
       next(error);
     }
-  }
+  },
 
-  public async getProductDetails(
+  getProductDetails: async (
     req: Request,
     res: Response,
     next: NextFunction
-  ) {
+  ) => {
     try {
-      const { id, sizeColorID, productID } = req.query;
+      const { productID } = req.query;
       const whereClause: any = {};
 
-      if (id) {
-        whereClause.pDetailID = id;
-      }
-      if (sizeColorID) {
-        whereClause.sizeColorID = sizeColorID;
-      }
       if (productID) {
         whereClause.productID = productID;
       }
 
       const productDetails = await ProductDetails.findAll({
         where: whereClause,
+        include: [SizeColor],
       });
       res.json({ data: productDetails });
     } catch (error) {
       console.log(error);
       next(error);
     }
-  }
+  },
 
-  public async getProductDetailsById(
+  getProductDetailById: async (
     req: Request,
     res: Response,
     next: NextFunction
-  ) {
+  ) => {
     try {
       const { id } = req.params;
-      const productDetails = await ProductDetails.findByPk(id);
-      if (productDetails) {
-        res.json({ data: productDetails });
+      const productDetail = await ProductDetails.findByPk(id, {
+        include: [SizeColor],
+      });
+      if (productDetail) {
+        res.json({ data: productDetail });
       } else {
-        res.status(404).json({ message: "Product details not found" });
+        res.status(404).json({ message: "Product detail not found" });
       }
     } catch (error) {
       console.log(error);
       next(error);
     }
-  }
+  },
 
-  public async updateProductDetails(
+  updateProductDetail: async (
     req: Request,
     res: Response,
     next: NextFunction
-  ) {
+  ) => {
     try {
       const { id } = req.params;
-      const { pDetailQuantity, pDetailStatus, sizeColorID, productID } =
-        req.body;
+      const { pDetailQuantity, pDetailStatus, sizeColors } = req.body;
 
       // Kiểm tra dữ liệu đầu vào
-      if (!sizeColorID || !productID) {
+      if (!Array.isArray(sizeColors)) {
         return res.status(400).json({ message: "Missing required fields" });
       }
 
-      const productDetails = await ProductDetails.findByPk(id);
-      if (productDetails) {
-        await productDetails.update({
-          pDetailQuantity,
-          pDetailStatus,
-          sizeColorID,
-          productID,
-        });
-        res.json({ message: "Product details updated successfully" });
+      const productDetail = await ProductDetails.findByPk(id);
+      if (productDetail) {
+        await productDetail.update({ pDetailQuantity, pDetailStatus });
+
+        // Xóa các sizeColors cũ
+        await SizeColor.destroy({ where: { productDetailID: id } });
+
+        // Tạo lại các sizeColors mới
+        const sizeColorEntries = sizeColors.map((entry: any) => ({
+          ...entry,
+          productDetailID: id,
+        }));
+
+        await SizeColor.bulkCreate(sizeColorEntries);
+
+        res.json({ message: "Product detail updated successfully" });
       } else {
-        res.status(404).json({ message: "Product details not found" });
+        res.status(404).json({ message: "Product detail not found" });
       }
     } catch (error) {
       console.log(error);
       next(error);
     }
-  }
+  },
 
-  public async deleteProductDetails(
+  deleteProductDetail: async (
     req: Request,
     res: Response,
     next: NextFunction
-  ) {
+  ) => {
     try {
       const { id } = req.params;
-      const productDetails = await ProductDetails.findByPk(id);
-      if (productDetails) {
-        await productDetails.destroy();
-        res.json({ message: "Product details deleted successfully" });
+      const productDetail = await ProductDetails.findByPk(id);
+      if (productDetail) {
+        // Xóa các sizeColors liên quan
+        await SizeColor.destroy({ where: { productDetailID: id } });
+
+        await productDetail.destroy();
+        res.json({ message: "Product detail deleted successfully" });
       } else {
-        res.status(404).json({ message: "Product details not found" });
+        res.status(404).json({ message: "Product detail not found" });
       }
     } catch (error) {
       console.log(error);
       next(error);
     }
-  }
-}
+  },
+};
 
-export default new ProductDetailsController();
+export default ProductDetailsController;
