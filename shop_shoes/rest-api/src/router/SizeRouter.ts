@@ -1,13 +1,12 @@
-import { Router } from 'express';
-import SizeController from '../controller/SizeController';
+import { Router } from "express";
+import SizesController from "../controller/SizeController";
 
+const routerSize = Router();
 
-const SizeRouter = Router();
+routerSize.post("/", SizesController.addSize);
+routerSize.get("/", SizesController.getSizes);
+routerSize.get("/:id", SizesController.getSizeById);
+routerSize.put("/:id", SizesController.updateSize);
+routerSize.delete("/:id", SizesController.deleteSize);
 
-SizeRouter.get('/', SizeController.getSize);
-SizeRouter.post('/', SizeController.createSize);
-SizeRouter.get('/:id', SizeController.getSizeById);
-SizeRouter.put('/:id', SizeController.updateSize);
-SizeRouter.delete('/:id', SizeController.deleteSize);
-
-export default SizeRouter;
+export default routerSize;

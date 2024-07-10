@@ -41,5 +41,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/connect-history-api-fallback": "^1.5.4",
+    "@types/istanbul-reports": "^3.0.4",
+    "@types/parse-json": "^4.0.2",
+    "@types/prettier": "^3.0.0"
   }
 }

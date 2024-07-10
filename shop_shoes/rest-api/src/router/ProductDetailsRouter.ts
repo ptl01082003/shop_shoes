@@ -1,13 +1,15 @@
-import { Router } from 'express';
-import ProductDetailsController from '../controller/ProductDetailsController';
+import { Router } from "express";
+import ProductDetailsController from "../controller/ProductDetailsController";
 
+const routerProductDetail = Router();
 
-const ProductDetailsRouter = Router();
+routerProductDetail.post("/", ProductDetailsController.addProductDetail);
+routerProductDetail.get("/", ProductDetailsController.getProductDetails);
+routerProductDetail.get("/:id", ProductDetailsController.getProductDetailById);
+routerProductDetail.put("/:id", ProductDetailsController.updateProductDetail);
+routerProductDetail.delete(
+  "/:id",
+  ProductDetailsController.deleteProductDetail
+);
 
-ProductDetailsRouter.get('/', ProductDetailsController.getProductDetails);
-ProductDetailsRouter.post('/', ProductDetailsController.createProductDetails);
-ProductDetailsRouter.get('/:id', ProductDetailsController.getProductDetailsById);
-ProductDetailsRouter.put('/:id', ProductDetailsController.updateProductDetails);
-ProductDetailsRouter.delete('/:id', ProductDetailsController.deleteProductDetails);
-
-export default ProductDetailsRouter;
+export default routerProductDetail;

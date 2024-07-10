@@ -1,106 +1,114 @@
-import Size from "../models/Size";
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
+import { Sizes } from "../models/Sizes";
+import { ProductDetails } from "../models/ProductDetails";
 
-
-const SizeController = {
-  //  Lấy tất cả sản phẩm cùng với thông tin con
-  getSize: async (req: Request, res: Response) => {
+const SizesController = {
+  addSize: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const address = await Size.findAll({
+      const { sizeName, sizeQuantity, productDetailID } = req.body;
+
+      // Kiểm tra dữ liệu đầu vào
+      if (!sizeName || !productDetailID) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+
+      const productDetail = await ProductDetails.findByPk(productDetailID);
+
+      if (!productDetail) {
+        return res.status(404).json({ message: "ProductDetail not found" });
+      }
+
+      const size = await Sizes.create({
+        sizeName,
+        sizeQuantity,
+        productDetailID,
       });
-      res.status(200).json(address);
-    } catch (error) {
-      res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
-    }
-  },
 
-  getSizeById: async (req: Request, res: Response) => {
-    const { id } = req.params;
-
-    console.log("ma:", id); // In ra giá trị của ma để kiểm tra
-    try {
-      const address = await Size.findByPk(id);
-      if (address) {
-        res.status(200).json(address);
-      } else {
-        res.status(404).json({ error: "Colour not found" });
-      }
-    } catch (error) {
-      res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
-    }
-  },
-
-  // Tạo một thương hiệu mới
-
-  createSize: async (req: Request, res: Response) => {
-    try {
-   
-      const Ma = req.body?.Ma;
-      console.log(Ma)
-      const ChieuDai = req.body?.ChieuDai ;
-      console.log(ChieuDai)
-      const NgayTao = new Date();
-      console.log(NgayTao)
-      const NgayCapNhat = new Date();
-      console.log(NgayCapNhat)
-    
-      // Tạo màu mới trong cơ sở dữ liệu
-      const colour = await Size.create({ Ma,ChieuDai, NgayTao, NgayCapNhat });
-
-      // Trả về kết quả thành công
-      res.status(201).json(colour);
+      res.json({ data: size, message: "Add new size successfully" });
     } catch (error) {
       console.log(error);
-      // Xử lý lỗi nếu có lỗi xảy ra trong quá trình tạo màu
-      console.error("Error creating colour:", error);
-      res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
+      next(error);
     }
   },
 
-  // Cập nhật một thương hiệu
-  updateSize: async (req: Request, res: Response) => {
+  getSizes: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { productDetailID } = req.query;
+      const whereClause: any = {};
+
+      if (productDetailID) {
+        whereClause.productDetailID = productDetailID;
+      }
+
+      const sizes = await Sizes.findAll({ where: whereClause });
+      res.json({ data: sizes });
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  },
+
+  getSizeById: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      console.log("id :", id);
-      const Ma = req.body?.Ma;
-      console.log(Ma)
-      const ChieuDai = req.body?.ChieuDai;
-      console.log(Ma)
-      const NgayTao = req.body?.NgayTao;
-      console.log(NgayTao)
-      const NgayCapNhat = req.body?.NgayCapNhat;
-      console.log(NgayCapNhat)
-      const colour = await Size.findByPk(id);
-      if (colour) {
-        await colour.update({ Ma,ChieuDai, NgayTao, NgayCapNhat });
-        res.status(200).json(colour);
+      const size = await Sizes.findByPk(id);
+      if (size) {
+        res.json({ data: size });
       } else {
-        res.status(404).json({ message: "Dòng sản phầm không tìm thấy" });
+        res.status(404).json({ message: "Size not found" });
       }
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
+      next(error);
     }
   },
 
-  // Xóa một thương hiệu
-  deleteSize: async (req: Request, res: Response) => {
-    console.log("createColour called");
+  updateSize: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const address = await Size.findByPk(id);
-      console.log(address);
-      console.log("createColour called");
-      if (address) {
-        await address.destroy();
-        res.status(200).json({ message: "Dòng sản phầm đã được xóa" });
+      const { sizeName, sizeQuantity, productDetailID } = req.body;
+
+      // Kiểm tra dữ liệu đầu vào
+      if (!sizeName || !productDetailID) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+
+      const size = await Sizes.findByPk(id);
+
+      if (!size) {
+        return res.status(404).json({ message: "Size not found" });
+      }
+
+      const productDetail = await ProductDetails.findByPk(productDetailID);
+
+      if (!productDetail) {
+        return res.status(404).json({ message: "ProductDetail not found" });
+      }
+
+      await size.update({ sizeName, sizeQuantity, productDetailID });
+
+      res.json({ message: "Size updated successfully" });
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  },
+
+  deleteSize: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id } = req.params;
+      const size = await Sizes.findByPk(id);
+      if (size) {
+        await size.destroy();
+        res.json({ message: "Size deleted successfully" });
       } else {
-        res.status(404).json({ message: "Dòng sản phầm không tìm thấy" });
+        res.status(404).json({ message: "Size not found" });
       }
     } catch (error) {
-      res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
+      console.log(error);
+      next(error);
     }
   },
 };
 
-export default SizeController;
+export default SizesController;

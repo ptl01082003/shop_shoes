@@ -1,29 +1,29 @@
-import redis from "redis";
+import { RedisClientType } from "@redis/client";
+import { createClient } from "redis";
 
-// Parse PORT_REDIS to ensure it's a number or string convertible to number
-const port = process.env.PORT_REDIS ? parseInt(process.env.PORT_REDIS) : undefined;
-
-export const client = redis.createClient({
-  socket: {
-    host: process.env.HOST_REDIS,
-    port: port,
-  },
-  username: process.env.USER_REDIS,
-  password: process.env.PASS_REDIS,
-});
-
-(async () => {
-  try {
-    await client.connect();
-  } catch (error) {
-    console.error("error while connecting redis", error);
+class Redis {
+  public redis!: RedisClientType;
+  async initial() {
+    try {
+      this.redis = createClient();
+      await this.redis.connect();
+      console.log("create new a connection to redis server");
+      // const test = await this.redis.get("test");
+      // console.log(test);
+    } catch (error) {
+      console.log("error connecting to redis server:: ", error);
+    }
   }
-})();
+  async get(key: string): Promise<string | null> {
+    const value = await this.redis.get(key);
+    return value;
+  }
+  async set(key: string, value: string) {
+    await this.redis.set(key, value);
+  }
+  async setEx(key: string, value: string) {
+    await this.redis.set(key, value);
+  }
+}
 
-client.on("ready", () => {
-  console.log("redis is connected");
-});
-
-client.on("error", (err) => {
-  console.log("redis is disconnected: ", err);
-});
+export const redis = new Redis();

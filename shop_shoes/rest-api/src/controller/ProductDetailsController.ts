@@ -1,120 +1,130 @@
-import { Request, Response } from "express";
-import ProductDetails from "../models/ProductDetails";
-import { Product } from "../models/Product";
-import Size from "../models/Size";
-import OrderDetails from "../models/OrderDetails";
+import { Request, Response, NextFunction } from "express";
+import { ProductDetails } from "../models/ProductDetails";
+import { Products } from "../models/Products";
+import { Sizes } from "../models/Sizes";
 
 const ProductDetailsController = {
-  getProductDetails: async (req: Request, res: Response) => {
+  addProductDetail: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const colour = await ProductDetails.findAll();
-      res.status(200).json(colour);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
-    }
-  },
+      const { productID, pDetailStatus } = req.body;
 
-  //// lấy id
-  getProductDetailsById: async (req: Request, res: Response) => {
-    const { id } = req.params;
-
-    console.log("ma:", id); // In ra giá trị của ma để kiểm tra
-    try {
-      const colour = await ProductDetails.findByPk(id);
-      if (colour) {
-        res.status(200).json(colour);
-      } else {
-        res.status(404).json({ error: "Colour not found" });
+      // Kiểm tra dữ liệu đầu vào
+      if (!productID) {
+        return res.status(400).json({ message: "Product ID is required" });
       }
-    } catch (error) {
-      res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
-    }
-  },
 
-  // Tạo một thương hiệu mới
+      const product = await Products.findByPk(productID);
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
 
-  createProductDetails: async (req: Request, res: Response) => {
-    try {
-      // Kiểm tra và lấy dữ liệu từ body của yêu cầu
-      const SanPham = req.body?.SanPham;
-      const Sizeid = req.body?.Size;
-      console.log(Sizeid);
-      const SoLuong = req.body?.SoLuong;
-      const TrangThai = req.body?.TrangThai;
-      const NgayTao = new Date();
-      const NgayCapNhap = new Date();
-
-      const sanpham = await Product.findByPk(SanPham);
-
-      const size = await Size.findByPk(Sizeid);
-      console.log(size);
-
-      // Tạo màu mới trong cơ sở dữ liệu
-      const oderdtails = await ProductDetails.create({
-        SanPham: sanpham?.id,
-        Size: size?.Ma,
-        SoLuong,
-        TrangThai,
-        NgayTao,
-        NgayCapNhap,
+      const productDetail = await ProductDetails.create({
+        productID,
+        pDetailStatus,
       });
 
-      // Trả về kết quả thành công
-      res.status(201).json(oderdtails);
+      const sizeColorEntries = sizeColors.map((entry: any) => ({
+        ...entry,
+        productDetailID: productDetail.pDetailID,
+      }));
+
+      await SizeColor.bulkCreate(sizeColorEntries);
+
+      res.json({
+        data: productDetail,
+        message: "Product detail created successfully",
+      });
     } catch (error) {
-      // Xử lý lỗi nếu có lỗi xảy ra trong quá trình tạo màu
-      console.error("Error creating colour:", error);
-      res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
+      console.error(error);
+      next(error);
     }
   },
 
-  // Cập nhật một thương hiệu
-  updateProductDetails: async (req: Request, res: Response) => {
-    console.log("updateProductDetails called");
+  getProductDetails: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
-      const { id } = req.params;
-      console.log("id :", id);
-      
-      const { SanPham, Size, SoLuong, TrangThai, NgayTao, NgayCapNhap } = req.body;
-  
-      const productDetails = await ProductDetails.findByPk(id);
-  
-      if (productDetails) {
-        await productDetails.update({
-          SanPham,
-          Size: Size, // Corrected typo
-          SoLuong,
-          TrangThai,
-          NgayTao,
-          NgayCapNhap,
-        });
-        res.status(200).json(productDetails);
-      } else {
-        res.status(404).json({ message: "Dòng sản phẩm không tìm thấy" });
-      }
+      const productDetails = await ProductDetails.findAll({
+        include: [Products, Sizes],
+      });
+      res.json({ data: productDetails });
     } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
+      console.error(error);
+      next(error);
     }
   },
 
-  // Xóa một thương hiệu
-  deleteProductDetails: async (req: Request, res: Response) => {
-    console.log("createColour called");
+  getProductDetailById: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
       const { id } = req.params;
-      const colour = await ProductDetails.findByPk(id);
-      console.log(colour);
-      console.log("createColour called");
-      if (colour) {
-        await colour.destroy();
-        res.status(200).json({ message: "Dòng sản phầm đã được xóa" });
-      } else {
-        res.status(404).json({ message: "Dòng sản phầm không tìm thấy" });
+      const productDetail = await ProductDetails.findByPk(id, {
+        include: [Products, Sizes],
+      });
+      if (!productDetail) {
+        return res.status(404).json({ message: "Product detail not found" });
       }
+      res.json({ data: productDetail });
     } catch (error) {
-      res.status(500).json({ message: "Lỗi nội bộ xảy ra trên server" });
+      console.error(error);
+      next(error);
+    }
+  },
+
+  updateProductDetail: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { id } = req.params;
+      const { productID, pDetailStatus } = req.body;
+
+      // Kiểm tra dữ liệu đầu vào
+      if (!productID) {
+        return res.status(400).json({ message: "Product ID is required" });
+      }
+
+      const productDetail = await ProductDetails.findByPk(id);
+      if (!productDetail) {
+        return res.status(404).json({ message: "Product detail not found" });
+      }
+
+      // Kiểm tra và cập nhật sản phẩm liên quan
+      const product = await Products.findByPk(productID);
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+
+      await productDetail.update({ productID, pDetailStatus });
+      res.json({ message: "Product detail updated successfully" });
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  },
+
+  deleteProductDetail: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { id } = req.params;
+      const productDetail = await ProductDetails.findByPk(id);
+      if (!productDetail) {
+        return res.status(404).json({ message: "Product detail not found" });
+      }
+      await productDetail.destroy();
+      res.json({ message: "Product detail deleted successfully" });
+    } catch (error) {
+      console.error(error);
+      next(error);
     }
   },
 };

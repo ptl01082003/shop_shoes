@@ -1,73 +1,59 @@
-import { app } from "../app";
+import { Origins } from "./../models/Origins";
+import { Brands } from "./../models/Brands";
 import express from "express";
-import { uploadRouter } from "./uploadRouter";
-import OriginRouter from "./OriginRouter";
-import MaterialRouter from "./MaterialRouter";
-import StyleRouter from "./StyleRouter";
-import ColourRouter from "./ColourRouter";
-import ProductLineRouter from "./ProductLineRouter";
-import TrademarkRouter from "./TrademarkRouter";
-import ProductRouter from "./ProductRouter";
-import bodyParser from "body-parser";
+import { app } from "../app";
 import { checkAuth } from "../middleware/checkAuth";
-import AnnouncementRouter from "./AnnouncementRouter";
-import ReceiptNotificationRouter from "./ReceiptNotificationRouter";
-import StaffRouter from "./StaffRouter";
-import RoleRouter from "./RoleRouter";
-import VoucherRouter from "./VoucherRouter";
-import CustomerRouter from "./CustomerRouter";
-import CustomerVouchersRouter from "./CustomerVouchersRouter";
-import AddressRouter from "./AddressRouter";
-import FavoriteListRouter from "./FavoriteListRouter";
-import CartRouter from "./CartRouter";
-import OrderRouter from "./OrderRouter";
-import ProductDetailsRouter from "./ProductDetailsRouter";
-import OrderDetailsRouter from "./OrderDetailsRouter";
-import CommentRouter from "./CommentRouter";
-import SizeRouter from "./SizeRouter";
-import PromotionRouter from "./PromotionRouter";
-import PromotionProductRouter from "./PromotionProductRouter";
-import ImageRouter from "./ImageRouter";
+import routerAuth from "./AuthRouter";
+import routerBrands from "./BrandsRouter";
+import routerProductLine from "./ProductLinesRouter";
+import routerColor from "./ColorsRouter";
+import routerStyle from "./StylesRouter";
+import routerMaterial from "./MaterialsRouter";
+import routerOrigin from "./OriginsRouter";
+// <<<<<<< HEAD
+// import vnpayRouter from "./VnpayRouter";
+import routerProduct from "./ProductsRouter";
+import routerSize from "./SizeRouter";
 
+import routerProductDetail from "./ProductDetailsRouter";
+// =======
+import PaymentOnlineRouter from "./PaymentOnlineRouter";
+import routerImage from "./ImagesRouter";
+import routerPromotions from "./PromotionsRouter";
+import routerProductPromotion from "./ProductPromotionRouter";
+import routerCustomers from "./CustomersRouter";
+import routerAddress from "./AddressRouter";
+import routerFavoritesList from "./FavoritesListRouter";
+// >>>>>>> 005a7aac0d39b7c54e22149b51747d4fbe8822a8
 
 const router = express.Router();
 
 export function appRouter() {
-  //PUBLIC ROUTER
-  app.use(bodyParser.json());
+  // <<<<<<< HEAD
+  //   router.use("/payment-orders", vnpayRouter);
+  // =======
 
-  // Parse application/x-www-form-urlencoded
-  app.use(bodyParser.urlencoded({ extended: true }));
-  /////////////////////////////\
+  //   router.use("/payment-orders", PaymentOnlineRouter)
+  // >>>>>>> 005a7aac0d39b7c54e22149b51747d4fbe8822a8
 
-  router.use("/anh",ImageRouter);
-  router.use("/khuyenmai-sanpham",PromotionProductRouter);
-  router.use("/khuyen-mai",PromotionRouter);
-  router.use("/size",SizeRouter);
-  router.use("/nhan-xet",CommentRouter);
-  router.use("/donhang-chitiet",OrderDetailsRouter);
-  router.use("/sanpham-chitiet",ProductDetailsRouter);
-  router.use("/don-hang",OrderRouter);
-  router.use("/gio-hang",CartRouter);
-  router.use("/ds-yeuthich",FavoriteListRouter);
-  router.use("/dia-chi",AddressRouter);
-  router.use("/voucher-khachhang",CustomerVouchersRouter);
-  router.use("/khach-hang", CustomerRouter);
-  router.use("/voucher", VoucherRouter);
-  router.use("/thongbao-nhan", ReceiptNotificationRouter);
-  router.use("/vai-tro", RoleRouter);
-  router.use("/nhan-vien", StaffRouter);
-  router.use("/thong-bao", AnnouncementRouter);
-  router.use("/xuat-xu", OriginRouter);
-  router.use("/chat-lieu", MaterialRouter);
-  router.use("/kieu-dang", StyleRouter);
-  router.use("/mau-sac", ColourRouter);
-  router.use("/dong-sp", ProductLineRouter);
-  router.use("/thuong-hieu", TrademarkRouter);
-  router.use("/san-pham", ProductRouter);
-  router.use(checkAuth);
-  router.use("/uploads", uploadRouter);
+  router.use("/auth", routerAuth);
 
+  // router.use("/uploads", uploadRouter);
+  router.use("/brand", routerBrands);
+  router.use("/product-line", routerProductLine);
+  router.use("/product", routerProduct);
+  router.use("/color", routerColor);
+  router.use("/style", routerStyle);
+  router.use("/material", routerMaterial);
+  router.use("/origin", routerOrigin);
+  router.use("/size", routerSize);
+  router.use("/product-detail", routerProductDetail);
+  router.use("/image", routerImage);
+  router.use("/promotion", routerPromotions);
+  router.use("/product-promotion", routerProductPromotion);
+  router.use("/customer", routerCustomers);
+  router.use("/address", routerAddress);
+  router.use("/favorite-list", routerFavoritesList);
   //PRIVATE ROUTER
 
   app.use(`/api/${process.env.API_VERSION}`, router);

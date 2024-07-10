@@ -1,13 +1,12 @@
-import { Router } from 'express';
-import AddressController from '../controller/AddressController';
+import express from "express";
+import AddressController from "../controller/AddressController";
 
+const routerAddress = express.Router();
 
-const AddressRouter = Router();
+routerAddress.post("/", AddressController.addAddress);
+routerAddress.get("/", AddressController.getAddresses);
+routerAddress.get("/:id", AddressController.getAddressById);
+routerAddress.put("/:id", AddressController.updateAddress);
+routerAddress.delete("/:id", AddressController.deleteAddress);
 
-AddressRouter.get('/', AddressController.getAddress);
-AddressRouter.post('/', AddressController.createAddress);
-AddressRouter.get('/:id', AddressController.getAddressById);
-AddressRouter.put('/:id', AddressController.updateAddress);
-AddressRouter.delete('/:id', AddressController.deleteAddress);
-
-export default AddressRouter;
+export default routerAddress;

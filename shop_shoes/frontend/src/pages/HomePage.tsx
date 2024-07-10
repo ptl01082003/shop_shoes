@@ -1,1360 +1,1123 @@
-import React from "react";
-
 export default function HomePage() {
   return (
     <>
-      {/* Start Header Area */}
-      <header className="header_area sticky-header">
-        <div className="main_menu">
-          <nav className="navbar navbar-expand-lg navbar-light main_box">
-            <div className="container">
-              {/* Brand and toggle get grouped for better mobile display */}
-              <a className="navbar-brand logo_h" href="index.html">
-                <img src="img/logo.png" alt="" />
-              </a>
-              <button
-                className="navbar-toggler"
-                type="button"
-                data-toggle="collapse"
-                data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-              >
-                <span className="icon-bar" />
-                <span className="icon-bar" />
-                <span className="icon-bar" />
-              </button>
-              {/* Collect the nav links, forms, and other content for toggling */}
+      <div className="py-1 bg-black">
+        <div className="container">
+          <div className="row no-gutters d-flex align-items-start align-items-center px-md-0">
+            <div className="col-lg-12 d-block">
+              <div className="row d-flex">
+                <div className="col-md pr-4 d-flex topper align-items-center">
+                  <div className="icon mr-2 d-flex justify-content-center align-items-center">
+                    <span className="icon-phone2" />
+                  </div>
+                  <span className="text">+ 1235 2355 98</span>
+                </div>
+                <div className="col-md pr-4 d-flex topper align-items-center">
+                  <div className="icon mr-2 d-flex justify-content-center align-items-center">
+                    <span className="icon-paper-plane" />
+                  </div>
+                  <span className="text">youremail@email.com</span>
+                </div>
+                <div className="col-md-5 pr-4 d-flex topper align-items-center text-lg-right">
+                  <span className="text">
+                    3-5 Business days delivery &amp; Free Returns
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <nav
+        className="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light"
+        id="ftco-navbar"
+      >
+        <div className="container">
+          <a className="navbar-brand" href="index.html">
+            Minishop
+          </a>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#ftco-nav"
+            aria-controls="ftco-nav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="oi oi-menu" /> Menu
+          </button>
+          <div className="collapse navbar-collapse" id="ftco-nav">
+            <ul className="navbar-nav ml-auto">
+              <li className="nav-item active">
+                <a href="index.html" className="nav-link">
+                  Home
+                </a>
+              </li>
+              <li className="nav-item dropdown">
+                <a
+                  className="nav-link dropdown-toggle"
+                  href="#"
+                  id="dropdown04"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  Catalog
+                </a>
+                <div className="dropdown-menu" aria-labelledby="dropdown04">
+                  <a className="dropdown-item" href="shop.html">
+                    Shop
+                  </a>
+                  <a className="dropdown-item" href="product-single.html">
+                    Single Product
+                  </a>
+                  <a className="dropdown-item" href="cart.html">
+                    Cart
+                  </a>
+                  <a className="dropdown-item" href="checkout.html">
+                    Checkout
+                  </a>
+                </div>
+              </li>
+              <li className="nav-item">
+                <a href="about.html" className="nav-link">
+                  About
+                </a>
+              </li>
+              <li className="nav-item">
+                <a href="blog.html" className="nav-link">
+                  Blog
+                </a>
+              </li>
+              <li className="nav-item">
+                <a href="contact.html" className="nav-link">
+                  Contact
+                </a>
+              </li>
+              <li className="nav-item cta cta-colored">
+                <a href="cart.html" className="nav-link">
+                  <span className="icon-shopping_cart" />
+                  [0]
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      {/* END nav */}
+      <section id="home-section" className="hero">
+        <div className="home-slider owl-carousel">
+          <div className="slider-item js-fullheight">
+            <div className="overlay" />
+            <div className="container-fluid p-0">
               <div
-                className="collapse navbar-collapse offset"
-                id="navbarSupportedContent"
+                className="row d-md-flex no-gutters slider-text align-items-center justify-content-end"
+                data-scrollax-parent="true"
               >
-                <ul className="nav navbar-nav menu_nav ml-auto">
-                  <li className="nav-item active">
-                    <a className="nav-link" href="index.html">
-                      Home
-                    </a>
-                  </li>
-                  <li className="nav-item submenu dropdown">
-                    <a
-                      href="#"
-                      className="nav-link dropdown-toggle"
-                      data-toggle="dropdown"
-                      role="button"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                    >
-                      Shop
-                    </a>
-                    <ul className="dropdown-menu">
-                      <li className="nav-item">
-                        <a className="nav-link" href="category.html">
-                          Shop Category
-                        </a>
-                      </li>
-                      <li className="nav-item">
-                        <a className="nav-link" href="single-product.html">
-                          Product Details
-                        </a>
-                      </li>
-                      <li className="nav-item">
-                        <a className="nav-link" href="checkout.html">
-                          Product Checkout
-                        </a>
-                      </li>
-                      <li className="nav-item">
-                        <a className="nav-link" href="cart.html">
-                          Shopping Cart
-                        </a>
-                      </li>
-                      <li className="nav-item">
-                        <a className="nav-link" href="confirmation.html">
-                          Confirmation
-                        </a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li className="nav-item submenu dropdown">
-                    <a
-                      href="#"
-                      className="nav-link dropdown-toggle"
-                      data-toggle="dropdown"
-                      role="button"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                    >
-                      Blog
-                    </a>
-                    <ul className="dropdown-menu">
-                      <li className="nav-item">
-                        <a className="nav-link" href="blog.html">
-                          Blog
-                        </a>
-                      </li>
-                      <li className="nav-item">
-                        <a className="nav-link" href="single-blog.html">
-                          Blog Details
-                        </a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li className="nav-item submenu dropdown">
-                    <a
-                      href="#"
-                      className="nav-link dropdown-toggle"
-                      data-toggle="dropdown"
-                      role="button"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                    >
-                      Pages
-                    </a>
-                    <ul className="dropdown-menu">
-                      <li className="nav-item">
-                        <a className="nav-link" href="login.html">
-                          Login
-                        </a>
-                      </li>
-                      <li className="nav-item">
-                        <a className="nav-link" href="tracking.html">
-                          Tracking
-                        </a>
-                      </li>
-                      <li className="nav-item">
-                        <a className="nav-link" href="elements.html">
-                          Elements
-                        </a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li className="nav-item">
-                    <a className="nav-link" href="contact.html">
-                      Contact
-                    </a>
-                  </li>
-                </ul>
-                <ul className="nav navbar-nav navbar-right">
-                  <li className="nav-item">
-                    <a href="#" className="cart">
-                      <span className="ti-bag" />
-                    </a>
-                  </li>
-                  <li className="nav-item">
-                    <button className="search">
-                      <span className="lnr lnr-magnifier" id="search" />
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </nav>
-        </div>
-      </header>
-      {/* End Header Area */}
-      {/* start banner Area */}
-      <section className="banner-area">
-        <div className="container">
-          <div className="row fullscreen align-items-center justify-content-start">
-            <div className="col-lg-12">
-              <div className="active-banner-slider owl-carousel">
-                {/* single-slide */}
-                <div className="row single-slide align-items-center d-flex">
-                  <div className="col-lg-5 col-md-6">
-                    <div className="banner-content">
-                      <h1>
-                        Nike New <br />
-                        Collection!
-                      </h1>
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit, sed do eiusmod tempor incididunt ut labore et
-                        dolore magna aliqua. Ut enim ad minim veniam, quis
-                        nostrud exercitation.
-                      </p>
-                      <div className="add-bag d-flex align-items-center">
-                        <a className="add-btn" href="">
-                          <span className="lnr lnr-cross" />
-                        </a>
-                        <span className="add-text text-uppercase">
-                          Add to Bag
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-lg-7">
-                    <div className="banner-img">
-                      <img
-                        className="img-fluid"
-                        src="img/banner/banner-img.png"
-                        alt=""
-                      />
-                    </div>
-                  </div>
-                </div>
-                {/* single-slide */}
-                <div className="row single-slide">
-                  <div className="col-lg-5">
-                    <div className="banner-content">
-                      <h1>
-                        Nike New <br />
-                        Collection!
-                      </h1>
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit, sed do eiusmod tempor incididunt ut labore et
-                        dolore magna aliqua. Ut enim ad minim veniam, quis
-                        nostrud exercitation.
-                      </p>
-                      <div className="add-bag d-flex align-items-center">
-                        <a className="add-btn" href="">
-                          <span className="lnr lnr-cross" />
-                        </a>
-                        <span className="add-text text-uppercase">
-                          Add to Bag
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-lg-7">
-                    <div className="banner-img">
-                      <img
-                        className="img-fluid"
-                        src="img/banner/banner-img.png"
-                        alt=""
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      {/* End banner Area */}
-      {/* start features Area */}
-      <section className="features-area section_gap">
-        <div className="container">
-          <div className="row features-inner">
-            {/* single features */}
-            <div className="col-lg-3 col-md-6 col-sm-6">
-              <div className="single-features">
-                <div className="f-icon">
-                  <img src="img/features/f-icon1.png" alt="" />
-                </div>
-                <h6>Free Delivery</h6>
-                <p>Free Shipping on all order</p>
-              </div>
-            </div>
-            {/* single features */}
-            <div className="col-lg-3 col-md-6 col-sm-6">
-              <div className="single-features">
-                <div className="f-icon">
-                  <img src="img/features/f-icon2.png" alt="" />
-                </div>
-                <h6>Return Policy</h6>
-                <p>Free Shipping on all order</p>
-              </div>
-            </div>
-            {/* single features */}
-            <div className="col-lg-3 col-md-6 col-sm-6">
-              <div className="single-features">
-                <div className="f-icon">
-                  <img src="img/features/f-icon3.png" alt="" />
-                </div>
-                <h6>24/7 Support</h6>
-                <p>Free Shipping on all order</p>
-              </div>
-            </div>
-            {/* single features */}
-            <div className="col-lg-3 col-md-6 col-sm-6">
-              <div className="single-features">
-                <div className="f-icon">
-                  <img src="img/features/f-icon4.png" alt="" />
-                </div>
-                <h6>Secure Payment</h6>
-                <p>Free Shipping on all order</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      {/* end features Area */}
-      {/* Start category Area */}
-      <section className="category-area">
-        <div className="container">
-          <div className="row justify-content-center">
-            <div className="col-lg-8 col-md-12">
-              <div className="row">
-                <div className="col-lg-8 col-md-8">
-                  <div className="single-deal">
-                    <div className="overlay" />
-                    <img
-                      className="img-fluid w-100"
-                      src="img/category/c1.jpg"
-                      alt=""
-                    />
-                    <a
-                      href="img/category/c1.jpg"
-                      className="img-pop-up"
-                      target="_blank"
-                    >
-                      <div className="deal-details">
-                        <h6 className="deal-title">Sneaker for Sports</h6>
-                      </div>
-                    </a>
-                  </div>
-                </div>
-                <div className="col-lg-4 col-md-4">
-                  <div className="single-deal">
-                    <div className="overlay" />
-                    <img
-                      className="img-fluid w-100"
-                      src="img/category/c2.jpg"
-                      alt=""
-                    />
-                    <a
-                      href="img/category/c2.jpg"
-                      className="img-pop-up"
-                      target="_blank"
-                    >
-                      <div className="deal-details">
-                        <h6 className="deal-title">Sneaker for Sports</h6>
-                      </div>
-                    </a>
-                  </div>
-                </div>
-                <div className="col-lg-4 col-md-4">
-                  <div className="single-deal">
-                    <div className="overlay" />
-                    <img
-                      className="img-fluid w-100"
-                      src="img/category/c3.jpg"
-                      alt=""
-                    />
-                    <a
-                      href="img/category/c3.jpg"
-                      className="img-pop-up"
-                      target="_blank"
-                    >
-                      <div className="deal-details">
-                        <h6 className="deal-title">Product for Couple</h6>
-                      </div>
-                    </a>
-                  </div>
-                </div>
-                <div className="col-lg-8 col-md-8">
-                  <div className="single-deal">
-                    <div className="overlay" />
-                    <img
-                      className="img-fluid w-100"
-                      src="img/category/c4.jpg"
-                      alt=""
-                    />
-                    <a
-                      href="img/category/c4.jpg"
-                      className="img-pop-up"
-                      target="_blank"
-                    >
-                      <div className="deal-details">
-                        <h6 className="deal-title">Sneaker for Sports</h6>
-                      </div>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-4 col-md-6">
-              <div className="single-deal">
-                <div className="overlay" />
                 <img
-                  className="img-fluid w-100"
-                  src="img/category/c5.jpg"
+                  className="one-third order-md-last img-fluid"
+                  src="images/bg_1.png"
                   alt=""
                 />
-                <a
-                  href="img/category/c5.jpg"
-                  className="img-pop-up"
-                  target="_blank"
+                <div
+                  className="one-forth d-flex align-items-center ftco-animate"
+                  data-scrollax=" properties: { translateY: '70%' }"
                 >
-                  <div className="deal-details">
-                    <h6 className="deal-title">Sneaker for Sports</h6>
+                  <div className="text">
+                    <span className="subheading">#New Arrival</span>
+                    <div className="horizontal">
+                      <h1 className="mb-4 mt-3">Shoes Collection 2019</h1>
+                      <p className="mb-4">
+                        A small river named Duden flows by their place and
+                        supplies it with the necessary regelialia. It is a
+                        paradisematic country.
+                      </p>
+                      <p>
+                        <a href="#" className="btn-custom">
+                          Discover Now
+                        </a>
+                      </p>
+                    </div>
                   </div>
-                </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="slider-item js-fullheight">
+            <div className="overlay" />
+            <div className="container-fluid p-0">
+              <div
+                className="row d-flex no-gutters slider-text align-items-center justify-content-end"
+                data-scrollax-parent="true"
+              >
+                <img
+                  className="one-third order-md-last img-fluid"
+                  src="images/bg_2.png"
+                  alt=""
+                />
+                <div
+                  className="one-forth d-flex align-items-center ftco-animate"
+                  data-scrollax=" properties: { translateY: '70%' }"
+                >
+                  <div className="text">
+                    <span className="subheading">#New Arrival</span>
+                    <div className="horizontal">
+                      <h1 className="mb-4 mt-3">New Shoes Winter Collection</h1>
+                      <p className="mb-4">
+                        A small river named Duden flows by their place and
+                        supplies it with the necessary regelialia. It is a
+                        paradisematic country.
+                      </p>
+                      <p>
+                        <a href="#" className="btn-custom">
+                          Discover Now
+                        </a>
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
-      {/* End category Area */}
-      {/* start product Area */}
-      <section className="owl-carousel active-product-area section_gap">
-        {/* single product slide */}
-        <div className="single-product-slider">
-          <div className="container">
-            <div className="row justify-content-center">
-              <div className="col-lg-6 text-center">
-                <div className="section-title">
-                  <h1>Latest Products</h1>
+      <section className="ftco-section ftco-no-pt ftco-no-pb">
+        <div className="container">
+          <div className="row no-gutters ftco-services">
+            <div className="col-lg-4 text-center d-flex align-self-stretch ftco-animate">
+              <div className="media block-6 services p-4 py-md-5">
+                <div className="icon d-flex justify-content-center align-items-center mb-4">
+                  <span className="flaticon-bag" />
+                </div>
+                <div className="media-body">
+                  <h3 className="heading">Free Shipping</h3>
                   <p>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                    sed do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua.
+                    Far far away, behind the word mountains, far from the
+                    countries Vokalia and Consonantia, there live the blind
+                    texts.
                   </p>
                 </div>
               </div>
             </div>
-            <div className="row">
-              {/* single product */}
-              <div className="col-lg-3 col-md-6">
-                <div className="single-product">
-                  <img className="img-fluid" src="img/product/p1.jpg" alt="" />
-                  <div className="product-details">
-                    <h6>addidas New Hammer sole for Sports person</h6>
-                    <div className="price">
-                      <h6>$150.00</h6>
-                      <h6 className="l-through">$210.00</h6>
-                    </div>
-                    <div className="prd-bottom">
-                      <a href="" className="social-info">
-                        <span className="ti-bag" />
-                        <p className="hover-text">add to bag</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-heart" />
-                        <p className="hover-text">Wishlist</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-sync" />
-                        <p className="hover-text">compare</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-move" />
-                        <p className="hover-text">view more</p>
-                      </a>
-                    </div>
-                  </div>
+            <div className="col-lg-4 text-center d-flex align-self-stretch ftco-animate">
+              <div className="media block-6 services p-4 py-md-5">
+                <div className="icon d-flex justify-content-center align-items-center mb-4">
+                  <span className="flaticon-customer-service" />
                 </div>
-              </div>
-              {/* single product */}
-              <div className="col-lg-3 col-md-6">
-                <div className="single-product">
-                  <img className="img-fluid" src="img/product/p2.jpg" alt="" />
-                  <div className="product-details">
-                    <h6>addidas New Hammer sole for Sports person</h6>
-                    <div className="price">
-                      <h6>$150.00</h6>
-                      <h6 className="l-through">$210.00</h6>
-                    </div>
-                    <div className="prd-bottom">
-                      <a href="" className="social-info">
-                        <span className="ti-bag" />
-                        <p className="hover-text">add to bag</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-heart" />
-                        <p className="hover-text">Wishlist</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-sync" />
-                        <p className="hover-text">compare</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-move" />
-                        <p className="hover-text">view more</p>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* single product */}
-              <div className="col-lg-3 col-md-6">
-                <div className="single-product">
-                  <img className="img-fluid" src="img/product/p3.jpg" alt="" />
-                  <div className="product-details">
-                    <h6>addidas New Hammer sole for Sports person</h6>
-                    <div className="price">
-                      <h6>$150.00</h6>
-                      <h6 className="l-through">$210.00</h6>
-                    </div>
-                    <div className="prd-bottom">
-                      <a href="" className="social-info">
-                        <span className="ti-bag" />
-                        <p className="hover-text">add to bag</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-heart" />
-                        <p className="hover-text">Wishlist</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-sync" />
-                        <p className="hover-text">compare</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-move" />
-                        <p className="hover-text">view more</p>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* single product */}
-              <div className="col-lg-3 col-md-6">
-                <div className="single-product">
-                  <img className="img-fluid" src="img/product/p4.jpg" alt="" />
-                  <div className="product-details">
-                    <h6>addidas New Hammer sole for Sports person</h6>
-                    <div className="price">
-                      <h6>$150.00</h6>
-                      <h6 className="l-through">$210.00</h6>
-                    </div>
-                    <div className="prd-bottom">
-                      <a href="" className="social-info">
-                        <span className="ti-bag" />
-                        <p className="hover-text">add to bag</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-heart" />
-                        <p className="hover-text">Wishlist</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-sync" />
-                        <p className="hover-text">compare</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-move" />
-                        <p className="hover-text">view more</p>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* single product */}
-              <div className="col-lg-3 col-md-6">
-                <div className="single-product">
-                  <img className="img-fluid" src="img/product/p5.jpg" alt="" />
-                  <div className="product-details">
-                    <h6>addidas New Hammer sole for Sports person</h6>
-                    <div className="price">
-                      <h6>$150.00</h6>
-                      <h6 className="l-through">$210.00</h6>
-                    </div>
-                    <div className="prd-bottom">
-                      <a href="" className="social-info">
-                        <span className="ti-bag" />
-                        <p className="hover-text">add to bag</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-heart" />
-                        <p className="hover-text">Wishlist</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-sync" />
-                        <p className="hover-text">compare</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-move" />
-                        <p className="hover-text">view more</p>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* single product */}
-              <div className="col-lg-3 col-md-6">
-                <div className="single-product">
-                  <img className="img-fluid" src="img/product/p6.jpg" alt="" />
-                  <div className="product-details">
-                    <h6>addidas New Hammer sole for Sports person</h6>
-                    <div className="price">
-                      <h6>$150.00</h6>
-                      <h6 className="l-through">$210.00</h6>
-                    </div>
-                    <div className="prd-bottom">
-                      <a href="" className="social-info">
-                        <span className="ti-bag" />
-                        <p className="hover-text">add to bag</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-heart" />
-                        <p className="hover-text">Wishlist</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-sync" />
-                        <p className="hover-text">compare</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-move" />
-                        <p className="hover-text">view more</p>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* single product */}
-              <div className="col-lg-3 col-md-6">
-                <div className="single-product">
-                  <img className="img-fluid" src="img/product/p7.jpg" alt="" />
-                  <div className="product-details">
-                    <h6>addidas New Hammer sole for Sports person</h6>
-                    <div className="price">
-                      <h6>$150.00</h6>
-                      <h6 className="l-through">$210.00</h6>
-                    </div>
-                    <div className="prd-bottom">
-                      <a href="" className="social-info">
-                        <span className="ti-bag" />
-                        <p className="hover-text">add to bag</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-heart" />
-                        <p className="hover-text">Wishlist</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-sync" />
-                        <p className="hover-text">compare</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-move" />
-                        <p className="hover-text">view more</p>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* single product */}
-              <div className="col-lg-3 col-md-6">
-                <div className="single-product">
-                  <img className="img-fluid" src="img/product/p8.jpg" alt="" />
-                  <div className="product-details">
-                    <h6>addidas New Hammer sole for Sports person</h6>
-                    <div className="price">
-                      <h6>$150.00</h6>
-                      <h6 className="l-through">$210.00</h6>
-                    </div>
-                    <div className="prd-bottom">
-                      <a href="" className="social-info">
-                        <span className="ti-bag" />
-                        <p className="hover-text">add to bag</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-heart" />
-                        <p className="hover-text">Wishlist</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-sync" />
-                        <p className="hover-text">compare</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-move" />
-                        <p className="hover-text">view more</p>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* single product slide */}
-        <div className="single-product-slider">
-          <div className="container">
-            <div className="row justify-content-center">
-              <div className="col-lg-6 text-center">
-                <div className="section-title">
-                  <h1>Coming Products</h1>
+                <div className="media-body">
+                  <h3 className="heading">Support Customer</h3>
                   <p>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                    sed do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua.
+                    Far far away, behind the word mountains, far from the
+                    countries Vokalia and Consonantia, there live the blind
+                    texts.
                   </p>
                 </div>
               </div>
             </div>
-            <div className="row">
-              {/* single product */}
-              <div className="col-lg-3 col-md-6">
-                <div className="single-product">
-                  <img className="img-fluid" src="img/product/p6.jpg" alt="" />
-                  <div className="product-details">
-                    <h6>addidas New Hammer sole for Sports person</h6>
-                    <div className="price">
-                      <h6>$150.00</h6>
-                      <h6 className="l-through">$210.00</h6>
-                    </div>
-                    <div className="prd-bottom">
-                      <a href="" className="social-info">
-                        <span className="ti-bag" />
-                        <p className="hover-text">add to bag</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-heart" />
-                        <p className="hover-text">Wishlist</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-sync" />
-                        <p className="hover-text">compare</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-move" />
-                        <p className="hover-text">view more</p>
-                      </a>
-                    </div>
-                  </div>
+            <div className="col-lg-4 text-center d-flex align-self-stretch ftco-animate">
+              <div className="media block-6 services p-4 py-md-5">
+                <div className="icon d-flex justify-content-center align-items-center mb-4">
+                  <span className="flaticon-payment-security" />
                 </div>
-              </div>
-              {/* single product */}
-              <div className="col-lg-3 col-md-6">
-                <div className="single-product">
-                  <img className="img-fluid" src="img/product/p8.jpg" alt="" />
-                  <div className="product-details">
-                    <h6>addidas New Hammer sole for Sports person</h6>
-                    <div className="price">
-                      <h6>$150.00</h6>
-                      <h6 className="l-through">$210.00</h6>
-                    </div>
-                    <div className="prd-bottom">
-                      <a href="" className="social-info">
-                        <span className="ti-bag" />
-                        <p className="hover-text">add to bag</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-heart" />
-                        <p className="hover-text">Wishlist</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-sync" />
-                        <p className="hover-text">compare</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-move" />
-                        <p className="hover-text">view more</p>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* single product */}
-              <div className="col-lg-3 col-md-6">
-                <div className="single-product">
-                  <img className="img-fluid" src="img/product/p3.jpg" alt="" />
-                  <div className="product-details">
-                    <h6>addidas New Hammer sole for Sports person</h6>
-                    <div className="price">
-                      <h6>$150.00</h6>
-                      <h6 className="l-through">$210.00</h6>
-                    </div>
-                    <div className="prd-bottom">
-                      <a href="" className="social-info">
-                        <span className="ti-bag" />
-                        <p className="hover-text">add to bag</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-heart" />
-                        <p className="hover-text">Wishlist</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-sync" />
-                        <p className="hover-text">compare</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-move" />
-                        <p className="hover-text">view more</p>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* single product */}
-              <div className="col-lg-3 col-md-6">
-                <div className="single-product">
-                  <img className="img-fluid" src="img/product/p5.jpg" alt="" />
-                  <div className="product-details">
-                    <h6>addidas New Hammer sole for Sports person</h6>
-                    <div className="price">
-                      <h6>$150.00</h6>
-                      <h6 className="l-through">$210.00</h6>
-                    </div>
-                    <div className="prd-bottom">
-                      <a href="" className="social-info">
-                        <span className="ti-bag" />
-                        <p className="hover-text">add to bag</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-heart" />
-                        <p className="hover-text">Wishlist</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-sync" />
-                        <p className="hover-text">compare</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-move" />
-                        <p className="hover-text">view more</p>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* single product */}
-              <div className="col-lg-3 col-md-6">
-                <div className="single-product">
-                  <img className="img-fluid" src="img/product/p1.jpg" alt="" />
-                  <div className="product-details">
-                    <h6>addidas New Hammer sole for Sports person</h6>
-                    <div className="price">
-                      <h6>$150.00</h6>
-                      <h6 className="l-through">$210.00</h6>
-                    </div>
-                    <div className="prd-bottom">
-                      <a href="" className="social-info">
-                        <span className="ti-bag" />
-                        <p className="hover-text">add to bag</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-heart" />
-                        <p className="hover-text">Wishlist</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-sync" />
-                        <p className="hover-text">compare</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-move" />
-                        <p className="hover-text">view more</p>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* single product */}
-              <div className="col-lg-3 col-md-6">
-                <div className="single-product">
-                  <img className="img-fluid" src="img/product/p4.jpg" alt="" />
-                  <div className="product-details">
-                    <h6>addidas New Hammer sole for Sports person</h6>
-                    <div className="price">
-                      <h6>$150.00</h6>
-                      <h6 className="l-through">$210.00</h6>
-                    </div>
-                    <div className="prd-bottom">
-                      <a href="" className="social-info">
-                        <span className="ti-bag" />
-                        <p className="hover-text">add to bag</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-heart" />
-                        <p className="hover-text">Wishlist</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-sync" />
-                        <p className="hover-text">compare</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-move" />
-                        <p className="hover-text">view more</p>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* single product */}
-              <div className="col-lg-3 col-md-6">
-                <div className="single-product">
-                  <img className="img-fluid" src="img/product/p1.jpg" alt="" />
-                  <div className="product-details">
-                    <h6>addidas New Hammer sole for Sports person</h6>
-                    <div className="price">
-                      <h6>$150.00</h6>
-                      <h6 className="l-through">$210.00</h6>
-                    </div>
-                    <div className="prd-bottom">
-                      <a href="" className="social-info">
-                        <span className="ti-bag" />
-                        <p className="hover-text">add to bag</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-heart" />
-                        <p className="hover-text">Wishlist</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-sync" />
-                        <p className="hover-text">compare</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-move" />
-                        <p className="hover-text">view more</p>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* single product */}
-              <div className="col-lg-3 col-md-6">
-                <div className="single-product">
-                  <img className="img-fluid" src="img/product/p8.jpg" alt="" />
-                  <div className="product-details">
-                    <h6>addidas New Hammer sole for Sports person</h6>
-                    <div className="price">
-                      <h6>$150.00</h6>
-                      <h6 className="l-through">$210.00</h6>
-                    </div>
-                    <div className="prd-bottom">
-                      <a href="" className="social-info">
-                        <span className="ti-bag" />
-                        <p className="hover-text">add to bag</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-heart" />
-                        <p className="hover-text">Wishlist</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-sync" />
-                        <p className="hover-text">compare</p>
-                      </a>
-                      <a href="" className="social-info">
-                        <span className="lnr lnr-move" />
-                        <p className="hover-text">view more</p>
-                      </a>
-                    </div>
-                  </div>
+                <div className="media-body">
+                  <h3 className="heading">Secure Payments</h3>
+                  <p>
+                    Far far away, behind the word mountains, far from the
+                    countries Vokalia and Consonantia, there live the blind
+                    texts.
+                  </p>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </section>
-      {/* end product Area */}
-      {/* Start exclusive deal Area */}
-      <section className="exclusive-deal-area">
-        <div className="container-fluid">
-          <div className="row justify-content-center align-items-center">
-            <div className="col-lg-6 no-padding exclusive-left">
-              <div className="row clock_sec clockdiv" id="clockdiv">
-                <div className="col-lg-12">
-                  <h1>Exclusive Hot Deal Ends Soon!</h1>
-                  <p>Who are in extremely love with eco friendly system.</p>
-                </div>
-                <div className="col-lg-12">
-                  <div className="row clock-wrap">
-                    <div className="col clockinner1 clockinner">
-                      <h1 className="days">150</h1>
-                      <span className="smalltext">Days</span>
-                    </div>
-                    <div className="col clockinner clockinner1">
-                      <h1 className="hours">23</h1>
-                      <span className="smalltext">Hours</span>
-                    </div>
-                    <div className="col clockinner clockinner1">
-                      <h1 className="minutes">47</h1>
-                      <span className="smalltext">Mins</span>
-                    </div>
-                    <div className="col clockinner clockinner1">
-                      <h1 className="seconds">59</h1>
-                      <span className="smalltext">Secs</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <a href="" className="primary-btn">
-                Shop Now
-              </a>
-            </div>
-            <div className="col-lg-6 no-padding exclusive-right">
-              <div className="active-exclusive-product-slider">
-                {/* single exclusive carousel */}
-                <div className="single-exclusive-slider">
-                  <img
-                    className="img-fluid"
-                    src="img/product/e-p1.png"
-                    alt=""
-                  />
-                  <div className="product-details">
-                    <div className="price">
-                      <h6>$150.00</h6>
-                      <h6 className="l-through">$210.00</h6>
-                    </div>
-                    <h4>addidas New Hammer sole for Sports person</h4>
-                    <div className="add-bag d-flex align-items-center justify-content-center">
-                      <a className="add-btn" href="">
-                        <span className="ti-bag" />
-                      </a>
-                      <span className="add-text text-uppercase">
-                        Add to Bag
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                {/* single exclusive carousel */}
-                <div className="single-exclusive-slider">
-                  <img
-                    className="img-fluid"
-                    src="img/product/e-p1.png"
-                    alt=""
-                  />
-                  <div className="product-details">
-                    <div className="price">
-                      <h6>$150.00</h6>
-                      <h6 className="l-through">$210.00</h6>
-                    </div>
-                    <h4>addidas New Hammer sole for Sports person</h4>
-                    <div className="add-bag d-flex align-items-center justify-content-center">
-                      <a className="add-btn" href="">
-                        <span className="ti-bag" />
-                      </a>
-                      <span className="add-text text-uppercase">
-                        Add to Bag
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+      <section className="ftco-section bg-light">
+        <div className="container">
+          <div className="row justify-content-center mb-3 pb-3">
+            <div className="col-md-12 heading-section text-center ftco-animate">
+              <h2 className="mb-4">New Shoes Arrival</h2>
+              <p>
+                Far far away, behind the word mountains, far from the countries
+                Vokalia and Consonantia
+              </p>
             </div>
           </div>
         </div>
-      </section>
-      {/* End exclusive deal Area */}
-      {/* Start brand Area */}
-      <section className="brand-area section_gap">
         <div className="container">
           <div className="row">
-            <a className="col single-img" href="#">
-              <img
-                className="img-fluid d-block mx-auto"
-                src="img/brand/1.png"
-                alt=""
-              />
-            </a>
-            <a className="col single-img" href="#">
-              <img
-                className="img-fluid d-block mx-auto"
-                src="img/brand/2.png"
-                alt=""
-              />
-            </a>
-            <a className="col single-img" href="#">
-              <img
-                className="img-fluid d-block mx-auto"
-                src="img/brand/3.png"
-                alt=""
-              />
-            </a>
-            <a className="col single-img" href="#">
-              <img
-                className="img-fluid d-block mx-auto"
-                src="img/brand/4.png"
-                alt=""
-              />
-            </a>
-            <a className="col single-img" href="#">
-              <img
-                className="img-fluid d-block mx-auto"
-                src="img/brand/5.png"
-                alt=""
-              />
-            </a>
-          </div>
-        </div>
-      </section>
-      {/* End brand Area */}
-      {/* Start related-product Area */}
-      <section className="related-product-area section_gap_bottom">
-        <div className="container">
-          <div className="row justify-content-center">
-            <div className="col-lg-6 text-center">
-              <div className="section-title">
-                <h1>Deals of the Week</h1>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-lg-9">
-              <div className="row">
-                <div className="col-lg-4 col-md-4 col-sm-6 mb-20">
-                  <div className="single-related-product d-flex">
-                    <a href="#">
-                      <img src="img/r1.jpg" alt="" />
-                    </a>
-                    <div className="desc">
-                      <a href="#" className="title">
-                        Black lace Heels
-                      </a>
-                      <div className="price">
-                        <h6>$189.00</h6>
-                        <h6 className="l-through">$210.00</h6>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-lg-4 col-md-4 col-sm-6 mb-20">
-                  <div className="single-related-product d-flex">
-                    <a href="#">
-                      <img src="img/r2.jpg" alt="" />
-                    </a>
-                    <div className="desc">
-                      <a href="#" className="title">
-                        Black lace Heels
-                      </a>
-                      <div className="price">
-                        <h6>$189.00</h6>
-                        <h6 className="l-through">$210.00</h6>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-lg-4 col-md-4 col-sm-6 mb-20">
-                  <div className="single-related-product d-flex">
-                    <a href="#">
-                      <img src="img/r3.jpg" alt="" />
-                    </a>
-                    <div className="desc">
-                      <a href="#" className="title">
-                        Black lace Heels
-                      </a>
-                      <div className="price">
-                        <h6>$189.00</h6>
-                        <h6 className="l-through">$210.00</h6>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-lg-4 col-md-4 col-sm-6 mb-20">
-                  <div className="single-related-product d-flex">
-                    <a href="#">
-                      <img src="img/r5.jpg" alt="" />
-                    </a>
-                    <div className="desc">
-                      <a href="#" className="title">
-                        Black lace Heels
-                      </a>
-                      <div className="price">
-                        <h6>$189.00</h6>
-                        <h6 className="l-through">$210.00</h6>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-lg-4 col-md-4 col-sm-6 mb-20">
-                  <div className="single-related-product d-flex">
-                    <a href="#">
-                      <img src="img/r6.jpg" alt="" />
-                    </a>
-                    <div className="desc">
-                      <a href="#" className="title">
-                        Black lace Heels
-                      </a>
-                      <div className="price">
-                        <h6>$189.00</h6>
-                        <h6 className="l-through">$210.00</h6>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-lg-4 col-md-4 col-sm-6 mb-20">
-                  <div className="single-related-product d-flex">
-                    <a href="#">
-                      <img src="img/r7.jpg" alt="" />
-                    </a>
-                    <div className="desc">
-                      <a href="#" className="title">
-                        Black lace Heels
-                      </a>
-                      <div className="price">
-                        <h6>$189.00</h6>
-                        <h6 className="l-through">$210.00</h6>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-lg-4 col-md-4 col-sm-6">
-                  <div className="single-related-product d-flex">
-                    <a href="#">
-                      <img src="img/r9.jpg" alt="" />
-                    </a>
-                    <div className="desc">
-                      <a href="#" className="title">
-                        Black lace Heels
-                      </a>
-                      <div className="price">
-                        <h6>$189.00</h6>
-                        <h6 className="l-through">$210.00</h6>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-lg-4 col-md-4 col-sm-6">
-                  <div className="single-related-product d-flex">
-                    <a href="#">
-                      <img src="img/r10.jpg" alt="" />
-                    </a>
-                    <div className="desc">
-                      <a href="#" className="title">
-                        Black lace Heels
-                      </a>
-                      <div className="price">
-                        <h6>$189.00</h6>
-                        <h6 className="l-through">$210.00</h6>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-lg-4 col-md-4 col-sm-6">
-                  <div className="single-related-product d-flex">
-                    <a href="#">
-                      <img src="img/r11.jpg" alt="" />
-                    </a>
-                    <div className="desc">
-                      <a href="#" className="title">
-                        Black lace Heels
-                      </a>
-                      <div className="price">
-                        <h6>$189.00</h6>
-                        <h6 className="l-through">$210.00</h6>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-3">
-              <div className="ctg-right">
-                <a href="#" target="_blank">
+            <div className="col-sm-12 col-md-6 col-lg-3 ftco-animate d-flex">
+              <div className="product d-flex flex-column">
+                <a href="#" className="img-prod">
                   <img
-                    className="img-fluid d-block mx-auto"
-                    src="img/category/c5.jpg"
-                    alt=""
+                    className="img-fluid"
+                    src="images/product-1.png"
+                    alt="Colorlib Template"
                   />
+                  <div className="overlay" />
                 </a>
+                <div className="text py-3 pb-4 px-3">
+                  <div className="d-flex">
+                    <div className="cat">
+                      <span>Lifestyle</span>
+                    </div>
+                    <div className="rating">
+                      <p className="text-right mb-0">
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                      </p>
+                    </div>
+                  </div>
+                  <h3>
+                    <a href="#">Nike Free RN 2019 iD</a>
+                  </h3>
+                  <div className="pricing">
+                    <p className="price">
+                      <span>$120.00</span>
+                    </p>
+                  </div>
+                  <p className="bottom-area d-flex px-3">
+                    <a href="#" className="add-to-cart text-center py-2 mr-1">
+                      <span>
+                        Add to cart <i className="ion-ios-add ml-1" />
+                      </span>
+                    </a>
+                    <a href="#" className="buy-now text-center py-2">
+                      Buy now
+                      <span>
+                        <i className="ion-ios-cart ml-1" />
+                      </span>
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="col-sm-12 col-md-6 col-lg-3 ftco-animate d-flex">
+              <div className="product d-flex flex-column">
+                <a href="#" className="img-prod">
+                  <img
+                    className="img-fluid"
+                    src="images/product-2.png"
+                    alt="Colorlib Template"
+                  />
+                  <span className="status">50% Off</span>
+                  <div className="overlay" />
+                </a>
+                <div className="text py-3 pb-4 px-3">
+                  <div className="d-flex">
+                    <div className="cat">
+                      <span>Lifestyle</span>
+                    </div>
+                    <div className="rating">
+                      <p className="text-right mb-0">
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                      </p>
+                    </div>
+                  </div>
+                  <h3>
+                    <a href="#">Nike Free RN 2019 iD</a>
+                  </h3>
+                  <div className="pricing">
+                    <p className="price">
+                      <span className="mr-2 price-dc">$120.00</span>
+                      <span className="price-sale">$80.00</span>
+                    </p>
+                  </div>
+                  <p className="bottom-area d-flex px-3">
+                    <a href="#" className="add-to-cart text-center py-2 mr-1">
+                      <span>
+                        Add to cart <i className="ion-ios-add ml-1" />
+                      </span>
+                    </a>
+                    <a href="#" className="buy-now text-center py-2">
+                      Buy now
+                      <span>
+                        <i className="ion-ios-cart ml-1" />
+                      </span>
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="col-sm-12 col-md-6 col-lg-3 ftco-animate d-flex">
+              <div className="product">
+                <a href="#" className="img-prod">
+                  <img
+                    className="img-fluid"
+                    src="images/product-3.png"
+                    alt="Colorlib Template"
+                  />
+                  <div className="overlay" />
+                </a>
+                <div className="text py-3 pb-4 px-3">
+                  <div className="d-flex">
+                    <div className="cat">
+                      <span>Lifestyle</span>
+                    </div>
+                    <div className="rating">
+                      <p className="text-right mb-0">
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                      </p>
+                    </div>
+                  </div>
+                  <h3>
+                    <a href="#">Nike Free RN 2019 iD</a>
+                  </h3>
+                  <div className="pricing">
+                    <p className="price">
+                      <span>$120.00</span>
+                    </p>
+                  </div>
+                  <p className="bottom-area d-flex px-3">
+                    <a href="#" className="add-to-cart text-center py-2 mr-1">
+                      <span>
+                        Add to cart <i className="ion-ios-add ml-1" />
+                      </span>
+                    </a>
+                    <a href="#" className="buy-now text-center py-2">
+                      Buy now
+                      <span>
+                        <i className="ion-ios-cart ml-1" />
+                      </span>
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="col-sm-12 col-md-6 col-lg-3 ftco-animate d-flex">
+              <div className="product">
+                <a href="#" className="img-prod">
+                  <img
+                    className="img-fluid"
+                    src="images/product-4.png"
+                    alt="Colorlib Template"
+                  />
+                  <div className="overlay" />
+                </a>
+                <div className="text py-3 pb-4 px-3">
+                  <div className="d-flex">
+                    <div className="cat">
+                      <span>Lifestyle</span>
+                    </div>
+                    <div className="rating">
+                      <p className="text-right mb-0">
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                      </p>
+                    </div>
+                  </div>
+                  <h3>
+                    <a href="#">Nike Free RN 2019 iD</a>
+                  </h3>
+                  <div className="pricing">
+                    <p className="price">
+                      <span>$120.00</span>
+                    </p>
+                  </div>
+                  <p className="bottom-area d-flex px-3">
+                    <a href="#" className="add-to-cart text-center py-2 mr-1">
+                      <span>
+                        Add to cart <i className="ion-ios-add ml-1" />
+                      </span>
+                    </a>
+                    <a href="#" className="buy-now text-center py-2">
+                      Buy now
+                      <span>
+                        <i className="ion-ios-cart ml-1" />
+                      </span>
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="col-sm-12 col-md-6 col-lg-3 ftco-animate d-flex">
+              <div className="product d-flex flex-column">
+                <a href="#" className="img-prod">
+                  <img
+                    className="img-fluid"
+                    src="images/product-5.png"
+                    alt="Colorlib Template"
+                  />
+                  <div className="overlay" />
+                </a>
+                <div className="text py-3 pb-4 px-3">
+                  <div className="d-flex">
+                    <div className="cat">
+                      <span>Lifestyle</span>
+                    </div>
+                    <div className="rating">
+                      <p className="text-right mb-0">
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                      </p>
+                    </div>
+                  </div>
+                  <h3>
+                    <a href="#">Nike Free RN 2019 iD</a>
+                  </h3>
+                  <div className="pricing">
+                    <p className="price">
+                      <span>$120.00</span>
+                    </p>
+                  </div>
+                  <p className="bottom-area d-flex px-3">
+                    <a href="#" className="add-to-cart text-center py-2 mr-1">
+                      <span>
+                        Add to cart <i className="ion-ios-add ml-1" />
+                      </span>
+                    </a>
+                    <a href="#" className="buy-now text-center py-2">
+                      Buy now
+                      <span>
+                        <i className="ion-ios-cart ml-1" />
+                      </span>
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="col-sm-12 col-md-6 col-lg-3 ftco-animate d-flex">
+              <div className="product d-flex flex-column">
+                <a href="#" className="img-prod">
+                  <img
+                    className="img-fluid"
+                    src="images/product-6.png"
+                    alt="Colorlib Template"
+                  />
+                  <span className="status">50% Off</span>
+                  <div className="overlay" />
+                </a>
+                <div className="text py-3 pb-4 px-3">
+                  <div className="d-flex">
+                    <div className="cat">
+                      <span>Lifestyle</span>
+                    </div>
+                    <div className="rating">
+                      <p className="text-right mb-0">
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                      </p>
+                    </div>
+                  </div>
+                  <h3>
+                    <a href="#">Nike Free RN 2019 iD</a>
+                  </h3>
+                  <div className="pricing">
+                    <p className="price">
+                      <span className="mr-2 price-dc">$120.00</span>
+                      <span className="price-sale">$80.00</span>
+                    </p>
+                  </div>
+                  <p className="bottom-area d-flex px-3">
+                    <a href="#" className="add-to-cart text-center py-2 mr-1">
+                      <span>
+                        Add to cart <i className="ion-ios-add ml-1" />
+                      </span>
+                    </a>
+                    <a href="#" className="buy-now text-center py-2">
+                      Buy now
+                      <span>
+                        <i className="ion-ios-cart ml-1" />
+                      </span>
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="col-sm-12 col-md-6 col-lg-3 ftco-animate d-flex">
+              <div className="product">
+                <a href="#" className="img-prod">
+                  <img
+                    className="img-fluid"
+                    src="images/product-7.png"
+                    alt="Colorlib Template"
+                  />
+                  <div className="overlay" />
+                </a>
+                <div className="text py-3 pb-4 px-3">
+                  <div className="d-flex">
+                    <div className="cat">
+                      <span>Lifestyle</span>
+                    </div>
+                    <div className="rating">
+                      <p className="text-right mb-0">
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                      </p>
+                    </div>
+                  </div>
+                  <h3>
+                    <a href="#">Nike Free RN 2019 iD</a>
+                  </h3>
+                  <div className="pricing">
+                    <p className="price">
+                      <span>$120.00</span>
+                    </p>
+                  </div>
+                  <p className="bottom-area d-flex px-3">
+                    <a href="#" className="add-to-cart text-center py-2 mr-1">
+                      <span>
+                        Add to cart <i className="ion-ios-add ml-1" />
+                      </span>
+                    </a>
+                    <a href="#" className="buy-now text-center py-2">
+                      Buy now
+                      <span>
+                        <i className="ion-ios-cart ml-1" />
+                      </span>
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="col-sm-12 col-md-6 col-lg-3 ftco-animate d-flex">
+              <div className="product">
+                <a href="#" className="img-prod">
+                  <img
+                    className="img-fluid"
+                    src="images/product-8.png"
+                    alt="Colorlib Template"
+                  />
+                  <div className="overlay" />
+                </a>
+                <div className="text py-3 pb-4 px-3">
+                  <div className="d-flex">
+                    <div className="cat">
+                      <span>Lifestyle</span>
+                    </div>
+                    <div className="rating">
+                      <p className="text-right mb-0">
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                        <a href="#">
+                          <span className="ion-ios-star-outline" />
+                        </a>
+                      </p>
+                    </div>
+                  </div>
+                  <h3>
+                    <a href="#">Nike Free RN 2019 iD</a>
+                  </h3>
+                  <div className="pricing">
+                    <p className="price">
+                      <span>$120.00</span>
+                    </p>
+                  </div>
+                  <p className="bottom-area d-flex px-3">
+                    <a href="#" className="add-to-cart text-center py-2 mr-1">
+                      <span>
+                        Add to cart <i className="ion-ios-add ml-1" />
+                      </span>
+                    </a>
+                    <a href="#" className="buy-now text-center py-2">
+                      Buy now
+                      <span>
+                        <i className="ion-ios-cart ml-1" />
+                      </span>
+                    </a>
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
-      {/* End related-product Area */}
-      {/* start footer Area */}
-      <footer className="footer-area section_gap">
+      <section className="ftco-section ftco-choose ftco-no-pb ftco-no-pt">
         <div className="container">
-          <div className="row">
-            <div className="col-lg-3  col-md-6 col-sm-6">
-              <div className="single-footer-widget">
-                <h6>About Us</h6>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
-                  do eiusmod tempor incididunt ut labore dolore magna aliqua.
-                </p>
+          <div className="row no-gutters">
+            <div className="col-lg-4">
+              <div
+                className="choose-wrap divider-one img p-5 d-flex align-items-end"
+                style={{ backgroundImage: "url(images/choose-1.jpg)" }}
+              >
+                <div className="text text-center text-white px-2">
+                  <span className="subheading">Men's Shoes</span>
+                  <h2>Men's Collection</h2>
+                  <p>
+                    Separated they live in Bookmarksgrove right at the coast of
+                    the Semantics, a large language ocean.
+                  </p>
+                  <p>
+                    <a href="#" className="btn btn-black px-3 py-2">
+                      Shop now
+                    </a>
+                  </p>
+                </div>
               </div>
             </div>
-            <div className="col-lg-4  col-md-6 col-sm-6">
-              <div className="single-footer-widget">
-                <h6>Newsletter</h6>
-                <p>Stay update with our latest</p>
-                <div className="" id="mc_embed_signup">
-                  <form
-                    target="_blank"
-                    action="https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&id=92a4423d01"
-                    method="get"
-                    className="form-inline"
+            <div className="col-lg-8">
+              <div className="row no-gutters choose-wrap divider-two align-items-stretch">
+                <div className="col-md-12">
+                  <div
+                    className="choose-wrap full-wrap img align-self-stretch d-flex align-item-center justify-content-end"
+                    style={{ backgroundImage: "url(images/choose-2.jpg)" }}
                   >
-                    <div className="d-flex flex-row">
-                      <input
-                        className="form-control"
-                        name="EMAIL"
-                        placeholder="Enter Email"
-                        type="email"
-                      />
-                      <button className="click-btn btn btn-default">
-                        <i
-                          className="fa fa-long-arrow-right"
-                          aria-hidden="true"
-                        />
-                      </button>
-                      <div style={{ position: "absolute", left: "-5000px" }}>
-                        <input
-                          name="b_36c4fd991d266f23781ded980_aefe40901a"
-                          tabIndex={-1}
-                          defaultValue=""
-                          type="text"
-                        />
+                    <div className="col-md-7 d-flex align-items-center">
+                      <div className="text text-white px-5">
+                        <span className="subheading">Women's Shoes</span>
+                        <h2>Women's Collection</h2>
+                        <p>
+                          Separated they live in Bookmarksgrove right at the
+                          coast of the Semantics, a large language ocean.
+                        </p>
+                        <p>
+                          <a href="#" className="btn btn-black px-3 py-2">
+                            Shop now
+                          </a>
+                        </p>
                       </div>
-                      {/* <div class="col-lg-4 col-md-4">
-												<button class="bb-btn btn"><span class="lnr lnr-arrow-right"></span></button>
-											</div>  */}
                     </div>
-                    <div className="info" />
-                  </form>
+                  </div>
+                </div>
+                <div className="col-md-12">
+                  <div className="row no-gutters">
+                    <div className="col-md-6">
+                      <div className="choose-wrap wrap img align-self-stretch bg-light d-flex align-items-center">
+                        <div className="text text-center px-5">
+                          <span className="subheading">Summer Sale</span>
+                          <h2>Extra 50% Off</h2>
+                          <p>
+                            Separated they live in Bookmarksgrove right at the
+                            coast of the Semantics, a large language ocean.
+                          </p>
+                          <p>
+                            <a href="#" className="btn btn-black px-3 py-2">
+                              Shop now
+                            </a>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-md-6">
+                      <div
+                        className="choose-wrap wrap img align-self-stretch d-flex align-items-center"
+                        style={{ backgroundImage: "url(images/choose-3.jpg)" }}
+                      >
+                        <div className="text text-center text-white px-5">
+                          <span className="subheading">Shoes</span>
+                          <h2>Best Sellers</h2>
+                          <p>
+                            Separated they live in Bookmarksgrove right at the
+                            coast of the Semantics, a large language ocean.
+                          </p>
+                          <p>
+                            <a href="#" className="btn btn-black px-3 py-2">
+                              Shop now
+                            </a>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="col-lg-3  col-md-6 col-sm-6">
-              <div className="single-footer-widget mail-chimp">
-                <h6 className="mb-20">Instragram Feed</h6>
-                <ul className="instafeed d-flex flex-wrap">
-                  <li>
-                    <img src="img/i1.jpg" alt="" />
-                  </li>
-                  <li>
-                    <img src="img/i2.jpg" alt="" />
-                  </li>
-                  <li>
-                    <img src="img/i3.jpg" alt="" />
-                  </li>
-                  <li>
-                    <img src="img/i4.jpg" alt="" />
-                  </li>
-                  <li>
-                    <img src="img/i5.jpg" alt="" />
-                  </li>
-                  <li>
-                    <img src="img/i6.jpg" alt="" />
-                  </li>
-                  <li>
-                    <img src="img/i7.jpg" alt="" />
-                  </li>
-                  <li>
-                    <img src="img/i8.jpg" alt="" />
-                  </li>
+          </div>
+        </div>
+      </section>
+      <section className="ftco-section ftco-deal bg-primary">
+        <div className="container">
+          <div className="row">
+            <div className="col-md-6">
+              <img src="images/prod-1.png" className="img-fluid" alt="" />
+            </div>
+            <div className="col-md-6">
+              <div className="heading-section heading-section-white">
+                <span className="subheading">Deal of the month</span>
+                <h2 className="mb-3">Deal of the month</h2>
+              </div>
+              <div id="timer" className="d-flex mb-4">
+                <div className="time" id="days" />
+                <div className="time pl-4" id="hours" />
+                <div className="time pl-4" id="minutes" />
+                <div className="time pl-4" id="seconds" />
+              </div>
+              <div className="text-deal">
+                <h2>
+                  <a href="#">Nike Free RN 2019 iD</a>
+                </h2>
+                <p className="price">
+                  <span className="mr-2 price-dc">$120.00</span>
+                  <span className="price-sale">$80.00</span>
+                </p>
+                <ul className="thumb-deal d-flex mt-4">
+                  <li
+                    className="img"
+                    style={{ backgroundImage: "url(images/product-6.png)" }}
+                  />
+                  <li
+                    className="img"
+                    style={{ backgroundImage: "url(images/product-2.png)" }}
+                  />
+                  <li
+                    className="img"
+                    style={{ backgroundImage: "url(images/product-4.png)" }}
+                  />
                 </ul>
               </div>
             </div>
-            <div className="col-lg-2 col-md-6 col-sm-6">
-              <div className="single-footer-widget">
-                <h6>Follow Us</h6>
-                <p>Let us be social</p>
-                <div className="footer-social d-flex align-items-center">
-                  <a href="#">
-                    <i className="fa fa-facebook" />
-                  </a>
-                  <a href="#">
-                    <i className="fa fa-twitter" />
-                  </a>
-                  <a href="#">
-                    <i className="fa fa-dribbble" />
-                  </a>
-                  <a href="#">
-                    <i className="fa fa-behance" />
-                  </a>
+          </div>
+        </div>
+      </section>
+      <section className="ftco-section testimony-section">
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-5">
+              <div className="services-flow">
+                <div className="services-2 p-4 d-flex ftco-animate">
+                  <div className="icon">
+                    <span className="flaticon-bag" />
+                  </div>
+                  <div className="text">
+                    <h3>Free Shipping</h3>
+                    <p className="mb-0">
+                      Separated they live in. A small river named Duden flows
+                    </p>
+                  </div>
+                </div>
+                <div className="services-2 p-4 d-flex ftco-animate">
+                  <div className="icon">
+                    <span className="flaticon-heart-box" />
+                  </div>
+                  <div className="text">
+                    <h3>Valuable Gifts</h3>
+                    <p className="mb-0">
+                      Separated they live in. A small river named Duden flows
+                    </p>
+                  </div>
+                </div>
+                <div className="services-2 p-4 d-flex ftco-animate">
+                  <div className="icon">
+                    <span className="flaticon-payment-security" />
+                  </div>
+                  <div className="text">
+                    <h3>All Day Support</h3>
+                    <p className="mb-0">
+                      Separated they live in. A small river named Duden flows
+                    </p>
+                  </div>
+                </div>
+                <div className="services-2 p-4 d-flex ftco-animate">
+                  <div className="icon">
+                    <span className="flaticon-customer-service" />
+                  </div>
+                  <div className="text">
+                    <h3>All Day Support</h3>
+                    <p className="mb-0">
+                      Separated they live in. A small river named Duden flows
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="col-lg-7">
+              <div className="heading-section ftco-animate mb-5">
+                <h2 className="mb-4">Our satisfied customer says</h2>
+                <p>
+                  Far far away, behind the word mountains, far from the
+                  countries Vokalia and Consonantia, there live the blind texts.
+                  Separated they live in
+                </p>
+              </div>
+              <div className="carousel-testimony owl-carousel">
+                <div className="item">
+                  <div className="testimony-wrap">
+                    <div
+                      className="user-img mb-4"
+                      style={{ backgroundImage: "url(images/person_1.jpg)" }}
+                    >
+                      <span className="quote d-flex align-items-center justify-content-center">
+                        <i className="icon-quote-left" />
+                      </span>
+                    </div>
+                    <div className="text">
+                      <p className="mb-4 pl-4 line">
+                        Far far away, behind the word mountains, far from the
+                        countries Vokalia and Consonantia, there live the blind
+                        texts.
+                      </p>
+                      <p className="name">Garreth Smith</p>
+                      <span className="position">Marketing Manager</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="item">
+                  <div className="testimony-wrap">
+                    <div
+                      className="user-img mb-4"
+                      style={{ backgroundImage: "url(images/person_2.jpg)" }}
+                    >
+                      <span className="quote d-flex align-items-center justify-content-center">
+                        <i className="icon-quote-left" />
+                      </span>
+                    </div>
+                    <div className="text">
+                      <p className="mb-4 pl-4 line">
+                        Far far away, behind the word mountains, far from the
+                        countries Vokalia and Consonantia, there live the blind
+                        texts.
+                      </p>
+                      <p className="name">Garreth Smith</p>
+                      <span className="position">Interface Designer</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="item">
+                  <div className="testimony-wrap">
+                    <div
+                      className="user-img mb-4"
+                      style={{ backgroundImage: "url(images/person_3.jpg)" }}
+                    >
+                      <span className="quote d-flex align-items-center justify-content-center">
+                        <i className="icon-quote-left" />
+                      </span>
+                    </div>
+                    <div className="text">
+                      <p className="mb-4 pl-4 line">
+                        Far far away, behind the word mountains, far from the
+                        countries Vokalia and Consonantia, there live the blind
+                        texts.
+                      </p>
+                      <p className="name">Garreth Smith</p>
+                      <span className="position">UI Designer</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="item">
+                  <div className="testimony-wrap">
+                    <div
+                      className="user-img mb-4"
+                      style={{ backgroundImage: "url(images/person_1.jpg)" }}
+                    >
+                      <span className="quote d-flex align-items-center justify-content-center">
+                        <i className="icon-quote-left" />
+                      </span>
+                    </div>
+                    <div className="text">
+                      <p className="mb-4 pl-4 line">
+                        Far far away, behind the word mountains, far from the
+                        countries Vokalia and Consonantia, there live the blind
+                        texts.
+                      </p>
+                      <p className="name">Garreth Smith</p>
+                      <span className="position">Web Developer</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="item">
+                  <div className="testimony-wrap">
+                    <div
+                      className="user-img mb-4"
+                      style={{ backgroundImage: "url(images/person_1.jpg)" }}
+                    >
+                      <span className="quote d-flex align-items-center justify-content-center">
+                        <i className="icon-quote-left" />
+                      </span>
+                    </div>
+                    <div className="text">
+                      <p className="mb-4 pl-4 line">
+                        Far far away, behind the word mountains, far from the
+                        countries Vokalia and Consonantia, there live the blind
+                        texts.
+                      </p>
+                      <p className="name">Garreth Smith</p>
+                      <span className="position">System Analyst</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="footer-bottom d-flex justify-content-center align-items-center flex-wrap">
-            <p className="footer-text m-0">
-              {/* Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. */}
-              Copyright © All rights reserved | This template is made with{" "}
-              <i className="fa fa-heart-o" aria-hidden="true" /> by{" "}
-              <a href="https://colorlib.com" target="_blank" rel="noreferrer">
-                Colorlib
-              </a>
-              {/* Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. */}
-            </p>
+        </div>
+      </section>
+      <section className="ftco-gallery">
+        <div className="container">
+          <div className="row justify-content-center">
+            <div className="col-md-8 heading-section text-center mb-4 ftco-animate">
+              <h2 className="mb-4">Follow Us On Instagram</h2>
+              <p>
+                Far far away, behind the word mountains, far from the countries
+                Vokalia and Consonantia, there live the blind texts. Separated
+                they live in
+              </p>
+            </div>
           </div>
         </div>
-      </footer>
-      {/* End footer Area */}
+        <div className="container-fluid px-0">
+          <div className="row no-gutters">
+            <div className="col-md-4 col-lg-2 ftco-animate">
+              <a
+                href="images/gallery-1.jpg"
+                className="gallery image-popup img d-flex align-items-center"
+                style={{ backgroundImage: "url(images/gallery-1.jpg)" }}
+              >
+                <div className="icon mb-4 d-flex align-items-center justify-content-center">
+                  <span className="icon-instagram" />
+                </div>
+              </a>
+            </div>
+            <div className="col-md-4 col-lg-2 ftco-animate">
+              <a
+                href="images/gallery-2.jpg"
+                className="gallery image-popup img d-flex align-items-center"
+                style={{ backgroundImage: "url(images/gallery-2.jpg)" }}
+              >
+                <div className="icon mb-4 d-flex align-items-center justify-content-center">
+                  <span className="icon-instagram" />
+                </div>
+              </a>
+            </div>
+            <div className="col-md-4 col-lg-2 ftco-animate">
+              <a
+                href="images/gallery-3.jpg"
+                className="gallery image-popup img d-flex align-items-center"
+                style={{ backgroundImage: "url(images/gallery-3.jpg)" }}
+              >
+                <div className="icon mb-4 d-flex align-items-center justify-content-center">
+                  <span className="icon-instagram" />
+                </div>
+              </a>
+            </div>
+            <div className="col-md-4 col-lg-2 ftco-animate">
+              <a
+                href="images/gallery-4.jpg"
+                className="gallery image-popup img d-flex align-items-center"
+                style={{ backgroundImage: "url(images/gallery-4.jpg)" }}
+              >
+                <div className="icon mb-4 d-flex align-items-center justify-content-center">
+                  <span className="icon-instagram" />
+                </div>
+              </a>
+            </div>
+            <div className="col-md-4 col-lg-2 ftco-animate">
+              <a
+                href="images/gallery-5.jpg"
+                className="gallery image-popup img d-flex align-items-center"
+                style={{ backgroundImage: "url(images/gallery-5.jpg)" }}
+              >
+                <div className="icon mb-4 d-flex align-items-center justify-content-center">
+                  <span className="icon-instagram" />
+                </div>
+              </a>
+            </div>
+            <div className="col-md-4 col-lg-2 ftco-animate">
+              <a
+                href="images/gallery-6.jpg"
+                className="gallery image-popup img d-flex align-items-center"
+                style={{ backgroundImage: "url(images/gallery-6.jpg)" }}
+              >
+                <div className="icon mb-4 d-flex align-items-center justify-content-center">
+                  <span className="icon-instagram" />
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
     </>
   );
 }
