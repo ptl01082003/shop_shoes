@@ -1,31 +1,34 @@
-import { NextFunction, Request } from "express";
-import { nextTick } from "process";
+import jwt, { Secret } from "jsonwebtoken";
+import { NextFunction, Request, Response } from "express";
+import { RESPONSE_CODE, ResponseBody, STATUS_CODE } from "../constants";
 
-export function checkAuth(_req: any, _res: any, _next: any) {
-  _next();
-}
-
-// import { Request, Response, NextFunction } from "express";
-// import { client } from "../config/ConnectRedis";
-
-// const auth = async (req: Request, res: Response, next: NextFunction) => {
-//   try {
-//     const token = req.header("Authorization");
-//     const currentToken = await client.get("current_token");
-
-//     if (!token) {
-//       return res.status(401).json({ message: "Invalid Authentication" });
-//     }
-
-//     if (!currentToken || currentToken !== token) {
-//       return res.status(401).json({ message: "Authorization not valid" });
-//     }
-
-//     next();
-//   } catch (error) {
-//     console.error("Error in auth middleware:", error);
-//     return res.status(500).json({ message: "Internal Server Error" });
-//   }
-// };
-
-// export default auth;
+export const checkAuth = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const token = req.body?.token || "";
+    if (!token)
+      return res.status(STATUS_CODE.NOT_AUTHEN).json(
+        ResponseBody({
+          data: null,
+          code: RESPONSE_CODE.ERRORS,
+          message: "Bạn chưa đăng nhập",
+        })
+      );
+    jwt.verify(
+      token,
+      process.env.AC_TOKEN_KEY as Secret,
+      (err: any, decode: any) => {
+        if (err) {
+          return res.status(STATUS_CODE.NOT_AUTHOR).json(
+            ResponseBody({
+              data: null,
+              code: RESPONSE_CODE.ERRORS,
+              message: "Bạn không có quyền truy cập",
+            })
+          );
+        }
+        req.userId = decode?.userId;
+        next();
+      }
+    );
+  } catch (error) {}
+};

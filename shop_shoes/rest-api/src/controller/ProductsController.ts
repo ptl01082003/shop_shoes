@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { Op } from "sequelize";
 import { Products } from "../models/Products";
 
 const ProductController = {
@@ -17,6 +18,19 @@ const ProductController = {
         materialID,
         colorID,
       } = req.body;
+
+      // Kiểm tra dữ liệu đầu vào
+      // if (
+      //   !productsName ||
+      //   !productImportPrice ||
+      //   !productLineID ||
+      //   !originID ||
+      //   !styleID ||
+      //   !materialID ||
+      //   !colorID
+      // ) {
+      //   return res.status(400).json({ message: "Missing required fields" });
+      // }
 
       const product = await Products.create({
         productsName,
@@ -41,7 +55,20 @@ const ProductController = {
   // READ - Get all products
   getProducts: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const products = await Products.findAll();
+      const { id, productName, productLineID } = req.query;
+      const whereClause: any = {};
+
+      if (id) {
+        whereClause.id = id;
+      }
+      if (productName) {
+        whereClause.productName = { [Op.like]: `%${productName}%` };
+      }
+      if (productLineID) {
+        whereClause.productLineID = productLineID;
+      }
+
+      const products = await Products.findAll({ where: whereClause });
       res.json({ data: products });
     } catch (error) {
       console.error(error);

@@ -12,6 +12,6 @@ export async function connectDB() {
     models: [path.resolve("./src/models")],
   });
   await sequelize.authenticate();
-  await sequelize.sync({ force: true });
+  await sequelize.sync({ force: false });
   console.log("Connection has been established successfully.");
 }

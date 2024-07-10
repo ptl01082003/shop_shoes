@@ -1,12 +1,9 @@
 import express from "express";
+import BrandsController from "../controller/BrandsController";
 import CartsController from "../controller/CartsController";
 
-const routerCarts = express.Router();
+const cartsRouter = express.Router();
 
-routerCarts.post("/", CartsController.addCart);
-routerCarts.get("/", CartsController.getCarts);
-routerCarts.get("/:id", CartsController.getCartById);
-routerCarts.put("/:id", CartsController.updateCart);
-routerCarts.delete("/:id", CartsController.deleteCart);
+cartsRouter.post("/", CartsController.add);
 
-export default routerCarts;
+export default cartsRouter;

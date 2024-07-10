@@ -22,6 +22,7 @@ const ProductDetailsController = {
         productID,
         pDetailStatus,
       });
+
       res.json({
         data: productDetail,
         message: "Product detail created successfully",

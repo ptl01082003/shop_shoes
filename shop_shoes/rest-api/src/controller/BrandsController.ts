@@ -1,4 +1,3 @@
-// controllers/BrandsController.ts
 import { Request, Response, NextFunction } from "express";
 import { Brands } from "../models/Brands";
 import { Op } from "sequelize";
