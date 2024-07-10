@@ -63,7 +63,7 @@ const PaymentOnlineController = {
         process.env["vnp_HashSecret"] as string
       );
       var signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
-      res.json({check: signed === secureHash})
+      res.json({ check: signed === secureHash });
       //kiểm tra tính toàn vẹn dữ liệu của giao dịch , sử dụng các tham số trên url trả về
       //thực hiện tuần tự các bước như yêu cầu thanh toán và check với mã băm trả về
       if (secureHash === signed) {

@@ -1,14 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import { Op } from "sequelize";
-import { Products } from "../models/Products";
+import { Product } from "../models/Products";
 
 const ProductsController = {
   addProduct: async (req: Request, res: Response, next: NextFunction) => {
-    console.log("hihi");
     try {
       const {
-        productName,
-        productNumber,
+        productsName,
         productImportPrice,
         productPrice,
         status,
@@ -17,26 +15,23 @@ const ProductsController = {
         originID,
         styleID,
         materialID,
+        colorID,
       } = req.body;
 
-      console.log("productName:", productName);
-      console.log("productNumber:", productNumber);
-      console.log("productImportPrice:", productImportPrice);
-      console.log("productPrice:", productPrice);
-      console.log("status:", status);
-      console.log("display:", display);
-      console.log("productLineID:", productLineID);
-      console.log("originID:", originID);
-      console.log("styleID:", styleID);
-      console.log("materialID:", materialID);
-      console.log(req.body);
-
       // Kiểm tra dữ liệu đầu vào
-      if (!productName || !productImportPrice || !productPrice) {
-        return res.status(400).json({ message: "Missing required fields" });
-      }
+      // if (
+      //   !productsName ||
+      //   !productImportPrice ||
+      //   !productLineID ||
+      //   !originID ||
+      //   !styleID ||
+      //   !materialID ||
+      //   !colorID
+      // ) {
+      //   return res.status(400).json({ message: "Missing required fields" });
+      // }
 
-      const product = await Products.create({
+      const product = await Product.create({
         productName,
         productNumber,
         productImportPrice,
@@ -47,6 +42,7 @@ const ProductsController = {
         originID,
         styleID,
         materialID,
+        colorID,
       });
 
       res.json({ data: product, message: "Add new product successfully" });
@@ -71,7 +67,7 @@ const ProductsController = {
         whereClause.productLineID = productLineID;
       }
 
-      const products = await Products.findAll({ where: whereClause });
+      const products = await Product.findAll({ where: whereClause });
       res.json({ data: products });
     } catch (error) {
       console.log(error);
@@ -82,7 +78,7 @@ const ProductsController = {
   getProductById: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const product = await Products.findByPk(id);
+      const product = await Product.findByPk(id);
       if (product) {
         res.json({ data: product });
       } else {
@@ -98,8 +94,7 @@ const ProductsController = {
     try {
       const { id } = req.params;
       const {
-        productName,
-        productNumber,
+        productsName,
         productImportPrice,
         productPrice,
         status,
@@ -108,18 +103,26 @@ const ProductsController = {
         originID,
         styleID,
         materialID,
+        colorID,
       } = req.body;
 
       // Kiểm tra dữ liệu đầu vào
-      if (!productName || !productImportPrice || !productPrice) {
+      if (
+        !productsName ||
+        !productImportPrice ||
+        !productLineID ||
+        !originID ||
+        !styleID ||
+        !materialID ||
+        !colorID
+      ) {
         return res.status(400).json({ message: "Missing required fields" });
       }
 
       const product = await Products.findByPk(id);
       if (product) {
         await product.update({
-          productName,
-          productNumber,
+          productsName,
           productImportPrice,
           productPrice,
           status,
@@ -128,6 +131,7 @@ const ProductsController = {
           originID,
           styleID,
           materialID,
+          colorID,
         });
         res.json({ message: "Product updated successfully" });
       } else {

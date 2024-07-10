@@ -1,27 +1,31 @@
 import { Request, Response, NextFunction } from "express";
 import { ProductDetails } from "../models/ProductDetails";
-import { SizeColor } from "../models/SizeColor";
+import { Products } from "../models/Products";
+import { Sizes } from "../models/Sizes";
 
 const ProductDetailsController = {
   addProductDetail: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { pDetailQuantity, pDetailStatus, productID, sizeColors } =
-        req.body;
+      const { productID, pDetailStatus } = req.body;
 
       // Kiểm tra dữ liệu đầu vào
-      if (!productID || !Array.isArray(sizeColors)) {
-        return res.status(400).json({ message: "Missing required fields" });
+      if (!productID) {
+        return res.status(400).json({ message: "Product ID is required" });
+      }
+
+      const product = await Products.findByPk(productID);
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
       }
 
       const productDetail = await ProductDetails.create({
-        pDetailQuantity,
-        pDetailStatus,
         productID,
+        pDetailStatus,
       });
 
       const sizeColorEntries = sizeColors.map((entry: any) => ({
         ...entry,
-        productDetailID: productDetail.productID,
+        productDetailID: productDetail.pDetailID,
       }));
 
       await SizeColor.bulkCreate(sizeColorEntries);
@@ -31,7 +35,7 @@ const ProductDetailsController = {
         message: "Product detail created successfully",
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       next(error);
     }
   },
@@ -42,20 +46,12 @@ const ProductDetailsController = {
     next: NextFunction
   ) => {
     try {
-      const { productID } = req.query;
-      const whereClause: any = {};
-
-      if (productID) {
-        whereClause.productID = productID;
-      }
-
       const productDetails = await ProductDetails.findAll({
-        where: whereClause,
-        include: [SizeColor],
+        include: [Products, Sizes],
       });
       res.json({ data: productDetails });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       next(error);
     }
   },
@@ -68,15 +64,14 @@ const ProductDetailsController = {
     try {
       const { id } = req.params;
       const productDetail = await ProductDetails.findByPk(id, {
-        include: [SizeColor],
+        include: [Products, Sizes],
       });
-      if (productDetail) {
-        res.json({ data: productDetail });
-      } else {
-        res.status(404).json({ message: "Product detail not found" });
+      if (!productDetail) {
+        return res.status(404).json({ message: "Product detail not found" });
       }
+      res.json({ data: productDetail });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       next(error);
     }
   },
@@ -88,34 +83,28 @@ const ProductDetailsController = {
   ) => {
     try {
       const { id } = req.params;
-      const { pDetailQuantity, pDetailStatus, sizeColors } = req.body;
+      const { productID, pDetailStatus } = req.body;
 
       // Kiểm tra dữ liệu đầu vào
-      if (!Array.isArray(sizeColors)) {
-        return res.status(400).json({ message: "Missing required fields" });
+      if (!productID) {
+        return res.status(400).json({ message: "Product ID is required" });
       }
 
       const productDetail = await ProductDetails.findByPk(id);
-      if (productDetail) {
-        await productDetail.update({ pDetailQuantity, pDetailStatus });
-
-        // Xóa các sizeColors cũ
-        await SizeColor.destroy({ where: { productDetailID: id } });
-
-        // Tạo lại các sizeColors mới
-        const sizeColorEntries = sizeColors.map((entry: any) => ({
-          ...entry,
-          productDetailID: id,
-        }));
-
-        await SizeColor.bulkCreate(sizeColorEntries);
-
-        res.json({ message: "Product detail updated successfully" });
-      } else {
-        res.status(404).json({ message: "Product detail not found" });
+      if (!productDetail) {
+        return res.status(404).json({ message: "Product detail not found" });
       }
+
+      // Kiểm tra và cập nhật sản phẩm liên quan
+      const product = await Products.findByPk(productID);
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+
+      await productDetail.update({ productID, pDetailStatus });
+      res.json({ message: "Product detail updated successfully" });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       next(error);
     }
   },
@@ -128,17 +117,13 @@ const ProductDetailsController = {
     try {
       const { id } = req.params;
       const productDetail = await ProductDetails.findByPk(id);
-      if (productDetail) {
-        // Xóa các sizeColors liên quan
-        await SizeColor.destroy({ where: { productDetailID: id } });
-
-        await productDetail.destroy();
-        res.json({ message: "Product detail deleted successfully" });
-      } else {
-        res.status(404).json({ message: "Product detail not found" });
+      if (!productDetail) {
+        return res.status(404).json({ message: "Product detail not found" });
       }
+      await productDetail.destroy();
+      res.json({ message: "Product detail deleted successfully" });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       next(error);
     }
   },

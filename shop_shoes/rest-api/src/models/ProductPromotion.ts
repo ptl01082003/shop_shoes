@@ -16,10 +16,15 @@ import { Promotions } from "./Promotions";
   timestamps: true,
 })
 export class ProductPromotion extends Model {
+<<<<<<< Updated upstream
+=======
+  @PrimaryKey
+>>>>>>> Stashed changes
   @ForeignKey(() => Products)
   @Column
   public productID!: number;
 
+  @PrimaryKey
   @ForeignKey(() => Promotions)
   @Column
   public promotionID!: number;

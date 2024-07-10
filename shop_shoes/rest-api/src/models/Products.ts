@@ -15,6 +15,7 @@ import { ProductLines } from "./ProductLines";
 import { Styles } from "./Styles";
 import { Origins } from "./Origins";
 import { Materials } from "./Materials";
+import { Colors } from "./Colors";
 
 @Table({
   tableName: "products",
@@ -69,4 +70,11 @@ export class Products extends Model {
 
   @BelongsTo(() => Materials)
   public material?: Materials;
+
+  @ForeignKey(() => Colors)
+  @Column
+  public colorID?: number;
+
+  @BelongsTo(() => Colors)
+  public color?: Colors;
 }

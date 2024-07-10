@@ -14,13 +14,16 @@ import routerOrigin from "./OriginsRouter";
 // import vnpayRouter from "./VnpayRouter";
 import routerProduct from "./ProductsRouter";
 import routerSize from "./SizeRouter";
-import routerSizeColor from "./SizeColorRouter";
+
 import routerProductDetail from "./ProductDetailsRouter";
 // =======
 import PaymentOnlineRouter from "./PaymentOnlineRouter";
 import routerImage from "./ImagesRouter";
 import routerPromotions from "./PromotionsRouter";
 import routerProductPromotion from "./ProductPromotionRouter";
+import routerCustomers from "./CustomersRouter";
+import routerAddress from "./AddressRouter";
+import routerFavoritesList from "./FavoritesListRouter";
 // >>>>>>> 005a7aac0d39b7c54e22149b51747d4fbe8822a8
 
 const router = express.Router();
@@ -44,11 +47,13 @@ export function appRouter() {
   router.use("/material", routerMaterial);
   router.use("/origin", routerOrigin);
   router.use("/size", routerSize);
-  router.use("/size-color", routerSizeColor);
   router.use("/product-detail", routerProductDetail);
   router.use("/image", routerImage);
   router.use("/promotion", routerPromotions);
   router.use("/product-promotion", routerProductPromotion);
+  router.use("/customer", routerCustomers);
+  router.use("/address", routerAddress);
+  router.use("/favorite-list", routerFavoritesList);
   //PRIVATE ROUTER
 
   app.use(`/api/${process.env.API_VERSION}`, router);
