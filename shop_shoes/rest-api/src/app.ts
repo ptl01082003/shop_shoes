@@ -7,6 +7,15 @@ import cookieParser from "cookie-parser";
 import { connectDB } from "./config/ConnectDB";
 import { redis } from "./config/ConnectRedis";
 
+interface ResponseT extends Response {}
+
+declare global {
+  namespace Express {
+    interface Request {
+      userId?: number
+    }
+  }
+}
 export const app = express();
 
 app.use(
