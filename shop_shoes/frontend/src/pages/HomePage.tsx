@@ -10,17 +10,17 @@ export default function HomePage() {
                   <div className="icon mr-2 d-flex justify-content-center align-items-center">
                     <span className="icon-phone2" />
                   </div>
-                  <span className="text">+ 1235 2355 98</span>
+                  <span className="text">+84 369232003</span>
                 </div>
                 <div className="col-md pr-4 d-flex topper align-items-center">
                   <div className="icon mr-2 d-flex justify-content-center align-items-center">
                     <span className="icon-paper-plane" />
                   </div>
-                  <span className="text">youremail@email.com</span>
+                  <span className="text">lbeephamthanhlong@email.com</span>
                 </div>
                 <div className="col-md-5 pr-4 d-flex topper align-items-center text-lg-right">
                   <span className="text">
-                    3-5 Business days delivery &amp; Free Returns
+                    3-5 ngày làm việc giao hàng & trả lại miễn phí
                   </span>
                 </div>
               </div>
@@ -34,7 +34,7 @@ export default function HomePage() {
       >
         <div className="container">
           <a className="navbar-brand" href="index.html">
-            Minishop
+            LT-Store
           </a>
           <button
             className="navbar-toggler"

@@ -18,7 +18,7 @@ export default function LayoutTheme() {
           <div className="row mb-5">
             <div className="col-md">
               <div className="ftco-footer-widget mb-4">
-                <h2 className="ftco-heading-2">Minishop</h2>
+                <h2 className="ftco-heading-2">LT-Store</h2>
                 <p>
                   Far far away, behind the word mountains, far from the
                   countries Vokalia and Consonantia.
@@ -118,20 +118,21 @@ export default function LayoutTheme() {
                     <li>
                       <span className="icon icon-map-marker" />
                       <span className="text">
-                        203 Fake St. Mountain View, San Francisco, California,
-                        USA
+                        Đội 3, Giao Nhân, Giao Thủy, Nam Định, Việt Nam
                       </span>
                     </li>
                     <li>
                       <a href="#">
                         <span className="icon icon-phone" />
-                        <span className="text">+2 392 3929 210</span>
+                        <span className="text">+84 369232003</span>
                       </a>
                     </li>
                     <li>
                       <a href="#">
                         <span className="icon icon-envelope" />
-                        <span className="text">info@yourdomain.com</span>
+                        <span className="text">
+                          lbeephamthanhlong@gmail.com
+                        </span>
                       </a>
                     </li>
                   </ul>
@@ -144,6 +145,7 @@ export default function LayoutTheme() {
               <p>
                 {/* Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. */}
                 Copyright © All rights reserved | This template is made with
+                Long
                 <i className="icon-heart color-danger" aria-hidden="true" /> by
                 <a href="https://colorlib.com" target="_blank" rel="noreferrer">
                   Colorlib
