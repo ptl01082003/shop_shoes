@@ -19,19 +19,6 @@ const ProductController = {
         colorID,
       } = req.body;
 
-      // Kiểm tra dữ liệu đầu vào
-      // if (
-      //   !productsName ||
-      //   !productImportPrice ||
-      //   !productLineID ||
-      //   !originID ||
-      //   !styleID ||
-      //   !materialID ||
-      //   !colorID
-      // ) {
-      //   return res.status(400).json({ message: "Missing required fields" });
-      // }
-
       const product = await Products.create({
         productsName,
         productImportPrice,
@@ -45,10 +32,22 @@ const ProductController = {
         colorID,
       });
 
-      res.json({ data: product, message: "Product added successfully" });
+      res.status(201).json({
+        message: "Thêm sản phẩm thành công",
+        code: 0,
+        data: product,
+      });
     } catch (error) {
       console.error(error);
-      next(error);
+      let errorMessage = "Thêm sản phẩm thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thêm sản phẩm thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
@@ -62,14 +61,18 @@ const ProductController = {
         whereClause.id = id;
       }
       if (productName) {
-        whereClause.productName = { [Op.like]: `%${productName}%` };
+        whereClause.productsName = { [Op.like]: `%${productName}%` };
       }
       if (productLineID) {
         whereClause.productLineID = productLineID;
       }
 
       const products = await Products.findAll({ where: whereClause });
-      res.json({ data: products });
+      res.status(200).json({
+        message: "Lấy danh sách sản phẩm thành công",
+        code: 0,
+        data: products,
+      });
     } catch (error) {
       console.error(error);
       next(error);
@@ -82,9 +85,13 @@ const ProductController = {
       const { id } = req.params;
       const product = await Products.findByPk(id);
       if (product) {
-        res.json({ data: product });
+        res.status(200).json({
+          message: "Lấy thông tin sản phẩm thành công",
+          code: 0,
+          data: product,
+        });
       } else {
-        res.status(404).json({ message: "Product not found" });
+        res.status(404).json({ message: "Không tìm thấy sản phẩm" });
       }
     } catch (error) {
       console.error(error);
@@ -104,9 +111,12 @@ const ProductController = {
           productsName,
           productPrice,
         });
-        res.json({ message: "Product updated successfully" });
+        res.status(200).json({
+          message: "Cập nhật thông tin sản phẩm thành công",
+          code: 0,
+        });
       } else {
-        res.status(404).json({ message: "Product not found" });
+        res.status(404).json({ message: "Không tìm thấy sản phẩm" });
       }
     } catch (error) {
       console.error(error);
@@ -121,9 +131,13 @@ const ProductController = {
       const product = await Products.findByPk(id);
       if (product) {
         await product.destroy();
-        res.json({ message: "Product deleted successfully" });
+        res.status(200).json({
+          message: "Xóa sản phẩm thành công",
+          code: 0,
+          data: { id },
+        });
       } else {
-        res.status(404).json({ message: "Product not found" });
+        res.status(404).json({ message: "Không tìm thấy sản phẩm" });
       }
     } catch (error) {
       console.error(error);

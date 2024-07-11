@@ -7,9 +7,22 @@ const BrandsController = {
     try {
       const { brandName } = req.body;
       const brand = await Brands.create({ brandName });
-      res.json({ data: brand, message: "Add new brand successfully" });
+      res.status(201).json({
+        message: "Thực hiện thành công",
+        code: 0,
+        data: brand,
+      });
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
@@ -26,9 +39,22 @@ const BrandsController = {
       }
 
       const brands = await Brands.findAll({ where: whereClause });
-      res.json({ data: brands });
+      res.status(200).json({
+        message: "Thực hiện thành công",
+        code: 0,
+        data: brands,
+      });
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
@@ -37,12 +63,28 @@ const BrandsController = {
       const { id } = req.params;
       const brand = await Brands.findByPk(id);
       if (brand) {
-        res.json({ data: brand });
+        res.status(200).json({
+          message: "Thực hiện thành công",
+          code: 0,
+          data: brand,
+        });
       } else {
-        res.status(404).json({ message: "Brand not found" });
+        res.status(404).json({
+          message: "Thương hiệu không tồn tại",
+          code: 1,
+        });
       }
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
@@ -53,12 +95,28 @@ const BrandsController = {
       const brand = await Brands.findByPk(id);
       if (brand) {
         await brand.update({ brandName });
-        res.json({ message: "Brand updated successfully" });
+        res.status(200).json({
+          message: "Thực hiện thành công",
+          code: 0,
+          data: brand,
+        });
       } else {
-        res.status(404).json({ message: "Brand not found" });
+        res.status(404).json({
+          message: "Thương hiệu không tồn tại",
+          code: 1,
+        });
       }
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
@@ -68,12 +126,27 @@ const BrandsController = {
       const brand = await Brands.findByPk(id);
       if (brand) {
         await brand.destroy();
-        res.json({ message: "Brand deleted successfully" });
+        res.status(200).json({
+          message: "Thực hiện thành công",
+          code: 0,
+        });
       } else {
-        res.status(404).json({ message: "Brand not found" });
+        res.status(404).json({
+          message: "Thương hiệu không tồn tại",
+          code: 1,
+        });
       }
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 };

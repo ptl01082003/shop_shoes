@@ -7,7 +7,6 @@ const SizesController = {
     try {
       const { sizeName, sizeQuantity, productDetailID } = req.body;
 
-      // Kiểm tra dữ liệu đầu vào
       if (!sizeName || !productDetailID) {
         return res.status(400).json({ message: "Missing required fields" });
       }
@@ -24,9 +23,9 @@ const SizesController = {
         productDetailID,
       });
 
-      res.json({ data: size, message: "Add new size successfully" });
+      res.json({ data: size, message: "Thêm size mới thành công" });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       next(error);
     }
   },
@@ -43,7 +42,7 @@ const SizesController = {
       const sizes = await Sizes.findAll({ where: whereClause });
       res.json({ data: sizes });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       next(error);
     }
   },
@@ -55,10 +54,10 @@ const SizesController = {
       if (size) {
         res.json({ data: size });
       } else {
-        res.status(404).json({ message: "Size not found" });
+        res.status(404).json({ message: "Không tìm thấy size" });
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       next(error);
     }
   },
@@ -68,7 +67,6 @@ const SizesController = {
       const { id } = req.params;
       const { sizeName, sizeQuantity, productDetailID } = req.body;
 
-      // Kiểm tra dữ liệu đầu vào
       if (!sizeName || !productDetailID) {
         return res.status(400).json({ message: "Missing required fields" });
       }
@@ -76,20 +74,22 @@ const SizesController = {
       const size = await Sizes.findByPk(id);
 
       if (!size) {
-        return res.status(404).json({ message: "Size not found" });
+        return res.status(404).json({ message: "Không tìm thấy size" });
       }
 
       const productDetail = await ProductDetails.findByPk(productDetailID);
 
       if (!productDetail) {
-        return res.status(404).json({ message: "ProductDetail not found" });
+        return res
+          .status(404)
+          .json({ message: "Không tìm thấy ProductDetail" });
       }
 
       await size.update({ sizeName, sizeQuantity, productDetailID });
 
-      res.json({ message: "Size updated successfully" });
+      res.json({ message: "Cập nhật size thành công" });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       next(error);
     }
   },
@@ -100,12 +100,12 @@ const SizesController = {
       const size = await Sizes.findByPk(id);
       if (size) {
         await size.destroy();
-        res.json({ message: "Size deleted successfully" });
+        res.json({ message: "Xóa size thành công" });
       } else {
-        res.status(404).json({ message: "Size not found" });
+        res.status(404).json({ message: "Không tìm thấy size" });
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       next(error);
     }
   },

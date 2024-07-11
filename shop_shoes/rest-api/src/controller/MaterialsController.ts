@@ -1,4 +1,3 @@
-// controllers/MaterialsController.ts
 import { Request, Response, NextFunction } from "express";
 import { Materials } from "../models/Materials";
 import { Op } from "sequelize";
@@ -8,9 +7,22 @@ const MaterialsController = {
     try {
       const { materialName } = req.body;
       const material = await Materials.create({ materialName });
-      res.json({ data: material, message: "Add new material successfully" });
+      res.status(201).json({
+        message: "Thực hiện thành công",
+        code: 0,
+        data: material,
+      });
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
@@ -27,9 +39,22 @@ const MaterialsController = {
       }
 
       const materials = await Materials.findAll({ where: whereClause });
-      res.json({ data: materials });
+      res.status(200).json({
+        message: "Thực hiện thành công",
+        code: 0,
+        data: materials,
+      });
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
@@ -38,12 +63,28 @@ const MaterialsController = {
       const { id } = req.params;
       const material = await Materials.findByPk(id);
       if (material) {
-        res.json({ data: material });
+        res.status(200).json({
+          message: "Thực hiện thành công",
+          code: 0,
+          data: material,
+        });
       } else {
-        res.status(404).json({ message: "Material not found" });
+        res.status(404).json({
+          message: "Vật liệu không tồn tại",
+          code: 1,
+        });
       }
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
@@ -54,12 +95,28 @@ const MaterialsController = {
       const material = await Materials.findByPk(id);
       if (material) {
         await material.update({ materialName });
-        res.json({ message: "Material updated successfully" });
+        res.status(200).json({
+          message: "Thực hiện thành công",
+          code: 0,
+          data: material,
+        });
       } else {
-        res.status(404).json({ message: "Material not found" });
+        res.status(404).json({
+          message: "Vật liệu không tồn tại",
+          code: 1,
+        });
       }
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
@@ -69,12 +126,27 @@ const MaterialsController = {
       const material = await Materials.findByPk(id);
       if (material) {
         await material.destroy();
-        res.json({ message: "Material deleted successfully" });
+        res.status(200).json({
+          message: "Thực hiện thành công",
+          code: 0,
+        });
       } else {
-        res.status(404).json({ message: "Material not found" });
+        res.status(404).json({
+          message: "Vật liệu không tồn tại",
+          code: 1,
+        });
       }
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 };
