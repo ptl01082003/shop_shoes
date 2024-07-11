@@ -3,7 +3,7 @@ import { Sequelize } from "sequelize-typescript";
 
 export async function connectDB() {
   const sequelize = new Sequelize({
-    logging: true,
+    logging: false,
     dialect: "mysql",
     host: process.env["DB_HOST"],
     database: process.env["DB_NAME"],

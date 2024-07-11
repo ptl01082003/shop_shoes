@@ -1,11 +1,11 @@
 import {
-    AutoIncrement,
-    BelongsTo,
-    Column,
-    ForeignKey,
-    Model,
-    PrimaryKey,
-    Table,
+  AutoIncrement,
+  BelongsTo,
+  Column,
+  ForeignKey,
+  Model,
+  PrimaryKey,
+  Table,
 } from "sequelize-typescript";
 import { Products } from "./Products";
 import { ShoppingCarts } from "./ShoppingCarts";
@@ -21,17 +21,17 @@ export class CartItems extends Model {
   @Column
   public cartItemsId!: number;
 
-  @ForeignKey(() => ShoppingCarts)
-  @Column
-  public cartId!: number;
-
   @ForeignKey(() => Products)
   @Column
   public productsID!: number;
 
+  @ForeignKey(() => ShoppingCarts)
   @Column
-  public quanity!: number;
+  public cartId!: number;
 
   @BelongsTo(() => Products)
   public product!: Products;
+
+  @Column
+  public quanity!: number;
 }

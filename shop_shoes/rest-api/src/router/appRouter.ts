@@ -15,16 +15,13 @@ import routerPromotions from "./PromotionsRouter";
 import routerSize from "./SizeRouter";
 import routerStyle from "./StylesRouter";
 import cartsRouter from "./CartsRouter";
+import { RESPONSE_CODE, ResponseBody, STATUS_CODE } from "../constants";
 
 const router = express.Router();
 
 export function appRouter() {
   router.use("/auth", routerAuth);
-
-  router.use(checkAuth);
-
   router.use("/carts", cartsRouter);
-
   router.use("/brand", routerBrands);
   router.use("/product-line", routerProductLine);
   router.use("/products", routerProduct);
@@ -37,6 +34,15 @@ export function appRouter() {
   router.use("/image", routerImage);
   router.use("/promotion", routerPromotions);
   router.use("/product-promotion", routerProductPromotion);
+
+  router.use("*", (req, res) => {
+    res.status(STATUS_CODE.NOT_FOUND).json(
+      ResponseBody({
+        code: RESPONSE_CODE.ERRORS,
+        message: "Đường dẫn không tồn tại",
+      })
+    );
+  });
 
   app.use(`/api/${process.env.API_VERSION}`, router);
 }
