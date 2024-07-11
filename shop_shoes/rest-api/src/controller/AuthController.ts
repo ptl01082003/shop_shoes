@@ -114,7 +114,7 @@ const authCtrl = {
 
   generateAccessToken: (userId?: string) => {
     return jwt.sign({ userId }, process.env.AC_TOKEN_KEY as string, {
-      expiresIn: "1d",
+      expiresIn: "7d",
     });
   },
 

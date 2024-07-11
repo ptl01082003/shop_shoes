@@ -32,20 +32,44 @@ const AddressController = {
         customersID,
       });
 
-      res.json({ data: newAddress, message: "Address created successfully" });
+      res.status(201).json({
+        message: "Thực hiện thành công",
+        code: 0,
+        data: newAddress,
+      });
     } catch (error) {
       console.log(error);
-      next(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
   getAddresses: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const addresses = await Address.findAll();
-      res.json({ data: addresses });
+      res.status(200).json({
+        message: "Thực hiện thành công",
+        code: 0,
+        data: addresses,
+      });
     } catch (error) {
       console.log(error);
-      next(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
@@ -54,13 +78,28 @@ const AddressController = {
       const { id } = req.params;
       const address = await Address.findByPk(id);
       if (address) {
-        res.json({ data: address });
+        res.status(200).json({
+          message: "Thực hiện thành công",
+          code: 0,
+          data: address,
+        });
       } else {
-        res.status(404).json({ message: "Address not found" });
+        res.status(404).json({
+          message: "Địa chỉ không tồn tại",
+          code: 1,
+        });
       }
     } catch (error) {
       console.log(error);
-      next(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
@@ -97,13 +136,28 @@ const AddressController = {
           customersID,
         });
 
-        res.json({ message: "Address updated successfully" });
+        res.status(200).json({
+          message: "Thực hiện thành công",
+          code: 0,
+          data: address,
+        });
       } else {
-        res.status(404).json({ message: "Address not found" });
+        res.status(404).json({
+          message: "Địa chỉ không tồn tại",
+          code: 1,
+        });
       }
     } catch (error) {
       console.log(error);
-      next(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
@@ -113,13 +167,27 @@ const AddressController = {
       const address = await Address.findByPk(id);
       if (address) {
         await address.destroy();
-        res.json({ message: "Address deleted successfully" });
+        res.status(200).json({
+          message: "Thực hiện thành công",
+          code: 0,
+        });
       } else {
-        res.status(404).json({ message: "Address not found" });
+        res.status(404).json({
+          message: "Địa chỉ không tồn tại",
+          code: 1,
+        });
       }
     } catch (error) {
       console.log(error);
-      next(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 };

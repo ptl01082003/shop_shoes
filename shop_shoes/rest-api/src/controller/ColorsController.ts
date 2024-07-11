@@ -6,9 +6,22 @@ const ColorsController = {
   getColors: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const colors = await Colors.findAll();
-      res.json({ data: colors });
+      res.status(200).json({
+        message: "Thực hiện thành công",
+        code: 0,
+        data: colors,
+      });
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
@@ -18,12 +31,28 @@ const ColorsController = {
       const { id } = req.params;
       const color = await Colors.findByPk(id);
       if (color) {
-        res.json({ data: color });
+        res.status(200).json({
+          message: "Thực hiện thành công",
+          code: 0,
+          data: color,
+        });
       } else {
-        res.status(404).json({ message: "Color not found" });
+        res.status(404).json({
+          message: "Màu sắc không tồn tại",
+          code: 1,
+        });
       }
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
@@ -32,9 +61,22 @@ const ColorsController = {
     try {
       const { colorName } = req.body;
       const color = await Colors.create({ colorName });
-      res.json({ data: color, message: "Color added successfully" });
+      res.status(201).json({
+        message: "Thực hiện thành công",
+        code: 0,
+        data: color,
+      });
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
@@ -46,12 +88,28 @@ const ColorsController = {
       const color = await Colors.findByPk(id);
       if (color) {
         await color.update({ colorName });
-        res.json({ message: "Color updated successfully" });
+        res.status(200).json({
+          message: "Thực hiện thành công",
+          code: 0,
+          data: color,
+        });
       } else {
-        res.status(404).json({ message: "Color not found" });
+        res.status(404).json({
+          message: "Màu sắc không tồn tại",
+          code: 1,
+        });
       }
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
@@ -62,12 +120,27 @@ const ColorsController = {
       const color = await Colors.findByPk(id);
       if (color) {
         await color.destroy();
-        res.json({ message: "Color deleted successfully" });
+        res.status(200).json({
+          message: "Thực hiện thành công",
+          code: 0,
+        });
       } else {
-        res.status(404).json({ message: "Color not found" });
+        res.status(404).json({
+          message: "Màu sắc không tồn tại",
+          code: 1,
+        });
       }
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 };

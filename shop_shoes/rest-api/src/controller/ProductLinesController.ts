@@ -1,4 +1,3 @@
-// controllers/ProductLinesController.ts
 import { Request, Response, NextFunction } from "express";
 import { ProductLines } from "../models/ProductLines";
 
@@ -10,21 +9,44 @@ const ProductLinesController = {
         productLineName,
         brandID,
       });
-      res.json({
+      res.status(201).json({
+        message: "Thực hiện thành công",
+        code: 0,
         data: productLine,
-        message: "Add new product line successfully",
       });
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
   getProductLines: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const productLines = await ProductLines.findAll();
-      res.json({ data: productLines });
+      res.status(200).json({
+        message: "Thực hiện thành công",
+        code: 0,
+        data: productLines,
+      });
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
@@ -37,12 +59,28 @@ const ProductLinesController = {
       const { id } = req.params;
       const productLine = await ProductLines.findByPk(id);
       if (productLine) {
-        res.json({ data: productLine });
+        res.status(200).json({
+          message: "Thực hiện thành công",
+          code: 0,
+          data: productLine,
+        });
       } else {
-        res.status(404).json({ message: "Product line not found" });
+        res.status(404).json({
+          message: "Dòng sản phẩm không tồn tại",
+          code: 1,
+        });
       }
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
@@ -57,12 +95,28 @@ const ProductLinesController = {
       const productLine = await ProductLines.findByPk(id);
       if (productLine) {
         await productLine.update({ productLineName, brandID });
-        res.json({ message: "Product line updated successfully" });
+        res.status(200).json({
+          message: "Thực hiện thành công",
+          code: 0,
+          data: productLine,
+        });
       } else {
-        res.status(404).json({ message: "Product line not found" });
+        res.status(404).json({
+          message: "Dòng sản phẩm không tồn tại",
+          code: 1,
+        });
       }
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
@@ -76,12 +130,27 @@ const ProductLinesController = {
       const productLine = await ProductLines.findByPk(id);
       if (productLine) {
         await productLine.destroy();
-        res.json({ message: "Product line deleted successfully" });
+        res.status(200).json({
+          message: "Thực hiện thành công",
+          code: 0,
+        });
       } else {
-        res.status(404).json({ message: "Product line not found" });
+        res.status(404).json({
+          message: "Dòng sản phẩm không tồn tại",
+          code: 1,
+        });
       }
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 };

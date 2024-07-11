@@ -1,4 +1,3 @@
-// controllers/OriginsController.ts
 import { Request, Response, NextFunction } from "express";
 import { Origins } from "../models/Origins";
 import { Op } from "sequelize";
@@ -8,9 +7,22 @@ const OriginsController = {
     try {
       const { originName } = req.body;
       const origin = await Origins.create({ originName });
-      res.json({ data: origin, message: "Add new origin successfully" });
+      res.status(201).json({
+        message: "Thực hiện thành công",
+        code: 0,
+        data: origin,
+      });
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
@@ -27,9 +39,22 @@ const OriginsController = {
       }
 
       const origins = await Origins.findAll({ where: whereClause });
-      res.json({ data: origins });
+      res.status(200).json({
+        message: "Thực hiện thành công",
+        code: 0,
+        data: origins,
+      });
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
@@ -38,12 +63,28 @@ const OriginsController = {
       const { id } = req.params;
       const origin = await Origins.findByPk(id);
       if (origin) {
-        res.json({ data: origin });
+        res.status(200).json({
+          message: "Thực hiện thành công",
+          code: 0,
+          data: origin,
+        });
       } else {
-        res.status(404).json({ message: "Origin not found" });
+        res.status(404).json({
+          message: "Nguồn gốc không tồn tại",
+          code: 1,
+        });
       }
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
@@ -54,12 +95,28 @@ const OriginsController = {
       const origin = await Origins.findByPk(id);
       if (origin) {
         await origin.update({ originName });
-        res.json({ message: "Origin updated successfully" });
+        res.status(200).json({
+          message: "Thực hiện thành công",
+          code: 0,
+          data: origin,
+        });
       } else {
-        res.status(404).json({ message: "Origin not found" });
+        res.status(404).json({
+          message: "Nguồn gốc không tồn tại",
+          code: 1,
+        });
       }
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
@@ -69,12 +126,27 @@ const OriginsController = {
       const origin = await Origins.findByPk(id);
       if (origin) {
         await origin.destroy();
-        res.json({ message: "Origin deleted successfully" });
+        res.status(200).json({
+          message: "Thực hiện thành công",
+          code: 0,
+        });
       } else {
-        res.status(404).json({ message: "Origin not found" });
+        res.status(404).json({
+          message: "Nguồn gốc không tồn tại",
+          code: 1,
+        });
       }
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 };

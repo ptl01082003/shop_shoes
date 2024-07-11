@@ -5,6 +5,7 @@ import { RESPONSE_CODE, ResponseBody, STATUS_CODE } from "../constants";
 export const checkAuth = (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = req.body?.token || "";
+    console.log(token);
     if (!token)
       return res.status(STATUS_CODE.NOT_AUTHEN).json(
         ResponseBody({

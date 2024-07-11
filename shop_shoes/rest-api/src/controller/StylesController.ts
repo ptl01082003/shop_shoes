@@ -1,4 +1,3 @@
-// controllers/StylesController.ts
 import { Request, Response, NextFunction } from "express";
 import { Styles } from "../models/Styles";
 import { Op } from "sequelize";
@@ -8,7 +7,7 @@ const StylesController = {
     try {
       const { styleName } = req.body;
       const style = await Styles.create({ styleName });
-      res.json({ data: style, message: "Add new style successfully" });
+      res.json({ data: style, message: "Thêm style mới thành công" });
     } catch (error) {
       next(error);
     }
@@ -40,7 +39,7 @@ const StylesController = {
       if (style) {
         res.json({ data: style });
       } else {
-        res.status(404).json({ message: "Style not found" });
+        res.status(404).json({ message: "Không tìm thấy style" });
       }
     } catch (error) {
       next(error);
@@ -54,9 +53,9 @@ const StylesController = {
       const style = await Styles.findByPk(id);
       if (style) {
         await style.update({ styleName });
-        res.json({ message: "Style updated successfully" });
+        res.json({ message: "Cập nhật style thành công" });
       } else {
-        res.status(404).json({ message: "Style not found" });
+        res.status(404).json({ message: "Không tìm thấy style" });
       }
     } catch (error) {
       next(error);
@@ -69,9 +68,9 @@ const StylesController = {
       const style = await Styles.findByPk(id);
       if (style) {
         await style.destroy();
-        res.json({ message: "Style deleted successfully" });
+        res.json({ message: "Xóa style thành công" });
       } else {
-        res.status(404).json({ message: "Style not found" });
+        res.status(404).json({ message: "Không tìm thấy style" });
       }
     } catch (error) {
       next(error);
