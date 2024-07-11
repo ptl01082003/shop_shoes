@@ -8,7 +8,6 @@ import {
   Table,
 } from "sequelize-typescript";
 import { ProductDetails } from "./ProductDetails";
-import { Customers } from "./Customers";
 
 @Table({
   tableName: "carts",
@@ -30,11 +29,4 @@ export class Carts extends Model {
 
   @BelongsTo(() => ProductDetails)
   public productDetails?: ProductDetails;
-
-  @ForeignKey(() => Customers)
-  @Column
-  public customerID?: number;
-
-  @BelongsTo(() => Customers)
-  public customer?: Customers;
 }

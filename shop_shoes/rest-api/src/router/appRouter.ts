@@ -15,6 +15,7 @@ import routerPromotions from "./PromotionsRouter";
 import routerSize from "./SizeRouter";
 import routerStyle from "./StylesRouter";
 import cartsRouter from "./CartsRouter";
+import routerSizeProductDetals from "./SizeProductDetails";
 
 const router = express.Router();
 
@@ -37,6 +38,7 @@ export function appRouter() {
   router.use("/image", routerImage);
   router.use("/promotion", routerPromotions);
   router.use("/product-promotion", routerProductPromotion);
+  router.use("/size-productdetail", routerSizeProductDetals);
 
   app.use(`/api/${process.env.API_VERSION}`, router);
 }

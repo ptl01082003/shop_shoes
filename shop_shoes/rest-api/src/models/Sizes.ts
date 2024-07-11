@@ -1,13 +1,13 @@
+// models/Sizes.ts
 import {
-  AutoIncrement,
-  BelongsTo,
   Column,
-  ForeignKey,
   Model,
   PrimaryKey,
   Table,
+  HasMany,
+  AutoIncrement,
 } from "sequelize-typescript";
-import { ProductDetails } from "./ProductDetails";
+import { SizeProductDetails } from "./SizeProductDetails";
 
 @Table({
   tableName: "sizes",
@@ -21,15 +21,8 @@ export class Sizes extends Model {
   sizeID!: number;
 
   @Column
-  sizeName!: string;
+  sizeName!: number;
 
-  @Column
-  sizeQuantity?: number;
-
-  @ForeignKey(() => ProductDetails)
-  @Column
-  productDetailID!: number; // Khóa ngoại đến chi tiết sản phẩm
-
-  @BelongsTo(() => ProductDetails)
-  productDetail!: ProductDetails;
+  @HasMany(() => SizeProductDetails)
+  sizeProductDetails!: SizeProductDetails[];
 }

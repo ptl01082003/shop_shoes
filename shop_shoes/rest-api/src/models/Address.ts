@@ -7,7 +7,7 @@ import {
   PrimaryKey,
   Table,
 } from "sequelize-typescript";
-import { Customers } from "./Customers";
+import { Users } from "./Users";
 
 @Table({
   tableName: "address",
@@ -50,10 +50,10 @@ export class Address extends Model {
   @Column
   public addresDefault!: string;
 
-  @ForeignKey(() => Customers)
+  @ForeignKey(() => Users)
   @Column
   public customersID?: number;
 
-  @BelongsTo(() => Customers)
-  public customer?: Customers;
+  @BelongsTo(() => Users)
+  public customer?: Users;
 }

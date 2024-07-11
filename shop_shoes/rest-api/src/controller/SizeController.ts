@@ -1,60 +1,60 @@
+// controllers/SizesController.ts
 import { Request, Response, NextFunction } from "express";
 import { Sizes } from "../models/Sizes";
-import { ProductDetails } from "../models/ProductDetails";
+import { SizeProductDetails } from "../models/SizeProductDetails";
 
 const SizesController = {
+  // CREATE - Add a new size
   addSize: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { sizeName, sizeQuantity, productDetailID } = req.body;
-
-      if (!sizeName || !productDetailID) {
-        return res.status(400).json({ message: "Missing required fields" });
-      }
-
-      const productDetail = await ProductDetails.findByPk(productDetailID);
-
-      if (!productDetail) {
-        return res.status(404).json({ message: "ProductDetail not found" });
-      }
-
-      const size = await Sizes.create({
-        sizeName,
-        sizeQuantity,
-        productDetailID,
+      const { sizeName } = req.body;
+      const size = await Sizes.create({ sizeName });
+      res.status(201).json({
+        message: "Thêm kích thước thành công",
+        code: 0,
+        data: size,
       });
-
-      res.json({ data: size, message: "Thêm size mới thành công" });
     } catch (error) {
       console.error(error);
       next(error);
     }
   },
 
+  // READ - Get all sizes
   getSizes: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { productDetailID } = req.query;
-      const whereClause: any = {};
-
-      if (productDetailID) {
-        whereClause.productDetailID = productDetailID;
-      }
-
-      const sizes = await Sizes.findAll({ where: whereClause });
-      res.json({ data: sizes });
+      const sizes = await Sizes.findAll({
+        include: [{ model: SizeProductDetails }],
+      });
+      res.status(200).json({
+        message: "Lấy danh sách kích thước thành công",
+        code: 0,
+        data: sizes,
+      });
     } catch (error) {
       console.error(error);
       next(error);
     }
   },
 
+  // READ - Get size by ID
   getSizeById: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const size = await Sizes.findByPk(id);
+      const size = await Sizes.findByPk(id, {
+        include: [{ model: SizeProductDetails }],
+      });
       if (size) {
-        res.json({ data: size });
+        res.status(200).json({
+          message: "Lấy kích thước thành công",
+          code: 0,
+          data: size,
+        });
       } else {
-        res.status(404).json({ message: "Không tìm thấy size" });
+        res.status(404).json({
+          message: "Không tìm thấy kích thước",
+          code: 1,
+        });
       }
     } catch (error) {
       console.error(error);
@@ -62,47 +62,47 @@ const SizesController = {
     }
   },
 
+  // UPDATE - Update size by ID
   updateSize: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const { sizeName, sizeQuantity, productDetailID } = req.body;
-
-      if (!sizeName || !productDetailID) {
-        return res.status(400).json({ message: "Missing required fields" });
-      }
-
+      const { sizeName } = req.body;
       const size = await Sizes.findByPk(id);
-
-      if (!size) {
-        return res.status(404).json({ message: "Không tìm thấy size" });
+      if (size) {
+        await size.update({ sizeName });
+        res.status(200).json({
+          message: "Cập nhật thông tin kích thước thành công",
+          code: 0,
+          data: size,
+        });
+      } else {
+        res.status(404).json({
+          message: "Không tìm thấy kích thước",
+          code: 1,
+        });
       }
-
-      const productDetail = await ProductDetails.findByPk(productDetailID);
-
-      if (!productDetail) {
-        return res
-          .status(404)
-          .json({ message: "Không tìm thấy ProductDetail" });
-      }
-
-      await size.update({ sizeName, sizeQuantity, productDetailID });
-
-      res.json({ message: "Cập nhật size thành công" });
     } catch (error) {
       console.error(error);
       next(error);
     }
   },
 
+  // DELETE - Delete size by ID
   deleteSize: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
       const size = await Sizes.findByPk(id);
       if (size) {
         await size.destroy();
-        res.json({ message: "Xóa size thành công" });
+        res.status(200).json({
+          message: "Xóa kích thước thành công",
+          code: 0,
+        });
       } else {
-        res.status(404).json({ message: "Không tìm thấy size" });
+        res.status(404).json({
+          message: "Không tìm thấy kích thước",
+          code: 1,
+        });
       }
     } catch (error) {
       console.error(error);
