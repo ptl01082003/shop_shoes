@@ -1,51 +1,43 @@
+// controllers/ProductDetailsController.ts
 import { Request, Response, NextFunction } from "express";
 import { ProductDetails } from "../models/ProductDetails";
 import { Products } from "../models/Products";
-import { Sizes } from "../models/Sizes";
+import { SizeProductDetails } from "../models/SizeProductDetails";
 
 const ProductDetailsController = {
   addProductDetail: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { productID, pDetailStatus } = req.body;
+      const { productID, productDetailstatus } = req.body;
 
-      // Kiểm tra dữ liệu đầu vào
-      if (!productID) {
-        return res.status(400).json({ message: "Product ID is required" });
-      }
-
+      // Check if the productID exists in Products table
       const product = await Products.findByPk(productID);
       if (!product) {
-        return res.status(404).json({ message: "Product not found" });
+        return res.status(404).json({
+          message: "Sản phẩm không tồn tại",
+          code: 1,
+        });
       }
 
       const productDetail = await ProductDetails.create({
         productID,
-        pDetailStatus,
+        productDetailstatus,
       });
-
-      res.json({
+      res.status(201).json({
+        message: "Thêm chi tiết sản phẩm thành công",
+        code: 0,
         data: productDetail,
-        message: "Product detail created successfully",
       });
     } catch (error) {
-      console.error(error);
-      next(error);
-    }
-  },
-
-  getProductDetails: async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      const productDetails = await ProductDetails.findAll({
-        include: [Products, Sizes],
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thêm chi tiết sản phẩm thất bại",
+        code: 1,
+        error: errorMessage,
       });
-      res.json({ data: productDetails });
-    } catch (error) {
-      console.error(error);
-      next(error);
     }
   },
 
@@ -57,15 +49,70 @@ const ProductDetailsController = {
     try {
       const { id } = req.params;
       const productDetail = await ProductDetails.findByPk(id, {
-        include: [Products, Sizes],
+        include: [{ model: SizeProductDetails, as: "sizeProductDetails" }],
       });
-      if (!productDetail) {
-        return res.status(404).json({ message: "Product detail not found" });
+      if (productDetail) {
+        res.status(200).json({
+          message: "Lấy chi tiết sản phẩm thành công",
+          code: 0,
+          data: productDetail,
+        });
+      } else {
+        res.status(404).json({
+          message: "Chi tiết sản phẩm không tồn tại",
+          code: 1,
+        });
       }
-      res.json({ data: productDetail });
     } catch (error) {
-      console.error(error);
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Lấy chi tiết sản phẩm thất bại",
+        code: 1,
+        error: errorMessage,
+      });
+    }
+  },
+
+  getProductDetails: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { id, productID } = req.query;
+      const whereClause: any = {};
+
+      if (id) {
+        whereClause.productDetailID = id;
+      }
+      if (productID) {
+        whereClause.productID = productID;
+      }
+
+      const productDetails = await ProductDetails.findAll({
+        where: whereClause,
+        include: [{ model: SizeProductDetails, as: "sizeProductDetails" }],
+      });
+      res.status(200).json({
+        message: "Lấy chi tiết sản phẩm thành công",
+        code: 0,
+        data: productDetails,
+      });
+    } catch (error) {
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Lấy chi tiết sản phẩm thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
@@ -76,29 +123,43 @@ const ProductDetailsController = {
   ) => {
     try {
       const { id } = req.params;
-      const { productID, pDetailStatus } = req.body;
-
-      // Kiểm tra dữ liệu đầu vào
-      if (!productID) {
-        return res.status(400).json({ message: "Product ID is required" });
-      }
-
+      const { productID, productDetailstatus } = req.body;
       const productDetail = await ProductDetails.findByPk(id);
-      if (!productDetail) {
-        return res.status(404).json({ message: "Product detail not found" });
-      }
+      if (productDetail) {
+        // Check if the updated productID exists in Products table
+        if (productID) {
+          const product = await Products.findByPk(productID);
+          if (!product) {
+            return res.status(404).json({
+              message: "Sản phẩm không tồn tại",
+              code: 1,
+            });
+          }
+        }
 
-      // Kiểm tra và cập nhật sản phẩm liên quan
-      const product = await Products.findByPk(productID);
-      if (!product) {
-        return res.status(404).json({ message: "Product not found" });
+        await productDetail.update({ productID, productDetailstatus });
+        res.status(200).json({
+          message: "Cập nhật chi tiết sản phẩm thành công",
+          code: 0,
+          data: productDetail,
+        });
+      } else {
+        res.status(404).json({
+          message: "Chi tiết sản phẩm không tồn tại",
+          code: 1,
+        });
       }
-
-      await productDetail.update({ productID, pDetailStatus });
-      res.json({ message: "Product detail updated successfully" });
     } catch (error) {
-      console.error(error);
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Cập nhật chi tiết sản phẩm thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
@@ -110,14 +171,29 @@ const ProductDetailsController = {
     try {
       const { id } = req.params;
       const productDetail = await ProductDetails.findByPk(id);
-      if (!productDetail) {
-        return res.status(404).json({ message: "Product detail not found" });
+      if (productDetail) {
+        await productDetail.destroy();
+        res.status(200).json({
+          message: "Xóa chi tiết sản phẩm thành công",
+          code: 0,
+        });
+      } else {
+        res.status(404).json({
+          message: "Chi tiết sản phẩm không tồn tại",
+          code: 1,
+        });
       }
-      await productDetail.destroy();
-      res.json({ message: "Product detail deleted successfully" });
     } catch (error) {
-      console.error(error);
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Xóa chi tiết sản phẩm thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 };

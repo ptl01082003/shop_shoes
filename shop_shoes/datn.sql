@@ -39,7 +39,7 @@ CREATE TABLE `address` (
   `updatedAt` datetime NOT NULL,
   PRIMARY KEY (`addressID`),
   KEY `customersID` (`customersID`),
-  CONSTRAINT `address_ibfk_1` FOREIGN KEY (`customersID`) REFERENCES `customers` (`customerId`) ON UPDATE CASCADE
+  CONSTRAINT `address_ibfk_1` FOREIGN KEY (`customersID`) REFERENCES `users` (`userId`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -74,7 +74,7 @@ CREATE TABLE `brands` (
 
 LOCK TABLES `brands` WRITE;
 /*!40000 ALTER TABLE `brands` DISABLE KEYS */;
-INSERT INTO `brands` VALUES (1,'Converse','2024-07-11 01:32:22','2024-07-11 01:33:49'),(2,'Adiddas','2024-07-11 01:33:06','2024-07-11 01:33:06'),(3,'Vans','2024-07-11 01:35:57','2024-07-11 01:35:57'),(4,'Nikes','2024-07-11 01:36:05','2024-07-11 01:36:05'),(5,'Puma','2024-07-11 01:36:12','2024-07-11 01:36:12');
+INSERT INTO `brands` VALUES (1,'Adiddas','2024-07-11 09:37:51','2024-07-11 09:37:51'),(2,'Vans','2024-07-11 09:37:55','2024-07-11 09:37:55'),(3,'Convers','2024-07-11 09:38:00','2024-07-11 09:38:00'),(4,'Puma','2024-07-11 09:38:07','2024-07-11 09:38:07'),(5,'Thượng Đình','2024-07-11 09:38:15','2024-07-11 09:38:15');
 /*!40000 ALTER TABLE `brands` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -118,14 +118,11 @@ CREATE TABLE `carts` (
   `cartID` int NOT NULL AUTO_INCREMENT,
   `cartQuantity` int DEFAULT NULL,
   `productDetailsID` int DEFAULT NULL,
-  `customerID` int DEFAULT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   PRIMARY KEY (`cartID`),
   KEY `productDetailsID` (`productDetailsID`),
-  KEY `customerID` (`customerID`),
-  CONSTRAINT `carts_ibfk_1` FOREIGN KEY (`productDetailsID`) REFERENCES `product_details` (`pDetailID`) ON UPDATE CASCADE,
-  CONSTRAINT `carts_ibfk_2` FOREIGN KEY (`customerID`) REFERENCES `customers` (`customerId`) ON UPDATE CASCADE
+  CONSTRAINT `carts_ibfk_1` FOREIGN KEY (`productDetailsID`) REFERENCES `product_details` (`productDetailID`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -151,7 +148,7 @@ CREATE TABLE `colors` (
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   PRIMARY KEY (`colorId`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -160,68 +157,8 @@ CREATE TABLE `colors` (
 
 LOCK TABLES `colors` WRITE;
 /*!40000 ALTER TABLE `colors` DISABLE KEYS */;
-INSERT INTO `colors` VALUES (1,'Trắng','2024-07-10 13:57:50','2024-07-11 01:42:54'),(2,'Đen','2024-07-10 14:11:57','2024-07-11 01:43:00'),(3,'Đỏ','2024-07-11 01:18:51','2024-07-11 01:43:08'),(4,'Tím','2024-07-11 01:18:51','2024-07-11 01:43:44'),(5,'Hồng','2024-07-11 01:18:53','2024-07-11 01:44:15');
+INSERT INTO `colors` VALUES (1,'Trắng','2024-07-11 09:37:12','2024-07-11 09:37:12'),(2,'Đen','2024-07-11 09:37:15','2024-07-11 09:37:15'),(3,'Đỏ','2024-07-11 09:37:18','2024-07-11 09:37:18'),(4,'Cam','2024-07-11 09:37:22','2024-07-11 09:37:22'),(5,'Xanh','2024-07-11 09:37:25','2024-07-11 09:37:25'),(6,'Tím','2024-07-11 09:37:28','2024-07-11 09:37:28');
 /*!40000 ALTER TABLE `colors` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `customers`
---
-
-DROP TABLE IF EXISTS `customers`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `customers` (
-  `customerId` int NOT NULL AUTO_INCREMENT,
-  `customerName` varchar(255) DEFAULT NULL,
-  `customerDateOfBirth` datetime DEFAULT NULL,
-  `customerSex` tinyint(1) DEFAULT NULL,
-  `customerPhoneNumber` int DEFAULT NULL,
-  `customerEmail` varchar(255) DEFAULT NULL,
-  `customerImage` varchar(255) DEFAULT NULL,
-  `createdAt` datetime NOT NULL,
-  `updatedAt` datetime NOT NULL,
-  PRIMARY KEY (`customerId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `customers`
---
-
-LOCK TABLES `customers` WRITE;
-/*!40000 ALTER TABLE `customers` DISABLE KEYS */;
-/*!40000 ALTER TABLE `customers` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `employees`
---
-
-DROP TABLE IF EXISTS `employees`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `employees` (
-  `employeesId` int NOT NULL AUTO_INCREMENT,
-  `employeesName` varchar(255) DEFAULT NULL,
-  `employeesDateOfBirth` datetime DEFAULT NULL,
-  `employeesSex` tinyint(1) DEFAULT NULL,
-  `employeesPhoneNumber` int DEFAULT NULL,
-  `employeesEmail` varchar(255) DEFAULT NULL,
-  `employeesImage` varchar(255) DEFAULT NULL,
-  `createdAt` datetime NOT NULL,
-  `updatedAt` datetime NOT NULL,
-  PRIMARY KEY (`employeesId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `employees`
---
-
-LOCK TABLES `employees` WRITE;
-/*!40000 ALTER TABLE `employees` DISABLE KEYS */;
-/*!40000 ALTER TABLE `employees` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -234,14 +171,11 @@ DROP TABLE IF EXISTS `favorites_list`;
 CREATE TABLE `favorites_list` (
   `id` int NOT NULL AUTO_INCREMENT,
   `productID` int DEFAULT NULL,
-  `customerID` int DEFAULT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `productID` (`productID`),
-  KEY `customerID` (`customerID`),
-  CONSTRAINT `favorites_list_ibfk_1` FOREIGN KEY (`productID`) REFERENCES `products` (`productsID`) ON UPDATE CASCADE,
-  CONSTRAINT `favorites_list_ibfk_2` FOREIGN KEY (`customerID`) REFERENCES `customers` (`customerId`) ON UPDATE CASCADE
+  CONSTRAINT `favorites_list_ibfk_1` FOREIGN KEY (`productID`) REFERENCES `products` (`productsID`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -304,7 +238,7 @@ CREATE TABLE `materials` (
 
 LOCK TABLES `materials` WRITE;
 /*!40000 ALTER TABLE `materials` DISABLE KEYS */;
-INSERT INTO `materials` VALUES (1,'Da','2024-07-11 01:46:53','2024-07-11 01:46:53'),(2,'Vai','2024-07-11 01:47:18','2024-07-11 01:47:18'),(3,'Sợi','2024-07-11 01:48:01','2024-07-11 01:48:01'),(4,'Perlite','2024-07-11 01:48:19','2024-07-11 01:48:19'),(5,'Cao Su','2024-07-11 01:48:33','2024-07-11 01:48:33');
+INSERT INTO `materials` VALUES (1,'Da cá xấu','2024-07-11 09:35:17','2024-07-11 09:35:41'),(2,'Vải','2024-07-11 09:35:59','2024-07-11 09:35:59'),(3,'Nhựa','2024-07-11 09:36:03','2024-07-11 09:36:03'),(4,'Sợi','2024-07-11 09:36:07','2024-07-11 09:36:07'),(5,'Chỉ','2024-07-11 09:36:25','2024-07-11 09:36:25');
 /*!40000 ALTER TABLE `materials` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -330,7 +264,7 @@ CREATE TABLE `origins` (
 
 LOCK TABLES `origins` WRITE;
 /*!40000 ALTER TABLE `origins` DISABLE KEYS */;
-INSERT INTO `origins` VALUES (1,'Việt Nam','2024-07-11 01:29:55','2024-07-11 01:29:55'),(2,'Nhật Bản','2024-07-11 01:30:06','2024-07-11 01:30:06'),(3,'Mỹ','2024-07-11 01:30:14','2024-07-11 01:30:14'),(4,'Đức','2024-07-11 01:30:56','2024-07-11 01:30:56'),(5,'Anh','2024-07-11 01:31:01','2024-07-11 01:31:01');
+INSERT INTO `origins` VALUES (1,'Nga','2024-07-11 09:34:19','2024-07-11 09:34:19'),(2,'Việt Nam','2024-07-11 09:34:30','2024-07-11 09:34:30'),(3,'Trung Quốc ','2024-07-11 09:34:39','2024-07-11 09:34:39'),(4,'Ấn Độ','2024-07-11 09:34:48','2024-07-11 09:34:48'),(5,'Irans','2024-07-11 09:34:58','2024-07-11 09:34:58');
 /*!40000 ALTER TABLE `origins` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -367,16 +301,14 @@ DROP TABLE IF EXISTS `product_details`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `product_details` (
-  `pDetailID` int NOT NULL AUTO_INCREMENT,
-  `pDetailQuantity` int DEFAULT NULL,
-  `pDetailStatus` tinyint(1) DEFAULT NULL,
+  `productDetailID` int NOT NULL AUTO_INCREMENT,
   `productID` int DEFAULT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
-  PRIMARY KEY (`pDetailID`),
+  PRIMARY KEY (`productDetailID`),
   KEY `productID` (`productID`),
   CONSTRAINT `product_details_ibfk_1` FOREIGN KEY (`productID`) REFERENCES `products` (`productsID`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -385,7 +317,7 @@ CREATE TABLE `product_details` (
 
 LOCK TABLES `product_details` WRITE;
 /*!40000 ALTER TABLE `product_details` DISABLE KEYS */;
-INSERT INTO `product_details` VALUES (1,NULL,1,120695,'2024-07-11 02:01:33','2024-07-11 02:01:33'),(2,NULL,1,140970,'2024-07-11 02:01:41','2024-07-11 02:01:41'),(3,NULL,1,165111,'2024-07-11 02:01:51','2024-07-11 02:01:51'),(4,NULL,1,169900,'2024-07-11 02:01:57','2024-07-11 02:01:57'),(5,NULL,1,169937,'2024-07-11 02:02:03','2024-07-11 02:02:03');
+INSERT INTO `product_details` VALUES (1,121859,'2024-07-11 09:44:32','2024-07-11 09:44:32'),(2,116971,'2024-07-11 09:44:57','2024-07-11 09:44:57');
 /*!40000 ALTER TABLE `product_details` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -405,7 +337,7 @@ CREATE TABLE `product_lines` (
   PRIMARY KEY (`productLineID`),
   KEY `brandID` (`brandID`),
   CONSTRAINT `product_lines_ibfk_1` FOREIGN KEY (`brandID`) REFERENCES `brands` (`brandID`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -414,7 +346,7 @@ CREATE TABLE `product_lines` (
 
 LOCK TABLES `product_lines` WRITE;
 /*!40000 ALTER TABLE `product_lines` DISABLE KEYS */;
-INSERT INTO `product_lines` VALUES (1,'Puma attack 2k',5,'2024-07-11 01:38:14','2024-07-11 01:38:49'),(2,'Adiddas Tonicross Euro',2,'2024-07-11 01:39:38','2024-07-11 01:39:38'),(3,'Converse Long ',1,'2024-07-11 01:40:55','2024-07-11 01:40:55'),(4,'Vans VIP',3,'2024-07-11 01:41:23','2024-07-11 01:41:23'),(5,'Nike Cristiano Ronaldo',4,'2024-07-11 01:42:04','2024-07-11 01:42:04');
+INSERT INTO `product_lines` VALUES (4,NULL,NULL,'2024-07-11 09:41:32','2024-07-11 09:41:32'),(5,NULL,NULL,'2024-07-11 09:41:44','2024-07-11 09:41:44'),(6,NULL,NULL,'2024-07-11 09:42:21','2024-07-11 09:42:21'),(7,NULL,NULL,'2024-07-11 09:42:33','2024-07-11 09:42:33'),(8,NULL,NULL,'2024-07-11 09:42:50','2024-07-11 09:42:50');
 /*!40000 ALTER TABLE `product_lines` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -454,7 +386,7 @@ DROP TABLE IF EXISTS `products`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `products` (
-  `productsID` int NOT NULL AUTO_INCREMENT,
+  `productsID` int NOT NULL,
   `productsName` varchar(255) DEFAULT NULL,
   `productImportPrice` decimal(16,2) DEFAULT NULL,
   `productPrice` decimal(16,2) DEFAULT NULL,
@@ -478,7 +410,7 @@ CREATE TABLE `products` (
   CONSTRAINT `products_ibfk_3` FOREIGN KEY (`styleID`) REFERENCES `styles` (`styleID`) ON UPDATE CASCADE,
   CONSTRAINT `products_ibfk_4` FOREIGN KEY (`materialID`) REFERENCES `materials` (`materialId`) ON UPDATE CASCADE,
   CONSTRAINT `products_ibfk_5` FOREIGN KEY (`colorID`) REFERENCES `colors` (`colorId`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=169938 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -487,7 +419,7 @@ CREATE TABLE `products` (
 
 LOCK TABLES `products` WRITE;
 /*!40000 ALTER TABLE `products` DISABLE KEYS */;
-INSERT INTO `products` VALUES (120695,'Giày Sancker Nike',50.00,75.00,1,1,3,2,3,2,4,'2024-07-11 01:50:35','2024-07-11 01:51:38'),(140970,'Giày thể thao Adidas',50.00,75.00,1,1,3,2,2,2,2,'2024-07-11 01:49:57','2024-07-11 01:49:57'),(165111,'Giày Ván nấm lùn',50.00,75.00,1,1,2,1,3,4,5,'2024-07-11 01:49:28','2024-07-11 01:58:27'),(169900,'Giày thể thao Adidas',50.00,75.00,1,1,1,1,1,1,1,'2024-07-11 01:48:52','2024-07-11 01:48:52'),(169937,'Giày thể thao Puma Neymar',50.00,75.00,1,1,NULL,NULL,NULL,NULL,1,'2024-07-10 14:01:22','2024-07-11 01:59:42');
+INSERT INTO `products` VALUES (116365,'Giày Nike Air Max ',200.00,300.00,1,1,8,1,1,1,1,'2024-07-11 09:43:48','2024-07-11 09:43:48'),(116971,'Giày Air Jordan',200.00,300.00,1,1,8,1,1,1,1,'2024-07-11 09:43:56','2024-07-11 09:43:56'),(121859,'Giày Nike Running ',200.00,300.00,1,1,8,3,2,4,5,'2024-07-11 09:44:20','2024-07-11 09:44:20'),(165938,'Giày Nike Air Force',200.00,300.00,1,1,8,1,1,1,1,'2024-07-11 09:43:38','2024-07-11 09:43:38');
 /*!40000 ALTER TABLE `products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -572,6 +504,38 @@ LOCK TABLES `shopping_carts` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `size_product_details`
+--
+
+DROP TABLE IF EXISTS `size_product_details`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `size_product_details` (
+  `sizeProductDetailID` int NOT NULL AUTO_INCREMENT,
+  `sizeID` int DEFAULT NULL,
+  `productDetailID` int DEFAULT NULL,
+  `quantity` int DEFAULT NULL,
+  `createdAt` datetime NOT NULL,
+  `updatedAt` datetime NOT NULL,
+  PRIMARY KEY (`sizeProductDetailID`),
+  KEY `sizeID` (`sizeID`),
+  KEY `productDetailID` (`productDetailID`),
+  CONSTRAINT `size_product_details_ibfk_1` FOREIGN KEY (`sizeID`) REFERENCES `sizes` (`sizeID`) ON UPDATE CASCADE,
+  CONSTRAINT `size_product_details_ibfk_2` FOREIGN KEY (`productDetailID`) REFERENCES `product_details` (`productDetailID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `size_product_details`
+--
+
+LOCK TABLES `size_product_details` WRITE;
+/*!40000 ALTER TABLE `size_product_details` DISABLE KEYS */;
+INSERT INTO `size_product_details` VALUES (1,1,1,100,'2024-07-11 09:45:05','2024-07-11 09:45:05'),(2,1,2,100,'2024-07-11 09:45:11','2024-07-11 09:45:11'),(3,2,1,100,'2024-07-11 09:45:15','2024-07-11 09:45:15');
+/*!40000 ALTER TABLE `size_product_details` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `sizes`
 --
 
@@ -580,15 +544,11 @@ DROP TABLE IF EXISTS `sizes`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sizes` (
   `sizeID` int NOT NULL AUTO_INCREMENT,
-  `sizeName` varchar(255) DEFAULT NULL,
-  `sizeQuantity` int DEFAULT NULL,
-  `productDetailID` int DEFAULT NULL,
+  `sizeName` int DEFAULT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
-  PRIMARY KEY (`sizeID`),
-  KEY `productDetailID` (`productDetailID`),
-  CONSTRAINT `sizes_ibfk_1` FOREIGN KEY (`productDetailID`) REFERENCES `product_details` (`pDetailID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`sizeID`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -597,7 +557,7 @@ CREATE TABLE `sizes` (
 
 LOCK TABLES `sizes` WRITE;
 /*!40000 ALTER TABLE `sizes` DISABLE KEYS */;
-INSERT INTO `sizes` VALUES (1,'36',25,1,'2024-07-11 02:03:13','2024-07-11 02:03:13'),(2,'37',30,2,'2024-07-11 02:03:25','2024-07-11 02:03:25'),(3,'38',35,3,'2024-07-11 02:03:39','2024-07-11 02:03:39'),(4,'39',40,4,'2024-07-11 02:04:19','2024-07-11 02:04:19'),(5,'40',45,5,'2024-07-11 02:04:27','2024-07-11 02:04:27');
+INSERT INTO `sizes` VALUES (1,36,'2024-07-11 09:33:34','2024-07-11 09:33:34'),(2,37,'2024-07-11 09:33:39','2024-07-11 09:33:39'),(3,38,'2024-07-11 09:33:42','2024-07-11 09:33:42'),(4,39,'2024-07-11 09:33:44','2024-07-11 09:33:44'),(5,40,'2024-07-11 09:33:47','2024-07-11 09:33:47'),(6,41,'2024-07-11 09:33:50','2024-07-11 09:33:50'),(7,42,'2024-07-11 09:33:52','2024-07-11 09:33:52'),(8,43,'2024-07-11 09:33:55','2024-07-11 09:33:55'),(9,44,'2024-07-11 09:33:57','2024-07-11 09:33:57'),(10,45,'2024-07-11 09:33:59','2024-07-11 09:33:59'),(11,46,'2024-07-11 09:34:01','2024-07-11 09:34:01');
 /*!40000 ALTER TABLE `sizes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -614,7 +574,7 @@ CREATE TABLE `styles` (
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   PRIMARY KEY (`styleID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -623,7 +583,7 @@ CREATE TABLE `styles` (
 
 LOCK TABLES `styles` WRITE;
 /*!40000 ALTER TABLE `styles` DISABLE KEYS */;
-INSERT INTO `styles` VALUES (1,'Cổ cao','2024-07-11 01:25:10','2024-07-11 01:28:29'),(2,'Cổ thấp','2024-07-11 01:25:30','2024-07-11 01:28:21'),(3,'Độn đế','2024-07-11 01:28:44','2024-07-11 01:28:44');
+INSERT INTO `styles` VALUES (1,'Cổ cao','2024-07-11 09:36:43','2024-07-11 09:36:43'),(2,'Cổ thấp','2024-07-11 09:36:46','2024-07-11 09:36:46'),(3,'Đế thấp','2024-07-11 09:36:49','2024-07-11 09:36:49'),(4,'Đế cao','2024-07-11 09:36:52','2024-07-11 09:36:52');
 /*!40000 ALTER TABLE `styles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -655,33 +615,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1669243149,'longpt','tuyenbeat@gmail.com','0358091695','$2b$10$7lSj6iiA6BjMIC9Y1.wP5ee1d2Gh6nJmjMT010OBra7hpzR440ziq','1','Long',NULL,'2024-07-10 13:39:58','2024-07-10 13:39:58');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `voucher_customer`
---
-
-DROP TABLE IF EXISTS `voucher_customer`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `voucher_customer` (
-  `voucherId` int NOT NULL,
-  `customerId` int NOT NULL,
-  `createdAt` datetime NOT NULL,
-  `updatedAt` datetime NOT NULL,
-  PRIMARY KEY (`voucherId`,`customerId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `voucher_customer`
---
-
-LOCK TABLES `voucher_customer` WRITE;
-/*!40000 ALTER TABLE `voucher_customer` DISABLE KEYS */;
-/*!40000 ALTER TABLE `voucher_customer` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -729,4 +663,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-07-11  9:24:10
+-- Dump completed on 2024-07-11 16:46:07
