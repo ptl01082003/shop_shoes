@@ -16,6 +16,8 @@ import routerSize from "./SizeRouter";
 import routerStyle from "./StylesRouter";
 import cartsRouter from "./CartsRouter";
 import { RESPONSE_CODE, ResponseBody, STATUS_CODE } from "../constants";
+import routerSizeProductDetals from "./SizeProductDetails";
+import vnpayRouter from "./PaymentOnlineRouter";
 
 const router = express.Router();
 
@@ -26,6 +28,7 @@ export function appRouter() {
   router.use("/product-line", routerProductLine);
   router.use("/products", routerProduct);
   router.use("/color", routerColor);
+  router.use("/payment", vnpayRouter);
   router.use("/style", routerStyle);
   router.use("/material", routerMaterial);
   router.use("/origin", routerOrigin);

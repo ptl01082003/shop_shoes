@@ -86,7 +86,7 @@ const PaymentOnlineController = {
       const redirectUrl = "https://yourdomain.com/return";
       const ipnUrl = "https://yourdomain.com/notify";
       const amount = "10000";
-      const requestType = "payWithATM";
+      const requestType = "captureWallet";
       const extraData = "";
       // Chuẩn bị data để ký
       const rawSignature = `accessKey=${accessKey}&amount=${amount}&extraData=${extraData}&ipnUrl=${ipnUrl}&orderId=${orderId}&orderInfo=${orderInfo}&partnerCode=${partnerCode}&redirectUrl=${redirectUrl}&requestId=${requestId}&requestType=${requestType}`;
