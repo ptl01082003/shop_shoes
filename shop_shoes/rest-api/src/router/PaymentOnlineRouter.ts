@@ -1,12 +1,13 @@
+import { Vouchers } from './../models/Vouchers';
 // routes/origins.ts
 import { Router } from "express";
 import PaymentOnlineController from "../controller/PaymentOnlineController";
 
-const vnpayRouter = Router();
+const paymentRouter = Router();
 
-vnpayRouter.get("/", PaymentOnlineController.order);
-vnpayRouter.get("/check-out", PaymentOnlineController.checkout);
-vnpayRouter.get("/momo", PaymentOnlineController.momo);
+paymentRouter.get("/", PaymentOnlineController.order);
+paymentRouter.get("/momo", PaymentOnlineController.momo);
+paymentRouter.get("/check-out-vnpay", PaymentOnlineController.checkoutVnpay);
+paymentRouter.get("/check-out-momo", PaymentOnlineController.checkoutMomo);
 
-
-export default vnpayRouter;
+export default paymentRouter;

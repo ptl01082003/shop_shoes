@@ -25,17 +25,16 @@ export class SizeProductDetails extends Model {
   @ForeignKey(() => Sizes)
   @Column
   sizeID!: number;
+  @BelongsTo(() => Sizes)
+  size!: Sizes;
 
   @ForeignKey(() => ProductDetails)
   @Column
   productDetailID!: number;
 
-  @Column
-  quantity!: number;
-
-  @BelongsTo(() => Sizes)
-  size!: Sizes;
-
   @BelongsTo(() => ProductDetails)
   productDetail!: ProductDetails;
+
+  @Column
+  quantity!: number;
 }

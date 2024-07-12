@@ -28,9 +28,10 @@ export class ProductDetails extends Model {
   @Column
   productID!: number;
 
-  @HasMany(() => SizeProductDetails)
-  sizeProductDetails!: SizeProductDetails[];
-
   @BelongsTo(() => Products)
   product!: Products;
+
+  @HasMany(() => SizeProductDetails, "sizeProductDetailID")
+  sizeProductDetails!: SizeProductDetails[];
+
 }
