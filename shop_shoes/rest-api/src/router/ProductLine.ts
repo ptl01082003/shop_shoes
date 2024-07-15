@@ -1,12 +1,12 @@
 import express from "express";
-import ProductColorsController from "../controller/ProductColorsController";
+import ProductLinesController from "../controller/ProductLinesController";
 
-const routerProductColors = express.Router();
+const routerProductLine = express.Router();
 
-routerProductColors.post("/", ProductColorsController.addProductColor);
-routerProductColors.get("/", ProductColorsController.getProductColors);
-routerProductColors.get("/:id", ProductColorsController.getProductColorById);
-routerProductColors.put("/:id", ProductColorsController.updateProductColor);
-routerProductColors.delete("/:id", ProductColorsController.deleteProductColor);
+routerProductLine.post("/", ProductLinesController.addProductLine);
+routerProductLine.get("/", ProductLinesController.getProductLines);
+routerProductLine.get("/:id", ProductLinesController.getProductLineById);
+routerProductLine.put("/:id", ProductLinesController.updateProductLine);
+routerProductLine.delete("/:id", ProductLinesController.deleteProductLine);
 
-export default routerProductColors;
+export default routerProductLine;
