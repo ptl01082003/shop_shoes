@@ -38,14 +38,5 @@ export function appRouter() {
   router.use("/product-promotion", routerProductPromotion);
   // router.use("/size-productdetail", routerSizeProductDetals);
 
-  router.use("*", (req, res) => {
-    res.status(STATUS_CODE.NOT_FOUND).json(
-      ResponseBody({
-        code: RESPONSE_CODE.ERRORS,
-        message: "Đường dẫn không tồn tại",
-      })
-    );
-  });
-
   app.use(`/api/${process.env.API_VERSION}`, router);
 }

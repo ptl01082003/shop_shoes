@@ -79,49 +79,51 @@ const PaymentOnlineController = {
     try {
       const accessKey = "F8BBA842ECF85";
       const secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
-      let momoQuery: any = req.query;
-      const signature = momoQuery["signature"];
+      let momoQuery = req.query;
 
-      momoQuery["accessKey"] = accessKey;
+      const orderId = momoQuery["orderId"];
+      const requestId = momoQuery["requestId"];
+      const partnerCode = momoQuery["partnerCode"];
 
-      delete momoQuery["signature"];
-
-      momoQuery = sortObject(momoQuery);
-
-      // Tạo chữ ký
-      const signed = crypto
+      const signature = crypto
         .createHmac("sha256", secretKey)
-        .update(querystring.stringify(momoQuery))
+        .update(
+          `accessKey=${accessKey}&orderId=${momoQuery["orderId"]}&partnerCode=${momoQuery["partnerCode"]}&requestId=${momoQuery["requestId"]}`
+        )
         .digest("hex");
-      console.log("signed", signed);
-      console.log("signature", signature)
-      //kiểm tra tính toàn vẹn dữ liệu của giao dịch , sử dụng các tham số trên url trả về
-      //thực hiện tuần tự các bước như yêu cầu thanh toán và check với mã băm trả về
-      if (signature === signed) {
-        console.log("tạo đơn hàng thành công");
-      } else {
-        //check đơn hàng tại đây và lưu vào database
+
+      const requestBody = {
+        partnerCode,
+        requestId,
+        orderId,
+        signature,
+        lang: "vi",
+      };
+      const transaction = await axios.post(
+        process.env["momo_query_Url"] as string,
+        requestBody
+      );
+      if (transaction?.data.resultCode == 0) {
+        res.json(transaction.data);
       }
-      res.json(momoQuery)
     } catch (error) {
       next(error);
     }
   },
   momo: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
       const partnerCode = "MOMO";
       const accessKey = "F8BBA842ECF85";
       const secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
 
       const requestId = partnerCode + new Date().getTime();
-      const orderId = requestId;
-      const orderInfo = "Đơn hàng FDO430DFK";
+      const orderId = new Date().getTime() + 450;
+      const orderInfo = "Đơn hàng cần thanh toán FDO430DFK";
       const ipnUrl = process.env["momo_Checkout"];
       const redirectUrl = process.env["momo_Checkout"];
       const amount = "10000";
       const requestType = "captureWallet";
-      const extraData = "";
+      const extraData = "eyJ1c2VybmFtZSI6ICJtb21vIn0=";
 
       const rawSignature = `accessKey=${accessKey}&amount=${amount}&extraData=${extraData}&ipnUrl=${ipnUrl}&orderId=${orderId}&orderInfo=${orderInfo}&partnerCode=${partnerCode}&redirectUrl=${redirectUrl}&requestId=${requestId}&requestType=${requestType}`;
 
@@ -146,14 +148,9 @@ const PaymentOnlineController = {
         lang: "vi",
       };
 
-      axios
-        .post(endpoint, requestBody)
-        .then((response) => {
-          res.redirect(response.data.payUrl);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+      const payments = await axios
+        .post(process.env["momo_Url"] as string, requestBody)
+      res.redirect(payments.data.payUrl);
     } catch (error) {
       next(error);
     }

@@ -1,12 +1,13 @@
 import "dotenv/config";
 import cors from "cors";
-import express from "express";
+import express, { NextFunction, Request , Response } from "express";
 import { appRouter } from "./router/appRouter";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { connectDB } from "./config/ConnectDB";
 import { redis } from "./config/ConnectRedis";
 import { Send } from "express-serve-static-core";
+import { RESPONSE_CODE, ResponseBody, STATUS_CODE } from "./constants";
 declare global {
   namespace Express {
     interface Request {
@@ -49,8 +50,17 @@ app.use(cookieParser());
 
 appRouter();
 
+app.use((errors: any, req: Request, res: Response, next: NextFunction) => {
+  res.json(errors);
+})
+
 app.use("*", (_, res) => {
-  res.status(404).json({ mess: "404 Not Found" });
+  res.status(STATUS_CODE.NOT_FOUND).json(
+    ResponseBody({
+      code: RESPONSE_CODE.ERRORS,
+      message: "Đường dẫn không tồn tại",
+    })
+  );
 });
 
 app.listen(process.env.SERVER_PORT, () =>
