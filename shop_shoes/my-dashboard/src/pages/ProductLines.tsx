@@ -13,6 +13,7 @@ import {
 import React, { useEffect, useState } from "react";
 import ProductLineService from "../services/ProductLineApi";
 import BrandService from "../services/BrandApi";
+import { error } from "console";
 
 type FieldType = {
   productLineName?: string;
@@ -35,6 +36,7 @@ export default function ProductLinePage() {
         const getProductLines = await ProductLineService.getProductLines();
         if (Array.isArray(getProductLines) && getProductLines.length > 0) {
           setLstProductLines(getProductLines);
+          console.log(getProductLines);
         } else {
           message.error("Không thể tải danh sách dòng sản phẩm.");
         }
@@ -42,11 +44,12 @@ export default function ProductLinePage() {
         const getBrands = await BrandService.getBrands();
         if (Array.isArray(getBrands) && getBrands.length > 0) {
           setLstBrands(getBrands);
+          console.log(getBrands);
         } else {
           message.error("Không thể tải danh sách thương hiệu.");
         }
       } catch (error) {
-        console.error("Error loading data", error);
+        console.error("Error loading data");
         message.error("Có lỗi xảy ra khi tải dữ liệu.");
       }
     })();

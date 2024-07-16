@@ -20,6 +20,7 @@ import StylesPage from "./pages/Styles";
 import MaterialsPage from "./pages/Materials";
 import OriginsPage from "./pages/Origins";
 import SizesPage from "./pages/Sizes";
+import PromotionsPage from "./pages/Promotions";
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function App() {
             <Route path={"materials"} element={<MaterialsPage />} />
             <Route path={"origins"} element={<OriginsPage />} />
             <Route path={"sizes"} element={<SizesPage />} />
+            <Route path={"promotions"} element={<PromotionsPage />} />
             {/* Thêm route cho ProductLineList và ProductLineForm */}
           </Route>
         </Routes>
