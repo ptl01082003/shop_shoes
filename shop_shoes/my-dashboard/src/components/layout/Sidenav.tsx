@@ -1,8 +1,15 @@
 import { Menu, Button } from "antd";
 import { NavLink, useLocation } from "react-router-dom";
 import logo from "../../assets/images/logo.png";
+import { MenuProps } from "antd/lib";
+import {
+  AppstoreOutlined,
+  MailOutlined,
+  SettingOutlined,
+} from "@ant-design/icons";
+import { useState } from "react";
 
-function Sidenav({ color }) {
+function Sidenav({ color }: { color: string }) {
   const { pathname } = useLocation();
   const page = pathname.replace("/", "");
 
@@ -147,6 +154,100 @@ function Sidenav({ color }) {
     </svg>,
   ];
 
+  type MenuItem = Required<MenuProps>["items"][number];
+
+  const items: MenuItem[] = [
+    {
+      key: "1",
+      icon: <MailOutlined />,
+      label: "Trang chủ",
+      children: []
+    },
+    {
+      key: "2",
+      icon: <MailOutlined />,
+      label: "Bán Hàng",
+      children: []
+    },
+    {
+      key: "3",
+      icon: <MailOutlined />,
+      label: "Đơn hàng",
+      children: []
+    },
+    {
+      key: "4",
+      icon: <MailOutlined />,
+      label: "Sản phẩm",
+      children: []
+    },
+    {
+      key: "5",
+      icon: <AppstoreOutlined />,
+      label: "Navigation Two",
+      children: [
+        { key: "21", label: "Option 1" },
+        { key: "22", label: "Option 2" },
+        {
+          key: "23",
+          label: "Submenu",
+        },
+        {
+          key: "24",
+          label: "Submenu 2",
+        },
+      ],
+    },
+  ];
+
+  interface LevelKeysProps {
+    key?: string;
+    children?: LevelKeysProps[];
+  }
+
+  const getLevelKeys = (items1: LevelKeysProps[]) => {
+    const key: Record<string, number> = {};
+    const func = (items2: LevelKeysProps[], level = 1) => {
+      items2.forEach((item) => {
+        if (item.key) {
+          key[item.key] = level;
+        }
+        if (item.children) {
+          func(item.children, level + 1);
+        }
+      });
+    };
+    func(items1);
+    return key;
+  };
+
+  const levelKeys = getLevelKeys(items as LevelKeysProps[]);
+
+  const [stateOpenKeys, setStateOpenKeys] = useState(["2", "23"]);
+
+  const onOpenChange: MenuProps["onOpenChange"] = (openKeys) => {
+    const currentOpenKey = openKeys.find(
+      (key) => stateOpenKeys.indexOf(key) === -1
+    );
+    // open
+    if (currentOpenKey !== undefined) {
+      const repeatIndex = openKeys
+        .filter((key) => key !== currentOpenKey)
+        .findIndex((key) => levelKeys[key] === levelKeys[currentOpenKey]);
+
+      setStateOpenKeys(
+        openKeys
+          // remove repeat key
+          .filter((_, index) => index !== repeatIndex)
+          // remove current level all child
+          .filter((key) => levelKeys[key] <= levelKeys[currentOpenKey])
+      );
+    } else {
+      // close
+      setStateOpenKeys(openKeys);
+    }
+  };
+
   return (
     <>
       <div className="brand">
@@ -154,105 +255,13 @@ function Sidenav({ color }) {
         <span>Muse Dashboard</span>
       </div>
       <hr />
-      <Menu theme="light" mode="inline">
-        <Menu.Item key="1">
-          <NavLink to="/dashboard">
-            <span
-              className="icon"
-              style={{
-                background: page === "dashboard" ? color : "",
-              }}
-            >
-              {dashboard}
-            </span>
-            <span className="label">Dashboard</span>
-          </NavLink>
-        </Menu.Item>
-        <Menu.Item key="2">
-          <NavLink to="/tables">
-            <span
-              className="icon"
-              style={{
-                background: page === "tables" ? color : "",
-              }}
-            >
-              {tables}
-            </span>
-            <span className="label">Tables</span>
-          </NavLink>
-        </Menu.Item>
-        <Menu.Item key="3">
-          <NavLink to="/billing">
-            <span
-              className="icon"
-              style={{
-                background: page === "billing" ? color : "",
-              }}
-            >
-              {billing}
-            </span>
-            <span className="label">Billing</span>
-          </NavLink>
-        </Menu.Item>
-        <Menu.Item key="4">
-          <NavLink to="/rtl">
-            <span
-              className="icon"
-              style={{
-                background: page === "rtl" ? color : "",
-              }}
-            >
-              {rtl}
-            </span>
-            <span className="label">RTL</span>
-          </NavLink>
-        </Menu.Item>
-        <Menu.Item className="menu-item-header" key="5">
-          Account Pages
-        </Menu.Item>
-        <Menu.Item key="6">
-          <NavLink to="/profile">
-            <span
-              className="icon"
-              style={{
-                background: page === "profile" ? color : "",
-              }}
-            >
-              {profile}
-            </span>
-            <span className="label">Profile</span>
-          </NavLink>
-        </Menu.Item>
-        <Menu.Item key="7">
-          <NavLink to="/sign-in">
-            <span className="icon">{signin}</span>
-            <span className="label">Sign In</span>
-          </NavLink>
-        </Menu.Item>
-        <Menu.Item key="8">
-          <NavLink to="/sign-up">
-            <span className="icon">{signup}</span>
-            <span className="label">Sign Up</span>
-          </NavLink>
-        </Menu.Item>
-      </Menu>
-      <div className="aside-footer">
-        <div
-          className="footer-box"
-          style={{
-            background: color,
-          }}
-        >
-          <span className="icon" style={{ color }}>
-            {dashboard}
-          </span>
-          <h6>Need Help?</h6>
-          <p>Please check our docs</p>
-          <Button type="primary" className="ant-btn-sm ant-btn-block">
-            DOCUMENTATION
-          </Button>
-        </div>
-      </div>
+      <Menu
+        mode="vertical"
+        defaultSelectedKeys={["231"]}
+        openKeys={stateOpenKeys}
+        onOpenChange={onOpenChange}
+        items={items}
+      />
     </>
   );
 }
