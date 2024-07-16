@@ -331,9 +331,6 @@ function Home() {
 
   return (
     <>
-    <div className="py-10">
-      <h3 className="px-5 text-balance text-red-300">tôi là tuyên</h3>
-    </div>
       <div className="layout-content">
         <Row className="rowgap-vbox" gutter={[24, 0]}>
           {count.map((c, index) => (

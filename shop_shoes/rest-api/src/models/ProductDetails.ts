@@ -23,15 +23,16 @@ export class ProductDetails extends Model {
   @AutoIncrement
   @Column
   productDetailID!: number;
+  @Column
+  productDetailstatus!: boolean;
 
   @ForeignKey(() => Products)
   @Column
   productID!: number;
 
-  @BelongsTo(() => Products)
-  product!: Products;
-
-  @HasMany(() => SizeProductDetails, "sizeProductDetailID")
+  @HasMany(() => SizeProductDetails)
   sizeProductDetails!: SizeProductDetails[];
 
+  @BelongsTo(() => Products)
+  product!: Products;
 }

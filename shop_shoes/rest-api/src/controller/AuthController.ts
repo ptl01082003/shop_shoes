@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { Users } from "../models/Users";
+import { RESPONSE_CODE, ResponseBody } from "../constants";
 
 let arrSecret: any[] = [];
 
@@ -41,8 +42,8 @@ const authCtrl = {
         });
       } else {
         return res
-          .status(203)
-          .json({ message: "Tài khoản hoặc mật khẩu không đúng" });
+          .status(401)
+          .json({ message: "Thực hiện thất bại" });
       }
     } catch (error) {
       next(error);

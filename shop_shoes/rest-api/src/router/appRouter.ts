@@ -26,22 +26,8 @@ export function appRouter() {
   router.use("/brands", routerBrands);
   router.use("/product-lines", routerProductLine);
   router.use("/products", routerProduct);
-  router.use("/color", routerColor);
-  router.use("/payment-orders", paymentRouter);
-  router.use("/style", routerStyle);
-  router.use("/material", routerMaterial);
-  router.use("/origin", routerOrigin);
-  router.use("/size", routerSize);
-  router.use("/product-detail", routerProductDetail);
-  router.use("/image", routerImage);
-  router.use("/promotion", routerPromotions);
-  router.use("/product-promotion", routerProductPromotion);
-  // router.use("/size-productdetail", routerSizeProductDetals);
-
-<<<<<<< Updated upstream
-=======
   router.use("/colors", routerColor);
-  // router.use("/payment", vnpayRouter);
+  router.use("/payment-orders", paymentRouter);
   router.use("/styles", routerStyle);
   router.use("/materials", routerMaterial);
   router.use("/origins", routerOrigin);
@@ -50,7 +36,7 @@ export function appRouter() {
   router.use("/images", routerImage);
   router.use("/promotions", routerPromotions);
   router.use("/product-promotions", routerProductPromotion);
-  router.use("/size-productdetails", routerSizeProductDetals);
+  // router.use("/size-productdetail", routerSizeProductDetals);
 
   router.use("*", (req, res) => {
     res.status(STATUS_CODE.NOT_FOUND).json(
@@ -61,6 +47,5 @@ export function appRouter() {
     );
   });
 
->>>>>>> Stashed changes
   app.use(`/api/${process.env.API_VERSION}`, router);
 }

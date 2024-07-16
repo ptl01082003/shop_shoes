@@ -33,7 +33,7 @@ AxiosConfig.interceptors.request.use(
 AxiosConfig.interceptors.response.use(
   function (response) {
     // Trả về dữ liệu chính từ phản hồi
-    return response.data?.data;
+    return response;
   },
   async function (error) {
     const config = error.config;

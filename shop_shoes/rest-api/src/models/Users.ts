@@ -49,5 +49,7 @@ export class Users extends Model {
   @Column({
     type: DataType.DATE,
   })
+    
   public birth?: string;
+
 }

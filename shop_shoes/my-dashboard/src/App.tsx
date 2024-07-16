@@ -12,12 +12,14 @@ import "./assets/styles/main.css";
 import "./assets/styles/responsive.css";
 import "./index.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import UserForm from "../src/components/Form/UserForm";
-import UserList from "../src/components/List/UserList";
-import BrandList from "./components/List/BrandsList";
-import BrandForm from "./components/Form/BrandsForm";
-import ProductLineList from "./components/List/ProductLineList";
-import ProductLineForm from "./components/Form/ProductLineForm";
+
+import BrandsPage from "./pages/Brands";
+import ProductLinePage from "./pages/ProductLines";
+import ColorsPage from "./pages/Colors";
+import StylesPage from "./pages/Styles";
+import MaterialsPage from "./pages/Materials";
+import OriginsPage from "./pages/Origins";
+import SizesPage from "./pages/Sizes";
 
 function App() {
   return (
@@ -35,21 +37,17 @@ function App() {
             <Route path={"profile"} element={<Profile />} />
 
             {/* Thêm route cho UserList và UserForm */}
-            <Route path={"users"} element={<UserList />} />
-            <Route path={"users/create"} element={<UserForm />} />
+            {/* <Route path={"users"} element={<UserList />} /> */}
 
             {/* Thêm route cho BrandsList và BrandsForm */}
-            <Route path="brands" element={<BrandList />} />
-            <Route path="brands/create" element={<BrandForm />} />
-
-            {/* Thêm route cho BrandsList và BrandsForm */}
-            <Route path="brands" element={<BrandList />} />
-            <Route path="brands/create" element={<BrandForm />} />
+            <Route path="brands" element={<BrandsPage />} />
+            <Route path={"product-lines"} element={<ProductLinePage />} />
+            <Route path={"colors"} element={<ColorsPage />} />
+            <Route path={"styles"} element={<StylesPage />} />
+            <Route path={"materials"} element={<MaterialsPage />} />
+            <Route path={"origins"} element={<OriginsPage />} />
+            <Route path={"sizes"} element={<SizesPage />} />
             {/* Thêm route cho ProductLineList và ProductLineForm */}
-
-            <Route path="product-lines" element={<ProductLineList />} />
-
-            <Route path="product-lines/create" element={<ProductLineForm />} />
           </Route>
         </Routes>
       </Router>

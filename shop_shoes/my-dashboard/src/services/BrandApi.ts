@@ -8,7 +8,7 @@ const BrandService = {
   getBrands: async () => {
     try {
       const response = await AxiosConfig.get(API_URL);
-      return response;
+      return response.data;
     } catch (error) {
       console.error("Error fetching brands", error);
       throw error;
@@ -28,7 +28,7 @@ const BrandService = {
   createBrand: async (brandData: any) => {
     try {
       const response = await AxiosConfig.post(API_URL, brandData);
-      return response;
+      return response.data;
     } catch (error) {
       console.error("Error creating brand", error);
       throw error;
@@ -41,7 +41,7 @@ const BrandService = {
         `${API_URL}/${brandID}`,
         brandData
       );
-      return response;
+      return response.data;
     } catch (error) {
       console.error(`Error updating brand ${brandID}`, error);
       throw error;
@@ -51,7 +51,7 @@ const BrandService = {
   deleteBrand: async (brandID: number) => {
     try {
       const response = await AxiosConfig.delete(`${API_URL}/${brandID}`);
-      return response;
+      return response.data;
     } catch (error) {
       console.error(`Error deleting brand ${brandID}`, error);
       throw error;

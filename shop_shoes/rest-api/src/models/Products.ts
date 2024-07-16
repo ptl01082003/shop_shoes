@@ -82,3 +82,4 @@ export class Products extends Model {
     instance.productsID = genaratorProductsId();
   }
 }
+
