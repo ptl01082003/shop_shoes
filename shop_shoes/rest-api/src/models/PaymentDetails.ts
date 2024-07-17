@@ -6,7 +6,7 @@ import {
   HasMany,
   Model,
   PrimaryKey,
-  Table
+  Table,
 } from "sequelize-typescript";
 import { OrderItems } from "./OrderItems";
 import { Users } from "./Users";
@@ -23,20 +23,19 @@ export class PaymentDetails extends Model {
   @Column
   public orderDetailsId!: number;
 
-  @ForeignKey(() => OrderDetails)
-  @Column
-  public userId!: number;
+  // @ForeignKey(() => OrderDetails)
+  // @Column
+  // public userId!: number;
 
-  @Column
-  public status!: number;
+  // @Column
+  // public status!: number;
 
-  @Column
-  public totals!: number;
+  // @Column
+  // public totals!: number;
 
-  @BelongsTo(() => Users)
-  public users!: Users;
+  // @BelongsTo(() => Users)
+  // public users!: Users;
 
-  @HasMany(() => OrderItems, "orderItemsId")
-  public orderItems!: OrderItems[];
-
+  // @HasMany(() => OrderItems, "orderItemsId")
+  // public orderItems!: OrderItems[];
 }

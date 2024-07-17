@@ -14,13 +14,13 @@ import "./index.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import BrandsPage from "./pages/Brands";
-import ProductLinePage from "./pages/ProductLines";
-import ColorsPage from "./pages/Colors";
+
 import StylesPage from "./pages/Styles";
 import MaterialsPage from "./pages/Materials";
 import OriginsPage from "./pages/Origins";
 import SizesPage from "./pages/Sizes";
 import PromotionsPage from "./pages/Promotions";
+import ProductPage from "./pages/Products";
 
 function App() {
   return (
@@ -42,13 +42,13 @@ function App() {
 
             {/* Thêm route cho BrandsList và BrandsForm */}
             <Route path="brands" element={<BrandsPage />} />
-            <Route path={"product-lines"} element={<ProductLinePage />} />
-            <Route path={"colors"} element={<ColorsPage />} />
+
             <Route path={"styles"} element={<StylesPage />} />
             <Route path={"materials"} element={<MaterialsPage />} />
             <Route path={"origins"} element={<OriginsPage />} />
             <Route path={"sizes"} element={<SizesPage />} />
             <Route path={"promotions"} element={<PromotionsPage />} />
+            <Route path={"products"} element={<ProductPage />} />
             {/* Thêm route cho ProductLineList và ProductLineForm */}
           </Route>
         </Routes>

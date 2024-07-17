@@ -19,7 +19,7 @@ import { generateUniqueUserId } from "../utils/utils";
 export class Users extends Model {
   @PrimaryKey
   @Column
-  public userId!: number;
+  public userID!: number;
 
   @Column
   public userName!: string;
@@ -36,20 +36,18 @@ export class Users extends Model {
   @ForeignKey(() => Roles)
   @Default(1)
   @Column
-  public rolesId!: string;
+  public rolesID!: string;
 
   @Column
   public fullName!: string;
 
   @BeforeCreate
   static genaratorUserId(instance: Users) {
-    instance.userId = generateUniqueUserId();
+    instance.userID = generateUniqueUserId();
   }
 
   @Column({
     type: DataType.DATE,
   })
-    
   public birth?: string;
-
 }

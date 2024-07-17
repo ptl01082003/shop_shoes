@@ -18,7 +18,7 @@ export class Images extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  public imageId!: number;
+  public imageID!: number;
 
   @Column
   public imagePath!: string;

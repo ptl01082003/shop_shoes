@@ -37,5 +37,4 @@ export class ShoppingCarts extends Model {
 
   @Column
   public totals!: number;
-
 }

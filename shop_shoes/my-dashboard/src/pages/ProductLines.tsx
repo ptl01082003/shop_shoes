@@ -13,11 +13,9 @@ import {
 import React, { useEffect, useState } from "react";
 import ProductLineService from "../services/ProductLineApi";
 import BrandService from "../services/BrandApi";
-import { error } from "console";
-
 type FieldType = {
   productLineName?: string;
-  brandId?: number;
+  brandID?: number;
 };
 
 export default function ProductLinePage() {
@@ -29,32 +27,7 @@ export default function ProductLinePage() {
     open: false,
     data: {},
   });
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const getProductLines = await ProductLineService.getProductLines();
-        if (Array.isArray(getProductLines) && getProductLines.length > 0) {
-          setLstProductLines(getProductLines);
-          console.log(getProductLines);
-        } else {
-          message.error("Không thể tải danh sách dòng sản phẩm.");
-        }
-
-        const getBrands = await BrandService.getBrands();
-        if (Array.isArray(getBrands) && getBrands.length > 0) {
-          setLstBrands(getBrands);
-          console.log(getBrands);
-        } else {
-          message.error("Không thể tải danh sách thương hiệu.");
-        }
-      } catch (error) {
-        console.error("Error loading data");
-        message.error("Có lỗi xảy ra khi tải dữ liệu.");
-      }
-    })();
-  }, [shouldRender]);
-
+  console.log(lstBrands);
   const columns = [
     {
       title: "ID",
@@ -67,11 +40,11 @@ export default function ProductLinePage() {
       key: "productLineName",
     },
     {
-      title: "Brand ID",
-      dataIndex: "brandId",
-      key: "brandId",
-      render: (brandId: number) => {
-        const brand = lstBrands.find((brand: any) => brand.id === brandId);
+      title: "Thương hiệu",
+      dataIndex: "brandID",
+      key: "brandID",
+      render: (brandID: number) => {
+        const brand = lstBrands.find((brand: any) => brand.id === brandID);
         return <span>{brand ? brand.name : "-"}</span>;
       },
     },
@@ -97,6 +70,37 @@ export default function ProductLinePage() {
     },
   ];
 
+  useEffect(() => {
+    (async () => {
+      try {
+        const getProductLines = await ProductLineService.getProductLines();
+        if (
+          Array.isArray(getProductLines.data) &&
+          getProductLines.data.length > 0
+        ) {
+          setLstProductLines(getProductLines.data);
+          console.log(getProductLines);
+        }
+      } catch (error) {
+        console.error("Error loading data");
+        message.error("Có lỗi xảy ra khi tải dữ liệu.");
+      }
+    })();
+  }, [shouldRender]);
+  useEffect(() => {
+    (async () => {
+      try {
+        const getBrands = await BrandService.getBrands();
+        if (Array.isArray(getBrands.data) && getBrands.data.length > 0) {
+          setLstBrands(getBrands.data);
+        }
+      } catch (error) {
+        console.error("Error loading data");
+        message.error("Có lỗi xảy ra khi tải dữ liệu.");
+      }
+    })();
+  }, [shouldRender]);
+
   const deleteProductLineItems = async (record: any) => {
     try {
       console.log("Deleting product line:", record.productLineID);
@@ -104,14 +108,13 @@ export default function ProductLinePage() {
         record.productLineID
       );
       console.log("deleteProductLineItems result:", res);
-      if (res.status === 1) {
+      if (res.code === 0) {
         setShouldRender((x) => !x);
         message.success("Xóa dòng sản phẩm thành công!");
       } else {
-        message.error("Có lỗi xảy ra khi xóa dòng sản phẩm.");
+        message.error(res.message);
       }
     } catch (error) {
-      console.error("Delete product line error", error);
       message.error("Có lỗi xảy ra khi xóa dòng sản phẩm.");
     }
   };
@@ -128,10 +131,8 @@ export default function ProductLinePage() {
     values: FieldType
   ) => {
     try {
-      console.log("Creating product line:", values);
       const res = await ProductLineService.createProductLine(values);
-      console.log("onFinish result:", res);
-      if (res.status === 1) {
+      if (res.code === 0) {
         setOpenCreateModal(false);
         setShouldRender((x) => !x);
         message.success("Thêm dòng sản phẩm mới thành công!");
@@ -139,7 +140,6 @@ export default function ProductLinePage() {
         message.error("Có lỗi xảy ra khi thêm dòng sản phẩm mới.");
       }
     } catch (error) {
-      console.error("Create product line error", error);
       message.error("Có lỗi xảy ra khi thêm dòng sản phẩm mới.");
     }
   };
@@ -158,12 +158,9 @@ export default function ProductLinePage() {
         setOpenEditModal(undefined);
         setShouldRender((x) => !x);
         message.success("Cập nhật dòng sản phẩm thành công!");
-      } else {
-        message.error("Có lỗi xảy ra khi cập nhật dòng sản phẩm.");
       }
     } catch (error) {
       console.error("Update product line error", error);
-      message.error("Có lỗi xảy ra khi cập nhật dòng sản phẩm.");
     }
   };
 
@@ -214,16 +211,16 @@ export default function ProductLinePage() {
             <Input />
           </Form.Item>
           <Form.Item
-            label="Brand ID"
-            name="brandId"
+            label="Thương hiệu"
+            name="brandID"
             rules={[
               { required: true, message: "Brand ID không được để trống!" },
             ]}
           >
             <Select>
               {lstBrands.map((brand: any) => (
-                <Select.Option key={brand.id} value={brand.id}>
-                  {brand.name}
+                <Select.Option key={brand.brandID} value={brand.brandID}>
+                  {brand.brandName}
                 </Select.Option>
               ))}
             </Select>
@@ -264,7 +261,7 @@ export default function ProductLinePage() {
           </Form.Item>
           <Form.Item
             label="Brand ID"
-            name="brandId"
+            name="brandID"
             rules={[
               { required: true, message: "Brand ID không được để trống!" },
             ]}

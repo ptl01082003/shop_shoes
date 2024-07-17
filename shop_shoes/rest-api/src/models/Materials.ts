@@ -15,7 +15,7 @@ export class Materials extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  public materialId!: number;
+  public materialID!: number;
 
   @Column
   public materialName!: string;

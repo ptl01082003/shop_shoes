@@ -15,7 +15,7 @@ export class Roles extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  public id!: number;
+  public ID!: number;
 
   @Column
   public type!: string;

@@ -10,12 +10,12 @@ import {
   Table,
 } from "sequelize-typescript";
 
-import { ProductLines } from "./ProductLines";
 import { Styles } from "./Styles";
 import { Origins } from "./Origins";
 import { Materials } from "./Materials";
-import { Colors } from "./Colors";
+
 import { genaratorProductsId } from "../utils/utils";
+import { Brands } from "./Brands";
 
 @Table({
   tableName: "products",
@@ -26,6 +26,9 @@ export class Products extends Model {
   @PrimaryKey
   @Column
   public productsID!: number;
+
+  @Column
+  public productCode!: string;
 
   @Column
   public productsName!: string;
@@ -41,13 +44,6 @@ export class Products extends Model {
 
   @Column
   public display?: boolean;
-
-  @ForeignKey(() => ProductLines)
-  @Column
-  public productLineID?: number;
-
-  @BelongsTo(() => ProductLines)
-  public productLine?: ProductLines;
 
   @ForeignKey(() => Origins)
   @Column
@@ -70,16 +66,20 @@ export class Products extends Model {
   @BelongsTo(() => Materials)
   public material?: Materials;
 
-  @ForeignKey(() => Colors)
+  @ForeignKey(() => Brands)
   @Column
-  public colorID?: number;
+  public brandID?: number;
 
-  @BelongsTo(() => Colors)
-  public color?: Colors;
+  @BelongsTo(() => Brands)
+  public brand?: Brands;
 
   @BeforeCreate
   static genaratorUserId(instance: Products) {
     instance.productsID = genaratorProductsId();
   }
+  @BeforeCreate
+  static generateProductCode(instance: Products) {
+    const randomNum = Math.floor(1000 + Math.random() * 9000); // Số ngẫu nhiên 4 chữ số
+    instance.productCode = `SP${randomNum}`;
+  }
 }
-

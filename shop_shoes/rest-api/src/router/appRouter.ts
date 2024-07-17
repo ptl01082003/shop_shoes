@@ -4,13 +4,13 @@ import { RESPONSE_CODE, ResponseBody, STATUS_CODE } from "../constants";
 import routerAuth from "./AuthRouter";
 import routerBrands from "./BrandsRouter";
 import cartsRouter from "./CartsRouter";
-import routerColor from "./ColorsRouter";
+
 import routerImage from "./ImagesRouter";
 import routerMaterial from "./MaterialsRouter";
 import routerOrigin from "./OriginsRouter";
 import paymentRouter from "./PaymentOnlineRouter";
 import routerProductDetail from "./ProductDetailsRouter";
-import routerProductLine from "./ProductLinesRouter";
+
 import routerProductPromotion from "./ProductPromotionRouter";
 import routerProduct from "./ProductsRouter";
 import routerPromotions from "./PromotionsRouter";
@@ -24,9 +24,9 @@ export function appRouter() {
   router.use("/auth", routerAuth);
   router.use("/carts", cartsRouter);
   router.use("/brands", routerBrands);
-  router.use("/product-lines", routerProductLine);
+
   router.use("/products", routerProduct);
-  router.use("/colors", routerColor);
+
   router.use("/payment-orders", paymentRouter);
   router.use("/styles", routerStyle);
   router.use("/materials", routerMaterial);

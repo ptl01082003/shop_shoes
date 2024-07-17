@@ -1,6 +1,6 @@
 import { Button, Form, FormProps, Input, Modal, Table } from "antd";
 import React, { useEffect, useState } from "react";
-import OriginService from "../services/Origins";
+import OriginService from "../services/OriginApi";
 
 type FieldType = {
   originName?: string;

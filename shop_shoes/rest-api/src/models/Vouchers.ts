@@ -16,7 +16,7 @@ export class Vouchers extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  public voucherId!: number;
+  public voucherID!: number;
 
   @Column
   public voucherDescribe?: string;

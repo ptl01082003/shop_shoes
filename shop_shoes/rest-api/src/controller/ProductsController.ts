@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-import { Op } from "sequelize";
 import { Products } from "../models/Products";
 
 const ProductController = {
@@ -12,11 +11,10 @@ const ProductController = {
         productPrice,
         status,
         display,
-        productLineID,
         originID,
         styleID,
         materialID,
-        colorID,
+        brandID,
       } = req.body;
 
       const product = await Products.create({
@@ -25,11 +23,10 @@ const ProductController = {
         productPrice,
         status,
         display,
-        productLineID,
         originID,
         styleID,
         materialID,
-        colorID,
+        brandID,
       });
 
       res.status(201).json({
@@ -54,20 +51,7 @@ const ProductController = {
   // READ - Get all products
   getProducts: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id, productName, productLineID } = req.query;
-      const whereClause: any = {};
-
-      if (id) {
-        whereClause.id = id;
-      }
-      if (productName) {
-        whereClause.productsName = { [Op.like]: `%${productName}%` };
-      }
-      if (productLineID) {
-        whereClause.productLineID = productLineID;
-      }
-
-      const products = await Products.findAll({ where: whereClause });
+      const products = await Products.findAll();
       res.status(200).json({
         message: "Lấy danh sách sản phẩm thành công",
         code: 0,
@@ -75,7 +59,13 @@ const ProductController = {
       });
     } catch (error) {
       console.error(error);
-      next(error);
+      let errorMessage = "Lấy ds sản phẩm thất bại";
+
+      res.status(401).json({
+        message: "Lấy ds sản phẩm thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
@@ -95,7 +85,13 @@ const ProductController = {
       }
     } catch (error) {
       console.error(error);
-      next(error);
+      let errorMessage = "Lấy ds sản phẩm thất bại";
+
+      res.status(401).json({
+        message: "Lấy ds sản phẩm thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
@@ -103,17 +99,35 @@ const ProductController = {
   updateProduct: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const { productsName, productPrice } = req.body;
+      const {
+        productsName,
+        productImportPrice,
+        productPrice,
+        status,
+        display,
+        originID,
+        styleID,
+        materialID,
+        brandID,
+      } = req.body;
 
       const product = await Products.findByPk(id);
       if (product) {
         await product.update({
           productsName,
+          productImportPrice,
           productPrice,
+          status,
+          display,
+          originID,
+          styleID,
+          materialID,
+          brandID,
         });
-        res.status(200).json({
-          message: "Cập nhật thông tin sản phẩm thành công",
+        res.status(201).json({
+          message: "Sửa sản phẩm thành công",
           code: 0,
+          data: product,
         });
       } else {
         res.status(404).json({ message: "Không tìm thấy sản phẩm" });
@@ -141,7 +155,13 @@ const ProductController = {
       }
     } catch (error) {
       console.error(error);
-      next(error);
+      let errorMessage = "Xóa sản phẩm thất bại";
+
+      res.status(401).json({
+        message: "Xóa sản phẩm thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 };

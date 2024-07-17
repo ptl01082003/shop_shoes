@@ -23,7 +23,7 @@ export default function StylesPage() {
       key: "styleID",
     },
     {
-      title: "Hãng",
+      title: "Kiểu dáng",
       dataIndex: "styleName",
       key: "styleName",
     },

@@ -30,8 +30,8 @@ const authCtrl = {
 
       const isMatch = await bcrypt.compare(password, user?.password || "");
       if (isMatch) {
-        const accessToken = authCtrl.generateAccessToken(user?.userId + "");
-        const refreshToken = authCtrl.generateRefreshToken(user?.userId + "");
+        const accessToken = authCtrl.generateAccessToken(user?.userID + "");
+        const refreshToken = authCtrl.generateRefreshToken(user?.userID + "");
         return res.status(200).json({
           message: "Thực hiện thành công",
           code: 0,
@@ -41,9 +41,7 @@ const authCtrl = {
           },
         });
       } else {
-        return res
-          .status(401)
-          .json({ message: "Thực hiện thất bại" });
+        return res.status(401).json({ message: "Thực hiện thất bại" });
       }
     } catch (error) {
       next(error);

@@ -16,7 +16,7 @@ export class Promotions extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  public promotionId!: number;
+  public promotionID!: number;
 
   @Column
   public promotionName!: string;
@@ -31,5 +31,5 @@ export class Promotions extends Model {
   public endDay!: Date;
 
   @Column
-  public status!: boolean;
+  public!: boolean;
 }

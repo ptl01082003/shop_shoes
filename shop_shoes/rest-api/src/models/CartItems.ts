@@ -19,7 +19,7 @@ export class CartItems extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  public cartItemsId!: number;
+  public cartItemsID!: number;
 
   @ForeignKey(() => Products)
   @Column
