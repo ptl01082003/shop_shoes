@@ -21,7 +21,13 @@ export class ShoppingCarts extends Model {
   @AutoIncrement
   @Column
   public cartId!: number;
+  
+  @Column
+  public totals!: number;
 
+  @Column
+  public amount!: number;
+  
   @ForeignKey(() => Users)
   @Column
   public userId!: number;
@@ -31,11 +37,4 @@ export class ShoppingCarts extends Model {
 
   @HasMany(() => CartItems, "cartId")
   public cartItems!: CartItems[];
-
-  @Column
-  public totals!: number;
-
-  @Column
-  public amount!: number;
-
 }

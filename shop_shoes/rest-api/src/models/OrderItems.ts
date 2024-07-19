@@ -34,4 +34,7 @@ export class OrderItems extends Model {
 
   @BelongsTo(() => Products)
   public product!: Products;
+
+  @BelongsTo(() => OrderDetails)
+  public orderDetails!: OrderDetails;
 }

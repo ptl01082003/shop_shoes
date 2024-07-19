@@ -32,6 +32,10 @@ export class CartItems extends Model {
   @BelongsTo(() => Products)
   public product!: Products;
 
+  @BelongsTo(() => ShoppingCarts)
+  public carts!: ShoppingCarts;
+
+
   @Column
   public quanity!: number;
 }

@@ -1,5 +1,6 @@
 import {
   AutoIncrement,
+  BelongsTo,
   Column,
   ForeignKey,
   Model,
@@ -29,12 +30,13 @@ export class PaymentDetails extends Model {
   @Column
   public orderDetailsId!: number;
 
-  // @Column
-  // public status!: number;
-
   @Column
   public amount!: number;
 
   @Column
   public provider!: string;
+
+
+  @BelongsTo(() => OrderDetails)
+  public orderDetails!: OrderDetails;
 }
