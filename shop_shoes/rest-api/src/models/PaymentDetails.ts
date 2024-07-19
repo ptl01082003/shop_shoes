@@ -2,10 +2,11 @@ import {
   AutoIncrement,
   BelongsTo,
   Column,
+  Default,
   ForeignKey,
   Model,
   PrimaryKey,
-  Table,
+  Table
 } from "sequelize-typescript";
 import { OrderDetails } from "./OrderDetails";
 
@@ -13,6 +14,12 @@ export enum PAYMENT_PROVIDER {
   CASH = "CASH",
   MOMO = "MOMO",
   VN_PAY = "VN_PAY",
+}
+
+export enum PAYMENT_STATUS {
+  IDLE = "IDLE",
+  SUCCESS = "SUCCESS",
+  ERRORS = "ERRORS"
 }
 
 @Table({
@@ -30,12 +37,15 @@ export class PaymentDetails extends Model {
   @Column
   public orderDetailsId!: number;
 
+  @Default(PAYMENT_STATUS.IDLE)
+  @Column
+  public status!: string;
+
   @Column
   public amount!: number;
 
   @Column
   public provider!: string;
-
 
   @BelongsTo(() => OrderDetails)
   public orderDetails!: OrderDetails;

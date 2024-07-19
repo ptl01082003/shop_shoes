@@ -1,7 +1,9 @@
 import {
   AutoIncrement,
+  BeforeCreate,
   BelongsTo,
   Column,
+  Default,
   ForeignKey,
   HasMany,
   Model,
@@ -10,6 +12,7 @@ import {
 } from "sequelize-typescript";
 import { OrderItems } from "./OrderItems";
 import { Users } from "./Users";
+import { v4 as uuidv4 } from "uuid";
 
 @Table({
   tableName: "order_details",
@@ -22,19 +25,27 @@ export class OrderDetails extends Model {
   @Column
   public orderDetailsID!: number;
 
+  @Column
+  public totals!: number;
+
+  @Column
+  public orderCode!: string;
+
+  @Column
+  public amount!: number;
+
   @ForeignKey(() => Users)
   @Column
-  public userID!: number;
-
-    @Column
-    public totals!: number;
-
-    @Column
-    public amount!: number;
+  public userId!: number;
 
   @BelongsTo(() => Users)
   public users!: Users;
 
-  @HasMany(() => OrderItems, "orderItemsID")
+  @HasMany(() => OrderItems)
   public orderItems!: OrderItems[];
+
+  @BeforeCreate
+  static genaratorOrderCode(instance: OrderDetails) {
+    instance.orderCode = uuidv4().slice(0, 6).toUpperCase();
+  }
 }

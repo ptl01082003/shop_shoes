@@ -38,9 +38,4 @@ export class ShoppingCarts extends Model {
 
   @HasMany(() => CartItems, "cartId")
   public cartItems!: CartItems[];
-
-  @Column
-  public totals!: number;
-
-  public amount!: number;
 }
