@@ -10,4 +10,5 @@ routerOrigin.get("/:id", OriginsController.getById);
 routerOrigin.put("/:id", OriginsController.updateOrigin);
 routerOrigin.delete("/:id", OriginsController.deleteOrigin);
 
-export default routerOrigin;
+
+export default routerOrigin

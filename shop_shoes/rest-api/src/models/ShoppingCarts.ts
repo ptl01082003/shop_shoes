@@ -6,9 +6,10 @@ import {
   HasMany,
   Model,
   PrimaryKey,
-  Table
+  Table,
 } from "sequelize-typescript";
 import { CartItems } from "./CartItems";
+
 import { Users } from "./Users";
 
 @Table({
@@ -37,4 +38,9 @@ export class ShoppingCarts extends Model {
 
   @HasMany(() => CartItems, "cartId")
   public cartItems!: CartItems[];
+
+  @Column
+  public totals!: number;
+
+  public amount!: number;
 }

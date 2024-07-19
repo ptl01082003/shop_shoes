@@ -264,7 +264,7 @@ export default function ProductPage() {
         message.success("Cập nhật dòng sản phẩm thành công!");
       }
     } catch (error) {
-      console.error("Update product line error", error);
+      console.error("Cập nhật dòng sản phẩm lỗi", error);
     }
   };
 

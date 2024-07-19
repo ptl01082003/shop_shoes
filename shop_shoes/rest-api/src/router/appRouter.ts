@@ -36,7 +36,6 @@ export function appRouter() {
   router.use("/images", routerImage);
   router.use("/promotions", routerPromotions);
   router.use("/product-promotions", routerProductPromotion);
-  // router.use("/size-productdetail", routerSizeProductDetals);
 
   router.use("*", (req, res) => {
     res.status(STATUS_CODE.NOT_FOUND).json(

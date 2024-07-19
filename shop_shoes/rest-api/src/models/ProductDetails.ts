@@ -1,38 +1,37 @@
-// models/ProductDetails.ts
+// productdetails.model.ts
 import {
-  BelongsTo,
-  Column,
-  ForeignKey,
-  Model,
-  PrimaryKey,
   Table,
-  HasMany,
+  Model,
+  Column,
+  PrimaryKey,
   AutoIncrement,
+  ForeignKey,
+  BelongsTo,
+  HasMany,
 } from "sequelize-typescript";
-import { Products } from "./Products";
+import { Products } from "../models/Products";
+import { SizeProductDetails } from "../models/SizeProductDetails";
 
-import { SizeProductDetails } from "./SizeProductDetails";
-
-@Table({
-  tableName: "product_details",
-  modelName: "ProductDetails",
-  timestamps: true,
-})
+@Table
 export class ProductDetails extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  productDetailID!: number;
+  public productDetailid!: number;
+
   @Column
-  productDetailstatus!: boolean;
+  public productDetailname!: string;
+
+  @Column
+  public productDetaildescription!: string;
 
   @ForeignKey(() => Products)
   @Column
-  productID!: number;
+  public productId!: number;
+
+  @BelongsTo(() => Products)
+  public product!: Products;
 
   @HasMany(() => SizeProductDetails)
   sizeProductDetails!: SizeProductDetails[];
-
-  @BelongsTo(() => Products)
-  product!: Products;
 }

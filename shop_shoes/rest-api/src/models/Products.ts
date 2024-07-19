@@ -9,13 +9,12 @@ import {
   PrimaryKey,
   Table,
 } from "sequelize-typescript";
-
 import { Styles } from "./Styles";
 import { Origins } from "./Origins";
 import { Materials } from "./Materials";
-
-import { genaratorProductsId } from "../utils/utils";
 import { Brands } from "./Brands";
+import { v4 as uuidv4 } from "uuid";
+import { genaratorProductsId } from "../utils/utils";
 
 @Table({
   tableName: "products",
@@ -24,14 +23,15 @@ import { Brands } from "./Brands";
 })
 export class Products extends Model {
   @PrimaryKey
+  @AutoIncrement
   @Column
   public productsID!: number;
 
   @Column
-  public productCode!: string;
-
-  @Column
   public productsName!: string;
+
+  @Column(DataType.STRING(6))
+  public productCode!: string;
 
   @Column(DataType.DECIMAL(16, 2))
   public productImportPrice!: number;
@@ -74,13 +74,9 @@ export class Products extends Model {
   public brand?: Brands;
 
   @BeforeCreate
-  static genaratorUserId(instance: Products) {
+  static genaratorProductCode(instance: Products) {
     instance.productsID = genaratorProductsId();
-    const randomNum = Math.floor(1000 + Math.random() * 9000); // Số ngẫu nhiên 4 chữ số
-    instance.productCode = `SP${randomNum}`;
-  }
-  @BeforeCreate
-  static generateProductCode(instance: Products) {
-  
+    const uuid = uuidv4();
+    instance.productCode = uuid.slice(0, 6).toUpperCase();
   }
 }

@@ -1,15 +1,14 @@
-// models/SizeProductDetails.ts
 import {
   AutoIncrement,
-  BelongsTo,
   Column,
   ForeignKey,
   Model,
   PrimaryKey,
   Table,
+  BelongsTo,
 } from "sequelize-typescript";
-import { ProductDetails } from "./ProductDetails";
 import { Sizes } from "./Sizes";
+import { ProductDetails } from "./ProductDetails";
 
 @Table({
   tableName: "size_product_details",
@@ -20,21 +19,22 @@ export class SizeProductDetails extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  sizeProductDetailID!: number;
+  public id!: number;
 
   @ForeignKey(() => Sizes)
   @Column
-  sizeID!: number;
-  @BelongsTo(() => Sizes)
-  size!: Sizes;
+  public sizeId!: number;
 
   @ForeignKey(() => ProductDetails)
   @Column
-  productDetailID!: number;
-
-  @BelongsTo(() => ProductDetails)
-  productDetail!: ProductDetails;
+  public productDetailId!: number;
 
   @Column
-  quantity!: number;
+  public quantity!: number;
+
+  @BelongsTo(() => Sizes)
+  public size!: Sizes;
+
+  @BelongsTo(() => ProductDetails)
+  public productDetail!: ProductDetails;
 }

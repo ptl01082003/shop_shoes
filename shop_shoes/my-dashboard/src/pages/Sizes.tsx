@@ -1,117 +1,119 @@
-import { Button, Form, FormProps, Input, Modal, Table } from "antd";
 import React, { useEffect, useState } from "react";
+import { Button, Form, Input, Modal, Table } from "antd";
 import SizeService from "../services/SizeApi";
 
-type FieldType = {
+type SizeType = {
+  sizeID?: number;
   sizeName?: string;
 };
 
-export default function SizesPage() {
-  const [lstSizes, setLstSizes] = useState<any>([]);
+const SizePage: React.FC = () => {
+  const [lstSizes, setLstSizes] = useState<SizeType[]>([]);
   const [shouldRender, setShouldRender] = useState<boolean>(false);
   const [isOpenCreateModal, setOpenCreateModal] = useState<boolean>(false);
-  const [openEditModal, setOpenEditModal] = useState<any>({
+  const [openEditModal, setOpenEditModal] = useState<{
+    open: boolean;
+    data: SizeType;
+  }>({
     open: false,
     data: {},
   });
 
-  // table code start
-  const columns = [
-    {
-      title: "ID",
-      dataIndex: "sizeId",
-      key: "sizeId",
-    },
-    {
-      title: "Màu sắc",
-      dataIndex: "sizeName",
-      key: "sizeName",
-    },
-    {
-      render: (_: any, record: any) => {
-        return (
-          <div className="flex space-x-4">
-            <Button
-              size="large"
-              type="primary"
-              onClick={() => {
-                editSizeItems(record);
-              }}
-            >
-              SỬA
-            </Button>
-            <Button
-              size="large"
-              type="dashed"
-              onClick={() => {
-                deleteSizeItems(record);
-              }}
-            >
-              XÓA
-            </Button>
-          </div>
-        );
-      },
-    },
-  ];
-
   useEffect(() => {
-    (async () => {
-      const getSizes = await SizeService.getSizes();
-      if (Array.isArray(getSizes.data) && getSizes.data.length > 0) {
-        setLstSizes(getSizes?.data);
-      }
-    })();
+    fetchSizes();
   }, [shouldRender]);
 
-  const deleteSizeItems = async (record: any) => {
-    const res: any = await SizeService.deleteSize(record.sizeId);
-    if (res.code === 0) {
-      setShouldRender((x) => !x);
+  const fetchSizes = async () => {
+    try {
+      const response = await SizeService.getSizes();
+      if (response.code === 0) {
+        setLstSizes(response.data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch sizes:", error);
     }
   };
 
-  const editSizeItems = async (record: any) => {
+  const deleteSize = async (record: SizeType) => {
+    try {
+      const response = await SizeService.deleteSize(record.sizeID!);
+      if (response.code === 0) {
+        setShouldRender((prev) => !prev);
+      }
+    } catch (error) {
+      console.error("Failed to delete size:", error);
+    }
+  };
+
+  const editSize = (record: SizeType) => {
     setOpenEditModal({
       open: true,
       data: record,
     });
   };
 
-  const onFinish: FormProps<FieldType>["onFinish"] = async (
-    values: FieldType
-  ) => {
-    const res = await SizeService.createSize(values);
-    if (res.code === 0) {
-      setOpenCreateModal(false);
-      setShouldRender((x) => !x);
+  const onFinishCreate = async (values: SizeType) => {
+    try {
+      const response = await SizeService.createSize(values);
+      if (response.code === 0) {
+        setOpenCreateModal(false);
+        setShouldRender((prev) => !prev);
+      }
+    } catch (error) {
+      console.error("Failed to create size:", error);
     }
   };
 
-  const onEditFinish: FormProps<FieldType>["onFinish"] = async (
-    values: FieldType
-  ) => {
-    const res = await SizeService.updateSize(
-      openEditModal?.data?.sizeId,
-      values
-    );
-    if (res.code === 0) {
-      setOpenEditModal(undefined);
-      setShouldRender((x) => !x);
+  const onFinishEdit = async (values: SizeType) => {
+    try {
+      const response = await SizeService.updateSize(
+        openEditModal.data.sizeID!,
+        values
+      );
+      if (response.code === 0) {
+        setOpenEditModal({ open: false, data: {} });
+        setShouldRender((prev) => !prev);
+      }
+    } catch (error) {
+      console.error("Failed to update size:", error);
     }
   };
+
+  const columns = [
+    {
+      title: "ID",
+      dataIndex: "sizeID",
+      key: "sizeID",
+    },
+    {
+      title: "Name",
+      dataIndex: "sizeName",
+      key: "sizeName",
+    },
+    {
+      title: "Actions",
+      render: (_: any, record: SizeType) => (
+        <div className="flex space-x-4">
+          <Button size="large" type="primary" onClick={() => editSize(record)}>
+            Edit
+          </Button>
+          <Button size="large" type="dashed" onClick={() => deleteSize(record)}>
+            Delete
+          </Button>
+        </div>
+      ),
+    },
+  ];
 
   return (
     <>
-      <div className="flex justify-end">
+      <div className="flex justify-end mb-4">
         <Button
           size="large"
           type="primary"
-          onClick={() => {
-            setOpenCreateModal(true);
-          }}
+          onClick={() => setOpenCreateModal(true)}
         >
-          THÊM MỚI
+          Add New
         </Button>
       </div>
       <div className="table-responsive">
@@ -124,76 +126,63 @@ export default function SizesPage() {
       </div>
 
       <Modal
-        title=""
+        title="Create Size"
         centered
-        closable
-        open={isOpenCreateModal}
-        destroyOnClose={true}
-        onCancel={() => {
-          setOpenCreateModal(false);
-        }}
-        footer={false}
+        visible={isOpenCreateModal}
+        onCancel={() => setOpenCreateModal(false)}
+        footer={null}
         width={750}
       >
         <Form
-          name="basic"
-          labelCol={{ span: 8 }}
-          wrapperCol={{ span: 16 }}
-          style={{ maxWidth: 600 }}
-          initialValues={{ remember: true }}
-          onFinish={onFinish}
-          autoComplete="off"
+          name="createSizeForm"
+          onFinish={onFinishCreate}
+          layout="horizontal"
         >
-          <Form.Item<FieldType>
-            label="sizeName"
+          <Form.Item
+            label="Name"
             name="sizeName"
-            rules={[{ required: true, message: "Tên không được để trống!" }]}
+            rules={[{ required: true, message: "Please input the size name!" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Button type="primary" htmlType="submit">
-              Thêm mới
+              Create
             </Button>
           </Form.Item>
         </Form>
       </Modal>
-      {/* Form sửa  */}
+
       <Modal
-        title=""
+        title="Edit Size"
         centered
-        closable
-        open={openEditModal?.open}
-        destroyOnClose={true}
-        onCancel={() => {
-          setOpenEditModal(undefined);
-        }}
-        footer={false}
+        visible={openEditModal.open}
+        onCancel={() => setOpenEditModal({ open: false, data: {} })}
+        footer={null}
         width={750}
       >
         <Form
-          name="basic"
-          labelCol={{ span: 8 }}
-          wrapperCol={{ span: 16 }}
-          style={{ maxWidth: 600 }}
-          initialValues={openEditModal?.data}
-          onFinish={onEditFinish}
-          autoComplete="off"
+          name="editSizeForm"
+          initialValues={openEditModal.data}
+          onFinish={onFinishEdit}
+          layout="horizontal"
         >
-          <Form.Item<FieldType>
-            label="sizeName"
+          <Form.Item
+            label="Name"
             name="sizeName"
-            rules={[{ required: true, message: "Tên không được để trống!" }]}
+            rules={[{ required: true, message: "Please input the size name!" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Button type="primary" htmlType="submit">
-              Thêm mới
+              Save Changes
             </Button>
           </Form.Item>
         </Form>
       </Modal>
     </>
   );
-}
+};
+
+export default SizePage;
