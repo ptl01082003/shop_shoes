@@ -76,10 +76,11 @@ export class Products extends Model {
   @BeforeCreate
   static genaratorUserId(instance: Products) {
     instance.productsID = genaratorProductsId();
+    const randomNum = Math.floor(1000 + Math.random() * 9000); // Số ngẫu nhiên 4 chữ số
+    instance.productCode = `SP${randomNum}`;
   }
   @BeforeCreate
   static generateProductCode(instance: Products) {
-    const randomNum = Math.floor(1000 + Math.random() * 9000); // Số ngẫu nhiên 4 chữ số
-    instance.productCode = `SP${randomNum}`;
+  
   }
 }

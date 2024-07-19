@@ -26,11 +26,11 @@ export class OrderDetails extends Model {
   @Column
   public userID!: number;
 
-  @Column
-  public status!: number;
+    @Column
+    public totals!: number;
 
-  @Column
-  public totals!: number;
+    @Column
+    public amount!: number;
 
   @BelongsTo(() => Users)
   public users!: Users;

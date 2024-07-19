@@ -1,18 +1,15 @@
 import {
   AutoIncrement,
-  BeforeFind,
   BelongsTo,
   Column,
   ForeignKey,
   HasMany,
   Model,
   PrimaryKey,
-  Table,
+  Table
 } from "sequelize-typescript";
-import { Users } from "./Users";
 import { CartItems } from "./CartItems";
-import { FindOptions } from "sequelize";
-import { Products } from "./Products";
+import { Users } from "./Users";
 
 @Table({
   tableName: "shopping_carts",
@@ -37,4 +34,8 @@ export class ShoppingCarts extends Model {
 
   @Column
   public totals!: number;
+
+  @Column
+  public amount!: number;
+
 }

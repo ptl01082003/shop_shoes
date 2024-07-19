@@ -1,16 +1,18 @@
 import {
   AutoIncrement,
-  BelongsTo,
   Column,
   ForeignKey,
-  HasMany,
   Model,
   PrimaryKey,
   Table,
 } from "sequelize-typescript";
-import { OrderItems } from "./OrderItems";
-import { Users } from "./Users";
 import { OrderDetails } from "./OrderDetails";
+
+export enum PAYMENT_PROVIDER {
+  CASH = "CASH",
+  MOMO = "MOMO",
+  VN_PAY = "VN_PAY",
+}
 
 @Table({
   tableName: "payment_details",
@@ -21,21 +23,18 @@ export class PaymentDetails extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  public orderDetailsId!: number;
+  public paymentDetailsId!: number;
 
-  // @ForeignKey(() => OrderDetails)
-  // @Column
-  // public userId!: number;
+  @ForeignKey(() => OrderDetails)
+  @Column
+  public orderDetailsId!: number;
 
   // @Column
   // public status!: number;
 
-  // @Column
-  // public totals!: number;
+  @Column
+  public amount!: number;
 
-  // @BelongsTo(() => Users)
-  // public users!: Users;
-
-  // @HasMany(() => OrderItems, "orderItemsId")
-  // public orderItems!: OrderItems[];
+  @Column
+  public provider!: string;
 }

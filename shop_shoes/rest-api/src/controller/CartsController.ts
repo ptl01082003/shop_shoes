@@ -8,22 +8,26 @@ import { RESPONSE_CODE, ResponseBody, STATUS_CODE } from "../constants";
 const CartsController = {
   create: async (req: Request, res: Response, next: NextFunction) => {
     try {
-
       const userId = req.userId;
       const { cartItems } = req.body;
-      const [createCarts, created] = await ShoppingCarts.findOrCreate({
+
+      let cartTotals = 0;
+      let cartsAmounts = 0;
+
+      const [instanceCarts, created] = await ShoppingCarts.findOrCreate({
         where: { userId },
         include: [CartItems],
       });
 
       if (Array.isArray(cartItems) && cartItems.length > 0) {
-        for await (let items of cartItems) {
+        for await (const items of cartItems) {
           const quanity = items.quanity;
           const productsID = items.productsID;
           const [cartProducts] = await CartItems.findOrCreate({
-            where: { productsID, cartId: createCarts.cartId },
+            where: { productsID, cartId: instanceCarts.cartId },
           });
           if (cartProducts) {
+            cartTotals += quanity;
             cartProducts.quanity = quanity;
             await cartProducts.save();
           }
@@ -31,17 +35,19 @@ const CartsController = {
       }
 
       // cập nhật giá của giỏ hàng
-      let cartTotals = 0;
-      const carts = await CartItems.findAll({ where: { cartId: createCarts?.cartId }, include: [Products] });
+      const carts = await CartItems.findAll({ where: { cartId: instanceCarts?.cartId }, include: [Products] });
       carts.forEach((items) => {
-        cartTotals += (Number(items.product.productPrice) || 0) * items.quanity;
+        cartsAmounts += (Number(items.product.productPrice) || 0) * items.quanity;
       })
-      createCarts.totals = cartTotals;
-      await createCarts.save();
 
-      const getNewCarts = await ShoppingCarts.findOne({
+      instanceCarts.totals = cartTotals;
+      instanceCarts.amount = cartsAmounts;
+
+      await instanceCarts.save();
+
+      const currentCarts = await ShoppingCarts.findOne({
         where: { userId },
-        attributes: ['totals'],
+        attributes: ["totals", "amount"],
         include: {
           model: CartItems,
           attributes: ["quanity"],
@@ -52,7 +58,8 @@ const CartsController = {
         },
       });
 
-      await redis.set(`carts-${userId}`, JSON.stringify(getNewCarts));
+      await redis.set(`carts-${userId}`, JSON.stringify(currentCarts));
+
       return res.json(
         ResponseBody({
           code: RESPONSE_CODE.SUCCESS,
@@ -63,9 +70,10 @@ const CartsController = {
       next(error);
     }
   },
-  remove: async (req: Request, res: Response, next: NextFunction) => {
+  remove: async (req: Request, res: Response) => {
     const userId = req.userId;
     const { productsID } = req.body;
+
     const carts = await ShoppingCarts.findOne({ where: { userId } });
     const cartsItems = await CartItems.findOne({
       where: { productsID, cartId: carts?.cartId }
@@ -79,17 +87,20 @@ const CartsController = {
           await cartsItems.destroy();
         }
 
-        let cartTotals = 0;
-        const cartItems = await CartItems.findAll({ where: { cartId: carts?.cartId }, include: [Products] });
-        cartItems.forEach((items) => {
-          cartTotals += (Number(items.product.productPrice) || 0) * items.quanity;
+        let cartsAmount = 0;
+
+        const products = await CartItems.findAll({ where: { cartId: carts?.cartId }, include: [Products] });
+        products.forEach((product) => {
+          cartsAmount += (Number(product.product.productPrice) || 0) * product.quanity;
         })
-        carts.totals = cartTotals;
+        carts.amount = cartsAmount;
+        carts.totals -= 1;
+        
         await carts.save();
 
         const getCarts = await ShoppingCarts.findOne({
           where: { userId },
-          attributes: ['totals'],
+          attributes: ["totals", "amount"],
           include: {
             model: CartItems,
             attributes: ["quanity"],
@@ -127,7 +138,7 @@ const CartsController = {
 
 
   },
-  lstCarts: async (req: Request, res: Response, next: NextFunction) => {
+  lstCarts: async (req: Request, res: Response) => {
     const userId = req.userId;
     const cartsInRedis = await redis.get(`carts-${userId}`);
     if (cartsInRedis) {
@@ -141,7 +152,7 @@ const CartsController = {
     }
     const cartsInDatabase = await ShoppingCarts.findOne({
       where: { userId },
-      attributes: ['totals'],
+      attributes: ["totals", "amount"],
       include: {
         model: CartItems,
         attributes: ["quanity"],
