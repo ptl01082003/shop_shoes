@@ -4,6 +4,12 @@ import AxiosConfig from "../networks/AxiosRequest"; // Đảm bảo rằng modul
 
 const API_URL = "/products"; // Đảm bảo rằng URL API này phù hợp với endpoint thực tế của sản phẩm trong hệ thống của bạn
 
+export interface Product {
+  productID: number;
+  productName: string;
+  productDescription: string;
+}
+
 const ProductService = {
   getProducts: async () => {
     try {

@@ -18,7 +18,7 @@ import SizesService from "../services/SizeApi";
 import { FormProps } from "antd/lib";
 
 type Size = {
-  sizeId: number;
+  sizeID: number;
   sizeName: string;
 };
 
@@ -28,7 +28,7 @@ type Product = {
 };
 
 type SizeQuantity = {
-  sizeId: number;
+  sizeID: number;
   quantity: number;
 };
 
@@ -158,8 +158,8 @@ export default function ProductDetailsPage() {
       key: "sizes",
       render: (sizes: SizeQuantity[]) =>
         sizes.map((size) => (
-          <div key={size.sizeId}>
-            Size: {size.sizeId}, Quantity: {size.quantity}
+          <div key={size.sizeID}>
+            Size: {size.sizeID}, Quantity: {size.quantity}
           </div>
         )),
     },
@@ -221,7 +221,7 @@ export default function ProductDetailsPage() {
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
           style={{ maxWidth: 600 }}
-          initialValues={{ sizes: [{ sizeId: 0, quantity: 0 }] }}
+          initialValues={{ sizes: [{ sizeID: 0, quantity: 0 }] }}
           onFinish={onFinish}
           autoComplete="off"
         >
@@ -248,8 +248,11 @@ export default function ProductDetailsPage() {
           >
             <Select>
               {lstproducts.map((product: any) => (
-                <Select.Option key={product.id} value={product.id}>
-                  {product.name}
+                <Select.Option
+                  key={product.productsID}
+                  value={product.productsID}
+                >
+                  {product.productName}
                 </Select.Option>
               ))}
             </Select>
@@ -265,7 +268,7 @@ export default function ProductDetailsPage() {
                   >
                     <Form.Item
                       {...restField}
-                      name={[name, "sizeId"]}
+                      name={[name, "sizeID"]}
                       rules={[
                         {
                           required: true,
@@ -275,7 +278,7 @@ export default function ProductDetailsPage() {
                     >
                       <Select placeholder="Chọn kích thước">
                         {lstsizes.map((size) => (
-                          <Select.Option key={size.sizeId} value={size.sizeId}>
+                          <Select.Option key={size.sizeID} value={size.sizeID}>
                             {size.sizeName}
                           </Select.Option>
                         ))}
@@ -298,7 +301,7 @@ export default function ProductDetailsPage() {
                 <Form.Item>
                   <Button
                     type="dashed"
-                    onClick={() => add({ sizeId: 0, quantity: 0 })}
+                    onClick={() => add({ sizeID: 0, quantity: 0 })}
                   >
                     Thêm kích thước
                   </Button>
@@ -351,7 +354,7 @@ export default function ProductDetailsPage() {
           </Form.Item>
           <Form.Item
             label="Sản phẩm"
-            name="productId"
+            name="productsId"
             rules={[
               { required: true, message: "Sản phẩm không được để trống!" },
             ]}
@@ -378,7 +381,7 @@ export default function ProductDetailsPage() {
                   >
                     <Form.Item
                       {...restField}
-                      name={[name, "sizeId"]}
+                      name={[name, "sizeID"]}
                       rules={[
                         {
                           required: true,
@@ -388,7 +391,7 @@ export default function ProductDetailsPage() {
                     >
                       <Select placeholder="Chọn kích thước">
                         {lstsizes.map((size) => (
-                          <Select.Option key={size.sizeId} value={size.sizeId}>
+                          <Select.Option key={size.sizeID} value={size.sizeID}>
                             {size.sizeName}
                           </Select.Option>
                         ))}
@@ -411,7 +414,7 @@ export default function ProductDetailsPage() {
                 <Form.Item>
                   <Button
                     type="dashed"
-                    onClick={() => add({ sizeId: 0, quantity: 0 })}
+                    onClick={() => add({ sizeID: 0, quantity: 0 })}
                   >
                     Thêm kích thước
                   </Button>
