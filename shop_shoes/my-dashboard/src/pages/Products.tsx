@@ -546,392 +546,339 @@
 //     </>
 //   );
 // }
-
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  Table,
   Button,
-  Modal,
   Form,
   Input,
-  Select,
   InputNumber,
   message,
+  Select,
+  Space,
+  Switch,
+  Modal,
+  Table,
 } from "antd";
-import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import ProductApi, { Product } from "../services/ProductApi";
-import ProductDetailsApi, { ProductDetail } from "../services/ProductDetailApi";
+import {
+  PlusOutlined,
+  MinusCircleOutlined,
+  EditOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
+import ProductService from "../services/ProductApi";
+import ProductDetailsService from "../services/ProductDetailApi";
+import SizesService from "../services/SizeApi";
+import BrandService from "../services/BrandApi";
+import StyleService from "../services/StyleApi";
+import MaterialService from "../services/MaterialApi";
+import OriginService from "../services/OriginApi";
 
 const { Option } = Select;
 
 const ProductPage: React.FC = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [productDetails, setProductDetails] = useState<ProductDetail[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [productModalVisible, setProductModalVisible] = useState(false);
-  const [productDetailModalVisible, setProductDetailModalVisible] =
-    useState(false);
-  const [currentProduct, setCurrentProduct] = useState<Partial<Product> | null>(
-    null
-  );
-  const [currentProductDetail, setCurrentProductDetail] =
-    useState<Partial<ProductDetail> | null>(null);
-
-  const [productForm] = Form.useForm();
-  const [productDetailForm] = Form.useForm();
+  const [products, setProducts] = useState<any[]>([]);
+  const [sizes, setSizes] = useState<any[]>([]);
+  const [brands, setBrands] = useState<any[]>([]);
+  const [styles, setStyles] = useState<any[]>([]);
+  const [materials, setMaterials] = useState<any[]>([]);
+  const [origins, setOrigins] = useState<any[]>([]);
+  const [openModal, setOpenModal] = useState<{
+    open: boolean;
+    mode: "create" | "edit";
+    data?: any;
+  }>({ open: false, mode: "create" });
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
 
   useEffect(() => {
-    fetchProducts();
-    fetchProductDetails();
+    const fetchData = async () => {
+      try {
+        const productResponse = await ProductService.getProducts();
+        setProducts(productResponse.data);
+
+        const sizeResponse = await SizesService.getSizes();
+        setSizes(sizeResponse.data);
+
+        const brandResponse = await BrandService.getBrands();
+        setBrands(brandResponse.data);
+
+        const styleResponse = await StyleService.getStyles();
+        setStyles(styleResponse.data);
+
+        const materialResponse = await MaterialService.getMaterials();
+        setMaterials(materialResponse.data);
+
+        const originResponse = await OriginService.getOrigins();
+        setOrigins(originResponse.data);
+      } catch (error) {
+        console.error("Error fetching data", error);
+      }
+    };
+
+    fetchData();
   }, []);
 
-  const fetchProducts = async () => {
-    setLoading(true);
+  const onFinish = async (values: any) => {
     try {
-      const data = await ProductApi.getProducts();
-      setProducts(data);
+      if (openModal.mode === "create") {
+        // Create Product
+        const productResponse = await ProductService.createProduct(values);
+        if (productResponse) {
+          message.success("Thêm sản phẩm thành công!");
+          setOpenModal({ open: false, mode: "create" });
+          setProducts((prev) => [...prev, productResponse.data]);
+
+          // Create Product Details
+          const productDetailValues = values.productDetails;
+          if (productDetailValues) {
+            await ProductDetailsService.createProductDetail(
+              productDetailValues
+            );
+            message.success("Thêm chi tiết sản phẩm thành công!");
+          }
+        }
+      } else {
+        // Update Product
+        const productResponse = await ProductService.updateProduct(
+          openModal.data.productId,
+          values
+        );
+        if (productResponse) {
+          message.success("Cập nhật sản phẩm thành công!");
+          setOpenModal({ open: false, mode: "edit" });
+          setProducts((prev) =>
+            prev.map((item) =>
+              item.productId === productResponse.data.productId
+                ? productResponse.data
+                : item
+            )
+          );
+
+          // Update Product Details
+          const productDetailValues = values.productDetails;
+          if (productDetailValues) {
+            await ProductDetailsService.updateProductDetail(
+              openModal.data.productDetailID,
+              productDetailValues
+            );
+            message.success("Cập nhật chi tiết sản phẩm thành công!");
+          }
+        }
+      }
     } catch (error) {
-      message.error("Lỗi khi lấy danh sách sản phẩm");
-    } finally {
-      setLoading(false);
+      message.error("Có lỗi xảy ra khi xử lý dữ liệu.");
     }
-  };
-
-  const fetchProductDetails = async () => {
-    setLoading(true);
-    try {
-      const data = await ProductDetailsApi.getAllProductDetails();
-      setProductDetails(data);
-    } catch (error) {
-      message.error("Lỗi khi lấy chi tiết sản phẩm");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // CRUD cho sản phẩm
-  const handleAddProduct = () => {
-    setCurrentProduct(null);
-    setProductModalVisible(true);
-  };
-
-  const handleEditProduct = (record: Product) => {
-    setCurrentProduct(record);
-    setProductModalVisible(true);
-    productForm.setFieldsValue(record);
   };
 
   const handleDeleteProduct = async (productId: number) => {
-    setLoading(true);
     try {
-      await ProductApi.deleteProduct(productId);
-      message.success("Xóa sản phẩm thành công");
-      fetchProducts();
-      fetchProductDetails();
+      await ProductService.deleteProduct(productId);
+      setProducts((prev) =>
+        prev.filter((item) => item.productId !== productId)
+      );
+      message.success("Xóa sản phẩm thành công!");
     } catch (error) {
-      message.error("Lỗi khi xóa sản phẩm");
-    } finally {
-      setLoading(false);
+      message.error("Có lỗi xảy ra khi xóa sản phẩm.");
     }
   };
 
-  const handleProductModalOk = async () => {
-    try {
-      const values = await productForm.validateFields();
-      if (currentProduct) {
-        await ProductApi.updateProduct(currentProduct.productID!, values);
-        message.success("Cập nhật sản phẩm thành công");
-      } else {
-        await ProductApi.createProduct(values);
-        message.success("Tạo mới sản phẩm thành công");
-      }
-      setProductModalVisible(false);
-      fetchProducts();
-    } catch (error) {
-      message.error("Lỗi khi lưu sản phẩm");
-    }
+  const handleEditProduct = (product: any) => {
+    setOpenModal({ open: true, mode: "edit", data: product });
+    setSelectedProduct(product);
   };
 
-  const handleProductModalCancel = () => {
-    setProductModalVisible(false);
-    productForm.resetFields();
-  };
-
-  // CRUD cho chi tiết sản phẩm
-  const handleAddProductDetail = () => {
-    setCurrentProductDetail(null);
-    setProductDetailModalVisible(true);
-  };
-
-  const handleEditProductDetail = (record: ProductDetail) => {
-    setCurrentProductDetail(record);
-    setProductDetailModalVisible(true);
-    productDetailForm.setFieldsValue(record);
-  };
-
-  const handleDeleteProductDetail = async (productDetailId: number) => {
-    setLoading(true);
-    try {
-      await ProductDetailsApi.deleteProductDetail(productDetailId);
-      message.success("Xóa chi tiết sản phẩm thành công");
-      fetchProductDetails();
-    } catch (error) {
-      message.error("Lỗi khi xóa chi tiết sản phẩm");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleProductDetailModalOk = async () => {
-    try {
-      const values = await productDetailForm.validateFields();
-      if (currentProductDetail) {
-        await ProductDetailsApi.updateProductDetail(
-          currentProductDetail.productDetailid!,
-          values
-        );
-        message.success("Cập nhật chi tiết sản phẩm thành công");
-      } else {
-        await ProductDetailsApi.createProductDetail(values);
-        message.success("Tạo mới chi tiết sản phẩm thành công");
-      }
-      setProductDetailModalVisible(false);
-      fetchProductDetails();
-    } catch (error) {
-      message.error("Lỗi khi lưu chi tiết sản phẩm");
-    }
-  };
-
-  const handleProductDetailModalCancel = () => {
-    setProductDetailModalVisible(false);
-    productDetailForm.resetFields();
-  };
-
-  const productColumns = [
+  const columns = [
     {
-      title: "Tên Sản Phẩm",
-      dataIndex: "productName",
-      key: "productName",
+      title: "Tên sản phẩm",
+      dataIndex: "productsName",
+      key: "productsName",
     },
     {
-      title: "Mô Tả",
-      dataIndex: "productDescription",
-      key: "productDescription",
+      title: "Giá nhập",
+      dataIndex: "productImportPrice",
+      key: "productImportPrice",
     },
     {
-      title: "Hành Động",
-      key: "actions",
-      render: (text: string, record: Product) => (
-        <span>
+      title: "Giá bán",
+      dataIndex: "productPrice",
+      key: "productPrice",
+    },
+    {
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "status",
+      render: (status: boolean) => (status ? "Kích hoạt" : "Ngừng hoạt động"),
+    },
+    // {
+    //   title: "Thương hiệu",
+    //   dataIndex: "brandName",
+    //   key: "brandName",
+    // },
+    {
+      title: "Hành động",
+      key: "action",
+      render: (text: any, record: any) => (
+        <Space size="middle">
           <Button
             icon={<EditOutlined />}
             onClick={() => handleEditProduct(record)}
-          />
+          >
+            Sửa
+          </Button>
           <Button
             icon={<DeleteOutlined />}
-            onClick={() => handleDeleteProduct(record.productID!)}
-          />
-        </span>
-      ),
-    },
-  ];
-
-  const productDetailColumns = [
-    {
-      title: "Tên Chi Tiết Sản Phẩm",
-      dataIndex: "productDetailname",
-      key: "productDetailname",
-    },
-    {
-      title: "Mô Tả",
-      dataIndex: "productDetaildescription",
-      key: "productDetaildescription",
-    },
-    {
-      title: "Sản Phẩm",
-      dataIndex: "productId",
-      key: "productId",
-      render: (productId: number) =>
-        products.find((product) => product.productID === productId)
-          ?.productName || "Unknown",
-    },
-    {
-      title: "Hành Động",
-      key: "actions",
-      render: (text: string, record: ProductDetail) => (
-        <span>
-          <Button
-            icon={<EditOutlined />}
-            onClick={() => handleEditProductDetail(record)}
-          />
-          <Button
-            icon={<DeleteOutlined />}
-            onClick={() => handleDeleteProductDetail(record.productDetailid!)}
-          />
-        </span>
+            onClick={() => handleDeleteProduct(record.productId)}
+          >
+            Xóa
+          </Button>
+        </Space>
       ),
     },
   ];
 
   return (
-    <div>
-      <Button type="primary" onClick={handleAddProduct}>
-        <PlusOutlined /> Thêm Sản Phẩm
+    <>
+      <Button
+        size="large"
+        type="primary"
+        onClick={() => setOpenModal({ open: true, mode: "create" })}
+      >
+        THÊM SẢN PHẨM
       </Button>
-      <Table
-        dataSource={products}
-        columns={productColumns}
-        rowKey="productID"
-        loading={loading}
-      />
-
-      <Button type="primary" onClick={handleAddProductDetail}>
-        <PlusOutlined /> Thêm Chi Tiết Sản Phẩm
-      </Button>
-      <Table
-        dataSource={productDetails}
-        columns={productDetailColumns}
-        rowKey="productDetailid"
-        loading={loading}
-      />
+      <Table columns={columns} dataSource={products} rowKey="productId" />
 
       <Modal
-        visible={productModalVisible}
-        title={currentProduct ? "Chỉnh Sửa Sản Phẩm" : "Thêm Sản Phẩm"}
-        onOk={handleProductModalOk}
-        onCancel={handleProductModalCancel}
+        title={openModal.mode === "create" ? "Thêm sản phẩm" : "Sửa sản phẩm"}
+        visible={openModal.open}
+        onCancel={() => setOpenModal({ open: false, mode: openModal.mode })}
+        footer={null}
       >
-        <Form form={productForm} layout="vertical">
+        <Form
+          layout="vertical"
+          initialValues={openModal.data}
+          onFinish={onFinish}
+        >
+          {/* Product Form */}
           <Form.Item
             name="productName"
-            label="Tên Sản Phẩm"
-            rules={[{ required: true, message: "Vui lòng nhập tên sản phẩm" }]}
+            label="Tên sản phẩm"
+            rules={[{ required: true, message: "Vui lòng nhập tên sản phẩm!" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            name="productDescription"
-            label="Mô Tả"
-            rules={[
-              { required: true, message: "Vui lòng nhập mô tả sản phẩm" },
-            ]}
+            name="productImportPrice"
+            label="Giá nhập"
+            rules={[{ required: true, message: "Vui lòng nhập giá nhập!" }]}
           >
-            <Input />
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      <Modal
-        visible={productDetailModalVisible}
-        title={
-          currentProductDetail
-            ? "Chỉnh Sửa Chi Tiết Sản Phẩm"
-            : "Thêm Chi Tiết Sản Phẩm"
-        }
-        onOk={handleProductDetailModalOk}
-        onCancel={handleProductDetailModalCancel}
-      >
-        <Form form={productDetailForm} layout="vertical">
-          <Form.Item
-            name="productDetailname"
-            label="Tên Chi Tiết Sản Phẩm"
-            rules={[
-              {
-                required: true,
-                message: "Vui lòng nhập tên chi tiết sản phẩm",
-              },
-            ]}
-          >
-            <Input />
+            <InputNumber min={0} style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item
-            name="productDetaildescription"
-            label="Mô Tả"
-            rules={[
-              {
-                required: true,
-                message: "Vui lòng nhập mô tả chi tiết sản phẩm",
-              },
-            ]}
+            name="productPrice"
+            label="Giá bán"
+            rules={[{ required: true, message: "Vui lòng nhập giá bán!" }]}
           >
-            <Input />
+            <InputNumber min={0} style={{ width: "100%" }} />
           </Form.Item>
-          <Form.Item
-            name="productId"
-            label="Sản Phẩm"
-            rules={[{ required: true, message: "Vui lòng chọn sản phẩm" }]}
-          >
-            <Select placeholder="Chọn sản phẩm">
-              {products.map((product) => (
-                <Option key={product.productID} value={product.productID}>
-                  {product.productName}
+          <Form.Item name="status" label="Trạng thái" valuePropName="checked">
+            <Switch />
+          </Form.Item>
+          <Form.Item name="brandID" label="Thương hiệu">
+            <Select placeholder="Chọn thương hiệu">
+              {brands.map((brand) => (
+                <Option key={brand.brandID} value={brand.brandID}>
+                  {brand.brandName}
                 </Option>
               ))}
             </Select>
           </Form.Item>
-          <Form.List name="sizes">
+          <Form.Item name="styleID" label="Kiểu dáng">
+            <Select placeholder="Chọn kiểu dáng">
+              {styles.map((style) => (
+                <Option key={style.styleID} value={style.styleID}>
+                  {style.styleName}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <Form.Item name="materialID" label="Chất liệu">
+            <Select placeholder="Chọn chất liệu">
+              {materials.map((material) => (
+                <Option key={material.materialID} value={material.materialID}>
+                  {material.materialName}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <Form.Item name="originID" label="Nguồn gốc">
+            <Select placeholder="Chọn nguồn gốc">
+              {origins.map((origin) => (
+                <Option key={origin.originID} value={origin.originID}>
+                  {origin.originName}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          {/* Product Details Form */}
+          <Form.List name="productDetails">
             {(fields, { add, remove }) => (
               <>
-                {fields.map((field) => (
-                  <Form.Item
-                    key={field.key}
-                    label={field.name === 0 ? "Kích Thước và Số Lượng" : ""}
-                    required={false}
+                {fields.map(({ key, name, fieldKey, ...restField }) => (
+                  <Space
+                    key={key}
+                    style={{ display: "flex", marginBottom: 8 }}
+                    align="baseline"
                   >
-                    <Input.Group compact>
-                      <Form.Item
-                        {...field}
-                        name={[field.name, "sizeId"]}
-                        noStyle
-                        rules={[
-                          {
-                            required: true,
-                            message: "Vui lòng chọn kích thước",
-                          },
-                        ]}
-                      >
-                        <Select
-                          placeholder="Kích Thước"
-                          style={{ width: "60%" }}
-                        >
-                          {/* Render các kích thước từ dữ liệu */}
-                        </Select>
-                      </Form.Item>
-                      <Form.Item
-                        {...field}
-                        name={[field.name, "quantity"]}
-                        noStyle
-                        rules={[
-                          { required: true, message: "Vui lòng nhập số lượng" },
-                        ]}
-                      >
-                        <InputNumber
-                          min={1}
-                          placeholder="Số Lượng"
-                          style={{ width: "40%" }}
-                        />
-                      </Form.Item>
-                      <Button type="link" onClick={() => remove(field.name)}>
-                        Xóa
-                      </Button>
-                    </Input.Group>
-                  </Form.Item>
+                    <Form.Item
+                      {...restField}
+                      name={[name, "sizeID"]}
+                      label="Kích thước"
+                      rules={[{ required: true, message: "Chọn kích thước!" }]}
+                    >
+                      <Select placeholder="Chọn kích thước">
+                        {sizes.map((size) => (
+                          <Option key={size.sizeID} value={size.sizeID}>
+                            {size.sizeName}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                    <Form.Item
+                      {...restField}
+                      name={[name, "quantity"]}
+                      label="Số lượng"
+                      rules={[{ required: true, message: "Nhập số lượng!" }]}
+                    >
+                      <InputNumber min={0} style={{ width: "100%" }} />
+                    </Form.Item>
+                    <Button
+                      typeof="danger"
+                      icon={<MinusCircleOutlined />}
+                      onClick={() => remove(name)}
+                    />
+                  </Space>
                 ))}
                 <Form.Item>
                   <Button
                     type="dashed"
                     onClick={() => add()}
-                    style={{ width: "100%" }}
+                    icon={<PlusOutlined />}
                   >
-                    <PlusOutlined /> Thêm Kích Thước
+                    Thêm chi tiết sản phẩm
                   </Button>
                 </Form.Item>
               </>
             )}
           </Form.List>
+
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              {openModal.mode === "create" ? "Thêm" : "Cập nhật"}
+            </Button>
+          </Form.Item>
         </Form>
       </Modal>
-    </div>
+    </>
   );
 };
 

@@ -8,6 +8,7 @@ export interface Product {
   productID: number;
   productName: string;
   productDescription: string;
+  // Các thuộc tính khác...
 }
 
 const ProductService = {
