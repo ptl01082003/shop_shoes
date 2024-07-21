@@ -1,29 +1,27 @@
-import React from "react";
 
-import Home from "./pages/Home";
-import Tables from "./pages/Tables";
-import Billing from "./pages/Billing";
-import Rtl from "./pages/Rtl";
-import Profile from "./pages/Profile";
-import SignUp from "./pages/SignUp";
-import SignIn from "./pages/SignIn";
-import Main from "./components/layout/Main";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
 import "./assets/styles/main.css";
 import "./assets/styles/responsive.css";
 import "./index.css";
-import "react-toastify/dist/ReactToastify.css";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Billing from "./pages/Billing";
+import Home from "./pages/Home";
+import Profile from "./pages/Profile";
+import Rtl from "./pages/Rtl";
+import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
+import Tables from "./pages/Tables";
 
-import BrandsPage from "./pages/Brands";
-import StylesPage from "./pages/Styles";
-import MaterialsPage from "./pages/Materials";
-import OriginsPage from "./pages/Origins";
-import SizesPage from "./pages/Sizes";
-import PromotionsPage from "./pages/Promotions";
-import ProductPage from "./pages/Products";
-import ProductDetailsPage from "./pages/ProductDetails";
 import { ToastContainer } from "react-toastify";
 import PrivateRouter from "./components/privateRouter/PrivateRouter";
+import BrandsPage from "./pages/Brands";
+import MaterialsPage from "./pages/Materials";
+import OriginsPage from "./pages/Origins";
+import ProductDetailsPage from "./pages/ProductDetails";
+import ProductPage from "./pages/Products";
+import PromotionsPage from "./pages/Promotions";
+import SizesPage from "./pages/Sizes";
+import StylesPage from "./pages/Styles";
 
 function App() {
   return (

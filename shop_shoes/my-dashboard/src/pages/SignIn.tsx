@@ -2,9 +2,9 @@ import { Button, Col, Form, Input, Layout, Row, Typography } from "antd";
 import { Component } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import signinbg from "../assets/images/img-signin.jpg";
-import AuthService from "../services/AuthApi";
 import { toast } from "react-toastify";
 import { KEY_STORAGE } from "../constants/constants";
+import AuthService from "../services/AuthApi";
 
 const { Title } = Typography;
 const { Header, Content } = Layout;
