@@ -50,30 +50,30 @@ import spfFour from "./products/specialOffer/spfFour.webp";
 import productOfTheYear from "./products/productOfTheYear.webp";
 // ============== Products End here ======================
 import paymentCard from "./payment.png";
-import emptyCart from "../images/emptyCart.png";
+import emptyCart from "./emptyCart.png";
 
-import IMPRIMANTE_PANTUM_CP2200DW from "../images/products/imprimante/IMPRIMANTE_PANTUM_CP2200DW.webp";
-import IMPRIMANTE_PANTUM_BM5100FDW from "../images/products/imprimante/IMPRIMANTE_PANTUM_BM5100FDW.webp";
-import IMPRIMANTE_PANTUM_BP5100DN from "../images/products/imprimante/IMPRIMANTE_PANTUM_BP5100DN.webp";
-import IMPRIMANTE_PANTUM_M6609N from "../images/products/imprimante/IMPRIMANTE_PANTUM_M6609N.webp";
-import IMPRIMANTE_PANTUM_P3300DN from "../images/products/imprimante/IMPRIMANTE_PANTUM_P3300DN.webp";
-import IMPRIMANTE_PANTUM_P3300DW from "../images/products/imprimante/IMPRIMANTE_PANTUM_P3300DW.webp";
-import IMPRIMANTE_PANTUM_P2509W from "../images/products/imprimante/IMPRIMANTE_PANTUM_P2509W.webp";
-import IMPRIMANTE_PANTUM_M6559N from "../images/products/imprimante/IMPRIMANTE_PANTUM_M6559N.webp";
-import IMPRIMANTE_PANTUM_P2509 from "../images/products/imprimante/IMPRIMANTE_PANTUM_P2509.webp";
+import IMPRIMANTE_PANTUM_CP2200DW from "./products/imprimante/IMPRIMANTE_PANTUM_CP2200DW.webp";
+import IMPRIMANTE_PANTUM_BM5100FDW from "./products/imprimante/IMPRIMANTE_PANTUM_BM5100FDW.webp";
+import IMPRIMANTE_PANTUM_BP5100DN from "./products/imprimante/IMPRIMANTE_PANTUM_BP5100DN.webp";
+import IMPRIMANTE_PANTUM_M6609N from "./products/imprimante/IMPRIMANTE_PANTUM_M6609N.webp";
+import IMPRIMANTE_PANTUM_P3300DN from "./products/imprimante/IMPRIMANTE_PANTUM_P3300DN.webp";
+import IMPRIMANTE_PANTUM_P3300DW from "./products/imprimante/IMPRIMANTE_PANTUM_P3300DW.webp";
+import IMPRIMANTE_PANTUM_P2509W from "./products/imprimante/IMPRIMANTE_PANTUM_P2509W.webp";
+import IMPRIMANTE_PANTUM_M6559N from "./products/imprimante/IMPRIMANTE_PANTUM_M6559N.webp";
+import IMPRIMANTE_PANTUM_P2509 from "./products/imprimante/IMPRIMANTE_PANTUM_P2509.webp";
 
-import hp1 from "../images/products/imprimante/hp1.webp";
-import hp2 from "../images/products/imprimante/hp2.webp";
-import hp3 from "../images/products/imprimante/hp3.webp";
+import hp1 from "./products/imprimante/hp1.webp";
+import hp2 from "./products/imprimante/hp2.webp";
+import hp3 from "./products/imprimante/hp3.webp";
 
-import ricoh1 from "../images/products/imprimante/ricoh1.webp";
-import ricoh2 from "../images/products/imprimante/ricoh2.webp";
-import ricoh3 from "../images/products/imprimante/ricoh3.webp";
-import ricoh4 from "../images/products/imprimante/ricoh4.webp";
-import ricoh5 from "../images/products/imprimante/ricoh5.webp";
+import ricoh1 from "./products/imprimante/ricoh1.webp";
+import ricoh2 from "./products/imprimante/ricoh2.webp";
+import ricoh3 from "./products/imprimante/ricoh3.webp";
+import ricoh4 from "./products/imprimante/ricoh4.webp";
+import ricoh5 from "./products/imprimante/ricoh5.webp";
 
-import espson1 from "../images/products/imprimante/espson1.webp";
-import espson2 from "../images/products/imprimante/espson2.webp";
+import espson1 from "./products/imprimante/espson1.webp";
+import espson2 from "./products/imprimante/espson2.webp";
 
 export {
   logo,

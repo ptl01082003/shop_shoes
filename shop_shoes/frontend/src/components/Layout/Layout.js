@@ -12,9 +12,7 @@ export default function Layout(props) {
       <Header />
       <HeaderBottom />
       <SpecialCase />
-      <ScrollRestoration />
       {props.children}
-      <Outlet />
       <Footer />
       <FooterBottom />
     </>
