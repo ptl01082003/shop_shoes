@@ -86,7 +86,6 @@ const CartsController = {
         } else {
           await cartsItems.destroy();
         }
-
         let cartsAmount = 0;
 
         const products = await CartItems.findAll({ where: { cartId: carts?.cartId }, include: [Products] });

@@ -1,6 +1,6 @@
 // src/services/ProductService.ts
 
-import AxiosConfig from "../networks/AxiosRequest"; // Đảm bảo rằng module AxiosConfig được import và cấu hình đúng
+import AxiosClient from "../networks/AxiosRequest"; // Đảm bảo rằng module AxiosClient được import và cấu hình đúng
 
 const API_URL = "/products"; // Đảm bảo rằng URL API này phù hợp với endpoint thực tế của sản phẩm trong hệ thống của bạn
 
@@ -13,7 +13,7 @@ export interface Product {
 const ProductService = {
   getProducts: async () => {
     try {
-      const response = await AxiosConfig.get(API_URL);
+      const response = await AxiosClient.get(API_URL);
       return response.data;
     } catch (error) {
       console.error("Lỗi khi lấy danh sách sản phẩm", error);
@@ -23,7 +23,7 @@ const ProductService = {
 
   getProductById: async (productID: number) => {
     try {
-      const response = await AxiosConfig.get(`${API_URL}/${productID}`);
+      const response = await AxiosClient.get(`${API_URL}/${productID}`);
       return response;
     } catch (error) {
       console.error(`Lỗi khi lấy thông tin sản phẩm ${productID}`, error);
@@ -33,7 +33,7 @@ const ProductService = {
 
   createProduct: async (productData: any) => {
     try {
-      const response = await AxiosConfig.post(API_URL, productData);
+      const response = await AxiosClient.post(API_URL, productData);
       return response.data;
     } catch (error) {
       console.error("Lỗi khi tạo mới sản phẩm", error);
@@ -43,7 +43,7 @@ const ProductService = {
 
   updateProduct: async (productID: number, productData: any) => {
     try {
-      const response = await AxiosConfig.put(
+      const response = await AxiosClient.put(
         `${API_URL}/${productID}`,
         productData
       );
@@ -56,7 +56,7 @@ const ProductService = {
 
   deleteProduct: async (productID: number) => {
     try {
-      const response = await AxiosConfig.delete(`${API_URL}/${productID}`);
+      const response = await AxiosClient.delete(`${API_URL}/${productID}`);
       return response.data;
     } catch (error) {
       console.error(`Lỗi khi xóa sản phẩm ${productID}`, error);

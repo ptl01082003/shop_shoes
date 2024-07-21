@@ -1,6 +1,6 @@
 // src/services/SizeService.ts
 
-import AxiosConfig from "../networks/AxiosRequest";
+import AxiosClient from "../networks/AxiosRequest";
 
 const API_URL = "/sizes"; // Đảm bảo rằng URL này phù hợp với địa chỉ API của bạn
 
@@ -8,7 +8,7 @@ const SizeService = {
   // Lấy danh sách tất cả kích cỡ
   getSizes: async () => {
     try {
-      const response = await AxiosConfig.get(API_URL);
+      const response = await AxiosClient.get(API_URL);
       return response.data;
     } catch (error) {
       console.error("Lỗi khi lấy danh sách kích cỡ", error);
@@ -19,7 +19,7 @@ const SizeService = {
   // Lấy một kích cỡ dựa trên ID
   getSizeById: async (sizeID: number) => {
     try {
-      const response = await AxiosConfig.get(`${API_URL}/${sizeID}`);
+      const response = await AxiosClient.get(`${API_URL}/${sizeID}`);
       return response.data;
     } catch (error) {
       console.error(`Lỗi khi lấy thông tin kích cỡ ${sizeID}`, error);
@@ -30,7 +30,7 @@ const SizeService = {
   // Tạo mới một kích cỡ
   createSize: async (sizeData: any) => {
     try {
-      const response = await AxiosConfig.post(API_URL, sizeData);
+      const response = await AxiosClient.post(API_URL, sizeData);
       return response.data;
     } catch (error) {
       console.error("Lỗi khi tạo mới kích cỡ", error);
@@ -41,7 +41,7 @@ const SizeService = {
   // Cập nhật thông tin một kích cỡ đã có
   updateSize: async (sizeID: number, sizeData: any) => {
     try {
-      const response = await AxiosConfig.put(`${API_URL}/${sizeID}`, sizeData);
+      const response = await AxiosClient.put(`${API_URL}/${sizeID}`, sizeData);
       return response.data;
     } catch (error) {
       console.error(`Lỗi khi cập nhật kích cỡ ${sizeID}`, error);
@@ -52,7 +52,7 @@ const SizeService = {
   // Xóa một kích cỡ dựa trên ID
   deleteSize: async (sizeID: number) => {
     try {
-      const response = await AxiosConfig.delete(`${API_URL}/${sizeID}`);
+      const response = await AxiosClient.delete(`${API_URL}/${sizeID}`);
       return response.data;
     } catch (error) {
       console.error(`Lỗi khi xóa kích cỡ ${sizeID}`, error);

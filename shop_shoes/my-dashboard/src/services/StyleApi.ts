@@ -1,6 +1,6 @@
 // src/services/StyleService.ts
 
-import AxiosConfig from "../networks/AxiosRequest";
+import AxiosClient from "../networks/AxiosRequest";
 
 const API_URL = "/styles"; // Đảm bảo rằng URL này phù hợp với địa chỉ API của bạn
 
@@ -8,7 +8,7 @@ const StyleService = {
   // Lấy danh sách tất cả màu sắc
   getStyles: async () => {
     try {
-      const response = await AxiosConfig.get(API_URL);
+      const response = await AxiosClient.get(API_URL);
       return response.data;
     } catch (error) {
       console.error("Lỗi khi lấy danh sách màu sắc", error);
@@ -19,7 +19,7 @@ const StyleService = {
   // Lấy một màu sắc dựa trên ID
   getStyleById: async (styleID: number) => {
     try {
-      const response = await AxiosConfig.get(`${API_URL}/${styleID}`);
+      const response = await AxiosClient.get(`${API_URL}/${styleID}`);
       return response.data;
     } catch (error) {
       console.error(`Lỗi khi lấy thông tin màu sắc ${styleID}`, error);
@@ -30,7 +30,7 @@ const StyleService = {
   // Tạo mới một màu sắc
   createStyle: async (styleData: any) => {
     try {
-      const response = await AxiosConfig.post(API_URL, styleData);
+      const response = await AxiosClient.post(API_URL, styleData);
       return response.data;
     } catch (error) {
       console.error("Lỗi khi tạo mới màu sắc", error);
@@ -41,7 +41,7 @@ const StyleService = {
   // Cập nhật thông tin một màu sắc đã có
   updateStyle: async (styleID: number, styleData: any) => {
     try {
-      const response = await AxiosConfig.put(
+      const response = await AxiosClient.put(
         `${API_URL}/${styleID}`,
         styleData
       );
@@ -55,7 +55,7 @@ const StyleService = {
   // Xóa một màu sắc dựa trên ID
   deleteStyle: async (styleID: number) => {
     try {
-      const response = await AxiosConfig.delete(`${API_URL}/${styleID}`);
+      const response = await AxiosClient.delete(`${API_URL}/${styleID}`);
       return response.data;
     } catch (error) {
       console.error(`Lỗi khi xóa màu sắc ${styleID}`, error);

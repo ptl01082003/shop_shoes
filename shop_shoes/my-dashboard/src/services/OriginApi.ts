@@ -1,6 +1,6 @@
 // src/services/OriginService.ts
 
-import AxiosConfig from "../networks/AxiosRequest";
+import AxiosClient from "../networks/AxiosRequest";
 
 const API_URL = "/origins"; // Đảm bảo rằng URL này phù hợp với địa chỉ API của bạn
 
@@ -8,7 +8,7 @@ const OriginService = {
   // Lấy danh sách tất cả màu sắc
   getOrigins: async () => {
     try {
-      const response = await AxiosConfig.get(API_URL);
+      const response = await AxiosClient.get(API_URL);
       return response.data;
     } catch (error) {
       console.error("Lỗi khi lấy danh sách màu sắc", error);
@@ -19,7 +19,7 @@ const OriginService = {
   // Lấy một màu sắc dựa trên ID
   getOriginById: async (originID: number) => {
     try {
-      const response = await AxiosConfig.get(`${API_URL}/${originID}`);
+      const response = await AxiosClient.get(`${API_URL}/${originID}`);
       return response.data;
     } catch (error) {
       console.error(`Lỗi khi lấy thông tin màu sắc ${originID}`, error);
@@ -30,7 +30,7 @@ const OriginService = {
   // Tạo mới một màu sắc
   createOrigin: async (originData: any) => {
     try {
-      const response = await AxiosConfig.post(API_URL, originData);
+      const response = await AxiosClient.post(API_URL, originData);
       return response.data;
     } catch (error) {
       console.error("Lỗi khi tạo mới màu sắc", error);
@@ -41,7 +41,7 @@ const OriginService = {
   // Cập nhật thông tin một màu sắc đã có
   updateOrigin: async (originID: number, originData: any) => {
     try {
-      const response = await AxiosConfig.put(
+      const response = await AxiosClient.put(
         `${API_URL}/${originID}`,
         originData
       );
@@ -55,7 +55,7 @@ const OriginService = {
   // Xóa một màu sắc dựa trên ID
   deleteOrigin: async (originID: number) => {
     try {
-      const response = await AxiosConfig.delete(`${API_URL}/${originID}`);
+      const response = await AxiosClient.delete(`${API_URL}/${originID}`);
       return response.data;
     } catch (error) {
       console.error(`Lỗi khi xóa màu sắc ${originID}`, error);

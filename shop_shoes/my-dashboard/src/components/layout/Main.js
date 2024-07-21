@@ -7,7 +7,7 @@ import Footer from "./Footer";
 
 const { Header: AntHeader, Content, Sider } = Layout;
 
-function Main() {
+function Main({children}) {
   const [visible, setVisible] = useState(false);
   const [placement, setPlacement] = useState("right");
   const [sidenavColor, setSidenavColor] = useState("#1890ff");
@@ -109,7 +109,7 @@ function Main() {
           </AntHeader>
         )}
         <Content className="content-ant">
-          <Outlet />
+         {children}
         </Content>
         <Footer />
       </Layout>

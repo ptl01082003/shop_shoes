@@ -1,6 +1,6 @@
 // src/services/MaterialService.ts
 
-import AxiosConfig from "../networks/AxiosRequest";
+import AxiosClient from "../networks/AxiosRequest";
 
 const API_URL = "/materials"; // Đảm bảo rằng URL này phù hợp với địa chỉ API của bạn
 
@@ -8,7 +8,7 @@ const MaterialService = {
   // Lấy danh sách tất cả màu sắc
   getMaterials: async () => {
     try {
-      const response = await AxiosConfig.get(API_URL);
+      const response = await AxiosClient.get(API_URL);
       return response.data;
     } catch (error) {
       console.error("Lỗi khi lấy danh sách màu sắc", error);
@@ -19,7 +19,7 @@ const MaterialService = {
   // Lấy một màu sắc dựa trên ID
   getMaterialById: async (materialID: number) => {
     try {
-      const response = await AxiosConfig.get(`${API_URL}/${materialID}`);
+      const response = await AxiosClient.get(`${API_URL}/${materialID}`);
       return response.data;
     } catch (error) {
       console.error(`Lỗi khi lấy thông tin màu sắc ${materialID}`, error);
@@ -30,7 +30,7 @@ const MaterialService = {
   // Tạo mới một màu sắc
   createMaterial: async (materialData: any) => {
     try {
-      const response = await AxiosConfig.post(API_URL, materialData);
+      const response = await AxiosClient.post(API_URL, materialData);
       return response.data;
     } catch (error) {
       console.error("Lỗi khi tạo mới màu sắc", error);
@@ -41,7 +41,7 @@ const MaterialService = {
   // Cập nhật thông tin một màu sắc đã có
   updateMaterial: async (materialID: number, materialData: any) => {
     try {
-      const response = await AxiosConfig.put(
+      const response = await AxiosClient.put(
         `${API_URL}/${materialID}`,
         materialData
       );
@@ -55,7 +55,7 @@ const MaterialService = {
   // Xóa một màu sắc dựa trên ID
   deleteMaterial: async (materialID: number) => {
     try {
-      const response = await AxiosConfig.delete(`${API_URL}/${materialID}`);
+      const response = await AxiosClient.delete(`${API_URL}/${materialID}`);
       return response.data;
     } catch (error) {
       console.error(`Lỗi khi xóa màu sắc ${materialID}`, error);

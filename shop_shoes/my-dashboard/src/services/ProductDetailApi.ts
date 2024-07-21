@@ -1,4 +1,4 @@
-import AxiosConfig from "../networks/AxiosRequest";
+import AxiosClient from "../networks/AxiosRequest";
 
 const API_URL = "/product-details";
 
@@ -16,7 +16,7 @@ export interface ProductDetail {
 const ProductDetailsService = {
   getAllProductDetails: async () => {
     try {
-      const response = await AxiosConfig.get(API_URL);
+      const response = await AxiosClient.get(API_URL);
       return response.data;
     } catch (error) {
       console.error("Error fetching product details", error);
@@ -26,7 +26,7 @@ const ProductDetailsService = {
 
   getProductDetailById: async (productDetailId: number) => {
     try {
-      const response = await AxiosConfig.get(`${API_URL}/${productDetailId}`);
+      const response = await AxiosClient.get(`${API_URL}/${productDetailId}`);
       return response.data;
     } catch (error) {
       console.error(`Error fetching product detail ${productDetailId}`, error);
@@ -38,7 +38,7 @@ const ProductDetailsService = {
     productDetailData: Omit<ProductDetail, "productDetailid">
   ) => {
     try {
-      const response = await AxiosConfig.post(API_URL, productDetailData);
+      const response = await AxiosClient.post(API_URL, productDetailData);
       return response.data;
     } catch (error) {
       console.error("Error creating product detail", error);
@@ -51,7 +51,7 @@ const ProductDetailsService = {
     productDetailData: Partial<ProductDetail>
   ) => {
     try {
-      const response = await AxiosConfig.put(
+      const response = await AxiosClient.put(
         `${API_URL}/${productDetailId}`,
         productDetailData
       );
@@ -64,7 +64,7 @@ const ProductDetailsService = {
 
   deleteProductDetail: async (productDetailId: number) => {
     try {
-      const response = await AxiosConfig.delete(
+      const response = await AxiosClient.delete(
         `${API_URL}/${productDetailId}`
       );
       return response.data;
@@ -80,7 +80,7 @@ const ProductDetailsService = {
     quantity: number
   ) => {
     try {
-      const response = await AxiosConfig.post(`${API_URL}/add-quantity`, {
+      const response = await AxiosClient.post(`${API_URL}/add-quantity`, {
         productDetailId,
         sizeId,
         quantity,
@@ -101,7 +101,7 @@ const ProductDetailsService = {
     quantity: number
   ) => {
     try {
-      const response = await AxiosConfig.put(`${API_URL}/update-quantity`, {
+      const response = await AxiosClient.put(`${API_URL}/update-quantity`, {
         productDetailId,
         sizeId,
         quantity,
@@ -118,7 +118,7 @@ const ProductDetailsService = {
 
   deleteQuantity: async (productDetailId: number, sizeId: number) => {
     try {
-      const response = await AxiosConfig.delete(
+      const response = await AxiosClient.delete(
         `${API_URL}/delete-quantity/${productDetailId}/${sizeId}`
       );
       return response.data;

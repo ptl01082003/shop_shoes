@@ -3,16 +3,10 @@ import authCtrl from "../controller/AuthController";
 
 const routerAuth = express.Router();
 
-// Đăng ký
+routerAuth.post("/login", authCtrl.loginWeb);
+routerAuth.post("/logout", authCtrl.logOut);
 routerAuth.post("/register", authCtrl.register);
-
-// Đăng nhập
-routerAuth.post("/login", authCtrl.login);
-
-// Đăng xuất
-routerAuth.get("/logout", authCtrl.logOut);
-
-// Yêu cầu refresh token mới
-routerAuth.get("/requestRefreshToken", authCtrl.requestRefreshToken);
+routerAuth.post("/login-dashboard", authCtrl.loginDashboard);
+routerAuth.post("/refresh-token", authCtrl.requestRefreshToken);
 
 export default routerAuth;

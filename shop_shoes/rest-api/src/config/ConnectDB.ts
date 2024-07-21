@@ -10,7 +10,12 @@ export async function connectDB() {
     password: process.env["DB_PASSWORD"],
     username: process.env["DB_USER"],
     models: [path.resolve("./src/models")],
+    timezone: "+07:00",
+    dialectOptions: {
+      timezone: "+07:00",
+    },
   });
+
   await sequelize.authenticate();
   await sequelize.sync({ force: false });
   console.log("Connection has been established successfully.");

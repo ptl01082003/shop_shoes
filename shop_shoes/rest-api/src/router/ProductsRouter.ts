@@ -1,13 +1,20 @@
 // routes/productsRoutes.ts
 import express from "express";
 import ProductsController from "../controller/ProductsController";
+import { checkAuth } from "../middleware/checkAuth";
+import { checkRoles } from "../middleware/checkRoles";
+import { ROLE_TYPES } from "../models/Roles";
 
-const routerProduct = express.Router();
+const productsRouter = express.Router();
 
-routerProduct.post("/", ProductsController.addProduct);
-routerProduct.get("/", ProductsController.getProducts);
-routerProduct.get("/:id", ProductsController.getById);
-routerProduct.put("/:id", ProductsController.updateProduct);
-routerProduct.delete("/:id", ProductsController.deleteProduct);
+productsRouter.use(checkAuth);
 
-export default routerProduct;
+productsRouter.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
+
+productsRouter.post("/", ProductsController.addProduct);
+productsRouter.get("/", ProductsController.getProducts);
+productsRouter.get("/:id", ProductsController.getById);
+productsRouter.put("/:id", ProductsController.updateProduct);
+productsRouter.delete("/:id", ProductsController.deleteProduct);
+
+export default productsRouter;

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Card,
@@ -34,8 +34,17 @@ import team2 from "../assets/images/team-2.jpg";
 import team3 from "../assets/images/team-3.jpg";
 import team4 from "../assets/images/team-4.jpg";
 import card from "../assets/images/info-card-1.jpg";
+import AxiosClient from "../networks/AxiosRequest";
 
 function Home() {
+
+  useEffect(() => {
+  (async () => {
+    await AxiosClient.post("/products", {});
+  })()
+  }, [])
+  
+
   const { Title, Text } = Typography;
 
   const onChange = (e: any) => console.log(`radio checked:${e.target.value}`);
@@ -343,7 +352,7 @@ function Home() {
               xl={6}
               className="mb-24"
             >
-              <Card bordered={false} className="criclebox ">
+              <Card bordered={false} className="criclebox">
                 <div className="number">
                   <Row align="middle" gutter={[24, 0]}>
                     <Col xs={18}>
@@ -377,7 +386,7 @@ function Home() {
 
         <Row gutter={[24, 0]}>
           <Col xs={24} sm={24} md={12} lg={12} xl={16} className="mb-24">
-            <Card bordered={false} className="criclebox cardbody h-full">
+            <Card bordered={false} className="cardbody criclebox h-full">
               <div className="project-ant">
                 <div>
                   <Title level={5}>Projects</Title>
@@ -420,7 +429,7 @@ function Home() {
                         </td>
                         <td>{d.member}</td>
                         <td>
-                          <span className="text-xs font-weight-bold">
+                          <span className="font-weight-bold text-xs">
                             {d.bud}{" "}
                           </span>
                         </td>
@@ -489,7 +498,7 @@ function Home() {
                   xl={14}
                   className="mobile-24"
                 >
-                  <div className="h-full col-content p-20">
+                  <div className="col-content h-full p-20">
                     <div className="ant-muse">
                       <Text>Built by developers</Text>
                       <Title level={5}>Muse Dashboard for Ant Design</Title>
@@ -523,8 +532,8 @@ function Home() {
           </Col>
 
           <Col xs={24} md={12} sm={24} lg={12} xl={10} className="mb-24">
-            <Card bordered={false} className="criclebox card-info-2 h-full">
-              <div className="gradent h-full col-content">
+            <Card bordered={false} className="card-info-2 criclebox h-full">
+              <div className="col-content gradent h-full">
                 <div className="card-content">
                   <Title level={5}>Work with the best</Title>
                   <p>

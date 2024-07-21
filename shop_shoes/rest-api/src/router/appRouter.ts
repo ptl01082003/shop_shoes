@@ -12,11 +12,10 @@ import paymentRouter from "./PaymentOnlineRouter";
 import routerProductDetail from "./ProductDetailsRouter";
 
 import routerProductPromotion from "./ProductPromotionRouter";
-import routerProduct from "./ProductsRouter";
+import productsRouter from "./ProductsRouter";
 import routerPromotions from "./PromotionsRouter";
 import routerSize from "./SizeRouter";
 import routerStyle from "./StylesRouter";
-import routerSizeProductDetals from "./SizeProductDetails";
 
 const router = express.Router();
 
@@ -25,7 +24,7 @@ export function appRouter() {
   router.use("/carts", cartsRouter);
   router.use("/brands", routerBrands);
 
-  router.use("/products", routerProduct);
+  router.use("/products", productsRouter);
 
   router.use("/payment-orders", paymentRouter);
   router.use("/styles", routerStyle);
