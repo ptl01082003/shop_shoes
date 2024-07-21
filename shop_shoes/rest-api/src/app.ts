@@ -1,6 +1,6 @@
 import "dotenv/config";
 import cors from "cors";
-import express, { NextFunction, Request , Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { appRouter } from "./router/appRouter";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
@@ -52,7 +52,7 @@ appRouter();
 
 app.use((errors: any, req: Request, res: Response, next: NextFunction) => {
   res.json(errors);
-})
+});
 
 app.use("*", (_, res) => {
   res.status(STATUS_CODE.NOT_FOUND).json(

@@ -3,10 +3,16 @@ import SizesController from "../controller/SizeProductDetail";
 
 const routerSizeProductDetals = Router();
 
-routerSizeProductDetals.post("/", SizesController.addSizeProductDetail);
-routerSizeProductDetals.get("/", SizesController.getSizeProductDetails);
-routerSizeProductDetals.get("/:id", SizesController.getSizeProductDetailById);
-routerSizeProductDetals.put("/:id", SizesController.updateSizeProductDetail);
-routerSizeProductDetals.delete("/:id", SizesController.deleteSizeProductDetail);
+routerSizeProductDetals.post("/create", SizesController.addSizeProductDetail);
+routerSizeProductDetals.post("/", SizesController.getSizeProductDetails);
+routerSizeProductDetals.post("/:id", SizesController.getSizeProductDetailById);
+routerSizeProductDetals.post(
+  "/update/:id",
+  SizesController.updateSizeProductDetail
+);
+routerSizeProductDetals.post(
+  "/remove/:id",
+  SizesController.deleteSizeProductDetail
+);
 
 export default routerSizeProductDetals;

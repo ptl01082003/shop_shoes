@@ -3,10 +3,11 @@ import ImagesController from "../controller/ImagesController";
 
 const routerImage = express.Router();
 
-routerImage.get("/", ImagesController.getImages);
-routerImage.get("/:id", ImagesController.getImageById);
-routerImage.post("/", ImagesController.addImage);
-routerImage.put("/:id", ImagesController.updateImage);
-routerImage.delete("/:id", ImagesController.deleteImage);
+routerImage.post("/", ImagesController.getImages);
+routerImage.post("/create", ImagesController.addImage);
+routerImage.post("/:id", ImagesController.getImageById);
+
+routerImage.post("/edit/:id", ImagesController.updateImage);
+routerImage.post("/remove/:id", ImagesController.deleteImage);
 
 export default routerImage;

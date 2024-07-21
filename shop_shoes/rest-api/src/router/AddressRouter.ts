@@ -3,11 +3,10 @@ import AddressController from "../controller/AddressController";
 
 const routerAddress = express.Router();
 
-routerAddress.post("/", AddressController.addAddress);
-routerAddress.get("/", AddressController.getAddresses);
-routerAddress.get("/:id", AddressController.getAddressById);
-routerAddress.put("/:id", AddressController.updateAddress);
-routerAddress.delete("/:id", AddressController.deleteAddress);
+routerAddress.post("/create", AddressController.addAddress);
+routerAddress.post("/", AddressController.getAddresses);
+routerAddress.post("/:id", AddressController.getAddressById);
+routerAddress.post("/edit/:id", AddressController.updateAddress);
+routerAddress.post("/remove/:id", AddressController.deleteAddress);
 
 export default routerAddress;
-    

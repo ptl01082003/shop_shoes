@@ -1,5 +1,5 @@
 import AxiosClient from "../networks/AxiosRequest";
-
+import { Response } from "../constants/constants";
 const API_URL = "/product-details";
 
 export interface ProductDetail {
@@ -16,8 +16,8 @@ export interface ProductDetail {
 const ProductDetailsService = {
   getAllProductDetails: async () => {
     try {
-      const response = await AxiosClient.get(API_URL);
-      return response.data;
+      const response = await AxiosClient.post<any, Response<any>>(API_URL);
+      return response;
     } catch (error) {
       console.error("Error fetching product details", error);
       throw error;
@@ -26,8 +26,10 @@ const ProductDetailsService = {
 
   getProductDetailById: async (productDetailId: number) => {
     try {
-      const response = await AxiosClient.get(`${API_URL}/${productDetailId}`);
-      return response.data;
+      const response = await AxiosClient.post<any, Response<any>>(
+        `${API_URL}/${productDetailId}`
+      );
+      return response;
     } catch (error) {
       console.error(`Error fetching product detail ${productDetailId}`, error);
       throw error;
@@ -38,8 +40,11 @@ const ProductDetailsService = {
     productDetailData: Omit<ProductDetail, "productDetailid">
   ) => {
     try {
-      const response = await AxiosClient.post(API_URL, productDetailData);
-      return response.data;
+      const response = await AxiosClient.post<any, Response<any>>(
+        `${API_URL}/create`,
+        productDetailData
+      );
+      return response;
     } catch (error) {
       console.error("Error creating product detail", error);
       throw error;
@@ -51,11 +56,11 @@ const ProductDetailsService = {
     productDetailData: Partial<ProductDetail>
   ) => {
     try {
-      const response = await AxiosClient.put(
-        `${API_URL}/${productDetailId}`,
+      const response = await AxiosClient.post<any, Response<any>>(
+        `${API_URL}/edit/${productDetailId}`,
         productDetailData
       );
-      return response.data;
+      return response;
     } catch (error) {
       console.error(`Error updating product detail ${productDetailId}`, error);
       throw error;
@@ -64,10 +69,10 @@ const ProductDetailsService = {
 
   deleteProductDetail: async (productDetailId: number) => {
     try {
-      const response = await AxiosClient.delete(
-        `${API_URL}/${productDetailId}`
+      const response = await AxiosClient.post<any, Response<any>>(
+        `${API_URL}/remove/${productDetailId}`
       );
-      return response.data;
+      return response;
     } catch (error) {
       console.error(`Error deleting product detail ${productDetailId}`, error);
       throw error;
@@ -80,12 +85,15 @@ const ProductDetailsService = {
     quantity: number
   ) => {
     try {
-      const response = await AxiosClient.post(`${API_URL}/add-quantity`, {
-        productDetailId,
-        sizeId,
-        quantity,
-      });
-      return response.data;
+      const response = await AxiosClient.post<any, Response<any>>(
+        `${API_URL}/add-quantity`,
+        {
+          productDetailId,
+          sizeId,
+          quantity,
+        }
+      );
+      return response;
     } catch (error) {
       console.error(
         `Error adding quantity to product detail ${productDetailId}, size ${sizeId}`,
@@ -101,12 +109,15 @@ const ProductDetailsService = {
     quantity: number
   ) => {
     try {
-      const response = await AxiosClient.put(`${API_URL}/update-quantity`, {
-        productDetailId,
-        sizeId,
-        quantity,
-      });
-      return response.data;
+      const response = await AxiosClient.post<any, Response<any>>(
+        `${API_URL}/update-quantity`,
+        {
+          productDetailId,
+          sizeId,
+          quantity,
+        }
+      );
+      return response;
     } catch (error) {
       console.error(
         `Error updating quantity for product detail ${productDetailId}, size ${sizeId}`,
@@ -118,10 +129,10 @@ const ProductDetailsService = {
 
   deleteQuantity: async (productDetailId: number, sizeId: number) => {
     try {
-      const response = await AxiosClient.delete(
+      const response = await AxiosClient.post<any, Response<any>>(
         `${API_URL}/delete-quantity/${productDetailId}/${sizeId}`
       );
-      return response.data;
+      return response;
     } catch (error) {
       console.error(
         `Error deleting quantity for product detail ${productDetailId}, size ${sizeId}`,

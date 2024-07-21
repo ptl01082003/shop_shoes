@@ -4,10 +4,10 @@ import VoucherController from "../controller/VoucherController";
 
 const routerVoucher = Router();
 
-routerVoucher.post("/", VoucherController.addVoucher);
-routerVoucher.get("/", VoucherController.getVouchers);
-routerVoucher.get("/:id", VoucherController.getVoucherById);
-routerVoucher.put("/:id", VoucherController.updateVoucher);
-routerVoucher.delete("/:id", VoucherController.deleteVoucher);
+routerVoucher.post("/create", VoucherController.addVoucher);
+routerVoucher.post("/", VoucherController.getVouchers);
+routerVoucher.post("/:id", VoucherController.getVoucherById);
+routerVoucher.post("/update/:id", VoucherController.updateVoucher);
+routerVoucher.post("/remove/:id", VoucherController.deleteVoucher);
 
 export default routerVoucher;

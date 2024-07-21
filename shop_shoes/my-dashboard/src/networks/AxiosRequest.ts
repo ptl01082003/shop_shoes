@@ -15,6 +15,7 @@ const AxiosClient = Axios.create(AxiosConfig);
 AxiosClient.interceptors.request.use(
   function (config) {
     const token = localStorage.getItem(KEY_STORAGE.TOKEN);
+    config.data = { ...config.data };
     if (token) {
       config.data.token = token;
     }
@@ -38,7 +39,7 @@ AxiosClient.interceptors.response.use(
           refreshToken: localStorage.getItem(KEY_STORAGE.RF_TOKEN),
         }
       );
-      if (getNewToken.data.code == 0) {
+      if (getNewToken.data.code === 0) {
         const newToken = getNewToken.data?.data;
         localStorage.setItem(KEY_STORAGE.TOKEN, newToken);
         const reCallRequest = await Axios.create(AxiosConfig).request({
@@ -49,7 +50,7 @@ AxiosClient.interceptors.response.use(
           method: response.config.method,
           url: response.config.url,
         });
-        if (reCallRequest.data.code == 0) {
+        if (reCallRequest.data.code === 0) {
           return reCallRequest.data;
         } else {
           return window.location.replace("/sign-in");

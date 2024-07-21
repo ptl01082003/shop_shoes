@@ -1,23 +1,36 @@
 import { Router } from "express";
 import ProductDetailsController from "../controller/ProductDetailsController";
+import { checkAuth } from "../middleware/checkAuth";
+import { checkRoles } from "../middleware/checkRoles";
+import { ROLE_TYPES } from "../models/Roles";
 
 const routerProductDetail = Router();
 
-routerProductDetail.post("/", ProductDetailsController.createProductDetail);
-routerProductDetail.get("/", ProductDetailsController.getAllProductDetails);
-routerProductDetail.get("/:id", ProductDetailsController.getProductDetailById);
-routerProductDetail.put("/:id", ProductDetailsController.updateProductDetail);
-routerProductDetail.delete(
-  "/:id",
+routerProductDetail.use(checkAuth);
+
+routerProductDetail.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
+
+routerProductDetail.post(
+  "/create",
+  ProductDetailsController.createProductDetail
+);
+routerProductDetail.post("/", ProductDetailsController.getAllProductDetails);
+routerProductDetail.post("/:id", ProductDetailsController.getProductDetailById);
+routerProductDetail.post(
+  "/edit/:id",
+  ProductDetailsController.updateProductDetail
+);
+routerProductDetail.post(
+  "/remove/:id",
   ProductDetailsController.deleteProductDetail
 );
 
 routerProductDetail.post("/add-quantity", ProductDetailsController.addQuantity);
-routerProductDetail.put(
+routerProductDetail.post(
   "/update-quantity",
   ProductDetailsController.updateQuantity
 );
-routerProductDetail.delete(
+routerProductDetail.post(
   "/delete-quantity/:productDetailId/:sizeId",
   ProductDetailsController.deleteQuantity
 );

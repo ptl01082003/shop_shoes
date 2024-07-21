@@ -11,10 +11,14 @@ productsRouter.use(checkAuth);
 
 productsRouter.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
 
-productsRouter.post("/", ProductsController.addProduct);
-productsRouter.get("/", ProductsController.getProducts);
-productsRouter.get("/:id", ProductsController.getById);
-productsRouter.put("/:id", ProductsController.updateProduct);
-productsRouter.delete("/:id", ProductsController.deleteProduct);
+productsRouter.post("/create", ProductsController.addProduct);
+
+productsRouter.post("/", ProductsController.getProducts);
+
+productsRouter.post("/:id", ProductsController.getById);
+
+productsRouter.post("/edit/:id", ProductsController.updateProduct);
+
+productsRouter.post("/remove/:id", ProductsController.deleteProduct);
 
 export default productsRouter;

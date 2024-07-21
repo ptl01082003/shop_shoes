@@ -5,23 +5,23 @@ const routerProductPromotion = express.Router();
 
 // Routes for ProductPromotion
 routerProductPromotion.post(
-  "/",
+  "/create",
   ProductPromotionController.addProductPromotion
 );
-routerProductPromotion.get(
+routerProductPromotion.post(
   "/",
   ProductPromotionController.getProductPromotions
 );
-routerProductPromotion.get(
+routerProductPromotion.post(
   "/:productID/:promotionID",
   ProductPromotionController.getProductPromotionById
 );
-routerProductPromotion.put(
-  "/:productID/:promotionID",
+routerProductPromotion.post(
+  "/edit/:productID/:promotionID",
   ProductPromotionController.updateProductPromotion
 );
-routerProductPromotion.delete(
-  "/:productID/:promotionID",
+routerProductPromotion.post(
+  "/remove/:productID/:promotionID",
   ProductPromotionController.deleteProductPromotion
 );
 
