@@ -235,7 +235,7 @@ const authCtrl = {
 
   generateAccessToken: (params: any) => {
     return jwt.sign(params, process.env.AC_TOKEN_KEY as string, {
-      expiresIn: "1m",
+      expiresIn: "30s",
     });
   },
 
