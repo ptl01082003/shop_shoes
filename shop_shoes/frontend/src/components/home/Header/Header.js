@@ -5,15 +5,21 @@ import { HiMenuAlt2 } from "react-icons/hi";
 import { motion } from "framer-motion";
 import { logo, logoLight } from "../../../assets/images";
 import Image from "../../designLayouts/Image";
-import { navBarList } from "../../../constants";
+import { KEY_STORAGE, navBarList, PATH_ROUTER } from "../../../constants";
 import Flex from "../../designLayouts/Flex";
+import { useSelector } from "react-redux";
+import { selectUserInfo } from "../../../redux/slices/usersSlice";
+import { Button, Dropdown } from "antd";
+import AxiosClient from "../../../networks/AxiosClient";
 
 const Header = () => {
+  const selUserInfo = useSelector(selectUserInfo);
   const [showMenu, setShowMenu] = useState(true);
   const [sidenav, setSidenav] = useState(false);
   const [category, setCategory] = useState(false);
   const [brand, setBrand] = useState(false);
   const location = useLocation();
+
   useEffect(() => {
     let ResponsiveMenu = () => {
       if (window.innerWidth < 667) {
@@ -25,6 +31,47 @@ const Header = () => {
     ResponsiveMenu();
     window.addEventListener("resize", ResponsiveMenu);
   }, []);
+
+  const onLogout = async () => {
+    const response = await AxiosClient.post("/auth/logout");
+    if (response.code == 0) {
+      localStorage.removeItem(KEY_STORAGE.TOKEN);
+      localStorage.removeItem(KEY_STORAGE.RF_TOKEN);
+      window.location.replace(PATH_ROUTER.SIGN_IN);
+    } else {
+    }
+  };
+
+  const items = [
+    {
+      label: (
+        <>
+          <h3 className="font-bold text-center mb-1">
+            {selUserInfo?.fullName}
+          </h3>
+          <div className="flex text-xs italic space-x-1 justify-center items-center">
+            <h3>ID:</h3>
+            <h3>{selUserInfo?.userId}</h3>
+          </div>
+        </>
+      ),
+      key: "0",
+    },
+    {
+      type: "divider",
+    },
+    {
+      label: (
+        <button
+          className="py-2 bg-slate-500 rounded-md w-full text-center font-bold text-white"
+          onClick={onLogout}
+        >
+          Đăng xuất
+        </button>
+      ),
+      key: "3",
+    },
+  ];
 
   return (
     <div className="w-full h-20 bg-white sticky top-0 z-50 border-b-[1px] border-b-gray-200">
@@ -41,20 +88,38 @@ const Header = () => {
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5 }}
-                className="flex items-center w-auto z-50 p-0 gap-2"
+                className="flex items-center w-auto z-50 p-0"
               >
-                <>
-                  {navBarList.map(({ _id, title, link }) => (
-                    <NavLink
-                      key={_id}
-                      className="flex font-normal hover:font-bold w-20 h-6 justify-center items-center px-12 text-base text-[#767676] hover:underline underline-offset-[4px] decoration-[1px] hover:text-[#262626] md:border-r-[2px] border-r-gray-300 hoverEffect last:border-r-0"
-                      to={link}
-                      state={{ data: location.pathname.split("/")[1] }}
-                    >
-                      <li>{title}</li>
-                    </NavLink>
-                  ))}
-                </>
+                {navBarList.map(({ _id, title, link }) => (
+                  <NavLink
+                    key={_id}
+                    className="flex font-normal hover:font-bold justify-center items-center px-6 h-4 text-base text-[#767676] hover:underline underline-offset-[4px] decoration-[1px] hover:text-[#262626] md:border-r-[2px] border-r-gray-300 hoverEffect last:border-r-0"
+                    to={link}
+                    state={{ data: location.pathname.split("/")[1] }}
+                  >
+                    <li>{title}</li>
+                  </NavLink>
+                ))}
+
+                {Object.values(selUserInfo)?.length > 0 ? (
+                  <Dropdown
+                    menu={{
+                      items,
+                    }}
+                  >
+                    <p className="flex font-normal hover:font-bold px-5 text-base text-[#767676] hover:underline underline-offset-[4px] decoration-[1px] hover:text-[#262626] md:border-r-[2px] border-r-gray-300 hoverEffect last:border-r-0">
+                      Thông tin
+                    </p>
+                  </Dropdown>
+                ) : (
+                  <NavLink
+                    className="flex font-normal hover:font-bold justify-center items-center px-6 h-4 text-base text-[#767676] hover:underline underline-offset-[4px] decoration-[1px] hover:text-[#262626] md:border-r-[2px] border-r-gray-300 hoverEffect last:border-r-0"
+                    to={PATH_ROUTER.SIGN_IN}
+                    state={{ data: location.pathname.split("/")[1] }}
+                  >
+                    <li>Đăng nhập</li>
+                  </NavLink>
+                )}
               </motion.ul>
             )}
             <HiMenuAlt2

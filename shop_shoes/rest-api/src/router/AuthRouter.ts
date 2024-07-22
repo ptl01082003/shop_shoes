@@ -1,12 +1,16 @@
 import express from "express";
 import authCtrl from "../controller/AuthController";
+import { checkAuth } from "../middleware/checkAuth";
 
 const routerAuth = express.Router();
 
 routerAuth.post("/login", authCtrl.loginWeb);
-routerAuth.post("/logout", authCtrl.logOut);
 routerAuth.post("/register", authCtrl.register);
 routerAuth.post("/login-dashboard", authCtrl.loginDashboard);
+
+routerAuth.use(checkAuth);
+
 routerAuth.post("/refresh-token", authCtrl.requestRefreshToken);
+routerAuth.post("/logout", authCtrl.logOut);
 
 export default routerAuth;

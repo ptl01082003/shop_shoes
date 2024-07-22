@@ -165,6 +165,17 @@ const authCtrl = {
   },
   logOut: async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const userId = req.userId;
+      await redis.del(`roles-${userId}`);
+      await redis.del(`accessToken-${userId}`);
+      await redis.del(`refreshToken-${userId}`);
+      return res.json(
+        ResponseBody({
+          data: null,
+          code: RESPONSE_CODE.SUCCESS,
+          message: "Thực hiện thành công",
+        })
+      );
     } catch (error) {
       next(error);
     }

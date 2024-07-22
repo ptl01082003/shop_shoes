@@ -1,146 +1,145 @@
-import { Button, Form, Input } from "antd";
+import { yupResolver } from "@hookform/resolvers/yup";
 import React from "react";
-import { BsCheckCircleFill } from "react-icons/bs";
+import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { logoLight } from "../../assets/images";
-import { KEY_STORAGE } from "../../constants";
 import { toast } from "react-toastify";
+import * as yup from "yup";
+import { KEY_STORAGE, PATH_ROUTER } from "../../constants";
 import AxiosClient from "../../networks/AxiosClient";
+import { useDispatch } from "react-redux";
+import { fetchGetUserInfo } from "../../redux/thunks/userThunk";
 
 const SignIn = () => {
+  const dispatch = useDispatch();
 
   const onLogin = async (params) => {
-    console.log(params);
     const response = await AxiosClient.post("/auth/login", params);
     if (response.code === 0) {
       localStorage.setItem(KEY_STORAGE.TOKEN, response.data.accessToken);
       localStorage.setItem(KEY_STORAGE.RF_TOKEN, response.data.refreshToken);
+      await dispatch(fetchGetUserInfo());
       navigation("/", { replace: true });
     } else {
       toast.error(response.message);
     }
   };
-  
+
+  const schema = yup
+    .object({
+      userName: yup.string().required("Tài khoản không được để trống"),
+      password: yup.string().required("Mật khẩu không được để trống"),
+    })
+    .required();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+
   const navigation = useNavigate();
 
   return (
-    <div className="w-full h-screen flex justify-center items-center">
-      <div className="w-1/2 h-full hidden text-white lgl:inline-flex">
-        <div className="w-[450px] h-full bg-primeColor px-10 flex flex-col gap-6 justify-center">
-          <Link to="/">
-            <img src={logoLight} alt="logoImg" className="w-28" />
-          </Link>
-          <div className="-mt-1 flex flex-col gap-1">
-            <h1 className="font-titleFont text-xl font-medium">
-              Stay sign in for more
-            </h1>
-            <p className="text-base">When you sign in, you are with us!</p>
-          </div>
-          <div className="w-[300px] flex items-start gap-3">
-            <span className="mt-1 text-green-500">
-              <BsCheckCircleFill />
-            </span>
-            <p className="text-base text-gray-300">
-              <span className="font-titleFont font-semibold text-white">
-                Get started fast with OREBI
-              </span>
-              <br />
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ab omnis
-              nisi dolor recusandae consectetur!
-            </p>
-          </div>
-          <div className="w-[300px] flex items-start gap-3">
-            <span className="mt-1 text-green-500">
-              <BsCheckCircleFill />
-            </span>
-            <p className="text-base text-gray-300">
-              <span className="font-titleFont font-semibold text-white">
-                Access all OREBI services
-              </span>
-              <br />
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ab omnis
-              nisi dolor recusandae consectetur!
-            </p>
-          </div>
-          <div className="w-[300px] flex items-start gap-3">
-            <span className="mt-1 text-green-500">
-              <BsCheckCircleFill />
-            </span>
-            <p className="text-base text-gray-300">
-              <span className="font-titleFont font-semibold text-white">
-                Trusted by online Shoppers
-              </span>
-              <br />
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ab omnis
-              nisi dolor recusandae consectetur!
-            </p>
-          </div>
-          <div className="flex justify-between items-center mt-10">
-            <Link to="/">
-              <p className="font-titleFont text-sm font-semibold text-gray-300 duration-300 cursor-pointer hover:text-white">
-                © OREBI
-              </p>
-            </Link>
-            <p className="font-titleFont text-sm font-semibold text-gray-300 duration-300 cursor-pointer hover:text-white">
-              Terms
-            </p>
-            <p className="font-titleFont text-sm font-semibold text-gray-300 duration-300 cursor-pointer hover:text-white">
-              Privacy
-            </p>
-            <p className="font-titleFont text-sm font-semibold text-gray-300 duration-300 cursor-pointer hover:text-white">
-              Security
-            </p>
-          </div>
-        </div>
-      </div>
-      <div className="w-full h-full lgl:w-1/2">
-        <div className="px-6 py-4 w-full h-[90%] flex flex-col justify-center overflow-y-scroll scrollbar-thin scrollbar-thumb-primeColor">
-          <h1 className="font-titleFont underline underline-offset-4 decoration-[1px] font-semibold text-3xl mdl:text-4xl mb-4">
-            Sign in
-          </h1>
-          <div className="w-1/2 flex flex-col gap-3">
-            <Form onFinish={onLogin} layout="vertical" className="row-col">
-              <Form.Item
-                className="userName"
-                label="Tài khoản"
-                name="userName"
-                rules={[
-                  {
-                    required: true,
-                    message: "Tài khoản không được để trống!",
-                  },
-                ]}
-              >
-                <Input placeholder="Nhập tại đây" />
-              </Form.Item>
-              <Form.Item
-                className="password"
-                label="Mật khẩu"
-                name="password"
-                rules={[
-                  {
-                    required: true,
-                    message: "Mật khẩu không được để trống!",
-                  },
-                ]}
-              >
-                <Input type="password" placeholder="Nhập tại đây" />
-              </Form.Item>
-              <Form.Item>
-                <Button htmlType="submit" style={{ width: "100%" }}>
+    <div className="font-[sans-serif]">
+      <div className="min-h-screen flex fle-col items-center justify-center py-6 px-4">
+        <div className="grid md:grid-cols-2 items-center gap-4 max-w-6xl w-full">
+          <div className="border border-gray-300 rounded-lg p-6 max-w-md shadow-[0_2px_22px_-4px_rgba(93,96,127,0.2)] max-md:mx-auto">
+            <form
+              className="space-y-4"
+              onSubmit={handleSubmit(onLogin)}
+              autoComplete="false"
+            >
+              <div className="mb-8">
+                <h3 className="text-gray-800 text-3xl font-bold text-center">
                   ĐĂNG NHẬP
-                </Button>
-              </Form.Item>
-            </Form>
-
-            <p className="font-titleFont text-sm font-medium text-center">
-              Don't have an Account?{" "}
-              <Link to="/signup">
-                <span className="duration-300 hover:text-blue-600">
-                  Sign up
-                </span>
+                </h3>
+              </div>
+              <div>
+                <label className="text-gray-800 text-sm mb-2 block">
+                  Tài khoản
+                </label>
+                <div className="relative flex items-center">
+                  <input
+                    {...register("userName")}
+                    type="text"
+                    placeholder="Nhập tại đây"
+                    className="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-blue-600"
+                  />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="#bbb"
+                    stroke="#bbb"
+                    className="w-[18px] h-[18px] absolute right-4"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      cx="10"
+                      cy="7"
+                      r="6"
+                      data-original="#000000"
+                    ></circle>
+                    <path
+                      d="M14 15H6a5 5 0 0 0-5 5 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 5 5 0 0 0-5-5zm8-4h-2.59l.3-.29a1 1 0 0 0-1.42-1.42l-2 2a1 1 0 0 0 0 1.42l2 2a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42l-.3-.29H22a1 1 0 0 0 0-2z"
+                      data-original="#000000"
+                    ></path>
+                  </svg>
+                </div>
+                <p className="text-sm text-red-600 italic mt-2">
+                  {errors.userName?.message}
+                </p>
+              </div>
+              <div>
+                <label className="text-gray-800 text-sm mb-2 block">Mật khẩu</label>
+                <div className="relative flex items-center">
+                  <input
+                    type="password"
+                    {...register("password")}
+                    className="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-blue-600"
+                    placeholder="Nhập tại đây"
+                  />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="#bbb"
+                    stroke="#bbb"
+                    className="w-[18px] h-[18px] absolute right-4 cursor-pointer"
+                    viewBox="0 0 128 128"
+                  >
+                    <path
+                      d="M64 104C22.127 104 1.367 67.496.504 65.943a4 4 0 0 1 0-3.887C1.367 60.504 22.127 24 64 24s62.633 36.504 63.496 38.057a4 4 0 0 1 0 3.887C126.633 67.496 105.873 104 64 104zM8.707 63.994C13.465 71.205 32.146 96 64 96c31.955 0 50.553-24.775 55.293-31.994C114.535 56.795 95.854 32 64 32 32.045 32 13.447 56.775 8.707 63.994zM64 88c-13.234 0-24-10.766-24-24s10.766-24 24-24 24 10.766 24 24-10.766 24-24 24zm0-40c-8.822 0-16 7.178-16 16s7.178 16 16 16 16-7.178 16-16-7.178-16-16-16z"
+                      data-original="#000000"
+                    ></path>
+                  </svg>
+                </div>
+                <p className="text-sm text-red-600 italic mt-2">
+                  {errors.password?.message}
+                </p>
+              </div>
+              <div className="mt-8">
+                <button
+                  type="submit"
+                  className="w-full shadow-xl py-3 px-4 text-sm tracking-wide rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none"
+                >
+                  Đăng nhập
+                </button>
+              </div>
+              <Link to={PATH_ROUTER.SIGN_UP}>
+                <p className="text-sm !mt-8 text-center text-gray-800">
+                  Bạn chưa có tài khoản?{" "}
+                  <span className="text-blue-600 font-semibold hover:underline ml-1 whitespace-nowrap">
+                    Đăng ký ngay
+                  </span>
+                </p>
               </Link>
-            </p>
+            </form>
+          </div>
+          <div className="lg:h-[400px] md:h-[300px] max-md:mt-8">
+            <img
+              src="https://readymadeui.com/login-image.webp"
+              className="w-full h-full max-md:w-4/5 mx-auto block object-cover"
+              alt="Dining Experience"
+            />
           </div>
         </div>
       </div>

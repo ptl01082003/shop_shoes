@@ -17,11 +17,13 @@ import routerPromotions from "./PromotionsRouter";
 import routerSize from "./SizeRouter";
 import routerStyle from "./StylesRouter";
 import { uploadRouter } from "./uploadRouter";
+import userRouter from "./UserRouter";
 
 const router = express.Router();
 
 export function appRouter() {
   router.use("/auth", routerAuth);
+  router.use("/users", userRouter);
   router.use("/carts", cartsRouter);
   router.use("/styles", routerStyle);
   router.use("/brands", routerBrands);

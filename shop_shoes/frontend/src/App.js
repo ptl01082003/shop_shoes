@@ -1,10 +1,8 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
-import Footer from "./components/home/Footer/Footer";
-import FooterBottom from "./components/home/Footer/FooterBottom";
-import Header from "./components/home/Header/Header";
-import HeaderBottom from "./components/home/Header/HeaderBottom";
-import SpecialCase from "./components/SpecialCase/SpecialCase";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import PrivateRouter from "./components/PrivateRouter/PrivateRouter";
 import About from "./pages/About/About";
 import SignIn from "./pages/Account/SignIn";
 import SignUp from "./pages/Account/SignUp";
@@ -16,58 +14,22 @@ import Offer from "./pages/Offer/Offer";
 import Payment from "./pages/payment/Payment";
 import ProductDetails from "./pages/ProductDetails/ProductDetails";
 import Shop from "./pages/Shop/Shop";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import PrivateRouter from "./components/PrivateRouter/PrivateRouter";
-
-// const Layout = () => {
-//   return (
-//     <div>
-//       <ToastContainer
-//         position="top-right"
-//         autoClose={1000}
-//         hideProgressBar={false}
-//         newestOnTop={false}
-//         closeOnClick
-//         rtl={false}
-//         pauseOnFocusLoss
-//         draggable
-//         pauseOnHover
-//         theme="colored"
-//       />
-//       <Header />
-//       <HeaderBottom />
-//       <SpecialCase />
-//       <ScrollRestoration />
-//       <Outlet />
-//       <Footer />
-//       <FooterBottom />
-//     </div>
-//   );
-// };
-// const router = createBrowserRouter(
-//   createRoutesFromElements(
-//     <Route>
-//       <Route path="/" element={<Layout />}>
-//         {/* ==================== Header Navlink Start here =================== */}
-//         <Route index element={<Home />}></Route>
-//         <Route path="/shop" element={<Shop />}></Route>
-//         <Route path="/about" element={<About />}></Route>
-//         <Route path="/contact" element={<Contact />}></Route>
-//         <Route path="/journal" element={<Journal />}></Route>
-//         {/* ==================== Header Navlink End here ===================== */}
-//         <Route path="/category/:category" element={<Offer />}></Route>
-//         <Route path="/product/:_id" element={<ProductDetails />}></Route>
-//         <Route path="/cart" element={<Cart />}></Route>
-//         <Route path="/paymentgateway" element={<Payment />}></Route>
-//       </Route>
-//       <Route path="/signup" element={<SignUp />}></Route>
-//       <Route path="/signin" element={<SignIn />}></Route>
-//     </Route>
-//   )
-// );
+import { KEY_STORAGE, PATH_ROUTER } from "./constants";
+import { useEffect } from "react";
+import { fetchGetUserInfo } from "./redux/thunks/userThunk";
+import { selectUserInfo } from "./redux/slices/usersSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const token = localStorage.getItem(KEY_STORAGE.TOKEN);
+    if (token) {
+      dispatch(fetchGetUserInfo());
+    }
+  }, []);
+
   return (
     <div className="font-bodyFont">
       <ToastContainer
@@ -84,8 +46,8 @@ function App() {
       />
       <Router basename="/">
         <Routes>
-          <Route path={"/signup"} element={<SignUp />} />
-          <Route path={"/signin"} element={<SignIn />} />
+          <Route path={PATH_ROUTER.SIGN_UP} element={<SignUp />} />
+          <Route path={PATH_ROUTER.SIGN_IN} element={<SignIn />} />
           <Route path="/*" element={<PrivateRouter />}>
             <Route path="" element={<Home />} />
             <Route path="shop" element={<Shop />} />

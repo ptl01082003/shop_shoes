@@ -1,5 +1,3 @@
-
-
 import {
   IMPRIMANTE_PANTUM_BM5100FDW,
   IMPRIMANTE_PANTUM_BP5100DN,
@@ -58,7 +56,11 @@ export const RESPONSE_CODE = {
   INCORRECT: 86,
 };
 
-export const PATH_ROUTER = {};
+export const PATH_ROUTER = {
+  SIGN_IN: "/dang-nhap",
+  SIGN_UP: "/dang-ky",
+};
+
 // =================== NavBarList Start here ====================
 export const navBarList = [
   {
@@ -80,12 +82,7 @@ export const navBarList = [
     _id: 1004,
     title: "Contact",
     link: "contact",
-  },
-  {
-    _id: 1005,
-    title: "Journal",
-    link: "/journal",
-  },
+  }
 ];
 // =================== NavBarList End here ======================
 // =================== Special Offer data Start here ============

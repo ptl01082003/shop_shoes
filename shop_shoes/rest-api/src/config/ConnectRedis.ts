@@ -24,6 +24,9 @@ class Redis {
   async setEx(key: string, value: string) {
     await this.redis.set(key, value);
   }
+  async del(key: string) {
+    await this.redis.del(key);
+  }
 }
 
 export const redis = new Redis();
