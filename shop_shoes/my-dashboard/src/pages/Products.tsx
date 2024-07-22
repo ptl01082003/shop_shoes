@@ -69,6 +69,58 @@ const ProductPage: React.FC = () => {
     fetchData();
   }, []);
 
+  // const onFinish = async (values: any) => {
+  //   try {
+  //     if (openModal.mode === "create") {
+  //       // Create Product
+  //       const productResponse = await ProductService.createProduct(values);
+  //       if (productResponse) {
+  //         message.success("Thêm sản phẩm thành công!");
+  //         setOpenModal({ open: false, mode: "create" });
+  //         setProducts((prev) => [...prev, productResponse.data]);
+
+  //         // Create Product Details
+  //         const productDetailValues = values.productDetails;
+  //         if (productDetailValues) {
+  //           await ProductDetailsService.createProductDetail(
+  //             productDetailValues
+  //           );
+  //           message.success("Thêm chi tiết sản phẩm thành công!");
+  //         }
+  //       }
+  //     } else {
+  //       // Update Product
+  //       const productResponse = await ProductService.updateProduct(
+  //         openModal.data.productsID,
+  //         values
+  //       );
+  //       if (productResponse) {
+  //         message.success("Cập nhật sản phẩm thành công!");
+  //         setOpenModal({ open: false, mode: "edit" });
+  //         setProducts((prev) =>
+  //           prev.map((item) =>
+  //             item.productsID === productResponse.data.productsID
+  //               ? productResponse.data
+  //               : item
+  //           )
+  //         );
+
+  //         // Update Product Details
+  //         const productDetailValues = values.productDetails;
+  //         if (productDetailValues) {
+  //           await ProductDetailsService.updateProductDetail(
+  //             openModal.data.productDetailID,
+  //             productDetailValues
+  //           );
+  //           message.success("Cập nhật chi tiết sản phẩm thành công!");
+  //         }
+  //       }
+  //     }
+  //   } catch (error) {
+  //     message.error("Có lỗi xảy ra khi xử lý dữ liệu.");
+  //   }
+  // };
+
   const onFinish = async (values: any) => {
     try {
       if (openModal.mode === "create") {
@@ -116,8 +168,17 @@ const ProductPage: React.FC = () => {
           }
         }
       }
-    } catch (error) {
-      message.error("Có lỗi xảy ra khi xử lý dữ liệu.");
+    } catch (error: any) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        message.error(`Lỗi: ${error.response.data.message}`);
+      } else {
+        message.error("Có lỗi xảy ra khi xử lý dữ liệu.");
+      }
+      console.error("Error in onFinish:", error);
     }
   };
 

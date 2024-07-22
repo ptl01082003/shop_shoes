@@ -7,13 +7,13 @@ import { ROLE_TYPES } from "../models/Roles";
 
 const routerOrigin = Router();
 
-routerOrigin.use(checkAuth);
+routerOrigin.post("/", OriginsController.getOrigins);
+routerOrigin.post("/:id", OriginsController.getById);
 
+routerOrigin.use(checkAuth);
 routerOrigin.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
 
 routerOrigin.post("/create", OriginsController.addOrigin);
-routerOrigin.post("/", OriginsController.getOrigins);
-routerOrigin.post("/:id", OriginsController.getById);
 routerOrigin.post("/edit/:id", OriginsController.updateOrigin);
 routerOrigin.post("/remove/:id", OriginsController.deleteOrigin);
 

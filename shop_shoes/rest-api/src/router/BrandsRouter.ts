@@ -6,16 +6,18 @@ import { checkRoles } from "../middleware/checkRoles";
 
 const routerBrands = express.Router();
 
-routerBrands.use(checkAuth);
-routerBrands.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
-// Routes không yêu cầu vai trò
 routerBrands.post("/", BrandsController.getBrands);
-routerBrands.post("/create", BrandsController.addBrand);
+
 routerBrands.post("/:id", BrandsController.getById);
 
-// Routes yêu cầu vai trò ADMIN hoặc MEMBERSHIP
+routerBrands.use(checkAuth);
+
+routerBrands.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
+
+routerBrands.post("/create", BrandsController.addBrand);
 
 routerBrands.post("/edit/:id", BrandsController.updateBrand);
+
 routerBrands.post("/remove/:id", BrandsController.deleteBrand);
 
 export default routerBrands;

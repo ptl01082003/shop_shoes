@@ -36,7 +36,7 @@ const BannerBottom = () => {
                   </g>
                 </g>
               </g>
-            </svg>
+            </svg>F
           </span>
           <p className="text-lightText text-base">Two years warranty</p>
         </div>

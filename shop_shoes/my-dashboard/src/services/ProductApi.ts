@@ -41,6 +41,7 @@ const ProductService = {
         `${API_URL}/create`,
         productData
       );
+      console.log(productData);
       return response;
     } catch (error) {
       console.error("Lỗi khi tạo mới sản phẩm", error);

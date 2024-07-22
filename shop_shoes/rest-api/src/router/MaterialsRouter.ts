@@ -5,18 +5,15 @@ import { checkRoles } from "../middleware/checkRoles";
 import { ROLE_TYPES } from "../models/Roles";
 
 const routerMaterial = Router();
-routerMaterial.use(checkAuth);
-
-routerMaterial.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
 
 routerMaterial.post("/", MaterialsController.getMaterials);
-
-routerMaterial.post("/create", MaterialsController.addMaterial);
-
 routerMaterial.post("/:id", MaterialsController.getById);
 
-routerMaterial.post("/edit/:id", MaterialsController.updateMaterial);
+routerMaterial.use(checkAuth);
+routerMaterial.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
 
+routerMaterial.post("/create", MaterialsController.addMaterial);
+routerMaterial.post("/edit/:id", MaterialsController.updateMaterial);
 routerMaterial.post("/remove/:id", MaterialsController.deleteMaterial);
 
 export default routerMaterial;

@@ -6,16 +6,17 @@ import { ROLE_TYPES } from "../models/Roles";
 
 const routerProductDetail = Router();
 
-routerProductDetail.use(checkAuth);
+routerProductDetail.post("/", ProductDetailsController.getAllProductDetails);
+routerProductDetail.post("/:id", ProductDetailsController.getProductDetailById);
 
+routerProductDetail.use(checkAuth);
 routerProductDetail.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
 
 routerProductDetail.post(
   "/create",
   ProductDetailsController.createProductDetail
 );
-routerProductDetail.post("/", ProductDetailsController.getAllProductDetails);
-routerProductDetail.post("/:id", ProductDetailsController.getProductDetailById);
+
 routerProductDetail.post(
   "/edit/:id",
   ProductDetailsController.updateProductDetail
