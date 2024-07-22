@@ -1,6 +1,7 @@
 export enum RESPONSE_CODE {
   SUCCESS = 0,
   ERRORS = 1,
+  NOT_FOUND = 404,
   NOT_AUTHOR = 83,
   NOT_AUTHEN = 85,
   INCORRECT = 86,

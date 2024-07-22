@@ -3,6 +3,11 @@ export enum KEY_STORAGE {
   RF_TOKEN = "refreshToken",
 }
 
+export const URL_IMAGE = (path) => {
+  return `http://localhost:5500/${path}`;
+};
+
+
 export type Response<T> = {
   code: number;
   data: T;

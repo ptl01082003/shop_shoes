@@ -1,13 +1,13 @@
-import "dotenv/config";
-import cors from "cors";
-import express, { NextFunction, Request, Response } from "express";
-import { appRouter } from "./router/appRouter";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
+import cors from "cors";
+import "dotenv/config";
+import express, { Request, Response } from "express";
+import { Send } from "express-serve-static-core";
 import { connectDB } from "./config/ConnectDB";
 import { redis } from "./config/ConnectRedis";
-import { Send } from "express-serve-static-core";
 import { RESPONSE_CODE, ResponseBody, STATUS_CODE } from "./constants";
+import { appRouter } from "./router/appRouter";
 declare global {
   namespace Express {
     interface Request {
@@ -50,7 +50,7 @@ app.use(cookieParser());
 
 appRouter();
 
-app.use((errors: any, req: Request, res: Response, next: NextFunction) => {
+app.use((errors: any, _: Request, res: Response) => {
   res.json(errors);
 });
 
