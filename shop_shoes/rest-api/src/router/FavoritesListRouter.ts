@@ -6,13 +6,12 @@ import { ROLE_TYPES } from "../models/Roles";
 
 const routerFavoritesList = express.Router();
 routerFavoritesList.post("/", FavoritesListController.getFavorites);
-routerFavoritesList.post("/:id", FavoritesListController.getFavoriteById);
 
 routerFavoritesList.use(checkAuth);
 routerFavoritesList.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
 
 routerFavoritesList.post("/create", FavoritesListController.addFavorite);
-routerFavoritesList.post("/edit/:id", FavoritesListController.updateFavorite);
-routerFavoritesList.post("/remove/:id", FavoritesListController.deleteFavorite);
+routerFavoritesList.post("/edit", FavoritesListController.updateFavorite);
+routerFavoritesList.post("/remove", FavoritesListController.deleteFavorite);
 
 export default routerFavoritesList;

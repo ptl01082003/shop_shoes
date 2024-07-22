@@ -8,7 +8,6 @@ import { ROLE_TYPES } from "../models/Roles";
 const routerSizeProductDetals = Router();
 
 routerSizeProductDetals.post("/", SizesController.getSizeProductDetails);
-routerSizeProductDetals.post("/:id", SizesController.getSizeProductDetailById);
 
 routerSizeProductDetals.use(checkAuth);
 
@@ -19,11 +18,11 @@ routerSizeProductDetals.use(
 routerSizeProductDetals.post("/create", SizesController.addSizeProductDetail);
 
 routerSizeProductDetals.post(
-  "/update/:id",
+  "/update",
   SizesController.updateSizeProductDetail
 );
 routerSizeProductDetals.post(
-  "/remove/:id",
+  "/remove",
   SizesController.deleteSizeProductDetail
 );
 

@@ -180,7 +180,7 @@ function Billing() {
       ></path>
     </svg>,
   ];
- const deletebtn = [
+  const deletebtn = [
     <svg
       width="16"
       height="16"

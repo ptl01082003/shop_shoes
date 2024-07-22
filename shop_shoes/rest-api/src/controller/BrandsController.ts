@@ -6,6 +6,7 @@ const BrandsController = {
   addBrand: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { brandName } = req.body;
+      console.log(brandName);
       const brand = await Brands.create({ brandName });
       res.status(201).json({
         message: "Thực hiện thành công",
@@ -122,8 +123,9 @@ const BrandsController = {
 
   deleteBrand: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const brand = await Brands.findByPk(id);
+      const { brandID } = req.body;
+
+      const brand = await Brands.findByPk(brandID);
       if (brand) {
         await brand.destroy();
         res.status(200).json({
@@ -131,7 +133,7 @@ const BrandsController = {
           code: 0,
         });
       } else {
-        res.status(404).json({
+        res.json({
           message: "Thương hiệu không tồn tại",
           code: 1,
         });

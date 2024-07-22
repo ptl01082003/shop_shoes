@@ -37,13 +37,11 @@ import card from "../assets/images/info-card-1.jpg";
 import AxiosClient from "../networks/AxiosRequest";
 
 function Home() {
-
   useEffect(() => {
-  (async () => {
-    await AxiosClient.post("/products", {});
-  })()
-  }, [])
-  
+    (async () => {
+      await AxiosClient.post("/products", {});
+    })();
+  }, []);
 
   const { Title, Text } = Typography;
 

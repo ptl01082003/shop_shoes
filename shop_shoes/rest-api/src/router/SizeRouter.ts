@@ -6,13 +6,12 @@ import { ROLE_TYPES } from "../models/Roles";
 
 const routerSize = Router();
 routerSize.post("/", SizesController.getAllSizes);
-routerSize.post("/:id", SizesController.getSizeById);
 
 routerSize.use(checkAuth);
 routerSize.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
 
 routerSize.post("/create", SizesController.createSize);
-routerSize.post("/edit/:id", SizesController.updateSize);
-routerSize.post("/remove/:id", SizesController.deleteSize);
+routerSize.post("/edit", SizesController.updateSize);
+routerSize.post("/remove", SizesController.deleteSize);
 
 export default routerSize;

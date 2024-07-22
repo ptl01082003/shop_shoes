@@ -8,13 +8,12 @@ import { ROLE_TYPES } from "../models/Roles";
 const routerImage = express.Router();
 
 routerImage.post("/", ImagesController.getImages);
-routerImage.post("/:id", ImagesController.getImageById);
 
 routerImage.use(checkAuth);
 routerImage.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
 
 routerImage.post("/create", ImagesController.addImage);
-routerImage.post("/edit/:id", ImagesController.updateImage);
-routerImage.post("/remove/:id", ImagesController.deleteImage);
+routerImage.post("/edit", ImagesController.updateImage);
+routerImage.post("/remove", ImagesController.deleteImage);
 
 export default routerImage;

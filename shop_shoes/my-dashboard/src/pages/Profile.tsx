@@ -36,7 +36,7 @@ function Profile() {
   const [imageURL, setImageURL] = useState(false);
   const [, setLoading] = useState(false);
 
-  const getBase64 = (img: any, callback:any) => {
+  const getBase64 = (img: any, callback: any) => {
     const reader = new FileReader();
     reader.addEventListener("load", () => callback(reader.result));
     reader.readAsDataURL(img);

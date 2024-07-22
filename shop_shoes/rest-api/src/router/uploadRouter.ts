@@ -6,7 +6,11 @@ import { multerStorage } from "../storage/multerStorage";
 export const uploadRouter = express.Router();
 
 //Single file
-uploadRouter.post("/single", multerStorage.single("image"), UploadController.single);
+uploadRouter.post(
+  "/single",
+  multerStorage.single("image"),
+  UploadController.single
+);
 
 //Multiple file
 uploadRouter.post("/multiple", multerStorage.any(), UploadController.multiple);

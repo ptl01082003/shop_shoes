@@ -7,13 +7,12 @@ import { ROLE_TYPES } from "../models/Roles";
 const routerMaterial = Router();
 
 routerMaterial.post("/", MaterialsController.getMaterials);
-routerMaterial.post("/:id", MaterialsController.getById);
 
 routerMaterial.use(checkAuth);
 routerMaterial.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
 
 routerMaterial.post("/create", MaterialsController.addMaterial);
-routerMaterial.post("/edit/:id", MaterialsController.updateMaterial);
-routerMaterial.post("/remove/:id", MaterialsController.deleteMaterial);
+routerMaterial.post("/edit", MaterialsController.updateMaterial);
+routerMaterial.post("/remove", MaterialsController.deleteMaterial);
 
 export default routerMaterial;

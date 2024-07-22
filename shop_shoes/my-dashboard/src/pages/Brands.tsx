@@ -94,9 +94,7 @@ export default function BrandsPage() {
   useEffect(() => {
     (async () => {
       const getBrands = await BrandService.getBrands();
-      if (Array.isArray(getBrands.data) && getBrands.data.length > 0) {
-        setLstBrands(getBrands?.data);
-      }
+      setLstBrands(getBrands?.data || []);
     })();
   }, [shouldRender]);
 

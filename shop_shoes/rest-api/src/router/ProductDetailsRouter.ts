@@ -7,7 +7,6 @@ import { ROLE_TYPES } from "../models/Roles";
 const routerProductDetail = Router();
 
 routerProductDetail.post("/", ProductDetailsController.getAllProductDetails);
-routerProductDetail.post("/:id", ProductDetailsController.getProductDetailById);
 
 routerProductDetail.use(checkAuth);
 routerProductDetail.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
@@ -17,12 +16,9 @@ routerProductDetail.post(
   ProductDetailsController.createProductDetail
 );
 
+routerProductDetail.post("/edit", ProductDetailsController.updateProductDetail);
 routerProductDetail.post(
-  "/edit/:id",
-  ProductDetailsController.updateProductDetail
-);
-routerProductDetail.post(
-  "/remove/:id",
+  "/remove",
   ProductDetailsController.deleteProductDetail
 );
 

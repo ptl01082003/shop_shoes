@@ -56,7 +56,10 @@ const BrandService = {
   deleteBrand: async (brandID: number) => {
     try {
       const response = await AxiosClient.post<any, Response<any>>(
-        `${API_URL}/remove/${brandID}`
+        `${API_URL}/remove`,
+        {
+          brandID,
+        }
       );
       return response;
     } catch (error) {

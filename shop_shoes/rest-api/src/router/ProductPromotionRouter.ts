@@ -16,9 +16,11 @@ routerProductPromotion.post(
   ProductPromotionController.getProductPromotionById
 );
 
-productsRouter.use(checkAuth);
+routerProductPromotion.use(checkAuth);
 
-productsRouter.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
+routerProductPromotion.use(
+  checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN])
+);
 // Routes for ProductPromotion
 routerProductPromotion.post(
   "/create",

@@ -1,8 +1,8 @@
-import { Vouchers } from './../models/Vouchers';
+import { Vouchers } from "./../models/Vouchers";
 // routes/origins.ts
 import { Router } from "express";
 import PaymentOnlineController from "../controller/PaymentOnlineController";
-import { checkAuth } from '../middleware/checkAuth';
+import { checkAuth } from "../middleware/checkAuth";
 
 const paymentRouter = Router();
 

@@ -11,6 +11,7 @@ export const checkAuth = (req: Request, res: Response, next: NextFunction) => {
         token,
         process.env.AC_TOKEN_KEY as Secret,
         async (err: any, decoded: any) => {
+          console.log(err, decoded);
           if (err) {
             return res.json(
               ResponseBody({

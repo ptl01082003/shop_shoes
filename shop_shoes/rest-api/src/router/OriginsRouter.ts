@@ -14,7 +14,7 @@ routerOrigin.use(checkAuth);
 routerOrigin.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
 
 routerOrigin.post("/create", OriginsController.addOrigin);
-routerOrigin.post("/edit/:id", OriginsController.updateOrigin);
-routerOrigin.post("/remove/:id", OriginsController.deleteOrigin);
+routerOrigin.post("/edit", OriginsController.updateOrigin);
+routerOrigin.post("/remove", OriginsController.deleteOrigin);
 
 export default routerOrigin;
