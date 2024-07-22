@@ -10,6 +10,7 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import {
   Button,
   Divider,
+  Drawer,
   Form,
   GetProp,
   Image,
@@ -349,9 +350,10 @@ const ProductPage: React.FC = () => {
       </Button>
       <Table columns={columns} dataSource={products} rowKey="productsID" />
 
-      <Modal
-        width={1536}
+      <Drawer
         footer={null}
+        placement="right"
+        width={"85%"}
         destroyOnClose={true}
         open={openModal.open}
         title={
@@ -359,7 +361,7 @@ const ProductPage: React.FC = () => {
             {openModal.mode === "create" ? "THÊM MỚI" : "CẬP NHẬT"} SẢN PHẨM
           </h3>
         }
-        onCancel={() => setOpenModal({ open: false, mode: openModal.mode })}
+        onClose={() => setOpenModal({ open: false, mode: openModal.mode })}
       >
         <Form
           className="grid grid-cols-2 gap-4"
@@ -563,7 +565,7 @@ const ProductPage: React.FC = () => {
             </Form.Item>
           </div>
         </Form>
-      </Modal>
+      </Drawer>
       {previewImage && (
         <Image
           wrapperStyle={{ display: "none" }}
