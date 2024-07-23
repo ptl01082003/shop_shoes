@@ -92,58 +92,69 @@ const ProductPage: React.FC = () => {
 
   // const onFinish = async (values: any) => {
   //   try {
+  //     // Prepare product data
+  //     const lstImageGallery = fileList.map(
+  //       (files) => files.response.data?.[0] || ""
+  //     );
+  //     const productData = {
+  //       ...values,
+  //       imageGallery: lstImageGallery,
+  //       productDetails: productDetails.current,
+  //     };
+
+  //     // productData.images = imageUrls.filter((url) => url !== null);
+  //     let response;
   //     if (openModal.mode === "create") {
   //       // Create Product
-  //       const productResponse = await ProductService.createProduct(values);
-  //       if (productResponse) {
-  //         message.success("Thêm sản phẩm thành công!");
-  //         setOpenModal({ open: false, mode: "create" });
-  //         setProducts((prev) => [...prev, productResponse.data]);
+  //       response = await ProductService.createProduct(productData);
 
-  //         // Create Product Details
-  //         const productDetailValues = values.productDetails;
-  //         if (productDetailValues) {
-  //           await ProductDetailsService.createProductDetail(
-  //             productDetailValues
-  //           );
-  //           message.success("Thêm chi tiết sản phẩm thành công!");
-  //         }
+  //       toast.success("Thêm sản phẩm thành công!");
+
+  //       // Create Product Details
+  //       if (values.productDetails) {
+  //         await ProductDetailsService.createProductDetail(
+  //           values.productDetails
+  //         );
+  //         message.success("Thêm chi tiết sản phẩm thành công!");
   //       }
   //     } else {
   //       // Update Product
-  //       const productResponse = await ProductService.updateProduct(
+  //       response = await ProductService.updateProduct(
   //         openModal.data.productsID,
-  //         values
+  //         productData
   //       );
-  //       if (productResponse) {
-  //         message.success("Cập nhật sản phẩm thành công!");
-  //         setOpenModal({ open: false, mode: "edit" });
-  //         setProducts((prev) =>
-  //           prev.map((item) =>
-  //             item.productsID === productResponse.data.productsID
-  //               ? productResponse.data
-  //               : item
-  //           )
-  //         );
+  //       message.success("Cập nhật sản phẩm thành công!");
 
-  //         // Update Product Details
-  //         const productDetailValues = values.productDetails;
-  //         if (productDetailValues) {
-  //           await ProductDetailsService.updateProductDetail(
-  //             openModal.data.productDetailID,
-  //             productDetailValues
-  //           );
-  //           message.success("Cập nhật chi tiết sản phẩm thành công!");
-  //         }
+  //       // Update Product Details
+  //       if (values.productDetails) {
+  //         await ProductDetailsService.updateProductDetail(
+  //           openModal.data.productDetailID,
+  //           values.productDetails
+  //         );
+  //         message.success("Cập nhật chi tiết sản phẩm thành công!");
   //       }
+  //     }
+
+  //     if (response) {
+  //       setOpenModal({ open: false, mode: openModal.mode });
+  //       setProducts((prev) =>
+  //         openModal.mode === "create"
+  //           ? [...prev, response.data]
+  //           : prev.map((item) =>
+  //               item.productsID === response.data.productsID
+  //                 ? response.data
+  //                 : item
+  //             )
+  //       );
   //     }
   //   } catch (error) {
   //     message.error("Có lỗi xảy ra khi xử lý dữ liệu.");
+  //     console.error("Error:", error);
   //   }
   // };
+
   const onFinish = async (values: any) => {
     try {
-      // Prepare product data
       const lstImageGallery = fileList.map(
         (files) => files.response.data?.[0] || ""
       );
@@ -151,55 +162,19 @@ const ProductPage: React.FC = () => {
         ...values,
         imageGallery: lstImageGallery,
         productDetails: productDetails.current,
+        sizeQuantities: values.productDetails, // Thêm trường này
       };
 
-      // Handle image upload separately
-      // const imageUrls = await Promise.all(
-      //   fileList.map(async (file) => {
-      //     if (file.originFileObj) {
-      //       const formData = new FormData();
-      //       formData.append("image", file.originFileObj);
-      //       const imageResponse = await Axios.post(
-      //         "http://localhost:5500/api/v1/uploads/multiple",
-      //         formData
-      //       );
-      //       return imageResponse.data?.data?.[0]; // Assuming the URL is in this format
-      //     }
-      //     return null;
-      //   })
-      // );
-
-      // productData.images = imageUrls.filter((url) => url !== null);
       let response;
       if (openModal.mode === "create") {
-        // Create Product
         response = await ProductService.createProduct(productData);
-
         toast.success("Thêm sản phẩm thành công!");
-
-        // Create Product Details
-        if (values.productDetails) {
-          await ProductDetailsService.createProductDetail(
-            values.productDetails
-          );
-          message.success("Thêm chi tiết sản phẩm thành công!");
-        }
       } else {
-        // Update Product
         response = await ProductService.updateProduct(
           openModal.data.productsID,
           productData
         );
-        message.success("Cập nhật sản phẩm thành công!");
-
-        // Update Product Details
-        if (values.productDetails) {
-          await ProductDetailsService.updateProductDetail(
-            openModal.data.productDetailID,
-            values.productDetails
-          );
-          message.success("Cập nhật chi tiết sản phẩm thành công!");
-        }
+        toast.success("Cập nhật sản phẩm thành công!");
       }
 
       if (response) {
@@ -215,7 +190,7 @@ const ProductPage: React.FC = () => {
         );
       }
     } catch (error) {
-      message.error("Có lỗi xảy ra khi xử lý dữ liệu.");
+      toast.error("Có lỗi xảy ra khi xử lý dữ liệu.");
       console.error("Error:", error);
     }
   };

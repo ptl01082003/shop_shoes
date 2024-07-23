@@ -7,6 +7,72 @@ import { SizeProductDetails } from "../models/SizeProductDetails";
 import { Sizes } from "../models/Sizes";
 
 const ProductsController = {
+  // addProduct: async (req: Request, res: Response, next: NextFunction) => {
+  //   try {
+  //     const {
+  //       productsName,
+  //       productImportPrice,
+  //       productPrice,
+  //       status,
+  //       display,
+  //       originID,
+  //       styleID,
+  //       materialID,
+  //       brandID,
+  //       imageGallery,
+  //       productDetails,
+  //       sizeQuantities,
+  //     } = req.body;
+  //     const product = await Products.create({
+  //       productsName,
+  //       productImportPrice,
+  //       productPrice,
+  //       status,
+  //       display,
+  //       originID,
+  //       styleID,
+  //       materialID,
+  //       brandID,
+  //     });
+  //     await ProductDetails.create({
+  //       productId: product.productsID,
+  //       productDetaildescription: productDetails,
+  //     });
+  //     if (Array.isArray(imageGallery)) {
+  //       for await (const images of imageGallery) {
+  //         await Images.create({
+  //           productID: product.productsID,
+  //           imagePath: images,
+  //         });
+  //       }
+  //     }
+  //     if (Array.isArray(sizeQuantities)) {
+  //       for await (const { sizeID, quantity } of sizeQuantities) {
+  //         await SizeProductDetails.create({
+  //           productId: product.productsID,
+  //           sizeID: sizeID,
+  //           quantity: quantity,
+  //         });
+  //       }
+  //     }
+  //     res.json({
+  //       message: "Thực hiện thành công",
+  //       code: 0,
+  //       data: product,
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //     let errorMessage = "Thực hiện thất bại";
+  //     if (error instanceof Error) {
+  //       errorMessage = error.message;
+  //     }
+  //     res.status(401).json({
+  //       message: "Thực hiện thất bại",
+  //       code: 1,
+  //       error: errorMessage,
+  //     });
+  //   }
+  // },
   addProduct: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const {
@@ -14,65 +80,80 @@ const ProductsController = {
         productImportPrice,
         productPrice,
         status,
-        display,
         originID,
         styleID,
         materialID,
         brandID,
         imageGallery,
         productDetails,
-        sizeQuantities,
       } = req.body;
+
+      // Tạo sản phẩm mới
       const product = await Products.create({
         productsName,
         productImportPrice,
         productPrice,
         status,
-        display,
         originID,
         styleID,
         materialID,
         brandID,
       });
-      await ProductDetails.create({
-        productId: product.productsID,
-        productDetaildescription: productDetails,
-      });
+
+      // Tạo chi tiết sản phẩm
+      if (productDetails) {
+        await ProductDetails.create({
+          productId: product.productsID,
+          productDetaildescription: productDetails,
+        });
+      }
+
+      // Thêm hình ảnh
       if (Array.isArray(imageGallery)) {
-        for await (const images of imageGallery) {
+        for (const imagePath of imageGallery) {
           await Images.create({
             productID: product.productsID,
-            imagePath: images,
+            imagePath,
           });
         }
       }
-      if (Array.isArray(sizeQuantities)) {
-        for await (const { sizeID, quantity } of sizeQuantities) {
+
+      // Thêm kích thước và số lượng
+      if (Array.isArray(req.body.productDetails)) {
+        for (const detail of req.body.productDetails) {
           await SizeProductDetails.create({
             productId: product.productsID,
-            sizeID: sizeID,
-            quantity: quantity,
+            sizeID: detail.sizeID,
+            quantity: detail.quantity,
           });
         }
       }
-      res.json({
-        message: "Thực hiện thành công",
+
+      // Lấy sản phẩm vừa tạo cùng với tất cả thông tin liên quan
+      const createdProduct = await Products.findByPk(product.productsID, {
+        include: [
+          { model: ProductDetails },
+          { model: Images },
+          { model: SizeProductDetails, include: [Sizes] },
+        ],
+      });
+
+      res.status(201).json({
+        message: "Thêm sản phẩm thành công",
         code: 0,
-        data: product,
+        data: createdProduct,
       });
     } catch (error) {
-      console.log(error);
-      let errorMessage = "Thực hiện thất bại";
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      res.status(401).json({
-        message: "Thực hiện thất bại",
+      console.error(error);
+      res.status(500).json({
+        message: "Có lỗi xảy ra khi thêm sản phẩm",
         code: 1,
-        error: errorMessage,
+        error: error instanceof Error ? error.message : "Unknown error",
       });
     }
   },
+
+  // Các phương thức khác giữ nguyên hoặc cập nhật nếu cần
 
   getProducts: async (req: Request, res: Response, next: NextFunction) => {
     try {
