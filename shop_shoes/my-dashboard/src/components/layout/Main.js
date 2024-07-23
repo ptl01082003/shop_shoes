@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
-import { Outlet, useLocation } from "react-router-dom";
-import { Layout, Drawer, Affix } from "antd";
-import Sidenav from "./Sidenav";
-import Header from "./Header";
+import { Affix, Drawer, Layout } from "antd";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import Footer from "./Footer";
+import Header from "./Header";
+import Sidenav from "./Sidenav";
 
 const { Header: AntHeader, Content, Sider } = Layout;
 
@@ -41,7 +41,7 @@ function Main({children}) {
         placement={placement === "right" ? "left" : "right"}
         closable={false}
         onClose={() => setVisible(false)}
-        visible={visible}
+        open={visible}
         key={placement === "right" ? "left" : "right"}
         width={250}
         className={`drawer-sidebar ${
