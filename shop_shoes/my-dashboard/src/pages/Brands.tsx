@@ -1,9 +1,10 @@
 /**@jsxImportSource @emotion/react */
 
-import { Button, Form, FormProps, Input, Modal, Table } from "antd";
+import { Button, Form, FormProps, Input, Modal, Space, Table } from "antd";
 import { useEffect, useState } from "react";
 import BrandService from "../services/BrandApi";
 import { tableCustomizeStyle } from "../styles/styles";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 type FieldType = {
   brandName?: string;
@@ -67,28 +68,23 @@ export default function BrandsPage() {
       key: "brandName",
     },
     {
+      title: "Hành động",
       render: (_: any, record: any) => {
         return (
-          <div className="flex space-x-4">
+          <Space size="middle">
             <Button
-              size="large"
-              type="primary"
-              onClick={() => {
-                editBrandItems(record);
-              }}
+              icon={<EditOutlined />}
+              onClick={() => editBrandItems(record)}
             >
-              Sửa{" "}
+              Sửa
             </Button>
             <Button
-              size="large"
-              type="dashed"
-              onClick={() => {
-                deleteBrandItems(record);
-              }}
+              icon={<DeleteOutlined />}
+              onClick={() => deleteBrandItems(record)}
             >
               Xóa
             </Button>
-          </div>
+          </Space>
         );
       },
     },

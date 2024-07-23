@@ -1,10 +1,13 @@
 /**@jsxImportSource @emotion/react */
 
 import React, { useEffect, useState } from "react";
-import { Button, Form, Input, Modal, Table } from "antd";
+import { Button, Form, Input, Modal, Space, Table } from "antd";
 import StyleService from "../services/StyleApi";
 import { FormProps } from "antd/lib";
 import { tableCustomizeStyle } from "../styles/styles";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { toast } from "react-toastify";
+import { Response } from "../constants/constants";
 
 type StyleType = {
   styleID?: number;
@@ -14,51 +17,37 @@ type StyleType = {
 const StylesPage: React.FC = () => {
   const [lstStyles, setLstStyles] = useState<StyleType[]>([]);
   const [shouldRender, setShouldRender] = useState<boolean>(false);
-  const [isOpenCreateModal, setOpenCreateModal] = useState<boolean>(false);
-  const [openEditModal, setOpenEditModal] = useState<{
-    open: boolean;
-    data: StyleType;
-  }>({
+  const [modalInfo, setModalInfo] = useState<
+    Partial<{
+      open: boolean;
+      data: StyleType;
+      type: "create" | "update";
+    }>
+  >({
     open: false,
-    data: {},
   });
 
   useEffect(() => {
     (async () => {
-      try {
-        const response = await StyleService.getStyles();
-        if (Array.isArray(response.data) && response.data.length > 0) {
-          setLstStyles(response.data);
-        }
-      } catch (error) {
-        console.error("Failed to fetch styles:", error);
-      }
+      const lstStyles = await StyleService.getStyles();
+      setLstStyles(lstStyles?.data || []);
     })();
   }, [shouldRender]);
 
   const deleteStyleItems = async (record: StyleType) => {
-    try {
-      const response = await StyleService.deleteStyle(record.styleID!);
-      if (response.code === 0) {
-        setShouldRender((prev) => !prev);
-      }
-    } catch (error) {
-      console.error("Failed to delete style:", error);
+    const response = await StyleService.deleteStyle(record.styleID!);
+    if (response.code === 0) {
+      setShouldRender((prev) => !prev);
+    } else {
+      toast.error(response.message);
     }
   };
 
-  const editStyleItems = (record: StyleType) => {
-    setOpenEditModal({
-      open: true,
-      data: record,
-    });
-  };
-
-  const onFinishCreate: FormProps<StyleType>["onFinish"] = async (values) => {
+  const onFinish: FormProps<StyleType>["onFinish"] = async (values) => {
     try {
       const response = await StyleService.createStyle(values);
       if (response.code === 0) {
-        setOpenCreateModal(false);
+        setOpenCreateModal();
         setShouldRender((prev) => !prev);
       }
     } catch (error) {
@@ -66,12 +55,18 @@ const StylesPage: React.FC = () => {
     }
   };
 
-  const onFinishEdit: FormProps<StyleType>["onFinish"] = async (values) => {
+  const onFinish: FormProps<StyleType>["onFinish"] = async (values) => {
     try {
-      const response = await StyleService.updateStyle(
-        openEditModal.data.styleID!,
-        values
-      );
+      let response: Response<any>;
+      if(modalInfo.type == "create") {
+
+      }else {
+        response = await StyleService.updateStyle(
+          openEditModal.data.styleID!,
+          values
+        );
+      }
+      
       if (response.code === 0) {
         setOpenEditModal({ open: false, data: {} });
         setShouldRender((prev) => !prev);
@@ -93,24 +88,28 @@ const StylesPage: React.FC = () => {
       key: "styleName",
     },
     {
-      title: "Actions",
+      title: "Hành động",
       render: (_: any, record: StyleType) => (
-        <div className="flex space-x-4">
+        <Space size="middle">
           <Button
-            size="large"
-            type="primary"
-            onClick={() => editStyleItems(record)}
+            icon={<EditOutlined />}
+            onClick={() =>
+              setModalInfo({
+                open: true,
+                data: record,
+                type: "update",
+              })
+            }
           >
-            SỬA
+            Sửa
           </Button>
           <Button
-            size="large"
-            type="dashed"
+            icon={<DeleteOutlined />}
             onClick={() => deleteStyleItems(record)}
           >
-            XÓA
+            Xóa
           </Button>
-        </div>
+        </Space>
       ),
     },
   ];
@@ -121,7 +120,12 @@ const StylesPage: React.FC = () => {
         <Button
           size="large"
           type="primary"
-          onClick={() => setOpenCreateModal(true)}
+          onClick={() =>
+            setModalInfo({
+              open: true,
+              type: "create",
+            })
+          }
         >
           THÊM MỚI
         </Button>
@@ -136,21 +140,21 @@ const StylesPage: React.FC = () => {
       </div>
 
       <Modal
-        title="Create Style"
+        title=""
         centered
-        open={isOpenCreateModal}
-        destroyOnClose={true}
-        onCancel={() => setOpenCreateModal(false)}
+        width={768}
         footer={null}
-        width={750}
+        open={modalInfo.open}
+        destroyOnClose={true}
+        onCancel={() => setModalInfo({})}
       >
         <Form
+          autoComplete="off"
+          onFinish={onFinish}
           name="createStyleForm"
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
-          style={{ maxWidth: 600 }}
-          onFinish={onFinishCreate}
-          autoComplete="off"
+          initialValues={modalInfo.data}
         >
           <Form.Item
             label="Kiểu dáng"
@@ -161,40 +165,7 @@ const StylesPage: React.FC = () => {
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Button type="primary" htmlType="submit">
-              Thêm mới
-            </Button>
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      <Modal
-        title="Edit Style"
-        centered
-        open={openEditModal.open}
-        destroyOnClose={true}
-        onCancel={() => setOpenEditModal({ open: false, data: {} })}
-        footer={null}
-        width={750}
-      >
-        <Form
-          name="editStyleForm"
-          labelCol={{ span: 8 }}
-          wrapperCol={{ span: 16 }}
-          style={{ maxWidth: 600 }}
-          initialValues={openEditModal.data}
-          onFinish={onFinishEdit}
-          autoComplete="off"
-        >
-          <Form.Item
-            label="Kiểu dáng"
-            name="styleName"
-            rules={[{ required: true, message: "Tên không được để trống!" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            <Button type="primary" htmlType="submit">
-              Lưu thay đổi
+              {modalInfo.type == "create" ? " Thêm mới" : "Lưu thay đổi"}
             </Button>
           </Form.Item>
         </Form>
