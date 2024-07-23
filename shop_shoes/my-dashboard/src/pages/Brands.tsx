@@ -1,6 +1,9 @@
+/**@jsxImportSource @emotion/react */
+
 import { Button, Form, FormProps, Input, Modal, Table } from "antd";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import BrandService from "../services/BrandApi";
+import { tableCustomizeStyle } from "../styles/styles";
 
 type FieldType = {
   brandName?: string;
@@ -74,7 +77,7 @@ export default function BrandsPage() {
                 editBrandItems(record);
               }}
             >
-              {pencil} EDIT
+              Sửa{" "}
             </Button>
             <Button
               size="large"
@@ -83,7 +86,7 @@ export default function BrandsPage() {
                 deleteBrandItems(record);
               }}
             >
-              {deletebtn}Xóa
+              Xóa
             </Button>
           </div>
         );
@@ -148,7 +151,7 @@ export default function BrandsPage() {
           THÊM MỚI
         </Button>
       </div>
-      <div className="table-responsive">
+      <div css={tableCustomizeStyle} className="table-responsive">
         <Table
           columns={columns}
           dataSource={lstBrands}

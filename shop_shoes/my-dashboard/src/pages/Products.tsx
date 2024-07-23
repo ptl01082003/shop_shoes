@@ -1,3 +1,5 @@
+/**@jsxImportSource @emotion/react */
+
 import {
   DeleteOutlined,
   EditOutlined,
@@ -35,6 +37,7 @@ import OriginService from "../services/OriginApi";
 import ProductService from "../services/ProductApi";
 import SizesService from "../services/SizeApi";
 import StyleService from "../services/StyleApi";
+import { tableCustomizeStyle } from "../styles/styles";
 
 const { Option } = Select;
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
@@ -64,7 +67,7 @@ const ProductPage: React.FC = () => {
       setProducts(productResponse.data || []);
     })();
   }, []);
-  
+
   useEffect(() => {
     (async () => {
       const sizesResponse = SizesService.getSizes();
@@ -339,14 +342,18 @@ const ProductPage: React.FC = () => {
 
   return (
     <>
-      <Button
-        size="large"
-        type="primary"
-        onClick={() => setOpenModal({ open: true, mode: "create" })}
-      >
-        THÊM SẢN PHẨM
-      </Button>
+      <div className="flex justify-end mt-12 mb-8">
+        <Button
+          size="large"
+          type="primary"
+          onClick={() => setOpenModal({ open: true, mode: "create" })}
+        >
+          THÊM SẢN PHẨM
+        </Button>
+      </div>
+      <div css={tableCustomizeStyle} className="table-responsive">
       <Table columns={columns} dataSource={products} rowKey="productsID" />
+    </div>
 
       <Drawer
         footer={null}
