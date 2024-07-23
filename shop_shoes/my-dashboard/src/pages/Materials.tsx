@@ -1,8 +1,9 @@
 /**@jsxImportSource @emotion/react */
-import { Button, Form, Input, Modal, Table } from "antd";
+import { Button, Form, Input, Modal, Space, Table } from "antd";
 import { useEffect, useState } from "react";
 import MaterialService from "../services/MaterialApi";
 import { tableCustomizeStyle } from "../styles/styles";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 // Các biểu tượng cho nút sửa và xóa
 const deletebtn = [
@@ -73,28 +74,23 @@ export default function MaterialPage() {
       key: "materialName",
     },
     {
+      title: "Hành động",
       render: (_: any, record: MaterialType) => {
         return (
-          <div className="flex space-x-4">
+          <Space size="middle">
             <Button
-              size="large"
-              type="primary"
-              onClick={() => {
-                editMaterialItems(record);
-              }}
+              icon={<EditOutlined />}
+              onClick={() => editMaterialItems(record)}
             >
-              {pencil} Edit
+              Sửa
             </Button>
             <Button
-              size="large"
-              type="dashed"
-              onClick={() => {
-                deleteMaterialItems(record);
-              }}
+              icon={<DeleteOutlined />}
+              onClick={() => deleteMaterialItems(record)}
             >
-              {deletebtn} Delete
+              Xóa
             </Button>
-          </div>
+          </Space>
         );
       },
     },
@@ -152,7 +148,7 @@ export default function MaterialPage() {
             setOpenCreateModal(true);
           }}
         >
-          Add New
+          THÊM MỚI
         </Button>
       </div>
       <div css={tableCustomizeStyle} className="table-responsive">

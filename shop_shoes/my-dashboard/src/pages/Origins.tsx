@@ -1,9 +1,10 @@
 /**@jsxImportSource @emotion/react */
 
-import { Button, Form, FormProps, Input, Modal, Table } from "antd";
+import { Button, Form, FormProps, Input, Modal, Space, Table } from "antd";
 import { useEffect, useState } from "react";
 import OriginService from "../services/OriginApi";
 import { tableCustomizeStyle } from "../styles/styles";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 type FieldType = {
   originName?: string;
@@ -33,26 +34,20 @@ export default function OriginsPage() {
     {
       render: (_: any, record: any) => {
         return (
-          <div className="flex space-x-4">
+          <Space size="middle">
             <Button
-              size="large"
-              type="primary"
-              onClick={() => {
-                editOriginItems(record);
-              }}
+              icon={<EditOutlined />}
+              onClick={() => editOriginItems(record)}
             >
-              SỬA
+              Sửa
             </Button>
             <Button
-              size="large"
-              type="dashed"
-              onClick={() => {
-                deleteOriginItems(record);
-              }}
+              icon={<DeleteOutlined />}
+              onClick={() => deleteOriginItems(record)}
             >
-              XÓA
+              Xóa
             </Button>
-          </div>
+          </Space>
         );
       },
     },

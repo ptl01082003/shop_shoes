@@ -1,9 +1,10 @@
 /**@jsxImportSource @emotion/react */
 
-import { Button, Form, Input, Modal, Table } from "antd";
+import { Button, Form, Input, Modal, Space, Table } from "antd";
 import React, { useEffect, useState } from "react";
 import SizeService from "../services/SizeApi";
 import { tableCustomizeStyle } from "../styles/styles";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 type SizeType = {
   sizeID?: number;
@@ -94,16 +95,16 @@ const SizePage: React.FC = () => {
       key: "sizeName",
     },
     {
-      title: "Actions",
+      title: "Hành động",
       render: (_: any, record: SizeType) => (
-        <div className="flex space-x-4">
-          <Button size="large" type="primary" onClick={() => editSize(record)}>
-            Edit
+        <Space size="middle">
+          <Button icon={<EditOutlined />} onClick={() => editSize(record)}>
+            Sửa
           </Button>
-          <Button size="large" type="dashed" onClick={() => deleteSize(record)}>
-            Delete
+          <Button icon={<DeleteOutlined />} onClick={() => deleteSize(record)}>
+            Xóa
           </Button>
-        </div>
+        </Space>
       ),
     },
   ];
@@ -116,7 +117,7 @@ const SizePage: React.FC = () => {
           type="primary"
           onClick={() => setOpenCreateModal(true)}
         >
-          Add New
+          THÊM MỚI
         </Button>
       </div>
       <div css={tableCustomizeStyle} className="table-responsive">
@@ -131,7 +132,7 @@ const SizePage: React.FC = () => {
       <Modal
         title="Create Size"
         centered
-        visible={isOpenCreateModal}
+        open={isOpenCreateModal}
         onCancel={() => setOpenCreateModal(false)}
         footer={null}
         width={750}
@@ -159,7 +160,7 @@ const SizePage: React.FC = () => {
       <Modal
         title="Edit Size"
         centered
-        visible={openEditModal.open}
+        open={openEditModal.open}
         onCancel={() => setOpenEditModal({ open: false, data: {} })}
         footer={null}
         width={750}

@@ -348,7 +348,7 @@ const ProductPage: React.FC = () => {
           type="primary"
           onClick={() => setOpenModal({ open: true, mode: "create" })}
         >
-          THÊM SẢN PHẨM
+          THÊM MỚI
         </Button>
       </div>
       <div css={tableCustomizeStyle} className="table-responsive">
