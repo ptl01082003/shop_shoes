@@ -15,8 +15,8 @@ export class Styles extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  public styleID!: number;
+  public styleId!: number;
 
   @Column
-  public styleName!: string;
+  public name!: string;
 }

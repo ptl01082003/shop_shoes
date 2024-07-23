@@ -18,15 +18,15 @@ export class Images extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  public imageID!: number;
+  public imageId!: number;
 
   @Column
-  public imagePath!: string;
+  public path!: string;
 
   @ForeignKey(() => Products)
   @Column
-  public productID?: number;
+  public productId?: number;
 
   @BelongsTo(() => Products)
-  public product?: Products;
+  public products?: Products;
 }

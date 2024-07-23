@@ -18,42 +18,42 @@ export class Address extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  public addressID!: number;
+  public addressId!: number;
 
   @Column
-  public addressCityCode!: number;
+  public cityCode!: number;
 
   @Column
-  public addressWardCode!: number;
+  public wardCode!: number;
 
   @Column
-  public addressDistrictCode!: number;
+  public districtCode!: number;
 
   @Column
-  public addressCityName!: string;
+  public cityName!: string;
 
   @Column
-  public addressWardName!: string;
+  public wardName!: string;
 
   @Column
-  public addressDistrictName!: string;
+  public districtName!: string;
 
   @Column
-  public addressEmail!: string;
+  public email!: string;
 
   @Column
-  public addressPhoneNumber!: number;
+  public phoneNumber!: number;
 
   @Column
-  public addresRecipientName!: string;
+  public recipientName!: string;
 
   @Column
-  public addresDefault!: string;
+  public defaults!: string;
 
   @ForeignKey(() => Users)
   @Column
-  public customersID?: number;
+  public customerID?: number;
 
   @BelongsTo(() => Users)
-  public customer?: Users;
+  public customers?: Users;
 }

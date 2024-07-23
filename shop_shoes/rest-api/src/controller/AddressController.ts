@@ -5,31 +5,31 @@ const AddressController = {
   addAddress: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const {
-        addressCityCode,
-        addressWardCode,
-        addressDistrictCode,
-        addressCityName,
-        addressWardName,
-        addressDistrictName,
-        addressEmail,
-        addressPhoneNumber,
-        addressRecipientName,
-        addressDefault,
-        customersID,
+        cityCode,
+        wardCode,
+        districtCode,
+        cityName,
+        wardName,
+        districtName,
+        email,
+        phoneNumber,
+        recipientName,
+        defaults,
+        customersId,
       } = req.body;
 
       const newAddress = await Address.create({
-        addressCityCode,
-        addressWardCode,
-        addressDistrictCode,
-        addressCityName,
-        addressWardName,
-        addressDistrictName,
-        addressEmail,
-        addressPhoneNumber,
-        addressRecipientName,
-        addressDefault,
-        customersID,
+        cityCode,
+        wardCode,
+        districtCode,
+        cityName,
+        wardName,
+        districtName,
+        email,
+        phoneNumber,
+        recipientName,
+        defaults,
+        customersId,
       });
 
       res.status(201).json({
@@ -75,8 +75,8 @@ const AddressController = {
 
   getAddressById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const address = await Address.findByPk(id);
+      const { addressId } = req.params;
+      const address = await Address.findByPk(addressId);
       if (address) {
         res.status(200).json({
           message: "Thực hiện thành công",
@@ -107,33 +107,33 @@ const AddressController = {
     try {
       const { id } = req.params;
       const {
-        addressCityCode,
-        addressWardCode,
-        addressDistrictCode,
-        addressCityName,
-        addressWardName,
-        addressDistrictName,
-        addressEmail,
-        addressPhoneNumber,
-        addressRecipientName,
-        addressDefault,
-        customersID,
+        cityCode,
+        wardCode,
+        districtCode,
+        cityName,
+        wardName,
+        districtName,
+        email,
+        phoneNumber,
+        recipientName,
+        defaults,
+        customersId,
       } = req.body;
 
       const address = await Address.findByPk(id);
       if (address) {
         await address.update({
-          addressCityCode,
-          addressWardCode,
-          addressDistrictCode,
-          addressCityName,
-          addressWardName,
-          addressDistrictName,
-          addressEmail,
-          addressPhoneNumber,
-          addressRecipientName,
-          addressDefault,
-          customersID,
+          cityCode,
+          wardCode,
+          districtCode,
+          cityName,
+          wardName,
+          districtName,
+          email,
+          phoneNumber,
+          recipientName,
+          defaults,
+          customersId,
         });
 
         res.status(200).json({
@@ -163,8 +163,8 @@ const AddressController = {
 
   deleteAddress: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const address = await Address.findByPk(id);
+      const { addressId } = req.params;
+      const address = await Address.findByPk(addressId);
       if (address) {
         await address.destroy();
         res.status(200).json({

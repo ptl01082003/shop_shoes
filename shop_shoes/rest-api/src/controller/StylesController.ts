@@ -5,9 +5,9 @@ import { Op } from "sequelize";
 const StylesController = {
   addStyle: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { styleName } = req.body;
-      const style = await Styles.create({ styleName });
-      res.json({ data: style, message: "Thêm style mới thành công" });
+      const { name } = req.body;
+      const styles = await Styles.create({ name });
+      res.json({ data: styles, message: "Thêm style mới thành công" });
     } catch (error) {
       next(error);
     }
@@ -15,14 +15,14 @@ const StylesController = {
 
   getStyles: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { styleID, styleName } = req.query;
+      const { styleId, name } = req.query;
       const whereClause: any = {};
 
-      if (styleID) {
-        whereClause.styleID = styleID;
+      if (styleId) {
+        whereClause.styleId = styleId;
       }
-      if (styleName) {
-        whereClause.styleName = { [Op.like]: `%${styleName}%` };
+      if (name) {
+        whereClause.name = { [Op.like]: `%${name}%` };
       }
 
       const styles = await Styles.findAll({ where: whereClause });
@@ -34,12 +34,12 @@ const StylesController = {
 
   getById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { styleID } = req.body;
-      const style = await Styles.findByPk(styleID);
-      if (style) {
-        res.json({ data: style });
+      const { styleId } = req.body;
+      const styles = await Styles.findByPk(styleId);
+      if (styles) {
+        res.json({ data: styles });
       } else {
-        res.status(404).json({ message: "Không tìm thấy style" });
+        res.status(404).json({ message: "Không tìm thấy styles" });
       }
     } catch (error) {
       next(error);
@@ -48,11 +48,11 @@ const StylesController = {
 
   updateStyle: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { styleID } = req.body;
-      const { styleName } = req.body;
-      const style = await Styles.findByPk(styleID);
-      if (style) {
-        await style.update({ styleName });
+      const { styleId } = req.body;
+      const { name } = req.body;
+      const styles = await Styles.findByPk(styleId);
+      if (styles) {
+        await styles.update({ name });
         res.json({ message: "Cập nhật style thành công" });
       } else {
         res.status(404).json({ message: "Không tìm thấy style" });
@@ -64,10 +64,10 @@ const StylesController = {
 
   deleteStyle: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { styleID } = req.body;
-      const style = await Styles.findByPk(styleID);
-      if (style) {
-        await style.destroy();
+      const { styleId } = req.body;
+      const styles = await Styles.findByPk(styleId);
+      if (styles) {
+        await styles.destroy();
         res.json({ message: "Xóa style thành công" });
       } else {
         res.status(404).json({ message: "Không tìm thấy style" });

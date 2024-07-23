@@ -11,26 +11,29 @@ import {
 } from "sequelize-typescript";
 import { Products } from "../models/Products";
 import { SizeProductDetails } from "../models/SizeProductDetails";
-
-@Table
+@Table({
+  tableName: "product_details",
+  modelName: "ProductDetails",
+  timestamps: true,
+})
 export class ProductDetails extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  public productDetailid!: number;
+  public productDetailID!: number;
 
   @Column
-  public productDetailname!: string;
+  public name!: string;
 
   @Column
-  public productDetaildescription!: string;
+  public description!: string;
 
   @ForeignKey(() => Products)
   @Column
   public productId!: number;
 
   @BelongsTo(() => Products)
-  public product!: Products;
+  public products!: Products;
 
   @HasMany(() => SizeProductDetails)
   sizeProductDetails!: SizeProductDetails[];

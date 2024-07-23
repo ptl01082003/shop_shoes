@@ -21,7 +21,7 @@ export class Roles extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  public rolesId!: number;
+  public roleId!: number;
 
   @Column
   public type!: string;

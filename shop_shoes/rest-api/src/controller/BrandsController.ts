@@ -5,9 +5,9 @@ import { Op } from "sequelize";
 const BrandsController = {
   addBrand: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { brandName } = req.body;
-      console.log(brandName);
-      const brand = await Brands.create({ brandName });
+      const { name } = req.body;
+      console.log(name);
+      const brand = await Brands.create({ name });
       res.status(201).json({
         message: "Thực hiện thành công",
         code: 0,
@@ -29,14 +29,14 @@ const BrandsController = {
 
   getBrands: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { brandID, brandName } = req.query;
+      const { brandId, name } = req.query;
       const whereClause: any = {};
 
-      if (brandID) {
-        whereClause.id = brandID;
+      if (brandId) {
+        whereClause.id = brandId;
       }
-      if (brandName) {
-        whereClause.brandName = { [Op.like]: `%${brandName}%` };
+      if (name) {
+        whereClause.name = { [Op.like]: `%${name}%` };
       }
 
       const brands = await Brands.findAll({ where: whereClause });
@@ -61,8 +61,8 @@ const BrandsController = {
 
   getById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { brandID } = req.body;
-      const brand = await Brands.findByPk(brandID);
+      const { brandId } = req.body;
+      const brand = await Brands.findByPk(brandId);
       if (brand) {
         res.status(200).json({
           message: "Thực hiện thành công",
@@ -91,10 +91,10 @@ const BrandsController = {
 
   updateBrand: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { brandID, brandName } = req.body;
-      const brand = await Brands.findByPk(brandID);
+      const { brandId, name } = req.body;
+      const brand = await Brands.findByPk(brandId);
       if (brand) {
-        await brand.update({ brandName });
+        await brand.update({ name });
         res.status(200).json({
           message: "Thực hiện thành công",
           code: 0,
@@ -122,9 +122,9 @@ const BrandsController = {
 
   deleteBrand: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { brandID } = req.body;
+      const { brandId } = req.body;
 
-      const brand = await Brands.findByPk(brandID);
+      const brand = await Brands.findByPk(brandId);
       if (brand) {
         await brand.destroy();
         res.status(200).json({

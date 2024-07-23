@@ -16,13 +16,13 @@ export class Promotions extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  public promotionID!: number;
+  public promotionId!: number;
 
   @Column
-  public promotionName!: string;
+  public name!: string;
 
   @Column(DataType.DOUBLE)
-  public promotionDiscount!: number;
+  public discount!: number;
 
   @Column
   public startDay!: Date;
@@ -30,6 +30,6 @@ export class Promotions extends Model {
   @Column
   public endDay!: Date;
 
-  @Column
-  public!: boolean;
+  // @Column
+  // public!: boolean;
 }

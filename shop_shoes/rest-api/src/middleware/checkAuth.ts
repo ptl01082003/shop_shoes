@@ -22,10 +22,10 @@ export const checkAuth = (req: Request, res: Response, next: NextFunction) => {
             );
           } else {
             const tokenInRedis = await redis.get(
-              `accessToken-${decoded.userId}`
+              `accessToken-${decoded.usersID}`
             );
             if (tokenInRedis === token) {
-              req.userId = decoded.userId;
+              req.usersID = decoded.usersID;
               next();
             } else {
               return res.json(

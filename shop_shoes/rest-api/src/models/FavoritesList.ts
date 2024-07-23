@@ -17,8 +17,8 @@ import { Products } from "./Products";
 export class FavoritesList extends Model {
   @ForeignKey(() => Products)
   @Column
-  public productID!: number;
+  public productId!: number;
 
   @BelongsTo(() => Products)
-  public product!: Products;
+  public products!: Products;
 }

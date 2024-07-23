@@ -5,12 +5,12 @@ import { Users } from "../models/Users";
 const UserController = {
   getInfo: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const userId = req.userId;
+      const usersId = req.userId;
       const users = await Users.findOne({
-        where: { userId },
+        where: { usersId },
         attributes: {
           exclude: ["password", "createdAt", "updatedAt"],
-        }
+        },
       });
       res.json({
         message: "Thực hiện thành công",
@@ -18,7 +18,7 @@ const UserController = {
         data: users,
       });
     } catch (error) {
-      next(error)
+      next(error);
     }
   },
 };

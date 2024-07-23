@@ -26,19 +26,19 @@ export class Products extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  public productsID!: number;
+  public productId!: number;
 
   @Column
-  public productsName!: string;
+  public name!: string;
 
   @Column(DataType.STRING(6))
-  public productCode!: string;
+  public code!: string;
 
   @Column(DataType.DECIMAL(16, 2))
-  public productImportPrice!: number;
+  public importPrice!: number;
 
   @Column(DataType.DECIMAL(16, 2))
-  public productPrice?: number;
+  public price?: number;
 
   @Column
   public status?: boolean;
@@ -48,36 +48,36 @@ export class Products extends Model {
 
   @ForeignKey(() => Origins)
   @Column
-  public originID?: number;
+  public originId?: number;
 
   @BelongsTo(() => Origins)
-  public origin?: Origins;
+  public origins?: Origins;
 
   @ForeignKey(() => Styles)
   @Column
-  public styleID?: number;
+  public styleId?: number;
 
   @BelongsTo(() => Styles)
-  public style?: Styles;
+  public styles?: Styles;
 
   @ForeignKey(() => Materials)
   @Column
-  public materialID?: number;
+  public materialId?: number;
 
   @BelongsTo(() => Materials)
-  public material?: Materials;
+  public materials?: Materials;
 
   @ForeignKey(() => Brands)
   @Column
   public brandID?: number;
 
   @BelongsTo(() => Brands)
-  public brand?: Brands;
+  public brands?: Brands;
 
   @BeforeCreate
   static genaratorProductCode(instance: Products) {
-    instance.productsID = genaratorProductsId();
+    instance.productId = genaratorProductsId();
     const uuid = uuidv4();
-    instance.productCode = uuid.slice(0, 6).toUpperCase();
+    instance.code = uuid.slice(0, 6).toUpperCase();
   }
 }

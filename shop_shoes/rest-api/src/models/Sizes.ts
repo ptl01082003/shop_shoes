@@ -18,10 +18,10 @@ export class Sizes extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  sizeID!: number;
+  sizeId!: number;
 
   @Column
-  sizeName!: number;
+  name!: number;
 
   @HasMany(() => SizeProductDetails)
   sizeProductDetails!: SizeProductDetails[];

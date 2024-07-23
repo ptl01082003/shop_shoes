@@ -23,7 +23,7 @@ export class Users extends Model {
   public userId!: number;
 
   @Column
-  public userName!: string;
+  public username!: string;
 
   @Column
   public email!: string;
@@ -45,7 +45,7 @@ export class Users extends Model {
   @ForeignKey(() => Roles)
   @Default(1)
   @Column
-  public rolesId!: number;
+  public roleId!: number;
 
   @BelongsTo(() => Roles)
   public roles!: Roles;

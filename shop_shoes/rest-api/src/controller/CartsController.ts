@@ -22,9 +22,9 @@ const CartsController = {
       if (Array.isArray(cartItems) && cartItems.length > 0) {
         for await (const items of cartItems) {
           const quanity = items.quanity;
-          const productsID = items.productsID;
+          const productsId = items.productsId;
           const [cartProducts] = await CartItems.findOrCreate({
-            where: { productsID, cartId: instanceCarts.cartId },
+            where: { productsId, cartId: instanceCarts.cartId },
           });
           if (cartProducts) {
             cartTotals += quanity;
@@ -35,10 +35,13 @@ const CartsController = {
       }
 
       // cập nhật giá của giỏ hàng
-      const carts = await CartItems.findAll({ where: { cartId: instanceCarts?.cartId }, include: [Products] });
+      const carts = await CartItems.findAll({
+        where: { cartId: instanceCarts?.cartId },
+        include: [Products],
+      });
       carts.forEach((items) => {
-        cartsAmounts += (Number(items.product.productPrice) || 0) * items.quanity;
-      })
+        cartsAmounts += (Number(items.products.price) || 0) * items.quanity;
+      });
 
       instanceCarts.totals = cartTotals;
       instanceCarts.amount = cartsAmounts;
@@ -51,10 +54,12 @@ const CartsController = {
         include: {
           model: CartItems,
           attributes: ["quanity"],
-          include: [{
-            model: Products,
-            attributes: ["productPrice", "productsName"]
-          }],
+          include: [
+            {
+              model: Products,
+              attributes: ["productPrice", "productsName"],
+            },
+          ],
         },
       });
 
@@ -72,11 +77,11 @@ const CartsController = {
   },
   remove: async (req: Request, res: Response) => {
     const userId = req.userId;
-    const { productsID } = req.body;
+    const { productsId } = req.body;
 
     const carts = await ShoppingCarts.findOne({ where: { userId } });
     const cartsItems = await CartItems.findOne({
-      where: { productsID, cartId: carts?.cartId }
+      where: { productsId, cartId: carts?.cartId },
     });
     if (carts) {
       if (cartsItems) {
@@ -89,13 +94,17 @@ const CartsController = {
 
         let cartsAmount = 0;
 
-        const products = await CartItems.findAll({ where: { cartId: carts?.cartId }, include: [Products] });
+        const products = await CartItems.findAll({
+          where: { cartId: carts?.cartId },
+          include: [Products],
+        });
         products.forEach((product) => {
-          cartsAmount += (Number(product.product.productPrice) || 0) * product.quanity;
-        })
+          cartsAmount +=
+            (Number(product.products.price) || 0) * product.quanity;
+        });
         carts.amount = cartsAmount;
         carts.totals -= 1;
-        
+
         await carts.save();
 
         const getCarts = await ShoppingCarts.findOne({
@@ -104,10 +113,12 @@ const CartsController = {
           include: {
             model: CartItems,
             attributes: ["quanity"],
-            include: [{
-              model: Products,
-              attributes: ["productPrice", "productsName"]
-            }],
+            include: [
+              {
+                model: Products,
+                attributes: ["productPrice", "productsName"],
+              },
+            ],
           },
         });
 
@@ -135,8 +146,6 @@ const CartsController = {
         })
       );
     }
-
-
   },
   lstCarts: async (req: Request, res: Response) => {
     const userId = req.userId;
@@ -156,10 +165,12 @@ const CartsController = {
       include: {
         model: CartItems,
         attributes: ["quanity"],
-        include: [{
-          model: Products,
-          attributes: ["productPrice", "productsName"]
-        }],
+        include: [
+          {
+            model: Products,
+            attributes: ["productPrice", "productsName"],
+          },
+        ],
       },
     });
     await redis.set(`carts-${userId}`, JSON.stringify(cartsInDatabase));
@@ -173,5 +184,4 @@ const CartsController = {
   },
 };
 
-export default CartsController;  
- 
+export default CartsController;

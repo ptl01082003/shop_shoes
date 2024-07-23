@@ -23,7 +23,7 @@ export class OrderDetails extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  public orderDetailsID!: number;
+  public orderDetailId!: number;
 
   @Column
   public totals!: number;
@@ -39,7 +39,7 @@ export class OrderDetails extends Model {
   public userId!: number;
 
   @BelongsTo(() => Users)
-  public users!: Users;
+  public user!: Users;
 
   @HasMany(() => OrderItems)
   public orderItems!: OrderItems[];

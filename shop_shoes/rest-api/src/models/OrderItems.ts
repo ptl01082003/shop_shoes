@@ -19,21 +19,21 @@ export class OrderItems extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  public orderItemsID!: number;
+  public orderItemId!: number;
 
   @Column
   public quanity!: number;
 
   @ForeignKey(() => Products)
   @Column
-  public productsID!: number;
+  public productId!: number;
 
   @ForeignKey(() => OrderDetails)
   @Column
-  public orderDetailsID!: number;
+  public orderDetailId!: number;
 
   @BelongsTo(() => Products)
-  public product!: Products;
+  public products!: Products;
 
   @BelongsTo(() => OrderDetails)
   public orderDetails!: OrderDetails;

@@ -15,8 +15,8 @@ export class Origins extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  public originID!: number;
+  public originId!: number;
 
   @Column
-  public originName!: string;
+  public name!: string;
 }

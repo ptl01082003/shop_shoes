@@ -19,7 +19,7 @@ export class SizeProductDetails extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  public id!: number;
+  public SizeProductDetailId!: number;
 
   @ForeignKey(() => Sizes)
   @Column
@@ -36,5 +36,5 @@ export class SizeProductDetails extends Model {
   public size!: Sizes;
 
   @BelongsTo(() => ProductDetails)
-  public productDetail!: ProductDetails;
+  public productDetails!: ProductDetails;
 }

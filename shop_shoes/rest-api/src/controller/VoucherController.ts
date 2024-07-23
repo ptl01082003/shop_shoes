@@ -6,33 +6,33 @@ const VoucherController = {
   addVoucher: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const {
-        voucherDescribe,
-        voucherDiscountType,
-        voucherDiscount,
-        voucherValueOder,
-        voucherDiscountMax,
-        voucherStartDay,
-        voucherEndDay,
-        voucherQuantity,
-        voucherStatusDelete,
-        voucherFormPay,
-        voucherStatus,
-        voucherObjectuUse,
+        describe,
+        discountType,
+        discount,
+        valueOder,
+        discountMax,
+        startDay,
+        endDay,
+        quantity,
+        statusDelete,
+        formPay,
+        status,
+        objectuUse,
       } = req.body;
 
       const voucher = await Vouchers.create({
-        voucherDescribe,
-        voucherDiscountType,
-        voucherDiscount,
-        voucherValueOder,
-        voucherDiscountMax,
-        voucherStartDay,
-        voucherEndDay,
-        voucherQuantity,
-        voucherStatusDelete,
-        voucherFormPay,
-        voucherStatus,
-        voucherObjectuUse,
+        describe,
+        discountType,
+        discount,
+        valueOder,
+        discountMax,
+        startDay,
+        endDay,
+        quantity,
+        statusDelete,
+        formPay,
+        status,
+        objectuUse,
       });
 
       res.json({ data: voucher, message: "Voucher added successfully" });
@@ -56,10 +56,10 @@ const VoucherController = {
   // READ - Get voucher by ID
   getVoucherById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const voucher = await Vouchers.findByPk(id);
-      if (voucher) {
-        res.json({ data: voucher });
+      const { voucherID } = req.params;
+      const vouchers = await Vouchers.findByPk(voucherID);
+      if (vouchers) {
+        res.json({ data: vouchers });
       } else {
         res.status(404).json({ message: "Voucher not found" });
       }
@@ -72,14 +72,14 @@ const VoucherController = {
   // UPDATE - Update voucher by ID
   updateVoucher: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const { voucherDescribe, voucherDiscount } = req.body;
+      const { voucherID } = req.params;
+      const { describe, discount } = req.body;
 
-      const voucher = await Vouchers.findByPk(id);
-      if (voucher) {
-        await voucher.update({
-          voucherDescribe,
-          voucherDiscount,
+      const vouchers = await Vouchers.findByPk(voucherID);
+      if (vouchers) {
+        await vouchers.update({
+          describe,
+          discount,
         });
         res.json({ message: "Voucher updated successfully" });
       } else {
@@ -94,10 +94,10 @@ const VoucherController = {
   // DELETE - Delete voucher by ID
   deleteVoucher: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const voucher = await Vouchers.findByPk(id);
-      if (voucher) {
-        await voucher.destroy();
+      const { voucherID } = req.params;
+      const vouchers = await Vouchers.findByPk(voucherID);
+      if (vouchers) {
+        await vouchers.destroy();
         res.json({ message: "Voucher deleted successfully" });
       } else {
         res.status(404).json({ message: "Voucher not found" });

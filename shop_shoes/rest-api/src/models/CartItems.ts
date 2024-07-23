@@ -19,22 +19,21 @@ export class CartItems extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  public cartItemsID!: number;
+  public cartItemId!: number;
 
   @ForeignKey(() => Products)
   @Column
-  public productsID!: number;
+  public productId!: number;
 
   @ForeignKey(() => ShoppingCarts)
   @Column
   public cartId!: number;
 
   @BelongsTo(() => Products)
-  public product!: Products;
+  public products!: Products;
 
   @BelongsTo(() => ShoppingCarts)
   public carts!: ShoppingCarts;
-
 
   @Column
   public quanity!: number;

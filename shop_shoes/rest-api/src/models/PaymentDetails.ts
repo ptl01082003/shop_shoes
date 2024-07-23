@@ -6,7 +6,7 @@ import {
   ForeignKey,
   Model,
   PrimaryKey,
-  Table
+  Table,
 } from "sequelize-typescript";
 import { OrderDetails } from "./OrderDetails";
 
@@ -19,7 +19,7 @@ export enum PAYMENT_PROVIDER {
 export enum PAYMENT_STATUS {
   IDLE = "IDLE",
   SUCCESS = "SUCCESS",
-  ERRORS = "ERRORS"
+  ERRORS = "ERRORS",
 }
 
 @Table({
@@ -31,11 +31,11 @@ export class PaymentDetails extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  public paymentDetailsId!: number;
+  public paymentDetailId!: number;
 
   @ForeignKey(() => OrderDetails)
   @Column
-  public orderDetailsId!: number;
+  public orderDetailId!: number;
 
   @Default(PAYMENT_STATUS.IDLE)
   @Column
@@ -48,5 +48,5 @@ export class PaymentDetails extends Model {
   public provider!: string;
 
   @BelongsTo(() => OrderDetails)
-  public orderDetails!: OrderDetails;
+  public orderDetail!: OrderDetails;
 }
