@@ -1,7 +1,10 @@
+/**@jsxImportSource @emotion/react */
+
 import React, { useEffect, useState } from "react";
 import { Button, Form, Input, Modal, Table } from "antd";
 import StyleService from "../services/StyleApi";
 import { FormProps } from "antd/lib";
+import { tableCustomizeStyle } from "../styles/styles";
 
 type StyleType = {
   styleID?: number;
@@ -123,7 +126,7 @@ const StylesPage: React.FC = () => {
           THÊM MỚI
         </Button>
       </div>
-      <div className="table-responsive">
+      <div css={tableCustomizeStyle} className="table-responsive">
         <Table
           columns={columns}
           dataSource={lstStyles}

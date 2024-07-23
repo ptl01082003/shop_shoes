@@ -1,6 +1,9 @@
+/**@jsxImportSource @emotion/react */
+
 import { Button, Form, FormProps, Input, Modal, Table } from "antd";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import OriginService from "../services/OriginApi";
+import { tableCustomizeStyle } from "../styles/styles";
 
 type FieldType = {
   originName?: string;
@@ -19,7 +22,7 @@ export default function OriginsPage() {
   const columns = [
     {
       title: "ID",
-      dataIndex: "originId",
+      dataIndex: "originID",
       key: "originId",
     },
     {
@@ -114,7 +117,7 @@ export default function OriginsPage() {
           THÊM MỚI
         </Button>
       </div>
-      <div className="table-responsive">
+      <div css={tableCustomizeStyle} className="table-responsive">
         <Table
           columns={columns}
           dataSource={lstOrigins}

@@ -1,6 +1,8 @@
+/**@jsxImportSource @emotion/react */
 import { Button, Form, Input, Modal, Table } from "antd";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import MaterialService from "../services/MaterialApi";
+import { tableCustomizeStyle } from "../styles/styles";
 
 // Các biểu tượng cho nút sửa và xóa
 const deletebtn = [
@@ -153,7 +155,7 @@ export default function MaterialPage() {
           Add New
         </Button>
       </div>
-      <div className="table-responsive">
+      <div css={tableCustomizeStyle} className="table-responsive">
         <Table
           columns={columns}
           dataSource={materials}

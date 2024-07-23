@@ -1,6 +1,9 @@
-import React, { useEffect, useState } from "react";
+/**@jsxImportSource @emotion/react */
+
 import { Button, Form, Input, Modal, Table } from "antd";
+import React, { useEffect, useState } from "react";
 import SizeService from "../services/SizeApi";
+import { tableCustomizeStyle } from "../styles/styles";
 
 type SizeType = {
   sizeID?: number;
@@ -116,7 +119,7 @@ const SizePage: React.FC = () => {
           Add New
         </Button>
       </div>
-      <div className="table-responsive">
+      <div css={tableCustomizeStyle} className="table-responsive">
         <Table
           columns={columns}
           dataSource={lstSizes}

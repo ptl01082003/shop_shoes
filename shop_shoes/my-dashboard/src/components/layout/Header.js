@@ -156,7 +156,7 @@ const data = [
 const menu = (
   <List
     min-width="100%"
-    className="header-notifications-dropdown "
+    className="header-notifications-dropdown"
     itemLayout="horizontal"
     dataSource={data}
     renderItem={(item) => (
@@ -271,14 +271,14 @@ function Header({
               {name.replace("/", "")}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="ant-page-header-heading">
+          {/* <div className="ant-page-header-heading">
             <span
               className="ant-page-header-heading-title"
               style={{ textTransform: "capitalize" }}
             >
               {subName.replace("/", "")}
             </span>
-          </div>
+          </div> */}
         </Col>
         <Col span={24} md={18} className="header-control">
           <Badge size="small" count={4}>
