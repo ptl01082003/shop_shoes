@@ -17,7 +17,6 @@ import {
   Input,
   InputNumber,
   message,
-  Modal,
   Select,
   Space,
   Switch,
@@ -28,16 +27,14 @@ import {
 import { UploadFile } from "antd/lib";
 import Axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 import { URL_IMAGE } from "../constants/constants";
-import { AxiosConfig } from "../networks/AxiosRequest";
 import BrandService from "../services/BrandApi";
 import MaterialService from "../services/MaterialApi";
 import OriginService from "../services/OriginApi";
 import ProductService from "../services/ProductApi";
-import ProductDetailsService from "../services/ProductDetailApi";
 import SizesService from "../services/SizeApi";
 import StyleService from "../services/StyleApi";
-import { toast } from "react-toastify";
 
 const { Option } = Select;
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
@@ -59,35 +56,37 @@ const ProductPage: React.FC = () => {
     data?: any;
   }>({ open: false, mode: "create" });
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
-
   const productDetails = useRef<string>("");
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const productResponse = await ProductService.getProducts();
-        setProducts(productResponse.data);
+    (async () => {
+      const productResponse = await ProductService.getProducts();
+      setProducts(productResponse.data || []);
+    })();
+  }, []);
+  
+  useEffect(() => {
+    (async () => {
+      const sizesResponse = SizesService.getSizes();
+      const brandsResponse = BrandService.getBrands();
+      const stylesResponse = StyleService.getStyles();
+      const originResponse = OriginService.getOrigins();
+      const materialsResponse = MaterialService.getMaterials();
 
-        const sizeResponse = await SizesService.getSizes();
-        setSizes(sizeResponse.data);
+      const fetchData = await Promise.all([
+        sizesResponse,
+        brandsResponse,
+        stylesResponse,
+        materialsResponse,
+        originResponse,
+      ]);
 
-        const brandResponse = await BrandService.getBrands();
-        setBrands(brandResponse.data);
-
-        const styleResponse = await StyleService.getStyles();
-        setStyles(styleResponse.data);
-
-        const materialResponse = await MaterialService.getMaterials();
-        setMaterials(materialResponse.data);
-
-        const originResponse = await OriginService.getOrigins();
-        setOrigins(originResponse.data);
-      } catch (error) {
-        console.error("Error fetching data", error);
-      }
-    };
-
-    fetchData();
+      setSizes(fetchData[0]?.data);
+      setBrands(fetchData[1]?.data);
+      setStyles(fetchData[2]?.data);
+      setMaterials(fetchData[3]?.data);
+      setOrigins(fetchData[4]?.data);
+    })();
   }, []);
 
   // const onFinish = async (values: any) => {
@@ -162,7 +161,7 @@ const ProductPage: React.FC = () => {
         ...values,
         imageGallery: lstImageGallery,
         productDetails: productDetails.current,
-        sizeQuantities: values.productDetails, // Thêm trường này
+        sizeQuantities: values.productDetails,
       };
 
       let response;
@@ -191,18 +190,17 @@ const ProductPage: React.FC = () => {
       }
     } catch (error) {
       toast.error("Có lỗi xảy ra khi xử lý dữ liệu.");
-      console.error("Error:", error);
     }
   };
 
   const handleDeleteProduct = async (productsID: number) => {
-    try {
-      await ProductService.deleteProduct(productsID);
+    const response = await ProductService.deleteProduct(productsID);
+    if (response?.code === 0) {
       setProducts((prev) =>
         prev.filter((item) => item.productsID !== productsID)
       );
       message.success("Xóa sản phẩm thành công!");
-    } catch (error) {
+    } else {
       message.error("Có lỗi xảy ra khi xóa sản phẩm.");
     }
   };
@@ -294,7 +292,6 @@ const ProductPage: React.FC = () => {
   };
 
   const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
-    console.log("newFileList", newFileList);
     setFileList(newFileList);
   };
 
@@ -358,7 +355,7 @@ const ProductPage: React.FC = () => {
         destroyOnClose={true}
         open={openModal.open}
         title={
-          <h3 className="text-center font-bold mb-2 text-2xl text-orange-600">
+          <h3 className="mb-2 text-2xl font-bold text-center text-orange-600">
             {openModal.mode === "create" ? "THÊM MỚI" : "CẬP NHẬT"} SẢN PHẨM
           </h3>
         }
@@ -419,9 +416,9 @@ const ProductPage: React.FC = () => {
             ]}
           >
             <Select placeholder="Chọn tại đây">
-              {brands.map((brand) => (
-                <Option key={brand.brandID} value={brand.brandID}>
-                  {brand.brandName}
+              {brands?.map((brand) => (
+                <Option key={brand?.brandID} value={brand?.brandID}>
+                  {brand?.brandName}
                 </Option>
               ))}
             </Select>
@@ -452,9 +449,9 @@ const ProductPage: React.FC = () => {
             ]}
           >
             <Select placeholder="Chọn tại đây">
-              {materials.map((material) => (
-                <Option key={material.materialID} value={material.materialID}>
-                  {material.materialName}
+              {materials?.map((material) => (
+                <Option key={material?.materialID} value={material?.materialID}>
+                  {material?.materialName}
                 </Option>
               ))}
             </Select>
@@ -483,7 +480,7 @@ const ProductPage: React.FC = () => {
           <div className="col-span-2">
             <Divider />
             <h1 className="mb-2">Size sản phẩm:</h1>
-            <Form.List name="productDetails">
+            <Form.List name="productSizes">
               {(fields, { add, remove }) => (
                 <>
                   <div className="grid grid-cols-2 gap-5">
@@ -557,7 +554,7 @@ const ProductPage: React.FC = () => {
               }}
             />
           </div>
-          <div className="flex justify-center col-span-2">
+          <div className="flex col-span-2 justify-center">
             <Form.Item>
               <Button
                 type="primary"

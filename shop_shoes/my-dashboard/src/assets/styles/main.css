@@ -43,9 +43,7 @@ body {
   margin: 0;
   padding: 33px 20px;
 }
-.layout-dashboard .ant-layout-sider.sider-primary .brand img {
-  height: 30px;
-}
+
 .layout-dashboard .ant-layout-sider.sider-primary hr {
   margin: 18px 0;
   border: none;
@@ -67,6 +65,9 @@ body {
 .layout-dashboard .ant-layout-sider.sider-primary .ant-menu-inline {
   border: none;
 }
+.layout-dashboard .ant-layout-sider.sider-primary .ant-menu-vertical {
+  border: none;
+}
 .layout-dashboard .ant-menu {
   background: transparent;
 }
@@ -83,11 +84,11 @@ body {
   overflow: visible;
 }
 
-.layout-dashboard .ant-layout-sider.sider-primary .ant-menu-item,
-.layout-dashboard .ant-layout-sider.sider-primary .ant-menu-submenu {
-  padding: 0 !important;
-  height: auto;
-  line-height: normal;
+.layout-dashboard
+  .ant-layout-sider.sider-primary
+  .ant-menu-inline
+  .ant-menu-item {
+  margin: 10px 0px 10px 4px;
 }
 
 .layout-dashboard

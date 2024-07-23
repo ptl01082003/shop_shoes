@@ -26,8 +26,8 @@ const ProductService = {
   // Lấy danh sách sản phẩm
   getProducts: async () => {
     try {
-      const response = await AxiosClient.post<Response<any>>(API_URL);
-      return response.data;
+      const response = await AxiosClient.post<any, Response<any>>(API_URL);
+      return response;
     } catch (error) {
       console.error("Lỗi khi lấy danh sách sản phẩm", error);
       throw new Error("Lỗi khi lấy danh sách sản phẩm");
@@ -78,13 +78,13 @@ const ProductService = {
   // Xóa sản phẩm
   deleteProduct: async (productsID: number) => {
     try {
-      const response = await AxiosClient.post<Response<any>>(
+      const response = await AxiosClient.post<any, Response<any>>(
         `${API_URL}/remove`,
         {
-          data: { productsID },
+          productsID,
         }
       );
-      return response.data;
+      return response;
     } catch (error) {
       console.error(`Lỗi khi xóa sản phẩm ${productsID}`, error);
       throw new Error(`Lỗi khi xóa sản phẩm ${productsID}`);
