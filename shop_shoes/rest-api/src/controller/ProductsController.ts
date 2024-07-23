@@ -5,74 +5,9 @@ import { ProductDetails } from "../models/ProductDetails";
 import { Images } from "../models/Images";
 import { SizeProductDetails } from "../models/SizeProductDetails";
 import { Sizes } from "../models/Sizes";
+import { RESPONSE_CODE, ResponseBody } from "../constants";
 
 const ProductsController = {
-  // addProduct: async (req: Request, res: Response, next: NextFunction) => {
-  //   try {
-  //     const {
-  //       productsName,
-  //       productImportPrice,
-  //       productPrice,
-  //       status,
-  //       display,
-  //       originID,
-  //       styleID,
-  //       materialID,
-  //       brandID,
-  //       imageGallery,
-  //       productDetails,
-  //       sizeQuantities,
-  //     } = req.body;
-  //     const product = await Products.create({
-  //       productsName,
-  //       productImportPrice,
-  //       productPrice,
-  //       status,
-  //       display,
-  //       originID,
-  //       styleID,
-  //       materialID,
-  //       brandID,
-  //     });
-  //     await ProductDetails.create({
-  //       productId: product.productsID,
-  //       productDetaildescription: productDetails,
-  //     });
-  //     if (Array.isArray(imageGallery)) {
-  //       for await (const images of imageGallery) {
-  //         await Images.create({
-  //           productID: product.productsID,
-  //           imagePath: images,
-  //         });
-  //       }
-  //     }
-  //     if (Array.isArray(sizeQuantities)) {
-  //       for await (const { sizeID, quantity } of sizeQuantities) {
-  //         await SizeProductDetails.create({
-  //           productId: product.productsID,
-  //           sizeID: sizeID,
-  //           quantity: quantity,
-  //         });
-  //       }
-  //     }
-  //     res.json({
-  //       message: "Thực hiện thành công",
-  //       code: 0,
-  //       data: product,
-  //     });
-  //   } catch (error) {
-  //     console.log(error);
-  //     let errorMessage = "Thực hiện thất bại";
-  //     if (error instanceof Error) {
-  //       errorMessage = error.message;
-  //     }
-  //     res.status(401).json({
-  //       message: "Thực hiện thất bại",
-  //       code: 1,
-  //       error: errorMessage,
-  //     });
-  //   }
-  // },
   addProduct: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const {
@@ -85,10 +20,10 @@ const ProductsController = {
         materialID,
         brandID,
         imageGallery,
+        productSizes,
         productDetails,
       } = req.body;
 
-      // Tạo sản phẩm mới
       const product = await Products.create({
         productsName,
         productImportPrice,
@@ -100,64 +35,44 @@ const ProductsController = {
         brandID,
       });
 
-      // Tạo chi tiết sản phẩm
-      if (productDetails) {
-        await ProductDetails.create({
-          productId: product.productsID,
-          productDetaildescription: productDetails,
-        });
-      }
+      const newProductDetails = await ProductDetails.create({
+        productId: product.productsID,
+        productDetaildescription: productDetails,
+      });
 
-      // Thêm hình ảnh
       if (Array.isArray(imageGallery)) {
-        for (const imagePath of imageGallery) {
+        for await (const imagePath of imageGallery) {
           await Images.create({
-            productID: product.productsID,
             imagePath,
+            productID: product.productsID,
           });
         }
       }
 
-      // Thêm kích thước và số lượng
-      if (Array.isArray(req.body.productDetails)) {
-        for (const detail of req.body.productDetails) {
+      if (Array.isArray(productSizes)) {
+        for await (const sizes of productSizes) {
           await SizeProductDetails.create({
-            productId: product.productsID,
-            sizeID: detail.sizeID,
-            quantity: detail.quantity,
+            productDetailId: newProductDetails.productDetailid,
+            sizeId: sizes?.sizeID,
+            quantity: sizes?.quantity,
           });
         }
       }
 
-      // Lấy sản phẩm vừa tạo cùng với tất cả thông tin liên quan
-      const createdProduct = await Products.findByPk(product.productsID, {
-        include: [
-          { model: ProductDetails },
-          { model: Images },
-          { model: SizeProductDetails, include: [Sizes] },
-        ],
-      });
-
-      res.status(201).json({
-        message: "Thêm sản phẩm thành công",
-        code: 0,
-        data: createdProduct,
-      });
+      res.json(
+        ResponseBody({
+          code: RESPONSE_CODE.SUCCESS,
+          message: "Thực hiện thành công",
+        })
+      );
     } catch (error) {
-      console.error(error);
-      res.status(500).json({
-        message: "Có lỗi xảy ra khi thêm sản phẩm",
-        code: 1,
-        error: error instanceof Error ? error.message : "Unknown error",
-      });
+      next(error);
     }
   },
 
-  // Các phương thức khác giữ nguyên hoặc cập nhật nếu cần
-
   getProducts: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { productID, productCode, productsName } = req.query;
+      const { productID, productCode } = req.query;
       const whereClause: any = {};
 
       if (productID) {
@@ -174,17 +89,23 @@ const ProductsController = {
       for await (const product of products) {
         const productDetails = await ProductDetails.findOne({
           where: { productId: product.productsID },
-          attributes: ["productDetaildescription"],
+          attributes: ["productDetaildescription", "productDetailid"],
         });
+
         const images = await Images.findAll({
           where: { productId: product.productsID },
           attributes: ["imagePath"],
         });
+        const productSizes = await SizeProductDetails.findAll({
+          where: { productDetailId: productDetails?.productDetailid },
+          attributes: ["sizeId", "quantity"],
+        });
 
         transferData.push({
-          ...product.toJSON(),
-          ...productDetails?.toJSON(),
+          productSizes,
           imageGallery: images,
+          ...product?.toJSON(),
+          ...productDetails?.toJSON(),
         });
       }
 
@@ -194,16 +115,7 @@ const ProductsController = {
         data: transferData,
       });
     } catch (error) {
-      console.log(error);
-      let errorMessage = "Thực hiện thất bại";
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      res.status(401).json({
-        message: "Thực hiện thất bại",
-        code: 1,
-        error: errorMessage,
-      });
+      next(error);
     }
   },
 
@@ -292,46 +204,41 @@ const ProductsController = {
         });
       }
     } catch (error) {
-      console.log(error);
-      let errorMessage = "Thực hiện thất bại";
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      res.status(401).json({
-        message: "Thực hiện thất bại",
-        code: 1,
-        error: errorMessage,
-      });
+      next(error);
     }
   },
 
   deleteProduct: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { productsID } = req.body;
-      const product = await Products.findByPk(productsID);
+      const product = await Products.findOne({ where: { productsID } });
       if (product) {
+        await Images.destroy({
+          where: { productID: productsID },
+        });
+        await ProductDetails.destroy({
+          where: { productId: productsID },
+        });
         await product.destroy();
-        res.status(200).json({
-          message: "Thực hiện thành công",
-          code: 0,
-        });
+        res.json(
+          ResponseBody({
+            code: RESPONSE_CODE.SUCCESS,
+            data: null,
+            message: "Thực hiện thành công",
+          })
+        );
       } else {
-        res.status(404).json({
-          message: "Sản phẩm không tồn tại",
-          code: 1,
-        });
+        res.json(
+          ResponseBody({
+            code: RESPONSE_CODE.ERRORS,
+            data: null,
+            message: "Không tồn tại sản phẩm",
+          })
+        );
       }
     } catch (error) {
       console.log(error);
-      let errorMessage = "Thực hiện thất bại";
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      res.status(401).json({
-        message: "Thực hiện thất bại",
-        code: 1,
-        error: errorMessage,
-      });
+      next(error);
     }
   },
 };

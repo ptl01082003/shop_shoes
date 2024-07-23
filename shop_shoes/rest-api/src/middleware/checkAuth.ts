@@ -40,7 +40,7 @@ export const checkAuth = (req: Request, res: Response, next: NextFunction) => {
         }
       );
     } else {
-      return res.status(STATUS_CODE.NOT_AUTHEN).json(
+      return res.json(
         ResponseBody({
           data: null,
           code: RESPONSE_CODE.ERRORS,

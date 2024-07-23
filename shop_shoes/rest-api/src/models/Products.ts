@@ -9,13 +9,12 @@ import {
   PrimaryKey,
   Table,
 } from "sequelize-typescript";
-import { Styles } from "./Styles";
-import { Origins } from "./Origins";
-import { Materials } from "./Materials";
-import { Brands } from "./Brands";
 import { v4 as uuidv4 } from "uuid";
 import { genaratorProductsId } from "../utils/utils";
-import { Images } from "./Images";
+import { Brands } from "./Brands";
+import { Materials } from "./Materials";
+import { Origins } from "./Origins";
+import { Styles } from "./Styles";
 
 @Table({
   tableName: "products",
