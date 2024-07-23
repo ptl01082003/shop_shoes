@@ -37,6 +37,7 @@ import ProductService from "../services/ProductApi";
 import ProductDetailsService from "../services/ProductDetailApi";
 import SizesService from "../services/SizeApi";
 import StyleService from "../services/StyleApi";
+import { toast } from "react-toastify";
 
 const { Option } = Select;
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
@@ -58,7 +59,8 @@ const ProductPage: React.FC = () => {
     data?: any;
   }>({ open: false, mode: "create" });
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
-  const productDetails = useRef<any>();
+
+  const productDetails = useRef<string>("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -139,13 +141,83 @@ const ProductPage: React.FC = () => {
   //     message.error("Có lỗi xảy ra khi xử lý dữ liệu.");
   //   }
   // };
-
   const onFinish = async (values: any) => {
-    console.log("values", values);
-    console.log("fileList", fileList);
-    console.log("productDetails", productDetails.current);
+    try {
+      // Prepare product data
+      const lstImageGallery = fileList.map(
+        (files) => files.response.data?.[0] || ""
+      );
+      const productData = {
+        ...values,
+        imageGallery: lstImageGallery,
+        productDetails: productDetails.current,
+      };
 
-    return;
+      // Handle image upload separately
+      // const imageUrls = await Promise.all(
+      //   fileList.map(async (file) => {
+      //     if (file.originFileObj) {
+      //       const formData = new FormData();
+      //       formData.append("image", file.originFileObj);
+      //       const imageResponse = await Axios.post(
+      //         "http://localhost:5500/api/v1/uploads/multiple",
+      //         formData
+      //       );
+      //       return imageResponse.data?.data?.[0]; // Assuming the URL is in this format
+      //     }
+      //     return null;
+      //   })
+      // );
+
+      // productData.images = imageUrls.filter((url) => url !== null);
+      let response;
+      if (openModal.mode === "create") {
+        // Create Product
+        response = await ProductService.createProduct(productData);
+
+        toast.success("Thêm sản phẩm thành công!");
+
+        // Create Product Details
+        if (values.productDetails) {
+          await ProductDetailsService.createProductDetail(
+            values.productDetails
+          );
+          message.success("Thêm chi tiết sản phẩm thành công!");
+        }
+      } else {
+        // Update Product
+        response = await ProductService.updateProduct(
+          openModal.data.productsID,
+          productData
+        );
+        message.success("Cập nhật sản phẩm thành công!");
+
+        // Update Product Details
+        if (values.productDetails) {
+          await ProductDetailsService.updateProductDetail(
+            openModal.data.productDetailID,
+            values.productDetails
+          );
+          message.success("Cập nhật chi tiết sản phẩm thành công!");
+        }
+      }
+
+      if (response) {
+        setOpenModal({ open: false, mode: openModal.mode });
+        setProducts((prev) =>
+          openModal.mode === "create"
+            ? [...prev, response.data]
+            : prev.map((item) =>
+                item.productsID === response.data.productsID
+                  ? response.data
+                  : item
+              )
+        );
+      }
+    } catch (error) {
+      message.error("Có lỗi xảy ra khi xử lý dữ liệu.");
+      console.error("Error:", error);
+    }
   };
 
   const handleDeleteProduct = async (productsID: number) => {
@@ -161,6 +233,16 @@ const ProductPage: React.FC = () => {
   };
 
   const handleEditProduct = (product: any) => {
+    productDetails.current = product?.productDetaildescription || "";
+    if (product?.imageGallery && Array.isArray(product.imageGallery)) {
+      const transferImage = product.imageGallery.map((images) => ({
+        uid: images?.imagePath,
+        name: images?.imagePath,
+        status: "done",
+        url: URL_IMAGE(images?.imagePath),
+      }));
+      setFileList(transferImage);
+    }
     setOpenModal({ open: true, mode: "edit", data: product });
     setSelectedProduct(product);
   };
@@ -240,6 +322,7 @@ const ProductPage: React.FC = () => {
     console.log("newFileList", newFileList);
     setFileList(newFileList);
   };
+
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
       <PlusOutlined />
@@ -275,6 +358,7 @@ const ProductPage: React.FC = () => {
       },
     };
   }
+
   function uploadPlugin(editor) {
     editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
       return uploadAdapter(loader);
@@ -303,7 +387,11 @@ const ProductPage: React.FC = () => {
             {openModal.mode === "create" ? "THÊM MỚI" : "CẬP NHẬT"} SẢN PHẨM
           </h3>
         }
-        onClose={() => setOpenModal({ open: false, mode: openModal.mode })}
+        onClose={() => {
+          setFileList([]);
+          productDetails.current = "";
+          setOpenModal({ open: false, mode: openModal.mode });
+        }}
       >
         <Form
           className="grid grid-cols-2 gap-4"

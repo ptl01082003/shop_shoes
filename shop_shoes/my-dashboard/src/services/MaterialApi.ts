@@ -57,11 +57,12 @@ const MaterialService = {
     }
   },
 
-  // Xóa một màu sắc dựa trên ID
+  // Xóa một màu sắc dựa trênF ID
   deleteMaterial: async (materialID: number) => {
     try {
       const response = await AxiosClient.post<any, Response<any>>(
-        `${API_URL}/remove/${materialID}`
+        `${API_URL}/remove`,
+        materialID
       );
       return response;
     } catch (error) {

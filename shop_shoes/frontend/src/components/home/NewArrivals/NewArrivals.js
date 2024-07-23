@@ -8,14 +8,17 @@ import AxiosClient from "../../../networks/AxiosClient"; // Đảm bảo đã c�
 import { newArrOne } from "../../../assets/images";
 
 const NewArrivals = () => {
-  const [products, setProducts] = useState([]);
-  
+  const [data, setData] = useState({
+    products: [],
+    brands: []
+  });
+
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchProducts = async () => {
       try {
         const response = await AxiosClient.post("/products"); // Thay đổi endpoint tùy theo API của bạn
         if (response && response.code === 0) {
-          setProducts(response.data);
+          setData((prevState) => ({ ...prevState, products: response.data }));
         } else {
           console.error("Error fetching new arrivals:", response.data.message);
         }
@@ -24,15 +27,32 @@ const NewArrivals = () => {
       }
     };
 
-    fetchData();
+    const fetchBrands = async () => {
+      try {
+        const response = await AxiosClient.get("/brands"); // Thay đổi endpoint tùy theo API của bạn
+        if (response && response.code === 0) {
+          setData((prevState) => ({ ...prevState, brands: response.data }));
+        } else {
+          console.error("Error fetching brands:", response.data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching brands:", error);
+      }
+    };
+
+    fetchProducts();
+    fetchBrands();
   }, []);
 
-  console.log(products)
+  const getBrandName = (brandID) => {
+    const brand = data.brands.find((b) => b.brandID === brandID);
+    return brand ? brand.brandName : "Unknown Brand";
+  };
 
   const settings = {
     infinite: true,
     speed: 500,
-    slidesToShow: 1,
+    slidesToShow: 4,
     slidesToScroll: 1,
     nextArrow: <SampleNextArrow />,
     prevArrow: <SamplePrevArrow />,
@@ -68,16 +88,16 @@ const NewArrivals = () => {
     <div className="w-full pb-16">
       <Heading heading="New Arrivals" />
       <Slider {...settings}>
-        {products.map((product) => (
-          <div key={product._id} className="px-2">
+        {data.products.map((product) => (
+          <div key={product.productsID} className="px-2">
             <Product
               _id={product.productsID}
               img={newArrOne} // Thay đổi tùy thuộc vào cách bạn lưu trữ URL hình ảnh
               productName={product.productsName}
-              price={product.price}
-              color={product.color}
-              badge={product.badge}
-              des={product.description}
+              price={product.productPrice}
+              color={getBrandName(product.brandID)}
+              // badge={product.badge}
+              // des={product.description}
             />
           </div>
         ))}

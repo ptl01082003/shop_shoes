@@ -43,8 +43,11 @@ const BrandService = {
   updateBrand: async (brandID: number, brandData: any) => {
     try {
       const response = await AxiosClient.post<any, Response<any>>(
-        `${API_URL}/edit/${brandID}`,
-        brandData
+        `${API_URL}/edit`,
+        {
+          brandID,
+          brandData,
+        }
       );
       return response;
     } catch (error) {

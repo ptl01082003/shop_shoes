@@ -8,7 +8,6 @@ import { ROLE_TYPES } from "../models/Roles";
 const routerOrigin = Router();
 
 routerOrigin.post("/", OriginsController.getOrigins);
-routerOrigin.post("/:id", OriginsController.getById);
 
 routerOrigin.use(checkAuth);
 routerOrigin.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));

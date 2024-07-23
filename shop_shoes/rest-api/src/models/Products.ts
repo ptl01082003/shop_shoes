@@ -15,6 +15,7 @@ import { Materials } from "./Materials";
 import { Brands } from "./Brands";
 import { v4 as uuidv4 } from "uuid";
 import { genaratorProductsId } from "../utils/utils";
+import { Images } from "./Images";
 
 @Table({
   tableName: "products",

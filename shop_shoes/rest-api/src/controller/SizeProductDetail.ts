@@ -88,10 +88,13 @@ const SizeProductDetailsController = {
     next: NextFunction
   ) => {
     try {
-      const { id } = req.params;
-      const sizeProductDetail = await SizeProductDetails.findByPk(id, {
-        include: [Sizes, ProductDetails],
-      });
+      const { SizeProductDetailID } = req.body;
+      const sizeProductDetail = await SizeProductDetails.findByPk(
+        SizeProductDetailID,
+        {
+          include: [Sizes, ProductDetails],
+        }
+      );
 
       if (sizeProductDetail) {
         res.status(200).json({
@@ -125,10 +128,12 @@ const SizeProductDetailsController = {
     next: NextFunction
   ) => {
     try {
-      const { id } = req.params;
+      const { SizeProductDetailID } = req.body;
       const { sizeID, productDetailID, quantity } = req.body;
 
-      const sizeProductDetail = await SizeProductDetails.findByPk(id);
+      const sizeProductDetail = await SizeProductDetails.findByPk(
+        SizeProductDetailID
+      );
 
       if (sizeProductDetail) {
         await sizeProductDetail.update({
@@ -168,8 +173,10 @@ const SizeProductDetailsController = {
     next: NextFunction
   ) => {
     try {
-      const { id } = req.params;
-      const sizeProductDetail = await SizeProductDetails.findByPk(id);
+      const { SizeProductDetailID } = req.body;
+      const sizeProductDetail = await SizeProductDetails.findByPk(
+        SizeProductDetailID
+      );
 
       if (sizeProductDetail) {
         await sizeProductDetail.destroy();

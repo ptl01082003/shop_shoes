@@ -34,8 +34,8 @@ const StylesController = {
 
   getById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const style = await Styles.findByPk(id);
+      const { styleID } = req.body;
+      const style = await Styles.findByPk(styleID);
       if (style) {
         res.json({ data: style });
       } else {
@@ -48,9 +48,9 @@ const StylesController = {
 
   updateStyle: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
+      const { styleID } = req.body;
       const { styleName } = req.body;
-      const style = await Styles.findByPk(id);
+      const style = await Styles.findByPk(styleID);
       if (style) {
         await style.update({ styleName });
         res.json({ message: "Cập nhật style thành công" });
@@ -64,8 +64,8 @@ const StylesController = {
 
   deleteStyle: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const style = await Styles.findByPk(id);
+      const { styleID } = req.body;
+      const style = await Styles.findByPk(styleID);
       if (style) {
         await style.destroy();
         res.json({ message: "Xóa style thành công" });

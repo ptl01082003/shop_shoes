@@ -65,7 +65,10 @@ const ProductService = {
   deleteProduct: async (productsID: number) => {
     try {
       const response = await AxiosClient.post<any, Response<any>>(
-        `${API_URL}/remove/${productsID}`
+        `${API_URL}/remove`,
+        {
+          productsID,
+        }
       );
       console.log(response);
       return response;

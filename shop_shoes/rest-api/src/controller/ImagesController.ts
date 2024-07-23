@@ -49,8 +49,8 @@ const ImagesController = {
 
   getImageById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const image = await Images.findByPk(id, { include: [Products] });
+      const { imageID } = req.body;
+      const image = await Images.findByPk(imageID, { include: [Products] });
       if (image) {
         res.json({ data: image });
       } else {
@@ -64,7 +64,7 @@ const ImagesController = {
 
   updateImage: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
+      const { imageID } = req.body;
       const { imagePath, productID } = req.body;
 
       // Kiểm tra dữ liệu đầu vào
@@ -72,7 +72,7 @@ const ImagesController = {
         return res.status(400).json({ message: "Missing required fields" });
       }
 
-      const image = await Images.findByPk(id);
+      const image = await Images.findByPk(imageID);
       if (image) {
         await image.update({
           imagePath,
@@ -90,8 +90,8 @@ const ImagesController = {
 
   deleteImage: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const image = await Images.findByPk(id);
+      const { imageID } = req.body;
+      const image = await Images.findByPk(imageID);
       if (image) {
         await image.destroy();
         res.json({ message: "Image deleted successfully" });

@@ -87,8 +87,8 @@ const ProductDetailsController = {
     next: NextFunction
   ) => {
     try {
-      const { id } = req.params;
-      const productDetail = await ProductDetails.findByPk(id, {
+      const { productDetailID } = req.body;
+      const productDetail = await ProductDetails.findByPk(productDetailID, {
         include: [
           {
             model: SizeProductDetails,
@@ -129,9 +129,9 @@ const ProductDetailsController = {
     next: NextFunction
   ) => {
     try {
-      const { id } = req.params;
+      const { productDetailID } = req.body;
       const { productDetailname, productDetaildescription, sizes } = req.body;
-      const productDetail = await ProductDetails.findByPk(id);
+      const productDetail = await ProductDetails.findByPk(productDetailID);
 
       if (productDetail) {
         await productDetail.update({
@@ -140,10 +140,12 @@ const ProductDetailsController = {
         });
 
         if (sizes && sizes.length > 0) {
-          await SizeProductDetails.destroy({ where: { productDetailId: id } });
+          await SizeProductDetails.destroy({
+            where: { productDetailId: productDetailID },
+          });
           for (const size of sizes) {
             await SizeProductDetails.create({
-              productDetailId: id,
+              productDetailId: productDetailID,
               sizeId: size.sizeId,
               quantity: size.quantity || 0,
             });
@@ -181,11 +183,13 @@ const ProductDetailsController = {
     next: NextFunction
   ) => {
     try {
-      const { id } = req.params;
-      const productDetail = await ProductDetails.findByPk(id);
+      const { productDetailID } = req.body;
+      const productDetail = await ProductDetails.findByPk(productDetailID);
 
       if (productDetail) {
-        await SizeProductDetails.destroy({ where: { productDetailId: id } });
+        await SizeProductDetails.destroy({
+          where: { productDetailId: productDetailID },
+        });
         await productDetail.destroy();
         res.status(200).json({
           message: "Deleted successfully",
@@ -314,7 +318,7 @@ const ProductDetailsController = {
   },
   deleteQuantity: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { productDetailId, sizeId } = req.params;
+      const { productDetailId, sizeId } = req.body;
 
       const sizeProductDetail = await SizeProductDetails.findOne({
         where: { productDetailId, sizeId },

@@ -1,6 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import { Products } from "../models/Products";
 import { Op } from "sequelize";
+import { ProductDetails } from "../models/ProductDetails";
+import { Images } from "../models/Images";
+import { SizeProductDetails } from "../models/SizeProductDetails";
+import { Sizes } from "../models/Sizes";
 
 const ProductsController = {
   addProduct: async (req: Request, res: Response, next: NextFunction) => {
@@ -15,6 +19,9 @@ const ProductsController = {
         styleID,
         materialID,
         brandID,
+        imageGallery,
+        productDetails,
+        sizeQuantities,
       } = req.body;
       const product = await Products.create({
         productsName,
@@ -27,7 +34,28 @@ const ProductsController = {
         materialID,
         brandID,
       });
-      res.status(201).json({
+      await ProductDetails.create({
+        productId: product.productsID,
+        productDetaildescription: productDetails,
+      });
+      if (Array.isArray(imageGallery)) {
+        for await (const images of imageGallery) {
+          await Images.create({
+            productID: product.productsID,
+            imagePath: images,
+          });
+        }
+      }
+      if (Array.isArray(sizeQuantities)) {
+        for await (const { sizeID, quantity } of sizeQuantities) {
+          await SizeProductDetails.create({
+            productId: product.productsID,
+            sizeID: sizeID,
+            quantity: quantity,
+          });
+        }
+      }
+      res.json({
         message: "Thực hiện thành công",
         code: 0,
         data: product,
@@ -48,21 +76,41 @@ const ProductsController = {
 
   getProducts: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id, productCode, productsName } = req.query;
+      const { productID, productCode, productsName } = req.query;
       const whereClause: any = {};
 
-      if (id) {
-        whereClause.productsID = id;
+      if (productID) {
+        whereClause.productsID = productID;
       }
       if (productCode) {
         whereClause.productCode = { [Op.like]: `%${productCode}%` };
       }
 
       const products = await Products.findAll({ where: whereClause });
-      res.status(200).json({
+
+      const transferData = [];
+
+      for await (const product of products) {
+        const productDetails = await ProductDetails.findOne({
+          where: { productId: product.productsID },
+          attributes: ["productDetaildescription"],
+        });
+        const images = await Images.findAll({
+          where: { productId: product.productsID },
+          attributes: ["imagePath"],
+        });
+
+        transferData.push({
+          ...product.toJSON(),
+          ...productDetails?.toJSON(),
+          imageGallery: images,
+        });
+      }
+
+      res.json({
         message: "Thực hiện thành công",
         code: 0,
-        data: products,
+        data: transferData,
       });
     } catch (error) {
       console.log(error);
@@ -80,13 +128,29 @@ const ProductsController = {
 
   getById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const product = await Products.findByPk(id);
+      const { productID } = req.body;
+      const product = await Products.findOne({
+        where: {
+          productsID: productID,
+        },
+      });
+      const productDetails = await ProductDetails.findOne({
+        where: { productId: productID },
+        attributes: { include: ["productDetaildescription"] },
+      });
+      const sizes = await SizeProductDetails.findAll({
+        where: { productId: product?.productsID },
+        include: [{ model: Sizes, attributes: ["sizeName"] }],
+      });
       if (product) {
         res.status(200).json({
           message: "Thực hiện thành công",
           code: 0,
-          data: product,
+          data: {
+            ...product,
+            ...productDetails,
+            ...sizes,
+          },
         });
       } else {
         res.status(404).json({
@@ -110,7 +174,7 @@ const ProductsController = {
 
   updateProduct: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
+      const { productID } = req.body;
       const {
         productsName,
         productImportPrice,
@@ -122,7 +186,7 @@ const ProductsController = {
         materialID,
         brandID,
       } = req.body;
-      const product = await Products.findByPk(id);
+      const product = await Products.findByPk(productID);
       if (product) {
         await product.update({
           productsName,
@@ -162,8 +226,8 @@ const ProductsController = {
 
   deleteProduct: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const product = await Products.findByPk(id);
+      const { productsID } = req.body;
+      const product = await Products.findByPk(productsID);
       if (product) {
         await product.destroy();
         res.status(200).json({

@@ -50,9 +50,9 @@ const SizeController = {
 
   updateSize: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
+      const { sizeID } = req.body;
       const { sizeName } = req.body;
-      const size = await Sizes.findByPk(id);
+      const size = await Sizes.findByPk(sizeID);
 
       if (size) {
         await size.update({ sizeName });
@@ -69,7 +69,7 @@ const SizeController = {
         });
       }
     } catch (error) {
-      console.error(`Error updating size ${req.params.id}:`, error);
+      console.error(`Error updating size ${req.body.id}:`, error);
       res.status(500).json({
         message: "Failed to update size",
         code: 1,
@@ -79,8 +79,8 @@ const SizeController = {
 
   deleteSize: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const size = await Sizes.findByPk(id);
+      const { sizeID } = req.body;
+      const size = await Sizes.findByPk(sizeID);
 
       if (size) {
         await size.destroy(); // Changed to instance method destroy()
@@ -96,7 +96,7 @@ const SizeController = {
         });
       }
     } catch (error) {
-      console.error(`Error deleting size ${req.params.id}:`, error);
+      console.error(`Error deleting size ${req.body.id}:`, error);
       res.status(500).json({
         message: "Failed to delete size",
         code: 1,
@@ -106,8 +106,8 @@ const SizeController = {
 
   getSizeById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const size = await Sizes.findByPk(id, {
+      const { sizeID } = req.body;
+      const size = await Sizes.findByPk(sizeID, {
         include: [SizeProductDetails], // Include SizeProductDetails if needed
       });
 
@@ -124,7 +124,7 @@ const SizeController = {
         });
       }
     } catch (error) {
-      console.error(`Error fetching size ${req.params.id}:`, error);
+      console.error(`Error fetching size ${req.body.id}:`, error);
       res.status(500).json({
         message: "Failed to fetch size",
         code: 1,

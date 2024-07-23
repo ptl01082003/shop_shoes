@@ -64,7 +64,7 @@ const ProductPromotionController = {
     next: NextFunction
   ) => {
     try {
-      const { productID, promotionID } = req.params;
+      const { productID, promotionID } = req.body;
       const productPromotion = await ProductPromotion.findOne({
         where: { productID, promotionID },
         include: [Products, Promotions],
@@ -86,7 +86,7 @@ const ProductPromotionController = {
     next: NextFunction
   ) => {
     try {
-      const { productID, promotionID } = req.params;
+      const { productID, promotionID } = req.body;
       const { newProductID, newPromotionID } = req.body;
 
       // Kiểm tra dữ liệu đầu vào
@@ -118,7 +118,7 @@ const ProductPromotionController = {
     next: NextFunction
   ) => {
     try {
-      const { productID, promotionID } = req.params;
+      const { productID, promotionID } = req.body;
       const productPromotion = await ProductPromotion.findOne({
         where: { productID, promotionID },
       });

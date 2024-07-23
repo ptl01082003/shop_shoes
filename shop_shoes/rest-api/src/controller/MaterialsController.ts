@@ -28,11 +28,11 @@ const MaterialsController = {
 
   getMaterials: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { materialId, materialName } = req.query;
+      const { materialID, materialName } = req.query;
       const whereClause: any = {};
 
-      if (materialId) {
-        whereClause.materialId = materialId;
+      if (materialID) {
+        whereClause.materialID = materialID;
       }
       if (materialName) {
         whereClause.materialName = { [Op.like]: `%${materialName}%` };
@@ -60,8 +60,8 @@ const MaterialsController = {
 
   getById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const material = await Materials.findByPk(id);
+      const { materialID } = req.body;
+      const material = await Materials.findByPk(materialID);
       if (material) {
         res.status(200).json({
           message: "Thực hiện thành công",
@@ -90,9 +90,8 @@ const MaterialsController = {
 
   updateMaterial: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const { materialName } = req.body;
-      const material = await Materials.findByPk(id);
+      const { materialID, materialName } = req.body;
+      const material = await Materials.findByPk(materialID);
       if (material) {
         await material.update({ materialName });
         res.status(200).json({
@@ -122,8 +121,8 @@ const MaterialsController = {
 
   deleteMaterial: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const material = await Materials.findByPk(id);
+      const { materialID } = req.body;
+      const material = await Materials.findByPk(materialID);
       if (material) {
         await material.destroy();
         res.status(200).json({

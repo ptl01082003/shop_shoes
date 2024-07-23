@@ -29,11 +29,11 @@ const BrandsController = {
 
   getBrands: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id, brandName } = req.query;
+      const { brandID, brandName } = req.query;
       const whereClause: any = {};
 
-      if (id) {
-        whereClause.id = id;
+      if (brandID) {
+        whereClause.id = brandID;
       }
       if (brandName) {
         whereClause.brandName = { [Op.like]: `%${brandName}%` };
@@ -61,8 +61,8 @@ const BrandsController = {
 
   getById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const brand = await Brands.findByPk(id);
+      const { brandID } = req.body;
+      const brand = await Brands.findByPk(brandID);
       if (brand) {
         res.status(200).json({
           message: "Thực hiện thành công",
@@ -91,9 +91,8 @@ const BrandsController = {
 
   updateBrand: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const { brandName } = req.body;
-      const brand = await Brands.findByPk(id);
+      const { brandID, brandName } = req.body;
+      const brand = await Brands.findByPk(brandID);
       if (brand) {
         await brand.update({ brandName });
         res.status(200).json({
@@ -102,7 +101,7 @@ const BrandsController = {
           data: brand,
         });
       } else {
-        res.status(404).json({
+        res.json({
           message: "Thương hiệu không tồn tại",
           code: 1,
         });

@@ -28,11 +28,11 @@ const OriginsController = {
 
   getOrigins: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { originId, originName } = req.query;
+      const { originID, originName } = req.query;
       const whereClause: any = {};
 
-      if (originId) {
-        whereClause.originId = originId;
+      if (originID) {
+        whereClause.originId = originID;
       }
       if (originName) {
         whereClause.originName = { [Op.like]: `%${originName}%` };
@@ -60,8 +60,8 @@ const OriginsController = {
 
   getById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const origin = await Origins.findByPk(id);
+      const { originID } = req.body;
+      const origin = await Origins.findByPk(originID);
       if (origin) {
         res.status(200).json({
           message: "Thực hiện thành công",
@@ -90,9 +90,9 @@ const OriginsController = {
 
   updateOrigin: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
+      const { originID } = req.params;
       const { originName } = req.body;
-      const origin = await Origins.findByPk(id);
+      const origin = await Origins.findByPk(originID);
       if (origin) {
         await origin.update({ originName });
         res.status(200).json({
@@ -122,8 +122,8 @@ const OriginsController = {
 
   deleteOrigin: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const origin = await Origins.findByPk(id);
+      const { originID } = req.params;
+      const origin = await Origins.findByPk(originID);
       if (origin) {
         await origin.destroy();
         res.status(200).json({
