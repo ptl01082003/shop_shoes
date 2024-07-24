@@ -156,8 +156,10 @@ const PaymentOnlineController = {
       lang: "vi",
     };
 
-    const payments = await axios
-      .post(process.env["momo_Url"] as string, requestBody)
+    const payments = await axios.post(
+      process.env["momo_Url"] as string,
+      requestBody
+    );
     return payments.data.payUrl;
   },
 
@@ -170,32 +172,32 @@ const PaymentOnlineController = {
         attributes: ["totals", "amount", "userId", "cartId"],
         include: {
           model: CartItems,
-          attributes: ["quanity", "productsID"]
+          attributes: ["quanity", "productsID"],
         },
-      })
+      });
       if (carts) {
         const newOrders = await OrderDetails.create({
           userId,
           totals: carts.totals,
           amount: carts.amount,
-        })
+        });
         for await (const products of carts.cartItems) {
           await OrderItems.create({
             quanity: products.quanity,
-            productsID: products.productsID,
-            orderDetailsID: newOrders.orderDetailsID
-          })
+            productsID: products.productId,
+            orderDetailsID: newOrders.orderDetailId,
+          });
         }
         await PaymentDetails.create({
           provider,
           amount: carts.amount,
-          orderDetailsId: newOrders.orderDetailsID
-        })
+          orderDetailsId: newOrders.orderDetailId,
+        });
 
         //xóa các sản phẩm hiện có trong giỏ hàng
         await CartItems.destroy({
-          where: { cartId: carts.cartId }
-        })
+          where: { cartId: carts.cartId },
+        });
 
         //reset giỏ hàng sau khi tạo order thành công
         await carts.destroy();
@@ -205,20 +207,20 @@ const PaymentOnlineController = {
             const paymentUrl = await PaymentOnlineController.createMomo();
             return res.redirect(paymentUrl);
         }
-
       } else {
-        return res.json(ResponseBody({
-          code: RESPONSE_CODE.SUCCESS,
-          data: null,
-          message: "Giỏ hàng của bạn đang trống, vui lòng thêm sản phẩm trước khi thanh toán"
-        }))
+        return res.json(
+          ResponseBody({
+            code: RESPONSE_CODE.SUCCESS,
+            data: null,
+            message:
+              "Giỏ hàng của bạn đang trống, vui lòng thêm sản phẩm trước khi thanh toán",
+          })
+        );
       }
     } catch (error) {
       next(error);
     }
   },
-
 };
-
 
 export default PaymentOnlineController;

@@ -2,92 +2,80 @@
 
 import AxiosClient from "../networks/AxiosRequest"; // Đảm bảo rằng module AxiosClient được import và cấu hình đúng
 import { Response } from "../constants/constants";
-
 const API_URL = "/products"; // Đảm bảo rằng URL API này phù hợp với endpoint thực tế của sản phẩm trong hệ thống của bạn
 
 export interface Product {
-  productsID: number;
-  productsName: string;
-  productImportPrice: number;
-  productPrice: number;
-  status: string;
-  display: boolean;
-  originID: number;
-  styleID: number;
-  materialID: number;
-  brandID: number;
-  imageGallery?: string[]; // Có thể không có, nên dùng ?
-  productDetails?: string; // Có thể không có, nên dùng ?
-  sizeQuantities?: Array<{ sizeID: number; quantity: number }>; // Có thể không có, nên dùng ?
+  productId: number;
+  name: string;
+  description: string;
   // Các thuộc tính khác...
 }
 
 const ProductService = {
-  // Lấy danh sách sản phẩm
   getProducts: async () => {
     try {
       const response = await AxiosClient.post<any, Response<any>>(API_URL);
       return response;
     } catch (error) {
       console.error("Lỗi khi lấy danh sách sản phẩm", error);
-      throw new Error("Lỗi khi lấy danh sách sản phẩm");
+      throw error;
     }
   },
 
-  // Lấy thông tin sản phẩm theo ID
-  getProductById: async (productsID: number) => {
+  getProductById: async (productId: number) => {
     try {
-      const response = await AxiosClient.post<Response<any>>(
-        `${API_URL}/${productsID}`
+      const response = await AxiosClient.post<any, Response<any>>(
+        `${API_URL}`,
+        productId
       );
-      return response.data;
+      console.log(response);
+      return response;
     } catch (error) {
-      console.error(`Lỗi khi lấy thông tin sản phẩm ${productsID}`, error);
-      throw new Error(`Lỗi khi lấy thông tin sản phẩm ${productsID}`);
+      console.error(`Lỗi khi lấy thông tin sản phẩm ${productId}`, error);
+      throw error;
     }
   },
 
-  // Tạo sản phẩm mới
-  createProduct: async (productData: Product) => {
+  createProduct: async (productData: any) => {
     try {
-      const response = await AxiosClient.post<Response<any>>(
+      const response = await AxiosClient.post<any, Response<any>>(
         `${API_URL}/create`,
         productData
       );
-      return response.data;
+      console.log(response);
+      return response;
     } catch (error) {
       console.error("Lỗi khi tạo mới sản phẩm", error);
-      throw new Error("Lỗi khi tạo mới sản phẩm");
+      throw error;
     }
   },
 
-  // Cập nhật thông tin sản phẩm
-  updateProduct: async (productsID: number, productData: Product) => {
+  updateProduct: async (productId: number, productData: any) => {
     try {
-      const response = await AxiosClient.post<Response<any>>(
-        `${API_URL}/edit/${productsID}`,
-        productData
+      const response = await AxiosClient.post<any, Response<any>>(
+        `${API_URL}/edit`,
+        { productId, productData }
       );
-      return response.data;
+      return response;
     } catch (error) {
-      console.error(`Lỗi khi cập nhật sản phẩm ${productsID}`, error);
-      throw new Error(`Lỗi khi cập nhật sản phẩm ${productsID}`);
+      console.error(`Lỗi khi cập nhật sản phẩm ${productId}`, error);
+      throw error;
     }
   },
 
-  // Xóa sản phẩm
-  deleteProduct: async (productsID: number) => {
+  deleteProduct: async (productId: number) => {
     try {
       const response = await AxiosClient.post<any, Response<any>>(
         `${API_URL}/remove`,
         {
-          productsID,
+          productId,
         }
       );
+      console.log(response);
       return response;
     } catch (error) {
-      console.error(`Lỗi khi xóa sản phẩm ${productsID}`, error);
-      throw new Error(`Lỗi khi xóa sản phẩm ${productsID}`);
+      console.error(`Lỗi khi xóa sản phẩm ${productId}`, error);
+      throw error;
     }
   },
 };

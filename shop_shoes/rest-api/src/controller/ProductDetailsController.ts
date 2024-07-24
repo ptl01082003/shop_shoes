@@ -10,18 +10,17 @@ const ProductDetailsController = {
     next: NextFunction
   ) => {
     try {
-      const { productDetailname, productDetaildescription, productId, sizes } =
-        req.body;
+      const { name, description, productId, sizes } = req.body;
       const newProductDetail = await ProductDetails.create({
-        productDetailname,
-        productDetaildescription,
+        name,
+        description,
         productId,
       });
 
       if (sizes && sizes.length > 0) {
         for (const size of sizes) {
           await SizeProductDetails.create({
-            productDetailId: newProductDetail.productDetailid,
+            productDetailId: newProductDetail.productDetailId,
             sizeId: size.sizeId,
             quantity: size.quantity || 0,
           });
@@ -87,8 +86,8 @@ const ProductDetailsController = {
     next: NextFunction
   ) => {
     try {
-      const { productDetailID } = req.body;
-      const productDetail = await ProductDetails.findByPk(productDetailID, {
+      const { productDetailId } = req.body;
+      const productDetail = await ProductDetails.findByPk(productDetailId, {
         include: [
           {
             model: SizeProductDetails,
@@ -129,23 +128,23 @@ const ProductDetailsController = {
     next: NextFunction
   ) => {
     try {
-      const { productDetailID } = req.body;
-      const { productDetailname, productDetaildescription, sizes } = req.body;
-      const productDetail = await ProductDetails.findByPk(productDetailID);
+      const { productDetailId } = req.body;
+      const { name, description, sizes } = req.body;
+      const productDetail = await ProductDetails.findByPk(productDetailId);
 
       if (productDetail) {
         await productDetail.update({
-          productDetailname,
-          productDetaildescription,
+          name,
+          description,
         });
 
         if (sizes && sizes.length > 0) {
           await SizeProductDetails.destroy({
-            where: { productDetailId: productDetailID },
+            where: { productDetailId: productDetailId },
           });
           for (const size of sizes) {
             await SizeProductDetails.create({
-              productDetailId: productDetailID,
+              productDetailId: productDetailId,
               sizeId: size.sizeId,
               quantity: size.quantity || 0,
             });
@@ -183,12 +182,12 @@ const ProductDetailsController = {
     next: NextFunction
   ) => {
     try {
-      const { productDetailID } = req.body;
-      const productDetail = await ProductDetails.findByPk(productDetailID);
+      const { productDetailId } = req.body;
+      const productDetail = await ProductDetails.findByPk(productDetailId);
 
       if (productDetail) {
         await SizeProductDetails.destroy({
-          where: { productDetailId: productDetailID },
+          where: { productDetailId: productDetailId },
         });
         await productDetail.destroy();
         res.status(200).json({
@@ -348,8 +347,6 @@ const ProductDetailsController = {
       });
     }
   },
-
-  // ... Các phương thức khác giữ nguyên ...
 };
 
 export default ProductDetailsController;

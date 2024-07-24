@@ -15,14 +15,15 @@ const BrandService = {
     }
   },
 
-  getBrandById: async (brandID: number) => {
+  getBrandById: async (brandId: number) => {
     try {
       const response = await AxiosClient.post<any, Response<any>>(
-        `${API_URL}/${brandID}`
+        `${API_URL}`,
+        brandId
       );
       return response; // Sử dụng response.data để trả về dữ liệu chính xác
     } catch (error) {
-      console.error(`Error fetching brand ${brandID}`, error);
+      console.error(`Error fetching brand ${brandId}`, error);
       throw error;
     }
   },
@@ -40,33 +41,33 @@ const BrandService = {
     }
   },
 
-  updateBrand: async (brandID: number, brandData: any) => {
+  updateBrand: async (brandId: number, brandData: any) => {
     try {
       const response = await AxiosClient.post<any, Response<any>>(
         `${API_URL}/edit`,
         {
-          brandID,
+          brandId,
           brandData,
         }
       );
       return response;
     } catch (error) {
-      console.error(`Error updating brand ${brandID}`, error);
+      console.error(`Error updating brand ${brandId}`, error);
       throw error;
     }
   },
 
-  deleteBrand: async (brandID: number) => {
+  deleteBrand: async (brandId: number) => {
     try {
       const response = await AxiosClient.post<any, Response<any>>(
         `${API_URL}/remove`,
         {
-          brandID,
+          brandId,
         }
       );
       return response;
     } catch (error) {
-      console.error(`Error deleting brand ${brandID}`, error);
+      console.error(`Error deleting brand ${brandId}`, error);
       throw error;
     }
   },

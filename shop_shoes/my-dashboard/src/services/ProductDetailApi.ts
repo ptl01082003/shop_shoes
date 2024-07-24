@@ -3,9 +3,9 @@ import { Response } from "../constants/constants";
 const API_URL = "/product-details";
 
 export interface ProductDetail {
-  productDetailid: number;
-  productDetailname: string;
-  productDetaildescription: string;
+  productDetailId: number;
+  name: string;
+  description: string;
   productId: number;
   sizes: Array<{
     sizeId: number;
@@ -37,7 +37,7 @@ const ProductDetailsService = {
   },
 
   createProductDetail: async (
-    productDetailData: Omit<ProductDetail, "productDetailid">
+    productDetailData: Omit<ProductDetail, "productDetailId">
   ) => {
     try {
       const response = await AxiosClient.post<any, Response<any>>(

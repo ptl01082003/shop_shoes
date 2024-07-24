@@ -46,8 +46,8 @@ const pencil = [
 ];
 
 type MaterialType = {
-  materialID?: number;
-  materialName?: string;
+  materialId?: number;
+  name?: string;
 };
 
 export default function MaterialPage() {
@@ -65,13 +65,13 @@ export default function MaterialPage() {
   const columns = [
     {
       title: "ID",
-      dataIndex: "materialID",
-      key: "materialID",
+      dataIndex: "materialId",
+      key: "materialId",
     },
     {
       title: "Tên Vật Liệu",
-      dataIndex: "materialName",
-      key: "materialName",
+      dataIndex: "name",
+      key: "name",
     },
     {
       title: "Hành động",
@@ -106,7 +106,7 @@ export default function MaterialPage() {
   }, [shouldRender]);
 
   const deleteMaterialItems = async (record: MaterialType) => {
-    const response = await MaterialService.deleteMaterial(record.materialID!);
+    const response = await MaterialService.deleteMaterial(record.materialId!);
     if (response.code === 0) {
       setShouldRender((prev) => !prev);
     }
@@ -129,7 +129,7 @@ export default function MaterialPage() {
 
   const onFinishEdit = async (values: MaterialType) => {
     const response = await MaterialService.updateMaterial(
-      openEditModal.data.materialID!,
+      openEditModal.data.materialId!,
       values
     );
     if (response.code === 0) {
@@ -180,7 +180,7 @@ export default function MaterialPage() {
         >
           <Form.Item
             label="Material Name"
-            name="materialName"
+            name="name"
             rules={[
               { required: true, message: "Please input the material name!" },
             ]}
@@ -215,7 +215,7 @@ export default function MaterialPage() {
         >
           <Form.Item
             label="Material Name"
-            name="materialName"
+            name="name"
             rules={[
               { required: true, message: "Please input the material name!" },
             ]}

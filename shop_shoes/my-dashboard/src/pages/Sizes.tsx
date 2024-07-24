@@ -7,8 +7,8 @@ import { tableCustomizeStyle } from "../styles/styles";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 type SizeType = {
-  sizeID?: number;
-  sizeName?: string;
+  sizeId?: number;
+  name?: string;
 };
 
 const SizePage: React.FC = () => {
@@ -40,7 +40,7 @@ const SizePage: React.FC = () => {
 
   const deleteSize = async (record: SizeType) => {
     try {
-      const response = await SizeService.deleteSize(record.sizeID!);
+      const response = await SizeService.deleteSize(record.sizeId!);
       if (response.code === 0) {
         setShouldRender((prev) => !prev);
       }
@@ -71,7 +71,7 @@ const SizePage: React.FC = () => {
   const onFinishEdit = async (values: SizeType) => {
     try {
       const response = await SizeService.updateSize(
-        openEditModal.data.sizeID!,
+        openEditModal.data.sizeId!,
         values
       );
       if (response.code === 0) {
@@ -86,13 +86,13 @@ const SizePage: React.FC = () => {
   const columns = [
     {
       title: "ID",
-      dataIndex: "sizeID",
-      key: "sizeID",
+      dataIndex: "sizeId",
+      key: "sizeId",
     },
     {
       title: "Name",
-      dataIndex: "sizeName",
-      key: "sizeName",
+      dataIndex: "name",
+      key: "name",
     },
     {
       title: "Hành động",
@@ -144,7 +144,7 @@ const SizePage: React.FC = () => {
         >
           <Form.Item
             label="Name"
-            name="sizeName"
+            name="name"
             rules={[{ required: true, message: "Please input the size name!" }]}
           >
             <Input />
@@ -173,7 +173,7 @@ const SizePage: React.FC = () => {
         >
           <Form.Item
             label="Name"
-            name="sizeName"
+            name="name"
             rules={[{ required: true, message: "Please input the size name!" }]}
           >
             <Input />

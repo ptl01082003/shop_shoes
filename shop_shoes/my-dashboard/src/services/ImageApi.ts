@@ -16,14 +16,14 @@ const ImageService = {
   },
 
   // Lấy thông tin một hình ảnh theo ID
-  getImageById: async (imageID: number) => {
+  getImageById: async (imageId: number) => {
     try {
       const response = await AxiosClient.get<any, Response<any>>(
-        `${API_URL}/${imageID}`
+        `${API_URL}/${imageId}`
       );
       return response; // Sử dụng response.data để trả về dữ liệu chính xác
     } catch (error) {
-      console.error(`Error fetching image ${imageID}`, error);
+      console.error(`Error fetching image ${imageId}`, error);
       throw error;
     }
   },
@@ -43,28 +43,28 @@ const ImageService = {
   },
 
   // Cập nhật thông tin hình ảnh
-  updateImage: async (imageID: number, imageData: any) => {
+  updateImage: async (imageId: number, imageData: any) => {
     try {
       const response = await AxiosClient.put<any, Response<any>>(
-        `${API_URL}/update/${imageID}`,
+        `${API_URL}/update/${imageId}`,
         imageData
       );
       return response;
     } catch (error) {
-      console.error(`Error updating image ${imageID}`, error);
+      console.error(`Error updating image ${imageId}`, error);
       throw error;
     }
   },
 
   // Xóa một hình ảnh
-  deleteImage: async (imageID: number) => {
+  deleteImage: async (imageId: number) => {
     try {
       const response = await AxiosClient.delete<any, Response<any>>(
-        `${API_URL}/delete/${imageID}`
+        `${API_URL}/delete/${imageId}`
       );
       return response;
     } catch (error) {
-      console.error(`Error deleting image ${imageID}`, error);
+      console.error(`Error deleting image ${imageId}`, error);
       throw error;
     }
   },

@@ -10,7 +10,7 @@ routerBrands.post("/", BrandsController.getBrands);
 
 routerBrands.use(checkAuth);
 
-routerBrands.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
+// routerBrands.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
 
 routerBrands.post("/create", BrandsController.addBrand);
 

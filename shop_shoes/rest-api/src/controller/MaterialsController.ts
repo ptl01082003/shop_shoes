@@ -5,41 +5,9 @@ import { Op } from "sequelize";
 const MaterialsController = {
   addMaterial: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { materialName } = req.body;
-      const material = await Materials.create({ materialName });
+      const { materialsName } = req.body;
+      const materials = await Materials.create({ materialsName });
       res.status(201).json({
-        message: "Thực hiện thành công",
-        code: 0,
-        data: material,
-      });
-    } catch (error) {
-      console.log(error);
-      let errorMessage = "Thực hiện thất bại";
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      res.status(401).json({
-        message: "Thực hiện thất bại",
-        code: 1,
-        error: errorMessage,
-      });
-    }
-  },
-
-  getMaterials: async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { materialID, materialName } = req.query;
-      const whereClause: any = {};
-
-      if (materialID) {
-        whereClause.materialID = materialID;
-      }
-      if (materialName) {
-        whereClause.materialName = { [Op.like]: `%${materialName}%` };
-      }
-
-      const materials = await Materials.findAll({ where: whereClause });
-      res.status(200).json({
         message: "Thực hiện thành công",
         code: 0,
         data: materials,
@@ -58,15 +26,47 @@ const MaterialsController = {
     }
   },
 
+  getMaterials: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { materialId, materialsName } = req.query;
+      const whereClause: any = {};
+
+      if (materialId) {
+        whereClause.materialId = materialId;
+      }
+      if (materialsName) {
+        whereClause.materialsName = { [Op.like]: `%${materialsName}%` };
+      }
+
+      const materialss = await Materials.findAll({ where: whereClause });
+      res.status(200).json({
+        message: "Thực hiện thành công",
+        code: 0,
+        data: materialss,
+      });
+    } catch (error) {
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
+    }
+  },
+
   getById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { materialID } = req.body;
-      const material = await Materials.findByPk(materialID);
-      if (material) {
+      const { materialId } = req.body;
+      const materials = await Materials.findByPk(materialId);
+      if (materials) {
         res.status(200).json({
           message: "Thực hiện thành công",
           code: 0,
-          data: material,
+          data: materials,
         });
       } else {
         res.status(404).json({
@@ -90,14 +90,14 @@ const MaterialsController = {
 
   updateMaterial: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { materialID, materialName } = req.body;
-      const material = await Materials.findByPk(materialID);
-      if (material) {
-        await material.update({ materialName });
+      const { materialId, materialsName } = req.body;
+      const materials = await Materials.findByPk(materialId);
+      if (materials) {
+        await materials.update({ materialsName });
         res.status(200).json({
           message: "Thực hiện thành công",
           code: 0,
-          data: material,
+          data: materials,
         });
       } else {
         res.status(404).json({
@@ -121,10 +121,10 @@ const MaterialsController = {
 
   deleteMaterial: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { materialID } = req.body;
-      const material = await Materials.findByPk(materialID);
-      if (material) {
-        await material.destroy();
+      const { materialId } = req.body;
+      const materials = await Materials.findByPk(materialId);
+      if (materials) {
+        await materials.destroy();
         res.status(200).json({
           message: "Thực hiện thành công",
           code: 0,

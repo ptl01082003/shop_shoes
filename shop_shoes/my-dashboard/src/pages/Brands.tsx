@@ -7,7 +7,7 @@ import { tableCustomizeStyle } from "../styles/styles";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 type FieldType = {
-  brandName?: string;
+  name?: string;
 };
 const deletebtn = [
   <svg
@@ -59,13 +59,13 @@ export default function BrandsPage() {
   const columns = [
     {
       title: "ID",
-      dataIndex: "brandID",
-      key: "brandID",
+      dataIndex: "brandId",
+      key: "brandId",
     },
     {
       title: "Hãng",
-      dataIndex: "brandName",
-      key: "brandName",
+      dataIndex: "name",
+      key: "name",
     },
     {
       title: "Hành động",
@@ -98,7 +98,7 @@ export default function BrandsPage() {
   }, [shouldRender]);
 
   const deleteBrandItems = async (record: any) => {
-    const res: any = await BrandService.deleteBrand(record.brandID);
+    const res: any = await BrandService.deleteBrand(record.brandId);
     if (res.code === 0) {
       setShouldRender((x) => !x);
     }
@@ -125,7 +125,7 @@ export default function BrandsPage() {
     values: FieldType
   ) => {
     const res = await BrandService.updateBrand(
-      openEditModal?.data?.brandID,
+      openEditModal?.data?.brandId,
       values
     );
     if (res.code === 0) {
@@ -178,8 +178,8 @@ export default function BrandsPage() {
           autoComplete="off"
         >
           <Form.Item<FieldType>
-            label="brandName"
-            name="brandName"
+            label="name"
+            name="name"
             rules={[{ required: true, message: "Tên không được để trống!" }]}
           >
             <Input />
@@ -214,8 +214,8 @@ export default function BrandsPage() {
           autoComplete="off"
         >
           <Form.Item<FieldType>
-            label="brandName"
-            name="brandName"
+            label="name"
+            name="name"
             rules={[{ required: true, message: "Tên không được để trống!" }]}
           >
             <Input />

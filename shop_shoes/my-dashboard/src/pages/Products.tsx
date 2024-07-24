@@ -226,18 +226,18 @@ const ProductPage: React.FC = () => {
   const columns = [
     {
       title: "Mã sản phẩm",
-      dataIndex: "productCode",
-      key: "productCode",
+      dataIndex: "code",
+      key: "code",
     },
     {
       title: "Tên sản phẩm",
-      dataIndex: "productsName",
-      key: "productsName",
+      dataIndex: "name",
+      key: "name",
     },
     {
       title: "Giá nhập",
-      dataIndex: "productImportPrice",
-      key: "productImportPrice",
+      dataIndex: "importPrice",
+      key: "importPrice",
     },
     {
       title: "Giá bán",
@@ -252,8 +252,8 @@ const ProductPage: React.FC = () => {
     },
     {
       title: "Thương hiệu",
-      dataIndex: "brandName",
-      key: "brandName",
+      dataIndex: "name",
+      key: "name",
     },
     {
       title: "Hành động",
@@ -352,8 +352,8 @@ const ProductPage: React.FC = () => {
         </Button>
       </div>
       <div css={tableCustomizeStyle} className="table-responsive">
-      <Table columns={columns} dataSource={products} rowKey="productsID" />
-    </div>
+        <Table columns={columns} dataSource={products} rowKey="productsID" />
+      </div>
 
       <Drawer
         footer={null}
@@ -380,7 +380,7 @@ const ProductPage: React.FC = () => {
         >
           {/* Product Form */}
           <Form.Item
-            name="productsName"
+            name="name"
             label="Tên sản phẩm"
             rules={[
               { required: true, message: "Tên sản phẩm không được để trống" },
@@ -389,7 +389,7 @@ const ProductPage: React.FC = () => {
             <Input placeholder="Nhập tại đây" />
           </Form.Item>
           <Form.Item
-            name="productImportPrice"
+            name="importPrice"
             label="Giá nhập"
             rules={[
               { required: true, message: "Giá nhập không được để trống" },
@@ -416,7 +416,7 @@ const ProductPage: React.FC = () => {
             <Switch />
           </Form.Item>
           <Form.Item
-            name="brandID"
+            name="brandId"
             label="Thương hiệu"
             rules={[
               { required: true, message: "Thương hiệu không được để trống." },
@@ -424,14 +424,14 @@ const ProductPage: React.FC = () => {
           >
             <Select placeholder="Chọn tại đây">
               {brands?.map((brand) => (
-                <Option key={brand?.brandID} value={brand?.brandID}>
-                  {brand?.brandName}
+                <Option key={brand?.brandId} value={brand?.brandId}>
+                  {brand?.name}
                 </Option>
               ))}
             </Select>
           </Form.Item>
           <Form.Item
-            name="styleID"
+            name="styleId"
             label="Kiểu dáng"
             rules={[
               { required: true, message: "Kiểu dáng không được để trống" },
@@ -439,14 +439,14 @@ const ProductPage: React.FC = () => {
           >
             <Select placeholder="Chọn tại đây">
               {styles.map((style) => (
-                <Option key={style.styleID} value={style.styleID}>
-                  {style.styleName}
+                <Option key={style.styleId} value={style.styleId}>
+                  {style.name}
                 </Option>
               ))}
             </Select>
           </Form.Item>
           <Form.Item
-            name="materialID"
+            name="materialId"
             label="Chất liệu"
             rules={[
               {
@@ -457,17 +457,17 @@ const ProductPage: React.FC = () => {
           >
             <Select placeholder="Chọn tại đây">
               {materials?.map((material) => (
-                <Option key={material?.materialID} value={material?.materialID}>
-                  {material?.materialName}
+                <Option key={material?.materialId} value={material?.materialId}>
+                  {material?.name}
                 </Option>
               ))}
             </Select>
           </Form.Item>
-          <Form.Item name="originID" label="Xuất xứ">
+          <Form.Item name="originId" label="Xuất xứ">
             <Select placeholder="Chọn tại đây">
               {origins.map((origin) => (
-                <Option key={origin.originID} value={origin.originID}>
-                  {origin.originName}
+                <Option key={origin.originId} value={origin.originId}>
+                  {origin.name}
                 </Option>
               ))}
             </Select>
@@ -495,7 +495,7 @@ const ProductPage: React.FC = () => {
                       <Space key={key} align="center">
                         <Form.Item
                           {...restField}
-                          name={[name, "sizeID"]}
+                          name={[name, "sizeId"]}
                           label="Kích thước"
                           rules={[
                             { required: true, message: "Chọn kích thước!" },
@@ -506,8 +506,8 @@ const ProductPage: React.FC = () => {
                             placeholder="Chọn kích thước"
                           >
                             {sizes.map((size) => (
-                              <Option key={size.sizeID} value={size.sizeID}>
-                                {size.sizeName}
+                              <Option key={size.sizeId} value={size.sizeId}>
+                                {size.name}
                               </Option>
                             ))}
                           </Select>

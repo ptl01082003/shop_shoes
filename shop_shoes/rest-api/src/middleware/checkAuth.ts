@@ -22,10 +22,10 @@ export const checkAuth = (req: Request, res: Response, next: NextFunction) => {
             );
           } else {
             const tokenInRedis = await redis.get(
-              `accessToken-${decoded.usersID}`
+              `accessToken-${decoded.userId}`
             );
             if (tokenInRedis === token) {
-              req.usersID = decoded.usersID;
+              req.userId = decoded.userId;
               next();
             } else {
               return res.json(
@@ -40,7 +40,7 @@ export const checkAuth = (req: Request, res: Response, next: NextFunction) => {
         }
       );
     } else {
-      return res.json(
+      return res.status(STATUS_CODE.NOT_AUTHEN).json(
         ResponseBody({
           data: null,
           code: RESPONSE_CODE.ERRORS,

@@ -7,11 +7,11 @@ const BrandsController = {
     try {
       const { name } = req.body;
       console.log(name);
-      const brand = await Brands.create({ name });
+      const brands = await Brands.create({ name });
       res.status(201).json({
         message: "Thực hiện thành công",
         code: 0,
-        data: brand,
+        data: brands,
       });
     } catch (error) {
       console.log(error);
@@ -39,11 +39,11 @@ const BrandsController = {
         whereClause.name = { [Op.like]: `%${name}%` };
       }
 
-      const brands = await Brands.findAll({ where: whereClause });
+      const brandss = await Brands.findAll({ where: whereClause });
       res.status(200).json({
         message: "Thực hiện thành công",
         code: 0,
-        data: brands,
+        data: brandss,
       });
     } catch (error) {
       console.log(error);
@@ -62,12 +62,12 @@ const BrandsController = {
   getById: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { brandId } = req.body;
-      const brand = await Brands.findByPk(brandId);
-      if (brand) {
+      const brands = await Brands.findByPk(brandId);
+      if (brands) {
         res.status(200).json({
           message: "Thực hiện thành công",
           code: 0,
-          data: brand,
+          data: brands,
         });
       } else {
         res.status(404).json({
@@ -92,13 +92,13 @@ const BrandsController = {
   updateBrand: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { brandId, name } = req.body;
-      const brand = await Brands.findByPk(brandId);
-      if (brand) {
-        await brand.update({ name });
+      const brands = await Brands.findByPk(brandId);
+      if (brands) {
+        await brands.update({ name });
         res.status(200).json({
           message: "Thực hiện thành công",
           code: 0,
-          data: brand,
+          data: brands,
         });
       } else {
         res.json({
@@ -124,9 +124,9 @@ const BrandsController = {
     try {
       const { brandId } = req.body;
 
-      const brand = await Brands.findByPk(brandId);
-      if (brand) {
-        await brand.destroy();
+      const brands = await Brands.findByPk(brandId);
+      if (brands) {
+        await brands.destroy();
         res.status(200).json({
           message: "Thực hiện thành công",
           code: 0,

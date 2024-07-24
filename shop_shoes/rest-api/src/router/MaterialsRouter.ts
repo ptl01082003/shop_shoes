@@ -9,7 +9,7 @@ const routerMaterial = Router();
 routerMaterial.post("/", MaterialsController.getMaterials);
 
 routerMaterial.use(checkAuth);
-routerMaterial.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
+// routerMaterial.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
 
 routerMaterial.post("/create", MaterialsController.addMaterial);
 routerMaterial.post("/edit", MaterialsController.updateMaterial);

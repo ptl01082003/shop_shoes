@@ -12,11 +12,11 @@ const SizeProductDetailsController = {
     next: NextFunction
   ) => {
     try {
-      const { sizeID, productDetailID, quantity } = req.body;
+      const { sizeId, productDetailId, quantity } = req.body;
 
       const sizeProductDetail = await SizeProductDetails.create({
-        sizeID,
-        productDetailID,
+        sizeId,
+        productDetailId,
         quantity,
       });
 
@@ -45,17 +45,17 @@ const SizeProductDetailsController = {
     next: NextFunction
   ) => {
     try {
-      const { sizeProductDetailID, sizeID, productDetailID } = req.query;
+      const { sizeProductDetailId, sizeId, productDetailId } = req.query;
       const whereClause: any = {};
 
-      if (sizeProductDetailID) {
-        whereClause.sizeProductDetailID = sizeProductDetailID;
+      if (sizeProductDetailId) {
+        whereClause.sizeProductDetailId = sizeProductDetailId;
       }
-      if (sizeID) {
-        whereClause.sizeID = sizeID;
+      if (sizeId) {
+        whereClause.sizeId = sizeId;
       }
-      if (productDetailID) {
-        whereClause.productDetailID = productDetailID;
+      if (productDetailId) {
+        whereClause.productDetailId = productDetailId;
       }
 
       const sizeProductDetails = await SizeProductDetails.findAll({
@@ -88,9 +88,9 @@ const SizeProductDetailsController = {
     next: NextFunction
   ) => {
     try {
-      const { SizeProductDetailID } = req.body;
+      const { SizeProductDetailId } = req.body;
       const sizeProductDetail = await SizeProductDetails.findByPk(
-        SizeProductDetailID,
+        SizeProductDetailId,
         {
           include: [Sizes, ProductDetails],
         }
@@ -128,17 +128,17 @@ const SizeProductDetailsController = {
     next: NextFunction
   ) => {
     try {
-      const { SizeProductDetailID } = req.body;
-      const { sizeID, productDetailID, quantity } = req.body;
+      const { SizeProductDetailId } = req.body;
+      const { sizeId, productDetailId, quantity } = req.body;
 
       const sizeProductDetail = await SizeProductDetails.findByPk(
-        SizeProductDetailID
+        SizeProductDetailId
       );
 
       if (sizeProductDetail) {
         await sizeProductDetail.update({
-          sizeID,
-          productDetailID,
+          sizeId,
+          productDetailId,
           quantity,
         });
 
@@ -173,9 +173,9 @@ const SizeProductDetailsController = {
     next: NextFunction
   ) => {
     try {
-      const { SizeProductDetailID } = req.body;
+      const { SizeProductDetailId } = req.body;
       const sizeProductDetail = await SizeProductDetails.findByPk(
-        SizeProductDetailID
+        SizeProductDetailId
       );
 
       if (sizeProductDetail) {

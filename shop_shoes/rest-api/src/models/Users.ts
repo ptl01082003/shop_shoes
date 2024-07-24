@@ -23,7 +23,7 @@ export class Users extends Model {
   public userId!: number;
 
   @Column
-  public username!: string;
+  public userName!: string;
 
   @Column
   public email!: string;

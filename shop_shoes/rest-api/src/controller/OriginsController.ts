@@ -5,41 +5,9 @@ import { Op } from "sequelize";
 const OriginsController = {
   addOrigin: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { originName } = req.body;
-      const origin = await Origins.create({ originName });
+      const { name } = req.body;
+      const origins = await Origins.create({ name });
       res.status(201).json({
-        message: "Thực hiện thành công",
-        code: 0,
-        data: origin,
-      });
-    } catch (error) {
-      console.log(error);
-      let errorMessage = "Thực hiện thất bại";
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      res.status(401).json({
-        message: "Thực hiện thất bại",
-        code: 1,
-        error: errorMessage,
-      });
-    }
-  },
-
-  getOrigins: async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { originID, originName } = req.query;
-      const whereClause: any = {};
-
-      if (originID) {
-        whereClause.originId = originID;
-      }
-      if (originName) {
-        whereClause.originName = { [Op.like]: `%${originName}%` };
-      }
-
-      const origins = await Origins.findAll({ where: whereClause });
-      res.status(200).json({
         message: "Thực hiện thành công",
         code: 0,
         data: origins,
@@ -58,15 +26,47 @@ const OriginsController = {
     }
   },
 
+  getOrigins: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { originId, name } = req.query;
+      const whereClause: any = {};
+
+      if (originId) {
+        whereClause.originId = originId;
+      }
+      if (name) {
+        whereClause.name = { [Op.like]: `%${name}%` };
+      }
+
+      const originss = await Origins.findAll({ where: whereClause });
+      res.status(200).json({
+        message: "Thực hiện thành công",
+        code: 0,
+        data: originss,
+      });
+    } catch (error) {
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
+    }
+  },
+
   getById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { originID } = req.body;
-      const origin = await Origins.findByPk(originID);
-      if (origin) {
+      const { originId } = req.body;
+      const origins = await Origins.findByPk(originId);
+      if (origins) {
         res.status(200).json({
           message: "Thực hiện thành công",
           code: 0,
-          data: origin,
+          data: origins,
         });
       } else {
         res.status(404).json({
@@ -90,15 +90,15 @@ const OriginsController = {
 
   updateOrigin: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { originID } = req.params;
-      const { originName } = req.body;
-      const origin = await Origins.findByPk(originID);
-      if (origin) {
-        await origin.update({ originName });
+      const { originId } = req.params;
+      const { name } = req.body;
+      const origins = await Origins.findByPk(originId);
+      if (origins) {
+        await origins.update({ name });
         res.status(200).json({
           message: "Thực hiện thành công",
           code: 0,
-          data: origin,
+          data: origins,
         });
       } else {
         res.status(404).json({
@@ -122,10 +122,10 @@ const OriginsController = {
 
   deleteOrigin: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { originID } = req.params;
-      const origin = await Origins.findByPk(originID);
-      if (origin) {
-        await origin.destroy();
+      const { originId } = req.params;
+      const origins = await Origins.findByPk(originId);
+      if (origins) {
+        await origins.destroy();
         res.status(200).json({
           message: "Thực hiện thành công",
           code: 0,

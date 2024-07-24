@@ -53,11 +53,11 @@ const VoucherController = {
     }
   },
 
-  // READ - Get voucher by ID
+  // READ - Get voucher by Id
   getVoucherById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { voucherID } = req.params;
-      const vouchers = await Vouchers.findByPk(voucherID);
+      const { voucherId } = req.params;
+      const vouchers = await Vouchers.findByPk(voucherId);
       if (vouchers) {
         res.json({ data: vouchers });
       } else {
@@ -69,13 +69,13 @@ const VoucherController = {
     }
   },
 
-  // UPDATE - Update voucher by ID
+  // UPDATE - Update voucher by Id
   updateVoucher: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { voucherID } = req.params;
+      const { voucherId } = req.params;
       const { describe, discount } = req.body;
 
-      const vouchers = await Vouchers.findByPk(voucherID);
+      const vouchers = await Vouchers.findByPk(voucherId);
       if (vouchers) {
         await vouchers.update({
           describe,
@@ -91,11 +91,11 @@ const VoucherController = {
     }
   },
 
-  // DELETE - Delete voucher by ID
+  // DELETE - Delete voucher by Id
   deleteVoucher: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { voucherID } = req.params;
-      const vouchers = await Vouchers.findByPk(voucherID);
+      const { voucherId } = req.params;
+      const vouchers = await Vouchers.findByPk(voucherId);
       if (vouchers) {
         await vouchers.destroy();
         res.json({ message: "Voucher deleted successfully" });

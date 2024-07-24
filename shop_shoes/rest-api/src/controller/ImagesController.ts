@@ -13,12 +13,12 @@ const ImagesController = {
         return res.status(400).json({ message: "Missing required fields" });
       }
 
-      const image = await Images.create({
+      const images = await Images.create({
         path,
         productId,
       });
 
-      res.json({ data: image, message: "Add new image successfully" });
+      res.json({ data: images, message: "Add new images successfully" });
     } catch (error) {
       console.log(error);
       next(error);
@@ -34,15 +34,15 @@ const ImagesController = {
         whereClause.productId = productId;
       }
 
-      // Find all images with optional Product association
-      const images = await Images.findAll({
+      // Find all imagess with optional Product association
+      const imagess = await Images.findAll({
         where: whereClause,
         include: [Products],
       });
 
-      res.json({ data: images });
+      res.json({ data: imagess });
     } catch (error) {
-      console.error("Error retrieving images:", error);
+      console.error("Error retrieving imagess:", error);
       next(error);
     }
   },
@@ -50,9 +50,9 @@ const ImagesController = {
   getImageById: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { imageId } = req.body;
-      const image = await Images.findByPk(imageId, { include: [Products] });
-      if (image) {
-        res.json({ data: image });
+      const images = await Images.findByPk(imageId, { include: [Products] });
+      if (images) {
+        res.json({ data: images });
       } else {
         res.status(404).json({ message: "Image not found" });
       }
@@ -72,9 +72,9 @@ const ImagesController = {
         return res.status(400).json({ message: "Missing required fields" });
       }
 
-      const image = await Images.findByPk(imageId);
-      if (image) {
-        await image.update({
+      const imagess = await Images.findByPk(imageId);
+      if (imagess) {
+        await imagess.update({
           path,
           productId,
         });
@@ -91,9 +91,9 @@ const ImagesController = {
   deleteImage: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { imageId } = req.body;
-      const image = await Images.findByPk(imageId);
-      if (image) {
-        await image.destroy();
+      const images = await Images.findByPk(imageId);
+      if (images) {
+        await images.destroy();
         res.json({ message: "Image deleted successfully" });
       } else {
         res.status(404).json({ message: "Image not found" });

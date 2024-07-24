@@ -20,7 +20,7 @@ export class ProductDetails extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  public productDetailID!: number;
+  public productDetailId!: number;
 
   @Column
   public name!: string;

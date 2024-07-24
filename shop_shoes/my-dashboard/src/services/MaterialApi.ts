@@ -17,14 +17,14 @@ const MaterialService = {
   },
 
   // Lấy một màu sắc dựa trên ID
-  getMaterialById: async (materialID: number) => {
+  getMaterialById: async (materialId: number) => {
     try {
       const response = await AxiosClient.post<any, Response<any>>(
-        `${API_URL}/${materialID}`
+        `${API_URL}/${materialId}`
       );
       return response;
     } catch (error) {
-      console.error(`Lỗi khi lấy thông tin màu sắc ${materialID}`, error);
+      console.error(`Lỗi khi lấy thông tin màu sắc ${materialId}`, error);
       throw error;
     }
   },
@@ -44,29 +44,29 @@ const MaterialService = {
   },
 
   // Cập nhật thông tin một màu sắc đã có
-  updateMaterial: async (materialID: number, materialData: any) => {
+  updateMaterial: async (materialId: number, materialData: any) => {
     try {
       const response = await AxiosClient.post<any, Response<any>>(
-        `${API_URL}/edit/${materialID}`,
+        `${API_URL}/edit/${materialId}`,
         materialData
       );
       return response;
     } catch (error) {
-      console.error(`Lỗi khi cập nhật màu sắc ${materialID}`, error);
+      console.error(`Lỗi khi cập nhật màu sắc ${materialId}`, error);
       throw error;
     }
   },
 
   // Xóa một màu sắc dựa trênF ID
-  deleteMaterial: async (materialID: number) => {
+  deleteMaterial: async (materialId: number) => {
     try {
       const response = await AxiosClient.post<any, Response<any>>(
         `${API_URL}/remove`,
-        materialID
+        materialId
       );
       return response;
     } catch (error) {
-      console.error(`Lỗi khi xóa màu sắc ${materialID}`, error);
+      console.error(`Lỗi khi xóa màu sắc ${materialId}`, error);
       throw error;
     }
   },

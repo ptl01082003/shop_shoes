@@ -6,8 +6,8 @@ import { SizeProductDetails } from "../models/SizeProductDetails";
 const SizeController = {
   createSize: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { sizeName } = req.body;
-      const newSize = await Sizes.create({ sizeName });
+      const { name } = req.body;
+      const newSize = await Sizes.create({ name });
 
       res.status(201).json({
         message: "Size created successfully",
@@ -50,12 +50,12 @@ const SizeController = {
 
   updateSize: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { sizeID } = req.body;
-      const { sizeName } = req.body;
-      const size = await Sizes.findByPk(sizeID);
+      const { sizeId } = req.body;
+      const { name } = req.body;
+      const size = await Sizes.findByPk(sizeId);
 
       if (size) {
-        await size.update({ sizeName });
+        await size.update({ name });
 
         res.status(200).json({
           message: "Size updated successfully",
@@ -79,8 +79,8 @@ const SizeController = {
 
   deleteSize: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { sizeID } = req.body;
-      const size = await Sizes.findByPk(sizeID);
+      const { sizeId } = req.body;
+      const size = await Sizes.findByPk(sizeId);
 
       if (size) {
         await size.destroy(); // Changed to instance method destroy()
@@ -106,8 +106,8 @@ const SizeController = {
 
   getSizeById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { sizeID } = req.body;
-      const size = await Sizes.findByPk(sizeID, {
+      const { sizeId } = req.body;
+      const size = await Sizes.findByPk(sizeId, {
         include: [SizeProductDetails], // Include SizeProductDetails if needed
       });
 

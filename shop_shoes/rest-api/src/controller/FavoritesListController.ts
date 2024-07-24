@@ -4,11 +4,11 @@ import { FavoritesList } from "../models/FavoritesList";
 const FavoritesListController = {
   addFavorite: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { productID, customerID } = req.body;
+      const { productId, customerId } = req.body;
 
       const newFavorite = await FavoritesList.create({
-        productID,
-        customerID,
+        productId,
+        customerId,
       });
 
       res.json({ data: newFavorite, message: "Favorite added successfully" });
@@ -46,11 +46,11 @@ const FavoritesListController = {
   updateFavorite: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const { productID, customerID } = req.body;
+      const { productId, customerId } = req.body;
 
       const favorite = await FavoritesList.findByPk(id);
       if (favorite) {
-        await favorite.update({ productID, customerID });
+        await favorite.update({ productId, customerId });
         res.json({ message: "Favorite updated successfully" });
       } else {
         res.status(404).json({ message: "Favorite not found" });

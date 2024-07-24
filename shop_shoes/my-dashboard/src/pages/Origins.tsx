@@ -7,7 +7,7 @@ import { tableCustomizeStyle } from "../styles/styles";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 type FieldType = {
-  originName?: string;
+  name?: string;
 };
 
 export default function OriginsPage() {
@@ -23,13 +23,13 @@ export default function OriginsPage() {
   const columns = [
     {
       title: "ID",
-      dataIndex: "originID",
+      dataIndex: "originId",
       key: "originId",
     },
     {
-      title: "Màu sắc",
-      dataIndex: "originName",
-      key: "originName",
+      title: "Xuất xứ",
+      dataIndex: "name",
+      key: "name",
     },
     {
       render: (_: any, record: any) => {
@@ -143,8 +143,8 @@ export default function OriginsPage() {
           autoComplete="off"
         >
           <Form.Item<FieldType>
-            label="originName"
-            name="originName"
+            label="name"
+            name="name"
             rules={[{ required: true, message: "Tên không được để trống!" }]}
           >
             <Input />
@@ -179,8 +179,8 @@ export default function OriginsPage() {
           autoComplete="off"
         >
           <Form.Item<FieldType>
-            label="originName"
-            name="originName"
+            label="name"
+            name="name"
             rules={[{ required: true, message: "Tên không được để trống!" }]}
           >
             <Input />

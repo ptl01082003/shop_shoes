@@ -11,50 +11,53 @@ const ProductsController = {
   addProduct: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const {
-        productsName,
-        productImportPrice,
-        productPrice,
+        name,
+        importPrice,
+        price,
         status,
         originId,
         styleId,
         materialId,
         brandId,
-        imageGallery,
-        productSizes,
+        gallery,
+        sizes,
         productDetails,
       } = req.body;
 
-      const product = await Products.create({
-        productsName,
-        productImportPrice,
-        productPrice,
+      const products = await Products.create({
+        name,
+        importPrice,
+        price,
         status,
         originId,
         styleId,
         materialId,
         brandId,
+        gallery,
+        sizes,
+        productDetails,
       });
 
       const newProductDetails = await ProductDetails.create({
-        productId: product.productsID,
+        productId: products.productId,
         productDetaildescription: productDetails,
       });
 
-      if (Array.isArray(imageGallery)) {
-        for await (const imagePath of imageGallery) {
+      if (Array.isArray(gallery)) {
+        for await (const imagePath of gallery) {
           await Images.create({
             imagePath,
-            productID: product.productsID,
+            productId: products.productId,
           });
         }
       }
 
-      if (Array.isArray(productSizes)) {
-        for await (const sizes of productSizes) {
+      if (Array.isArray(sizes)) {
+        for await (const size of sizes) {
           await SizeProductDetails.create({
-            productDetailId: newProductDetails.productDetailid,
-            sizeId: sizes?.sizeID,
-            quantity: sizes?.quantity,
+            productDetailId: newProductDetails.productDetailId,
+            sizeId: size?.sizeID,
+            quantity: size?.quantity,
           });
         }
       }
@@ -72,7 +75,7 @@ const ProductsController = {
 
   getProducts: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { productID, productCode } = req.query;
+      const { productId, productCode } = req.query;
       const whereClause: any = {};
 
       if (productId) {
@@ -88,22 +91,22 @@ const ProductsController = {
 
       for await (const product of products) {
         const productDetails = await ProductDetails.findOne({
-          where: { productId: product.productsID },
-          attributes: ["productDetaildescription", "productDetailid"],
+          where: { productId: product.productId },
+          attributes: ["productDetaildescription", "productDetailId"],
         });
 
         const images = await Images.findAll({
           where: { productId: product.productId },
           attributes: ["imagePath"],
         });
-        const productSizes = await SizeProductDetails.findAll({
-          where: { productDetailId: productDetails?.productDetailid },
+        const sizes = await SizeProductDetails.findAll({
+          where: { productDetailId: productDetails?.productDetailId },
           attributes: ["sizeId", "quantity"],
         });
 
         transferData.push({
-          productSizes,
-          imageGallery: images,
+          sizes,
+          gallery: images,
           ...product?.toJSON(),
           ...productDetails?.toJSON(),
         });
@@ -122,7 +125,7 @@ const ProductsController = {
   getById: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { productId } = req.body;
-      const product = await Products.findOne({
+      const products = await Products.findOne({
         where: {
           productsId: productId,
         },
@@ -132,15 +135,15 @@ const ProductsController = {
         attributes: { include: ["productDetaildescription"] },
       });
       const sizes = await SizeProductDetails.findAll({
-        where: { productId: product?.productId },
+        where: { productId: products?.productId },
         include: [{ model: Sizes, attributes: ["sizeName"] }],
       });
-      if (product) {
+      if (products) {
         res.status(200).json({
           message: "Thực hiện thành công",
           code: 0,
           data: {
-            ...product,
+            ...products,
             ...productDetails,
             ...sizes,
           },
@@ -169,33 +172,37 @@ const ProductsController = {
     try {
       const { productId } = req.body;
       const {
-        productsName,
-        productImportPrice,
-        productPrice,
+        name,
+        importPrice,
+        price,
         status,
-        display,
         originId,
         styleId,
         materialId,
         brandId,
+        gallery,
+        sizes,
+        productDetails,
       } = req.body;
-      const product = await Products.findByPk(productId);
-      if (product) {
-        await product.update({
-          productsName,
-          productImportPrice,
-          productPrice,
+      const products = await Products.findByPk(productId);
+      if (products) {
+        await products.update({
+          name,
+          importPrice,
+          price,
           status,
-          display,
           originId,
           styleId,
           materialId,
           brandId,
+          gallery,
+          sizes,
+          productDetails,
         });
         res.status(200).json({
           message: "Thực hiện thành công",
           code: 0,
-          data: product,
+          data: products,
         });
       } else {
         res.status(404).json({
@@ -210,16 +217,16 @@ const ProductsController = {
 
   deleteProduct: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { productsID } = req.body;
-      const product = await Products.findOne({ where: { productsID } });
-      if (product) {
+      const { productId } = req.body;
+      const products = await Products.findOne({ where: { productId } });
+      if (products) {
         await Images.destroy({
-          where: { productID: productsID },
+          where: { productId: productId },
         });
         await ProductDetails.destroy({
-          where: { productId: productsID },
+          where: { productId: productId },
         });
-        await product.destroy();
+        await products.destroy();
         res.json(
           ResponseBody({
             code: RESPONSE_CODE.SUCCESS,

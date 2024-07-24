@@ -1,4 +1,3 @@
-
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import "./assets/styles/main.css";
@@ -15,13 +14,13 @@ import Tables from "./pages/Tables";
 import { ToastContainer } from "react-toastify";
 import PrivateRouter from "./components/privateRouter/PrivateRouter";
 import BrandsPage from "./pages/Brands";
+import StylesPage from "./pages/Styles";
 import MaterialsPage from "./pages/Materials";
 import OriginsPage from "./pages/Origins";
-import ProductDetailsPage from "./pages/ProductDetails";
-import ProductPage from "./pages/Products";
+import SizePage from "./pages/Sizes";
 import PromotionsPage from "./pages/Promotions";
-import SizesPage from "./pages/Sizes";
-import StylesPage from "./pages/Styles";
+import ProductPage from "./pages/Products";
+// import ProductDetailsPage from "./pages/ProductDetails";
 
 function App() {
   return (
@@ -53,10 +52,10 @@ function App() {
             <Route path={"styles"} element={<StylesPage />} />
             <Route path={"materials"} element={<MaterialsPage />} />
             <Route path={"origins"} element={<OriginsPage />} />
-            <Route path={"sizes"} element={<SizesPage />} />
+            <Route path={"sizes"} element={<SizePage />} />
             <Route path={"promotions"} element={<PromotionsPage />} />
             <Route path={"products"} element={<ProductPage />} />
-            <Route path={"product-details"} element={<ProductDetailsPage />} />
+            {/* <Route path={"product-details"} element={<ProductDetailsPage />} /> */}
           </Route>
         </Routes>
       </Router>

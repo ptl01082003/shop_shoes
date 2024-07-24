@@ -9,7 +9,7 @@ const routerProductDetail = Router();
 routerProductDetail.post("/", ProductDetailsController.getAllProductDetails);
 
 routerProductDetail.use(checkAuth);
-routerProductDetail.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
+// routerProductDetail.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
 
 routerProductDetail.post(
   "/create",

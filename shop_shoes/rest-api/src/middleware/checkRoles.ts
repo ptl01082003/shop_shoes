@@ -5,12 +5,12 @@ import { RESPONSE_CODE, ResponseBody } from "../constants";
 
 export function checkRoles(roles: Array<keyof typeof ROLE_TYPES>) {
   return async (req: Request, res: Response, next: NextFunction) => {
-    const userId = req.userId;
-    const role = (await redis.get(
-      `roles-${userId}`
+    const userssId = req.userId;
+    const roles = (await redis.get(
+      `roles-${userssId}`
     )) as keyof typeof ROLE_TYPES;
 
-    if (roles.includes(role)) {
+    if (roles.includes(roles)) {
       next();
     } else {
       return res.json(

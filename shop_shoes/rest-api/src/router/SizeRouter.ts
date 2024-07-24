@@ -8,7 +8,7 @@ const routerSize = Router();
 routerSize.post("/", SizesController.getAllSizes);
 
 routerSize.use(checkAuth);
-routerSize.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
+// routerSize.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
 
 routerSize.post("/create", SizesController.createSize);
 routerSize.post("/edit", SizesController.updateSize);
