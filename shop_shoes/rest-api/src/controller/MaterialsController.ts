@@ -1,28 +1,20 @@
 import { Request, Response, NextFunction } from "express";
 import { Materials } from "../models/Materials";
 import { Op } from "sequelize";
+import { RESPONSE_CODE, ResponseBody } from "../constants";
 
 const MaterialsController = {
   addMaterial: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { materialsName } = req.body;
-      const materials = await Materials.create({ materialsName });
-      res.status(201).json({
+      const { name } = req.body;
+      const material = await Materials.create({ name });
+      res.json(ResponseBody({
+        data: material,
+        code: RESPONSE_CODE.SUCCESS,
         message: "Thực hiện thành công",
-        code: 0,
-        data: materials,
-      });
+      }));
     } catch (error) {
-      console.log(error);
-      let errorMessage = "Thực hiện thất bại";
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      res.status(401).json({
-        message: "Thực hiện thất bại",
-        code: 1,
-        error: errorMessage,
-      });
+      next(error)
     }
   },
 

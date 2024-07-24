@@ -28,6 +28,7 @@ AxiosClient.interceptors.request.use(
 
 AxiosClient.interceptors.response.use(
   async function (response) {
+    console.log("response", response, response.data);
     const { code } = response.data;
     if (code == RESPONSE_CODE.NOT_AUTHOR) {
       return window.location.replace("/sign-in");

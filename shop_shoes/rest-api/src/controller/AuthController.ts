@@ -60,7 +60,7 @@ const authCtrl = {
           const refreshToken = authCtrl.generateRefreshToken({
             userId: user.userId,
           });
-          await redis.set(`roless-${user.userId}`, user.roles.type);
+          await redis.set(`roles-${user.userId}`, user.roles.type);
           await redis.set(`accessToken-${user.userId}`, accessToken);
           await redis.set(`refreshToken-${user.userId}`, refreshToken);
           return res.json(
@@ -127,7 +127,7 @@ const authCtrl = {
           const refreshToken = authCtrl.generateRefreshToken({
             userId: user.userId,
           });
-          await redis.set(`roless-${user.userId}`, user.roles.type);
+          await redis.set(`roles-${user.userId}`, user.roles.type);
           await redis.set(`accessToken-${user.userId}`, accessToken);
           await redis.set(`refreshToken-${user.userId}`, refreshToken);
           return res.json(
@@ -166,7 +166,7 @@ const authCtrl = {
   logOut: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.userId;
-      await redis.del(`roless-${userId}`);
+      await redis.del(`roles-${userId}`);
       await redis.del(`accessToken-${userId}`);
       await redis.del(`refreshToken-${userId}`);
       return res.json(

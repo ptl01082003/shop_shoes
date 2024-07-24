@@ -64,19 +64,12 @@ const ProductService = {
   },
 
   deleteProduct: async (productId: number) => {
-    try {
-      const response = await AxiosClient.post<any, Response<any>>(
-        `${API_URL}/remove`,
-        {
-          productId,
-        }
-      );
-      console.log(response);
-      return response;
-    } catch (error) {
-      console.error(`Lỗi khi xóa sản phẩm ${productId}`, error);
-      throw error;
-    }
+    return await AxiosClient.post<any, Response<any>>(
+      `${API_URL}/remove`,
+      {
+        productId,
+      }
+    );
   },
 };
 

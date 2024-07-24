@@ -75,33 +75,24 @@ const ProductsController = {
 
   getProducts: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { productId, productCode } = req.query;
-      const whereClause: any = {};
 
-      if (productId) {
-        whereClause.productsId = productId;
-      }
-      if (productCode) {
-        whereClause.productCode = { [Op.like]: `%${productCode}%` };
-      }
-
-      const products = await Products.findAll({ where: whereClause });
+      const products = await Products.findAll();
 
       const transferData = [];
 
       for await (const product of products) {
         const productDetails = await ProductDetails.findOne({
           where: { productId: product.productId },
-          attributes: ["productDetaildescription", "productDetailId"],
+          attributes: ["description", "productDetailId"],
         });
 
         const images = await Images.findAll({
           where: { productId: product.productId },
-          attributes: ["imagePath"],
+          attributes: ["path"],
         });
         const sizes = await SizeProductDetails.findAll({
           where: { productDetailId: productDetails?.productDetailId },
-          attributes: ["sizeId", "quantity"],
+          attributes: ["sizeID", "quantity"],
         });
 
         transferData.push({

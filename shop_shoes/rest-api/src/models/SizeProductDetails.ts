@@ -23,7 +23,7 @@ export class SizeProductDetails extends Model {
 
   @ForeignKey(() => Sizes)
   @Column
-  public sizeID!: number;
+  public !: number;
 
   @ForeignKey(() => ProductDetails)
   @Column

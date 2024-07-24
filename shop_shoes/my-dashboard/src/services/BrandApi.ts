@@ -41,18 +41,14 @@ const BrandService = {
     }
   },
 
-  updateBrand: async (brandId: number, brandData: any) => {
+  updateBrand: async (params: any) => {
     try {
       const response = await AxiosClient.post<any, Response<any>>(
         `${API_URL}/edit`,
-        {
-          brandId,
-          brandData,
-        }
+        params
       );
       return response;
     } catch (error) {
-      console.error(`Error updating brand ${brandId}`, error);
       throw error;
     }
   },

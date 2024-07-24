@@ -124,10 +124,10 @@ export default function BrandsPage() {
   const onEditFinish: FormProps<FieldType>["onFinish"] = async (
     values: FieldType
   ) => {
-    const res = await BrandService.updateBrand(
-      openEditModal?.data?.brandId,
-      values
-    );
+    const res = await BrandService.updateBrand({
+      ...values,
+      brandId: openEditModal?.data?.brandId,
+    });
     if (res.code === 0) {
       setOpenEditModal(undefined);
       setShouldRender((x) => !x);

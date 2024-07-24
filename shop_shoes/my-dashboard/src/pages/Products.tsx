@@ -166,7 +166,8 @@ const ProductPage: React.FC = () => {
         productDetails: productDetails.current,
         sizeQuantities: values.productDetails,
       };
-
+      console.log("productData", productData);
+      return
       let response;
       if (openModal.mode === "create") {
         response = await ProductService.createProduct(productData);
@@ -196,11 +197,11 @@ const ProductPage: React.FC = () => {
     }
   };
 
-  const handleDeleteProduct = async (productsID: number) => {
-    const response = await ProductService.deleteProduct(productsID);
+  const handleDeleteProduct = async (productId: number) => {
+    const response = await ProductService.deleteProduct(productId);
     if (response?.code === 0) {
       setProducts((prev) =>
-        prev.filter((item) => item.productsID !== productsID)
+        prev.filter((item) => item.productId !== productId)
       );
       message.success("Xóa sản phẩm thành công!");
     } else {
@@ -268,7 +269,7 @@ const ProductPage: React.FC = () => {
           </Button>
           <Button
             icon={<DeleteOutlined />}
-            onClick={() => handleDeleteProduct(record.productsID)}
+            onClick={() => handleDeleteProduct(record.productId)}
           >
             Xóa
           </Button>
@@ -402,7 +403,7 @@ const ProductPage: React.FC = () => {
             />
           </Form.Item>
           <Form.Item
-            name="productPrice"
+            name="price"
             label="Giá bán"
             rules={[{ required: true, message: "Giá bán không được để trống" }]}
           >
@@ -438,9 +439,9 @@ const ProductPage: React.FC = () => {
             ]}
           >
             <Select placeholder="Chọn tại đây">
-              {styles.map((style) => (
-                <Option key={style.styleId} value={style.styleId}>
-                  {style.name}
+              {styles?.map((style) => (
+                <Option key={style?.styleId + style?.name} value={style?.styleId}>
+                  {style?.name}
                 </Option>
               ))}
             </Select>

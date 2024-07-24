@@ -15,6 +15,7 @@ import { Brands } from "./Brands";
 import { Materials } from "./Materials";
 import { Origins } from "./Origins";
 import { Styles } from "./Styles";
+import { DataTypes } from "sequelize";
 
 @Table({
   tableName: "products",
@@ -39,7 +40,9 @@ export class Products extends Model {
   @Column(DataType.DECIMAL(16, 2))
   public price?: number;
 
-  @Column
+  @Column({
+    type: DataTypes.BOOLEAN
+  })
   public status?: boolean;
 
   @Column
@@ -50,33 +53,33 @@ export class Products extends Model {
   public originId?: number;
 
   @BelongsTo(() => Origins)
-  public origins?: Origins;
+  public origin?: Origins;
 
   @ForeignKey(() => Styles)
   @Column
   public styleId?: number;
 
   @BelongsTo(() => Styles)
-  public styles?: Styles;
+  public style?: Styles;
 
   @ForeignKey(() => Materials)
   @Column
   public materialId?: number;
 
   @BelongsTo(() => Materials)
-  public materials?: Materials;
+  public material?: Materials;
 
   @ForeignKey(() => Brands)
   @Column
-  public brandID?: number;
+  public brandId?: number;
 
   @BelongsTo(() => Brands)
-  public brands?: Brands;
+  public brand?: Brands;
 
   @BeforeCreate
   static genaratorProductCode(instance: Products) {
-    instance.productId = genaratorProductsId();
     const uuid = uuidv4();
+    instance.productId = genaratorProductsId();
     instance.code = uuid.slice(0, 6).toUpperCase();
   }
 }

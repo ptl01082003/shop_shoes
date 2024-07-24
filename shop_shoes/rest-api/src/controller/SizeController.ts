@@ -1,7 +1,7 @@
-import { Request, Response, NextFunction } from "express";
-import { Sizes } from "../models/Sizes";
-import { ProductDetails } from "../models/ProductDetails";
+import { NextFunction, Request, Response } from "express";
+import { RESPONSE_CODE, ResponseBody } from "../constants";
 import { SizeProductDetails } from "../models/SizeProductDetails";
+import { Sizes } from "../models/Sizes";
 
 const SizeController = {
   createSize: async (req: Request, res: Response, next: NextFunction) => {
@@ -25,26 +25,16 @@ const SizeController = {
 
   getAllSizes: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const sizes = await Sizes.findAll({
-        include: [
-          {
-            model: SizeProductDetails,
-            include: [ProductDetails],
-          },
-        ],
-      });
-
-      res.status(200).json({
-        message: "Sizes fetched successfully",
-        code: 0,
-        data: sizes,
-      });
+      const sizes = await Sizes.findAll();
+      res.json(
+        ResponseBody({
+          code: RESPONSE_CODE.SUCCESS,
+          data: sizes,
+          message: "Thực hiện thành công",
+        }
+        ));
     } catch (error) {
-      console.error("Error fetching sizes:", error);
-      res.status(500).json({
-        message: "Failed to fetch sizes",
-        code: 1,
-      });
+      next(error);
     }
   },
 

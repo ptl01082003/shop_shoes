@@ -26,6 +26,7 @@ export const checkAuth = (req: Request, res: Response, next: NextFunction) => {
             );
             if (tokenInRedis === token) {
               req.userId = decoded.userId;
+              console.log("req.userId", req.userId)
               next();
             } else {
               return res.json(
