@@ -6,6 +6,7 @@ import { Images } from "../models/Images";
 import { SizeProductDetails } from "../models/SizeProductDetails";
 import { Sizes } from "../models/Sizes";
 import { RESPONSE_CODE, ResponseBody } from "../constants";
+import { isColString } from "sequelize/types/utils";
 
 const ProductsController = {
   addProduct: async (req: Request, res: Response, next: NextFunction) => {
@@ -40,13 +41,14 @@ const ProductsController = {
 
       const newProductDetails = await ProductDetails.create({
         productId: products.productId,
-        productDetaildescription: productDetails,
+        description: productDetails,
       });
+      console.log(newProductDetails);
 
       if (Array.isArray(gallery)) {
-        for await (const imagePath of gallery) {
+        for await (const path of gallery) {
           await Images.create({
-            imagePath,
+            path,
             productId: products.productId,
           });
         }
@@ -56,11 +58,12 @@ const ProductsController = {
         for await (const size of sizes) {
           await SizeProductDetails.create({
             productDetailId: newProductDetails.productDetailId,
-            sizeId: size?.sizeID,
+            sizeId: size?.sizeId,
             quantity: size?.quantity,
           });
         }
       }
+      console.log(sizes);
 
       res.json(
         ResponseBody({
@@ -75,7 +78,6 @@ const ProductsController = {
 
   getProducts: async (req: Request, res: Response, next: NextFunction) => {
     try {
-
       const products = await Products.findAll();
 
       const transferData = [];
@@ -118,16 +120,16 @@ const ProductsController = {
       const { productId } = req.body;
       const products = await Products.findOne({
         where: {
-          productsId: productId,
+          productId: productId,
         },
       });
       const productDetails = await ProductDetails.findOne({
         where: { productId: productId },
-        attributes: { include: ["productDetaildescription"] },
+        attributes: { include: ["description"] },
       });
       const sizes = await SizeProductDetails.findAll({
         where: { productId: products?.productId },
-        include: [{ model: Sizes, attributes: ["sizeName"] }],
+        include: [{ model: Sizes, attributes: ["name"] }],
       });
       if (products) {
         res.status(200).json({

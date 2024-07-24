@@ -92,69 +92,6 @@ const ProductPage: React.FC = () => {
     })();
   }, []);
 
-  // const onFinish = async (values: any) => {
-  //   try {
-  //     // Prepare product data
-  //     const lstImageGallery = fileList.map(
-  //       (files) => files.response.data?.[0] || ""
-  //     );
-  //     const productData = {
-  //       ...values,
-  //       imageGallery: lstImageGallery,
-  //       productDetails: productDetails.current,
-  //     };
-
-  //     // productData.images = imageUrls.filter((url) => url !== null);
-  //     let response;
-  //     if (openModal.mode === "create") {
-  //       // Create Product
-  //       response = await ProductService.createProduct(productData);
-
-  //       toast.success("Thêm sản phẩm thành công!");
-
-  //       // Create Product Details
-  //       if (values.productDetails) {
-  //         await ProductDetailsService.createProductDetail(
-  //           values.productDetails
-  //         );
-  //         message.success("Thêm chi tiết sản phẩm thành công!");
-  //       }
-  //     } else {
-  //       // Update Product
-  //       response = await ProductService.updateProduct(
-  //         openModal.data.productsID,
-  //         productData
-  //       );
-  //       message.success("Cập nhật sản phẩm thành công!");
-
-  //       // Update Product Details
-  //       if (values.productDetails) {
-  //         await ProductDetailsService.updateProductDetail(
-  //           openModal.data.productDetailID,
-  //           values.productDetails
-  //         );
-  //         message.success("Cập nhật chi tiết sản phẩm thành công!");
-  //       }
-  //     }
-
-  //     if (response) {
-  //       setOpenModal({ open: false, mode: openModal.mode });
-  //       setProducts((prev) =>
-  //         openModal.mode === "create"
-  //           ? [...prev, response.data]
-  //           : prev.map((item) =>
-  //               item.productsID === response.data.productsID
-  //                 ? response.data
-  //                 : item
-  //             )
-  //       );
-  //     }
-  //   } catch (error) {
-  //     message.error("Có lỗi xảy ra khi xử lý dữ liệu.");
-  //     console.error("Error:", error);
-  //   }
-  // };
-
   const onFinish = async (values: any) => {
     try {
       const lstImageGallery = fileList.map(
@@ -162,7 +99,7 @@ const ProductPage: React.FC = () => {
       );
       const productData = {
         ...values,
-        imageGallery: lstImageGallery,
+        gallery: lstImageGallery,
         productDetails: productDetails.current,
         sizeQuantities: values.productDetails,
       };
@@ -174,7 +111,7 @@ const ProductPage: React.FC = () => {
         toast.success("Thêm sản phẩm thành công!");
       } else {
         response = await ProductService.updateProduct(
-          openModal.data.productsID,
+          openModal.data.productId,
           productData
         );
         toast.success("Cập nhật sản phẩm thành công!");
@@ -186,7 +123,7 @@ const ProductPage: React.FC = () => {
           openModal.mode === "create"
             ? [...prev, response.data]
             : prev.map((item) =>
-                item.productsID === response.data.productsID
+                item.productId === response.data.productId
                   ? response.data
                   : item
               )
@@ -211,12 +148,12 @@ const ProductPage: React.FC = () => {
 
   const handleEditProduct = (product: any) => {
     productDetails.current = product?.productDetaildescription || "";
-    if (product?.imageGallery && Array.isArray(product.imageGallery)) {
-      const transferImage = product.imageGallery.map((images) => ({
-        uid: images?.imagePath,
-        name: images?.imagePath,
+    if (product?.gallery && Array.isArray(product.gallery)) {
+      const transferImage = product.gallery.map((images) => ({
+        uid: images?.path,
+        name: images?.path,
         status: "done",
-        url: URL_IMAGE(images?.imagePath),
+        url: URL_IMAGE(images?.path),
       }));
       setFileList(transferImage);
     }
@@ -242,8 +179,8 @@ const ProductPage: React.FC = () => {
     },
     {
       title: "Giá bán",
-      dataIndex: "productPrice",
-      key: "productPrice",
+      dataIndex: "price",
+      key: "price",
     },
     {
       title: "Trạng thái",
@@ -353,7 +290,7 @@ const ProductPage: React.FC = () => {
         </Button>
       </div>
       <div css={tableCustomizeStyle} className="table-responsive">
-        <Table columns={columns} dataSource={products} rowKey="productsID" />
+        <Table columns={columns} dataSource={products} rowKey="productId" />
       </div>
 
       <Drawer

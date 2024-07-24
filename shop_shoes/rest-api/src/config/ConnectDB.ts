@@ -1,5 +1,8 @@
+import bcrypt from "bcrypt";
 import path from "path";
 import { Sequelize } from "sequelize-typescript";
+import { ROLE_TYPES, Roles } from "../models/Roles";
+import { Users } from "../models/Users";
 
 export async function connectDB() {
   const sequelize = new Sequelize({
@@ -32,6 +35,6 @@ export async function connectDB() {
   // });
 
   await sequelize.authenticate();
-  await sequelize.sync({ force: true });
+  await sequelize.sync({ force: false });
   console.log("Connection has been established successfully.");
 }

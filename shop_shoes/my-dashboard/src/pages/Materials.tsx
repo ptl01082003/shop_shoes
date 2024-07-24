@@ -139,7 +139,7 @@ export default function MaterialPage() {
           autoComplete="off"
         >
           <Form.Item
-            label="Material Name"
+            label="Chất liệu"
             name="name"
             rules={[
               { required: true, message: "Please input the material name!" },
