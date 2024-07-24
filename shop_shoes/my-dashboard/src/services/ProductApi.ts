@@ -4,12 +4,12 @@ import AxiosClient from "../networks/AxiosRequest"; // Đảm bảo rằng modul
 import { Response } from "../constants/constants";
 const API_URL = "/products"; // Đảm bảo rằng URL API này phù hợp với endpoint thực tế của sản phẩm trong hệ thống của bạn
 
-export interface Product {
-  productId: number;
-  name: string;
-  description: string;
-  // Các thuộc tính khác...
-}
+// export interface Product {
+//   productId: number;
+//   name: string;
+//   description: string;
+//   // Các thuộc tính khác...
+// }
 
 const ProductService = {
   getProducts: async () => {
@@ -64,12 +64,9 @@ const ProductService = {
   },
 
   deleteProduct: async (productId: number) => {
-    return await AxiosClient.post<any, Response<any>>(
-      `${API_URL}/remove`,
-      {
-        productId,
-      }
-    );
+    return await AxiosClient.post<any, Response<any>>(`${API_URL}/remove`, {
+      productId,
+    });
   },
 };
 

@@ -9,9 +9,9 @@ const productsRouter = express.Router();
 
 productsRouter.post("/", ProductsController.getProducts);
 
-productsRouter.use(checkAuth);
+// productsRouter.use(checkAuth);
 
-productsRouter.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
+// productsRouter.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
 
 productsRouter.post("/create", ProductsController.addProduct);
 

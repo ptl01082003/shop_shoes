@@ -12,7 +12,7 @@ routerSizeProductDetals.post("/", SizesController.getSizeProductDetails);
 routerSizeProductDetals.use(checkAuth);
 
 // routerSizeProductDetals.use(
-//   checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN])
+// checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]);
 // );
 
 routerSizeProductDetals.post("/create", SizesController.addSizeProductDetail);

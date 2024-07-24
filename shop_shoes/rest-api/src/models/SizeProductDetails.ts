@@ -23,7 +23,7 @@ export class SizeProductDetails extends Model {
 
   @ForeignKey(() => Sizes)
   @Column
-  public!: number;
+  public sizeId!: number;
 
   @ForeignKey(() => ProductDetails)
   @Column
@@ -33,7 +33,7 @@ export class SizeProductDetails extends Model {
   public quantity!: number;
 
   @BelongsTo(() => Sizes)
-  public size!: Sizes;
+  public sizes!: Sizes;
 
   @BelongsTo(() => ProductDetails)
   public productDetails!: ProductDetails;

@@ -38,6 +38,7 @@ import ProductService from "../services/ProductApi";
 import SizesService from "../services/SizeApi";
 import StyleService from "../services/StyleApi";
 import { tableCustomizeStyle } from "../styles/styles";
+import ColumnGroup from "antd/es/table/ColumnGroup";
 
 const { Option } = Select;
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
@@ -104,7 +105,7 @@ const ProductPage: React.FC = () => {
         sizeQuantities: values.productDetails,
       };
       console.log("productData", productData);
-      return
+
       let response;
       if (openModal.mode === "create") {
         response = await ProductService.createProduct(productData);
@@ -129,6 +130,7 @@ const ProductPage: React.FC = () => {
               )
         );
       }
+      return;
     } catch (error) {
       toast.error("Có lỗi xảy ra khi xử lý dữ liệu.");
     }
@@ -147,7 +149,9 @@ const ProductPage: React.FC = () => {
   };
 
   const handleEditProduct = (product: any) => {
-    productDetails.current = product?.productDetaildescription || "";
+    productDetails.current = product?.description || "";
+
+    console.log(productDetails.current);
     if (product?.gallery && Array.isArray(product.gallery)) {
       const transferImage = product.gallery.map((images) => ({
         uid: images?.path,
@@ -157,7 +161,21 @@ const ProductPage: React.FC = () => {
       }));
       setFileList(transferImage);
     }
-    setOpenModal({ open: true, mode: "edit", data: product });
+
+    const productSizes =
+      product?.sizes?.map((size: any) => ({
+        sizeId: size.sizeId,
+        quantity: size.quantity,
+      })) || [];
+
+    setOpenModal({
+      open: true,
+      mode: "edit",
+      data: {
+        ...product,
+        productSizes,
+      },
+    });
     setSelectedProduct(product);
   };
 
@@ -377,7 +395,10 @@ const ProductPage: React.FC = () => {
           >
             <Select placeholder="Chọn tại đây">
               {styles?.map((style) => (
-                <Option key={style?.styleId + style?.name} value={style?.styleId}>
+                <Option
+                  key={style?.styleId + style?.name}
+                  value={style?.styleId}
+                >
                   {style?.name}
                 </Option>
               ))}

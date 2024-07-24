@@ -10,7 +10,7 @@ const routerOrigin = Router();
 routerOrigin.post("/", OriginsController.getOrigins);
 
 routerOrigin.use(checkAuth);
-// routerOrigin.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
+routerOrigin.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
 
 routerOrigin.post("/create", OriginsController.addOrigin);
 routerOrigin.post("/edit", OriginsController.updateOrigin);

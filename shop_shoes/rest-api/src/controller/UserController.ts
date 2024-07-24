@@ -5,9 +5,9 @@ import { Users } from "../models/Users";
 const UserController = {
   getInfo: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const usersId = req.userId;
+      const userId = req.userId;
       const users = await Users.findOne({
-        where: { usersId },
+        where: { userId },
         attributes: {
           exclude: ["password", "createdAt", "updatedAt"],
         },

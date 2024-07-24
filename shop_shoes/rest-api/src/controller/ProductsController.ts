@@ -10,6 +10,72 @@ import { isColString } from "sequelize/types/utils";
 
 const ProductsController = {
   addProduct: async (req: Request, res: Response, next: NextFunction) => {
+    // try {
+    //   const {
+    //     name,
+    //     importPrice,
+    //     price,
+    //     status,
+    //     originId,
+    //     styleId,
+    //     materialId,
+    //     brandId,
+    //     gallery,
+    //     sizes,
+    //     productDetails,
+    //   } = req.body;
+
+    //   const products = await Products.create({
+    //     name,
+    //     importPrice,
+    //     price,
+    //     status,
+    //     originId,
+    //     styleId,
+    //     materialId,
+    //     brandId,
+    //     gallery,
+    //     sizes,
+    //     productDetails,
+    //   });
+
+    //   console.log(req.body);
+    //   const newProductDetails = await ProductDetails.create({
+    //     productId: products.productId,
+    //     description: productDetails,
+    //   });
+    //   console.log(newProductDetails);
+
+    //   if (Array.isArray(gallery)) {
+    //     for await (const path of gallery) {
+    //       await Images.create({
+    //         path,
+    //         productId: products.productId,
+    //       });
+    //     }
+    //   }
+
+    //   if (Array.isArray(sizes)) {
+    //     for await (const size of sizes) {
+    //       await SizeProductDetails.create({
+    //         productDetailId: newProductDetails.productDetailId,
+    //         sizeId: size?.sizeId,
+    //         quantity: size?.quantity,
+    //       });
+    //     }
+    //   }
+    //   console.log(sizes);
+
+    //   res.json(
+    //     ResponseBody({
+    //       code: RESPONSE_CODE.SUCCESS,
+    //       message: "Thực hiện thành công",
+    //     })
+    //   );
+    // } catch (error) {
+    //   console.log(error);
+    //   next(error);
+    // }
     try {
       const {
         name,
@@ -21,11 +87,12 @@ const ProductsController = {
         materialId,
         brandId,
         gallery,
-        sizes,
+        productSizes,
         productDetails,
       } = req.body;
 
-      const products = await Products.create({
+      // Tạo sản phẩm
+      const product = await Products.create({
         name,
         importPrice,
         price,
@@ -35,42 +102,40 @@ const ProductsController = {
         materialId,
         brandId,
         gallery,
-        sizes,
         productDetails,
       });
 
+      // Tạo chi tiết sản phẩm
       const newProductDetails = await ProductDetails.create({
-        productId: products.productId,
+        productId: product.productId,
         description: productDetails,
       });
-      console.log(newProductDetails);
 
+      // Thêm nhiều bản ghi vào bảng SizeProductDetails
+      if (Array.isArray(productSizes)) {
+        const sizeProductDetailsData = productSizes.map((size) => ({
+          productDetailId: newProductDetails.productDetailId,
+          sizeId: size.sizeId,
+          quantity: size.quantity,
+        }));
+
+        await SizeProductDetails.bulkCreate(sizeProductDetailsData);
+      }
+
+      // Thêm hình ảnh vào bảng Images
       if (Array.isArray(gallery)) {
-        for await (const path of gallery) {
-          await Images.create({
-            path,
-            productId: products.productId,
-          });
-        }
+        const imagesData = gallery.map((path) => ({
+          path,
+          productId: product.productId,
+        }));
+
+        await Images.bulkCreate(imagesData);
       }
 
-      if (Array.isArray(sizes)) {
-        for await (const size of sizes) {
-          await SizeProductDetails.create({
-            productDetailId: newProductDetails.productDetailId,
-            sizeId: size?.sizeId,
-            quantity: size?.quantity,
-          });
-        }
-      }
-      console.log(sizes);
-
-      res.json(
-        ResponseBody({
-          code: RESPONSE_CODE.SUCCESS,
-          message: "Thực hiện thành công",
-        })
-      );
+      res.json({
+        code: RESPONSE_CODE.SUCCESS,
+        message: "Thực hiện thành công",
+      });
     } catch (error) {
       next(error);
     }
@@ -94,7 +159,7 @@ const ProductsController = {
         });
         const sizes = await SizeProductDetails.findAll({
           where: { productDetailId: productDetails?.productDetailId },
-          attributes: ["sizeID", "quantity"],
+          attributes: ["sizeId", "quantity"],
         });
 
         transferData.push({
