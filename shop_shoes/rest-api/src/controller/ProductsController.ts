@@ -1,12 +1,14 @@
-import { Request, Response, NextFunction } from "express";
-import { Products } from "../models/Products";
-import { Op } from "sequelize";
-import { ProductDetails } from "../models/ProductDetails";
+import { NextFunction, Request, Response } from "express";
+import { RESPONSE_CODE, ResponseBody } from "../constants";
 import { Images } from "../models/Images";
+import { ProductDetails } from "../models/ProductDetails";
+import { Products } from "../models/Products";
 import { SizeProductDetails } from "../models/SizeProductDetails";
 import { Sizes } from "../models/Sizes";
-import { RESPONSE_CODE, ResponseBody } from "../constants";
-import { isColString } from "sequelize/types/utils";
+import { Materials } from "../models/Materials";
+import { Origins } from "../models/Origins";
+import { Styles } from "../models/Styles";
+import { Brands } from "../models/Brands";
 
 const ProductsController = {
   addProduct: async (req: Request, res: Response, next: NextFunction) => {
@@ -143,7 +145,26 @@ const ProductsController = {
 
   getProducts: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const products = await Products.findAll();
+      const products = await Products.findAll({
+        include: [
+          {
+            model: Materials,
+            attributes: ["name"]
+          },
+          {
+            model: Origins,
+            attributes: ["name"]
+          },
+          {
+            model: Styles,
+            attributes: ["name"]
+          },
+          {
+            model: Brands,
+            attributes: ["name"]
+          }
+        ]
+      });
 
       const transferData = [];
 

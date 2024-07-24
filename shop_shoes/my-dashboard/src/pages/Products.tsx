@@ -30,7 +30,7 @@ import { UploadFile } from "antd/lib";
 import Axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { URL_IMAGE } from "../constants/constants";
+import { TRANSFER_PRICE, URL_IMAGE } from "../constants/constants";
 import BrandService from "../services/BrandApi";
 import MaterialService from "../services/MaterialApi";
 import OriginService from "../services/OriginApi";
@@ -194,11 +194,13 @@ const ProductPage: React.FC = () => {
       title: "Giá nhập",
       dataIndex: "importPrice",
       key: "importPrice",
+      render: (price: string) => TRANSFER_PRICE(price),
     },
     {
       title: "Giá bán",
       dataIndex: "price",
       key: "price",
+      render: (price: string) => TRANSFER_PRICE(price),
     },
     {
       title: "Trạng thái",
@@ -208,8 +210,7 @@ const ProductPage: React.FC = () => {
     },
     {
       title: "Thương hiệu",
-      dataIndex: "name",
-      key: "name",
+      render: (record: any) => record?.brand?.name,
     },
     {
       title: "Hành động",
@@ -520,7 +521,7 @@ const ProductPage: React.FC = () => {
               }}
             />
           </div>
-          <div className="flex col-span-2 justify-center">
+          <div className="flex justify-center col-span-2">
             <Form.Item>
               <Button
                 type="primary"

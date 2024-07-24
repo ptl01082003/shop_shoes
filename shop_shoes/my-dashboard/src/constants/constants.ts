@@ -7,7 +7,6 @@ export const URL_IMAGE = (path) => {
   return `http://localhost:5500/${path}`;
 };
 
-
 export type Response<T> = {
   code: number;
   data: T;
@@ -22,6 +21,7 @@ export enum RESPONSE_CODE {
   INCORRECT = 86,
 }
 
-export const PATH_ROUTER = {
+export const PATH_ROUTER = {};
 
-}
+export const TRANSFER_PRICE = (price: string) =>
+  new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(parseFloat(price))?.replace('₫', 'VNĐ') || "";
