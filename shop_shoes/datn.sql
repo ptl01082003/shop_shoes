@@ -65,7 +65,7 @@ CREATE TABLE `brands` (
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   PRIMARY KEY (`brandId`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -74,7 +74,7 @@ CREATE TABLE `brands` (
 
 LOCK TABLES `brands` WRITE;
 /*!40000 ALTER TABLE `brands` DISABLE KEYS */;
-INSERT INTO `brands` VALUES (1,'Vans','2024-07-23 23:12:51','2024-07-23 23:12:51'),(2,'Puma','2024-07-23 23:37:20','2024-07-23 23:37:20'),(3,'Adidas','2024-07-23 23:37:36','2024-07-23 23:37:36'),(4,'Convers','2024-07-23 23:37:46','2024-07-23 23:37:46'),(5,'Nike','2024-07-23 23:37:51','2024-07-23 23:37:51');
+INSERT INTO `brands` VALUES (1,'Biti’s','2024-07-24 10:55:55','2024-07-24 19:08:45'),(2,'ADIDAS','2024-07-24 10:55:59','2024-07-24 19:09:27'),(3,'VANS','2024-07-24 10:56:02','2024-07-24 19:10:04'),(4,'NEW BALANCE','2024-07-24 10:56:08','2024-07-24 19:09:53'),(5,'NIKE','2024-07-24 10:56:17','2024-07-24 19:09:37'),(6,' CONVERSE','2024-07-24 19:50:04','2024-07-24 19:50:04'),(7,'BALENCIAGA','2024-07-24 20:32:18','2024-07-24 20:32:29'),(8,'MLB Korea','2024-07-24 20:44:10','2024-07-24 20:44:10');
 /*!40000 ALTER TABLE `brands` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -152,7 +152,7 @@ CREATE TABLE `images` (
   PRIMARY KEY (`imageId`),
   KEY `productId` (`productId`),
   CONSTRAINT `images_ibfk_1` FOREIGN KEY (`productId`) REFERENCES `products` (`productId`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -161,6 +161,7 @@ CREATE TABLE `images` (
 
 LOCK TABLES `images` WRITE;
 /*!40000 ALTER TABLE `images` DISABLE KEYS */;
+INSERT INTO `images` VALUES (5,'public/Uploads/image-100633629570.jpeg',186974,'2024-07-24 19:35:58','2024-07-24 19:35:58'),(6,'public/Uploads/image-101740050592.jpeg',186974,'2024-07-24 19:35:58','2024-07-24 19:35:58'),(7,'public/Uploads/image-102153315436.jpeg',173381,'2024-07-24 19:48:53','2024-07-24 19:48:53'),(8,'public/Uploads/image-102083224814.jpeg',173381,'2024-07-24 19:48:53','2024-07-24 19:48:53'),(9,'public/Uploads/image-101733926750.jpeg',143500,'2024-07-24 19:57:28','2024-07-24 19:57:28'),(10,'public/Uploads/image-101778265094.jpeg',143500,'2024-07-24 19:57:28','2024-07-24 19:57:28'),(11,'public/Uploads/image-103991448014.jpeg',174796,'2024-07-24 20:05:23','2024-07-24 20:05:23'),(12,'public/Uploads/image-100197505038.jpeg',174796,'2024-07-24 20:05:23','2024-07-24 20:05:23'),(13,'public/Uploads/image-102210424452.jpeg',183437,'2024-07-24 20:31:58','2024-07-24 20:31:58'),(14,'public/Uploads/image-104290211516.jpeg',183437,'2024-07-24 20:31:58','2024-07-24 20:31:58'),(15,'public/Uploads/image-100950561772.jpeg',183808,'2024-07-24 20:41:28','2024-07-24 20:41:28'),(16,'public/Uploads/image-101002572109.jpeg',183808,'2024-07-24 20:41:28','2024-07-24 20:41:28');
 /*!40000 ALTER TABLE `images` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -186,7 +187,7 @@ CREATE TABLE `materials` (
 
 LOCK TABLES `materials` WRITE;
 /*!40000 ALTER TABLE `materials` DISABLE KEYS */;
-INSERT INTO `materials` VALUES (1,'Vải','2024-07-23 23:39:17','2024-07-23 23:39:17'),(2,'Nhựa','2024-07-23 23:39:26','2024-07-23 23:39:26'),(3,'Sợi','2024-07-23 23:39:33','2024-07-23 23:39:33'),(4,'Da cá sấu','2024-07-23 23:39:38','2024-07-23 23:39:38'),(5,'Da tổng hợp','2024-07-23 23:39:42','2024-07-23 23:39:42');
+INSERT INTO `materials` VALUES (1,'Vải mềm cao cấp','2024-07-24 10:57:23','2024-07-24 10:57:23'),(2,' Cao su non','2024-07-24 10:57:36','2024-07-24 10:57:36'),(3,'Xốp và nhựa tổng hợp','2024-07-24 10:57:42','2024-07-24 10:57:42'),(4,'Da thuộc cao cấp','2024-07-24 10:57:46','2024-07-24 10:57:46'),(5,'100% da thật','2024-07-24 10:57:50','2024-07-24 10:57:50');
 /*!40000 ALTER TABLE `materials` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -264,7 +265,7 @@ CREATE TABLE `origins` (
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   PRIMARY KEY (`originId`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -273,7 +274,7 @@ CREATE TABLE `origins` (
 
 LOCK TABLES `origins` WRITE;
 /*!40000 ALTER TABLE `origins` DISABLE KEYS */;
-INSERT INTO `origins` VALUES (1,'Việt Nam','2024-07-23 23:40:13','2024-07-23 23:40:13'),(2,'Nga','2024-07-23 23:40:16','2024-07-23 23:40:16'),(3,'Trung Quốc','2024-07-23 23:40:23','2024-07-23 23:40:23'),(4,'Anh','2024-07-23 23:40:29','2024-07-23 23:40:29'),(5,'Mỹ','2024-07-23 23:40:38','2024-07-23 23:40:38'),(6,'Đức','2024-07-23 23:40:40','2024-07-23 23:40:40');
+INSERT INTO `origins` VALUES (1,'Nga','2024-07-24 10:58:20','2024-07-24 10:58:20'),(2,'Việt Nam','2024-07-24 10:58:27','2024-07-24 10:58:27'),(3,'Anh','2024-07-24 10:58:33','2024-07-24 10:58:33'),(4,'Mỹ','2024-07-24 10:58:35','2024-07-24 10:58:35'),(5,'Trung Quốc','2024-07-24 10:58:42','2024-07-24 10:58:42'),(6,'Hàn Quốc','2024-07-24 19:23:51','2024-07-24 19:23:51'),(7,'Nhật Bản','2024-07-24 19:24:00','2024-07-24 19:24:00'),(8,'Ấn Độ','2024-07-24 19:24:13','2024-07-24 19:24:13');
 /*!40000 ALTER TABLE `origins` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -349,7 +350,7 @@ CREATE TABLE `product_details` (
   PRIMARY KEY (`productDetailId`),
   KEY `productId` (`productId`),
   CONSTRAINT `product_details_ibfk_1` FOREIGN KEY (`productId`) REFERENCES `products` (`productId`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -358,6 +359,7 @@ CREATE TABLE `product_details` (
 
 LOCK TABLES `product_details` WRITE;
 /*!40000 ALTER TABLE `product_details` DISABLE KEYS */;
+INSERT INTO `product_details` VALUES (10,NULL,'<p>WWOWW</p><blockquote><p>dành cho người thích đẹp và thích màu đỏ&nbsp;<br>&nbsp;</p></blockquote><figure class=\"image\"><img src=\"http://localhost:5500/public/Uploads/image-100201014390.jpeg\"></figure>',186974,'2024-07-24 19:35:58','2024-07-24 19:35:58'),(11,NULL,'<p>Phù hợp cho mọi người <img src=\"http://localhost:5500/public/Uploads/image-102580369895.jpeg\"></p>',173381,'2024-07-24 19:48:53','2024-07-24 19:48:53'),(12,NULL,'<p>Giày phù hợp với học sinh , sinh viên &nbsp;<img src=\"http://localhost:5500/public/Uploads/image-100995813619.jpeg\"></p>',143500,'2024-07-24 19:57:28','2024-07-24 19:57:28'),(13,NULL,'<p>Giày siêu phẩm dành cho những người yêu thích kiểu giày không dây cổ cao <img src=\"http://localhost:5500/public/Uploads/image-100697419054.jpeg\"></p>',174796,'2024-07-24 20:05:23','2024-07-24 20:05:23'),(14,NULL,'<p>Vans Classic đánh nát con tim</p><figure class=\"image\"><img src=\"http://localhost:5500/public/Uploads/image-104220993368.jpeg\"></figure>',183437,'2024-07-24 20:31:58','2024-07-24 20:31:58'),(15,NULL,'<p>Hàng Việt Nam chất lượng cao&nbsp;</p><figure class=\"image\"><img src=\"http://localhost:5500/public/Uploads/image-103497458360.jpeg\"></figure><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p>',183808,'2024-07-24 20:41:28','2024-07-24 20:41:28');
 /*!40000 ALTER TABLE `product_details` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -407,19 +409,19 @@ CREATE TABLE `products` (
   `originId` int DEFAULT NULL,
   `styleId` int DEFAULT NULL,
   `materialId` int DEFAULT NULL,
-  `brandID` int DEFAULT NULL,
+  `brandId` int DEFAULT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   PRIMARY KEY (`productId`),
   KEY `originId` (`originId`),
   KEY `styleId` (`styleId`),
   KEY `materialId` (`materialId`),
-  KEY `brandID` (`brandID`),
+  KEY `brandId` (`brandId`),
   CONSTRAINT `products_ibfk_1` FOREIGN KEY (`originId`) REFERENCES `origins` (`originId`) ON UPDATE CASCADE,
   CONSTRAINT `products_ibfk_2` FOREIGN KEY (`styleId`) REFERENCES `styles` (`styleId`) ON UPDATE CASCADE,
   CONSTRAINT `products_ibfk_3` FOREIGN KEY (`materialId`) REFERENCES `materials` (`materialId`) ON UPDATE CASCADE,
-  CONSTRAINT `products_ibfk_4` FOREIGN KEY (`brandID`) REFERENCES `brands` (`brandId`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=199194 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `products_ibfk_4` FOREIGN KEY (`brandId`) REFERENCES `brands` (`brandId`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=186975 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -428,6 +430,7 @@ CREATE TABLE `products` (
 
 LOCK TABLES `products` WRITE;
 /*!40000 ALTER TABLE `products` DISABLE KEYS */;
+INSERT INTO `products` VALUES (143500,'Classic Chucks','2F316C',700000.00,1300000.00,1,NULL,2,3,1,6,'2024-07-24 19:57:28','2024-07-24 19:57:28'),(173381,'Yeezy 350','8AAC8E',3400000.00,8000000.00,1,NULL,3,1,1,2,'2024-07-24 19:48:53','2024-07-24 19:48:53'),(174796,'Balenciaga Speed','7E4828',10000000.00,18000000.00,NULL,NULL,2,3,1,4,'2024-07-24 20:05:23','2024-07-24 20:05:23'),(183437,'Vans Classic Black','89D09C',200000.00,1000000.00,1,NULL,4,1,3,3,'2024-07-24 20:31:58','2024-07-24 20:31:58'),(183808,'Hunter Street Go For Love 2K24 HSM006500','7CCC66',200000.00,100000.00,1,NULL,2,2,2,1,'2024-07-24 20:41:28','2024-07-24 20:41:28'),(186974,' Nike Air Jordan 1','AB0553',5000000.00,15000000.00,1,NULL,4,1,3,5,'2024-07-24 19:35:58','2024-07-24 19:35:58');
 /*!40000 ALTER TABLE `products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -481,7 +484,7 @@ CREATE TABLE `roles` (
 
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
-INSERT INTO `roles` VALUES (1,'USER','2024-07-23 20:07:05','2024-07-23 20:07:05'),(2,'MEMBERSHIP','2024-07-23 20:07:05','2024-07-23 20:07:05'),(3,'ADMIN','2024-07-23 20:07:05','2024-07-23 20:07:05');
+INSERT INTO `roles` VALUES (1,'USER','2024-07-24 10:54:46','2024-07-24 10:54:46'),(2,'MEMBERSHIP','2024-07-24 10:54:46','2024-07-24 10:54:46'),(3,'ADMIN','2024-07-24 10:54:46','2024-07-24 10:54:46');
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -522,18 +525,18 @@ DROP TABLE IF EXISTS `size_product_details`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `size_product_details` (
-  `SizeProductDetailId` int NOT NULL AUTO_INCREMENT,
-  `sizeID` int DEFAULT NULL,
+  `sizeProductDetailId` int NOT NULL AUTO_INCREMENT,
+  `sizeId` int DEFAULT NULL,
   `productDetailId` int DEFAULT NULL,
   `quantity` int DEFAULT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
-  PRIMARY KEY (`SizeProductDetailId`),
-  KEY `sizeID` (`sizeID`),
+  PRIMARY KEY (`sizeProductDetailId`),
+  KEY `sizeId` (`sizeId`),
   KEY `productDetailId` (`productDetailId`),
-  CONSTRAINT `size_product_details_ibfk_1` FOREIGN KEY (`sizeID`) REFERENCES `sizes` (`sizeId`) ON UPDATE CASCADE,
+  CONSTRAINT `size_product_details_ibfk_1` FOREIGN KEY (`sizeId`) REFERENCES `sizes` (`sizeId`) ON UPDATE CASCADE,
   CONSTRAINT `size_product_details_ibfk_2` FOREIGN KEY (`productDetailId`) REFERENCES `product_details` (`productDetailId`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -542,6 +545,7 @@ CREATE TABLE `size_product_details` (
 
 LOCK TABLES `size_product_details` WRITE;
 /*!40000 ALTER TABLE `size_product_details` DISABLE KEYS */;
+INSERT INTO `size_product_details` VALUES (9,1,10,10,'2024-07-24 19:35:58','2024-07-24 19:35:58'),(10,2,10,20,'2024-07-24 19:35:58','2024-07-24 19:35:58'),(11,3,10,30,'2024-07-24 19:35:58','2024-07-24 19:35:58'),(12,4,10,40,'2024-07-24 19:35:58','2024-07-24 19:35:58'),(13,5,10,500,'2024-07-24 19:35:58','2024-07-24 19:35:58'),(14,6,10,50,'2024-07-24 19:35:58','2024-07-24 19:35:58'),(15,1,11,10,'2024-07-24 19:48:53','2024-07-24 19:48:53'),(16,2,11,20,'2024-07-24 19:48:53','2024-07-24 19:48:53'),(17,3,11,30,'2024-07-24 19:48:53','2024-07-24 19:48:53'),(18,4,11,40,'2024-07-24 19:48:53','2024-07-24 19:48:53'),(19,5,11,800,'2024-07-24 19:48:53','2024-07-24 19:48:53'),(20,6,11,50,'2024-07-24 19:48:53','2024-07-24 19:48:53'),(21,1,12,30,'2024-07-24 19:57:28','2024-07-24 19:57:28'),(22,2,12,20,'2024-07-24 19:57:28','2024-07-24 19:57:28'),(23,3,12,60,'2024-07-24 19:57:28','2024-07-24 19:57:28'),(24,4,12,80,'2024-07-24 19:57:28','2024-07-24 19:57:28'),(25,5,12,1000,'2024-07-24 19:57:28','2024-07-24 19:57:28'),(26,6,12,20,'2024-07-24 19:57:28','2024-07-24 19:57:28'),(27,1,13,20,'2024-07-24 20:05:23','2024-07-24 20:05:23'),(28,2,13,34,'2024-07-24 20:05:23','2024-07-24 20:05:23'),(29,3,13,50,'2024-07-24 20:05:23','2024-07-24 20:05:23'),(30,4,13,38,'2024-07-24 20:05:23','2024-07-24 20:05:23'),(31,5,13,500,'2024-07-24 20:05:23','2024-07-24 20:05:23'),(32,6,13,67,'2024-07-24 20:05:23','2024-07-24 20:05:23'),(33,1,14,10,'2024-07-24 20:31:58','2024-07-24 20:31:58'),(34,4,14,10,'2024-07-24 20:31:58','2024-07-24 20:31:58'),(35,2,14,30,'2024-07-24 20:31:58','2024-07-24 20:31:58'),(36,5,14,600,'2024-07-24 20:31:58','2024-07-24 20:31:58'),(37,3,14,74,'2024-07-24 20:31:58','2024-07-24 20:31:58'),(38,6,14,62,'2024-07-24 20:31:58','2024-07-24 20:31:58'),(39,1,15,10,'2024-07-24 20:41:28','2024-07-24 20:41:28'),(40,4,15,20,'2024-07-24 20:41:28','2024-07-24 20:41:28'),(41,2,15,30,'2024-07-24 20:41:28','2024-07-24 20:41:28'),(42,5,15,700,'2024-07-24 20:41:28','2024-07-24 20:41:28'),(43,3,15,30,'2024-07-24 20:41:28','2024-07-24 20:41:28'),(44,6,15,70,'2024-07-24 20:41:28','2024-07-24 20:41:28');
 /*!40000 ALTER TABLE `size_product_details` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -558,7 +562,7 @@ CREATE TABLE `sizes` (
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   PRIMARY KEY (`sizeId`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -567,7 +571,7 @@ CREATE TABLE `sizes` (
 
 LOCK TABLES `sizes` WRITE;
 /*!40000 ALTER TABLE `sizes` DISABLE KEYS */;
-INSERT INTO `sizes` VALUES (1,36,'2024-07-23 23:39:48','2024-07-23 23:39:48'),(2,37,'2024-07-23 23:39:51','2024-07-23 23:39:51'),(3,38,'2024-07-23 23:39:54','2024-07-23 23:39:54'),(4,39,'2024-07-23 23:39:57','2024-07-23 23:39:57'),(5,40,'2024-07-23 23:40:00','2024-07-23 23:40:00'),(6,41,'2024-07-23 23:40:04','2024-07-23 23:40:04'),(7,42,'2024-07-23 23:40:07','2024-07-23 23:40:07');
+INSERT INTO `sizes` VALUES (1,36,'2024-07-24 10:57:55','2024-07-24 10:57:55'),(2,37,'2024-07-24 10:57:58','2024-07-24 10:57:58'),(3,38,'2024-07-24 10:58:01','2024-07-24 10:58:01'),(4,39,'2024-07-24 10:58:03','2024-07-24 10:58:03'),(5,40,'2024-07-24 10:58:06','2024-07-24 10:58:06'),(6,41,'2024-07-24 19:22:57','2024-07-24 19:22:57'),(7,42,'2024-07-24 19:23:03','2024-07-24 19:23:03'),(8,43,'2024-07-24 19:23:08','2024-07-24 19:23:08'),(9,44,'2024-07-24 19:23:18','2024-07-24 19:23:18'),(10,45,'2024-07-24 19:23:26','2024-07-24 19:23:26'),(11,46,'2024-07-24 19:23:33','2024-07-24 19:23:33');
 /*!40000 ALTER TABLE `sizes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -593,7 +597,7 @@ CREATE TABLE `styles` (
 
 LOCK TABLES `styles` WRITE;
 /*!40000 ALTER TABLE `styles` DISABLE KEYS */;
-INSERT INTO `styles` VALUES (1,'Cổ cao','2024-07-23 23:38:40','2024-07-23 23:38:40'),(2,'Cổ thấp','2024-07-23 23:38:57','2024-07-23 23:38:57'),(3,'Đế cao','2024-07-23 23:39:04','2024-07-23 23:39:04'),(4,'Đế thấp','2024-07-23 23:39:07','2024-07-23 23:39:07');
+INSERT INTO `styles` VALUES (1,'Low-top','2024-07-24 10:56:26','2024-07-24 10:56:26'),(2,'Mid-top','2024-07-24 10:56:31','2024-07-24 10:56:31'),(3,'High-top','2024-07-24 10:56:34','2024-07-24 10:56:34');
 /*!40000 ALTER TABLE `styles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -627,7 +631,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1193355916,'admin',NULL,NULL,'$2b$10$oH2HfoQaxyL42oXGrmzFpeUEGfnheLEhHlb0gHAWRGAT17WJjmm72',NULL,NULL,3,'2024-07-23 20:07:06','2024-07-23 20:07:06'),(1557812032,'long','lbeephamthanhlong@gmail.com','0369232003','$2b$10$KFsq4dmwKsA83o6QZeO0NejR9eAtOJh0NzTVTT7z13CCTSTJf/xQe',NULL,'LongPham',3,'2024-07-23 20:15:24','2024-07-23 20:15:24'),(1601944667,'long1','lbeephamthanhlong@gmail.com','0369232003','$2b$10$N1WrdrtlGrw1o6Ec9g4a6.vl1syTD0vjdcEuJcKKHZsepvaPPJWAG',NULL,'LongPham',1,'2024-07-24 08:43:35','2024-07-24 08:43:35');
+INSERT INTO `users` VALUES (1022313941,'long18','lbeephamthanhlong@gmail.com','0369232003','$2b$10$XvYKBKxEhpRNuZmdN4PCDuS0gSa1vkj4HqwiI/WknpMqDCf8JFS8S',NULL,'LongPham',1,'2024-07-24 19:00:50','2024-07-24 19:00:50'),(1476002226,'admin',NULL,NULL,'$2b$10$6dk95rDdMYqsBVzVn4txdeHHd/4iBn4G7nZDNT5X.PJ.oAFtOaxNa',NULL,NULL,3,'2024-07-24 10:54:46','2024-07-24 10:54:46');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -676,4 +680,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-07-24  9:00:08
+-- Dump completed on 2024-07-24 20:54:56
