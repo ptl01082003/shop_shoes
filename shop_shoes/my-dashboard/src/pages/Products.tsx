@@ -54,13 +54,19 @@ const ProductPage: React.FC = () => {
   const [styles, setStyles] = useState<any[]>([]);
   const [materials, setMaterials] = useState<any[]>([]);
   const [origins, setOrigins] = useState<any[]>([]);
-  const [openModal, setOpenModal] = useState<{
+  const [modalInfo, setModalInfo] = useState<{
     open: boolean;
     mode: "create" | "edit";
     data?: any;
   }>({ open: false, mode: "create" });
+  const [form] = Form.useForm();
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const productDetails = useRef<string>("");
+  const [formattedPrice, setFormattedPrice] = useState<string>("");
+
+  const formatNumber = (num) => {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  };
 
   useEffect(() => {
     (async () => {
@@ -95,33 +101,34 @@ const ProductPage: React.FC = () => {
 
   const onFinish = async (values: any) => {
     try {
-      const lstImageGallery = fileList.map(
-        (files) => files.response.data?.[0] || ""
+      const lstImageGallery = fileList.map((files) =>
+        modalInfo.mode === "create" ? files.response?.data?.[0] : files?.url
       );
       const productData = {
+        ...modalInfo?.data,
         ...values,
         gallery: lstImageGallery,
         productDetails: productDetails.current,
         sizeQuantities: values.productDetails,
       };
-      console.log("productData", productData);
-
+      console.log("productData", productData)
+      return;
       let response;
-      if (openModal.mode === "create") {
+      if (modalInfo.mode === "create") {
         response = await ProductService.createProduct(productData);
         toast.success("Thêm sản phẩm thành công!");
       } else {
-        response = await ProductService.updateProduct(
-          openModal.data.productId,
-          productData
-        );
+        response = await ProductService.updateProduct({
+          ...productData,
+          productId: modalInfo.data.productId,
+        });
         toast.success("Cập nhật sản phẩm thành công!");
       }
 
       if (response) {
-        setOpenModal({ open: false, mode: openModal.mode });
+        setModalInfo({ open: false, mode: modalInfo.mode });
         setProducts((prev) =>
-          openModal.mode === "create"
+          modalInfo.mode === "create"
             ? [...prev, response.data]
             : prev.map((item) =>
                 item.productId === response.data.productId
@@ -150,8 +157,6 @@ const ProductPage: React.FC = () => {
 
   const handleEditProduct = (product: any) => {
     productDetails.current = product?.description || "";
-
-    console.log(productDetails.current);
     if (product?.gallery && Array.isArray(product.gallery)) {
       const transferImage = product.gallery.map((images) => ({
         uid: images?.path,
@@ -168,7 +173,7 @@ const ProductPage: React.FC = () => {
         quantity: size.quantity,
       })) || [];
 
-    setOpenModal({
+    setModalInfo({
       open: true,
       mode: "edit",
       data: {
@@ -303,7 +308,7 @@ const ProductPage: React.FC = () => {
         <Button
           size="large"
           type="primary"
-          onClick={() => setOpenModal({ open: true, mode: "create" })}
+          onClick={() => setModalInfo({ open: true, mode: "create" })}
         >
           THÊM MỚI
         </Button>
@@ -317,22 +322,22 @@ const ProductPage: React.FC = () => {
         placement="right"
         width={"85%"}
         destroyOnClose={true}
-        open={openModal.open}
+        open={modalInfo.open}
         title={
           <h3 className="mb-2 text-2xl font-bold text-center text-orange-600">
-            {openModal.mode === "create" ? "THÊM MỚI" : "CẬP NHẬT"} SẢN PHẨM
+            {modalInfo.mode === "create" ? "THÊM MỚI" : "CẬP NHẬT"} SẢN PHẨM
           </h3>
         }
         onClose={() => {
           setFileList([]);
           productDetails.current = "";
-          setOpenModal({ open: false, mode: openModal.mode });
+          setModalInfo({ open: false, mode: modalInfo.mode });
         }}
       >
         <Form
           className="grid grid-cols-2 gap-4"
           layout="vertical"
-          initialValues={openModal.data}
+          initialValues={modalInfo.data}
           onFinish={onFinish}
         >
           {/* Product Form */}
@@ -364,8 +369,14 @@ const ProductPage: React.FC = () => {
             rules={[{ required: true, message: "Giá bán không được để trống" }]}
           >
             <InputNumber
+              value={formattedPrice}
+              onChange={(e) => {
+                const rawValue = e?.toString().replace(/\./g, "");
+                const formatPrice = formatNumber(rawValue);
+                setFormattedPrice(formatPrice);
+                form.setFieldsValue({ price: formatPrice });
+              }}
               placeholder="Nhập tại đây"
-              min={0}
               style={{ width: "100%" }}
             />
           </Form.Item>
@@ -529,7 +540,7 @@ const ProductPage: React.FC = () => {
                 icon={<FileAddTwoTone />}
                 htmlType="submit"
               >
-                {openModal.mode === "create" ? "Thêm mới" : "Cập nhật"}
+                {modalInfo.mode === "create" ? "Thêm mới" : "Cập nhật"}
               </Button>
             </Form.Item>
           </div>

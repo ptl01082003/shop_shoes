@@ -8,12 +8,15 @@ import {
   ForeignKey,
   BelongsTo,
   HasMany,
+  DataType,
 } from "sequelize-typescript";
 import { Products } from "../models/Products";
 import { SizeProductDetails } from "../models/SizeProductDetails";
 @Table({
   tableName: "product_details",
   modelName: "ProductDetails",
+  charset: 'utf8mb4',
+  collate: 'utf8mb4_unicode_ci',
   timestamps: true,
 })
 export class ProductDetails extends Model {
@@ -25,7 +28,9 @@ export class ProductDetails extends Model {
   @Column
   public name!: string;
 
-  @Column
+  @Column({
+    type: DataType.TEXT("long")
+  })
   public description!: string;
 
   @ForeignKey(() => Products)

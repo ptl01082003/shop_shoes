@@ -12,6 +12,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { genaratorProductsId } from "../utils/utils";
 import { Brands } from "./Brands";
+
 import { Materials } from "./Materials";
 import { Origins } from "./Origins";
 import { Styles } from "./Styles";

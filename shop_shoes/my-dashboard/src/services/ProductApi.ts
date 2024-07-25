@@ -1,15 +1,8 @@
 // src/services/ProductService.ts
 
-import AxiosClient from "../networks/AxiosRequest"; // Đảm bảo rằng module AxiosClient được import và cấu hình đúng
+import AxiosClient from "../networks/AxiosRequest";
 import { Response } from "../constants/constants";
-const API_URL = "/products"; // Đảm bảo rằng URL API này phù hợp với endpoint thực tế của sản phẩm trong hệ thống của bạn
-
-// export interface Product {
-//   productId: number;
-//   name: string;
-//   description: string;
-//   // Các thuộc tính khác...
-// }
+const API_URL = "/products"; 
 
 const ProductService = {
   getProducts: async () => {
@@ -50,15 +43,14 @@ const ProductService = {
     }
   },
 
-  updateProduct: async (productId: number, productData: any) => {
+  updateProduct: async (params) => {
     try {
       const response = await AxiosClient.post<any, Response<any>>(
         `${API_URL}/edit`,
-        { productId, productData }
+        params
       );
       return response;
     } catch (error) {
-      console.error(`Lỗi khi cập nhật sản phẩm ${productId}`, error);
       throw error;
     }
   },

@@ -234,7 +234,6 @@ const ProductsController = {
         });
       }
     } catch (error) {
-      console.log(error);
       let errorMessage = "Thực hiện thất bại";
       if (error instanceof Error) {
         errorMessage = error.message;
@@ -262,8 +261,9 @@ const ProductsController = {
         gallery,
         sizes,
         productDetails,
+        productDetailId,
       } = req.body;
-      const products = await Products.findByPk(productId);
+      const products = await Products.findOne({ where: { productId } });
       if (products) {
         await products.update({
           name,
@@ -278,16 +278,17 @@ const ProductsController = {
           sizes,
           productDetails,
         });
-        res.status(200).json({
-          message: "Thực hiện thành công",
-          code: 0,
-          data: products,
-        });
+        
+        const productDetailsRecord = await ProductDetails.findOne({where: {productDetailId}})
+        if(productDetailsRecord) {
+          productDetailsRecord.update({description: productDetails})
+        }
       } else {
-        res.status(404).json({
-          message: "Sản phẩm không tồn tại",
-          code: 1,
-        });
+        return res.json(ResponseBody({
+          data: null,
+          code: RESPONSE_CODE.SUCCESS,
+          message: "Thực hiện thành công",
+        }))
       }
     } catch (error) {
       next(error);
