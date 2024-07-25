@@ -197,6 +197,7 @@ const ProductsController = {
         data: transferData,
       });
     } catch (error) {
+      console.log(error)
       next(error);
     }
   },
@@ -248,9 +249,9 @@ const ProductsController = {
 
   updateProduct: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { productId } = req.body;
       const {
         name,
+        productId,
         importPrice,
         price,
         status,
@@ -261,6 +262,7 @@ const ProductsController = {
         gallery,
         sizes,
         productDetails,
+        productSizes,
         productDetailId,
       } = req.body;
       const products = await Products.findOne({ where: { productId } });
@@ -278,11 +280,50 @@ const ProductsController = {
           sizes,
           productDetails,
         });
-        
-        const productDetailsRecord = await ProductDetails.findOne({where: {productDetailId}})
-        if(productDetailsRecord) {
-          productDetailsRecord.update({description: productDetails})
+
+        const productDetailsRecord = await ProductDetails.findOne({ where: { productDetailId } })
+        if (productDetailsRecord) {
+          productDetailsRecord.update({ description: productDetails })
         }
+
+        await SizeProductDetails.destroy({
+          where: {
+            productDetailId
+          }
+        })
+
+        await Images.destroy({
+          where: {
+            productId
+          }
+        })
+
+        // Thêm nhiều bản ghi vào bảng SizeProductDetails
+        if (Array.isArray(productSizes)) {
+          const sizeProductDetailsData = productSizes.map((size) => ({
+            productDetailId,
+            sizeId: size.sizeId,
+            quantity: size.quantity,
+          }));
+
+          await SizeProductDetails.bulkCreate(sizeProductDetailsData);
+        }
+
+        // Thêm hình ảnh vào bảng Images
+        if (Array.isArray(gallery)) {
+          const imagesData = gallery.map((path) => ({
+            path,
+            productId,
+          }));
+
+          await Images.bulkCreate(imagesData);
+        }
+
+        res.json({
+          code: RESPONSE_CODE.SUCCESS,
+          message: "Thực hiện thành công",
+        });
+
       } else {
         return res.json(ResponseBody({
           data: null,
@@ -291,6 +332,7 @@ const ProductsController = {
         }))
       }
     } catch (error) {
+      console.log(error)
       next(error);
     }
   },

@@ -38,7 +38,6 @@ import ProductService from "../services/ProductApi";
 import SizesService from "../services/SizeApi";
 import StyleService from "../services/StyleApi";
 import { tableCustomizeStyle } from "../styles/styles";
-import ColumnGroup from "antd/es/table/ColumnGroup";
 
 const { Option } = Select;
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
@@ -99,10 +98,13 @@ const ProductPage: React.FC = () => {
     })();
   }, []);
 
+  console.log("fileList", fileList);
+
+
   const onFinish = async (values: any) => {
     try {
       const lstImageGallery = fileList.map((files) =>
-        modalInfo.mode === "create" ? files.response?.data?.[0] : files?.url
+        files.response ? files.response?.data?.[0] : files?.name
       );
       const productData = {
         ...modalInfo?.data,
@@ -111,8 +113,6 @@ const ProductPage: React.FC = () => {
         productDetails: productDetails.current,
         sizeQuantities: values.productDetails,
       };
-      console.log("productData", productData)
-      return;
       let response;
       if (modalInfo.mode === "create") {
         response = await ProductService.createProduct(productData);
@@ -161,6 +161,7 @@ const ProductPage: React.FC = () => {
       const transferImage = product.gallery.map((images) => ({
         uid: images?.path,
         name: images?.path,
+        path:  images?.path,
         status: "done",
         url: URL_IMAGE(images?.path),
       }));
