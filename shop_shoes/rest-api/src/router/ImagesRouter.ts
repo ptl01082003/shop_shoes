@@ -1,6 +1,6 @@
 import express from "express";
 import ImagesController from "../controller/ImagesController";
-import productsRouter from "./ProductsRouter";
+// import productsRouter from "./ProductsRouter";
 import { checkAuth } from "../middleware/checkAuth";
 import { checkRoles } from "../middleware/checkRoles";
 import { ROLE_TYPES } from "../models/Roles";

@@ -6,6 +6,7 @@ import SampleNextArrow from "./SampleNextArrow";
 import SamplePrevArrow from "./SamplePrevArrow";
 import AxiosClient from "../../../networks/AxiosClient"; // Đảm bảo đã cài đặt AxiosClient đúng cách
 import { newArrOne } from "../../../assets/images";
+import { TRANSFER_PRICE, URL_IMAGE } from "../../../constants";
 
 const NewArrivals = () => {
   const [data, setData] = useState({
@@ -44,9 +45,9 @@ const NewArrivals = () => {
     fetchBrands();
   }, []);
 
-  const getBrandName = (brandID) => {
-    const brand = data.brands.find((b) => b.brandID === brandID);
-    return brand ? brand.brandName : "Unknown Brand";
+  const getBrandName = (brandId) => {
+    const brand = data.brands.find((b) => b.brandId === brandId);
+    return brand ? brand.name : "Unknown Brand";
   };
 
   const settings = {
@@ -89,13 +90,13 @@ const NewArrivals = () => {
       <Heading heading="New Arrivals" />
       <Slider {...settings}>
         {data.products.map((product) => (
-          <div key={product.productsID} className="px-2">
+          <div key={product.productId} className="px-2">
             <Product
-              _id={product.productsID}
-              img={newArrOne} // Thay đổi tùy thuộc vào cách bạn lưu trữ URL hình ảnh
-              productName={product.productsName}
-              price={product.productPrice}
-              color={getBrandName(product.brandID)}
+              _id={product.productId}
+              img={URL_IMAGE(product?.gallery?.[0]?.path)} // Thay đổi tùy thuộc vào cách bạn lưu trữ URL hình ảnh
+              productName={product.name}
+              price={TRANSFER_PRICE(product.price)}
+              color={getBrandName(product.brandId)}
               // badge={product.badge}
               // des={product.description}
             />

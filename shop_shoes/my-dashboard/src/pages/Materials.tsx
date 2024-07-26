@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import MaterialService from "../services/MaterialApi";
 import { tableCustomizeStyle } from "../styles/styles";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { FormProps } from "antd/lib";
 
 type MaterialType = {
   materialId?: number;
@@ -87,16 +88,25 @@ export default function MaterialPage() {
     }
   };
 
-  const onFinishEdit = async (values: MaterialType) => {
-    const response = await MaterialService.updateMaterial(
-      openEditModal.data.materialId!,
-      values
-    );
-    if (response.code === 0) {
-      setOpenEditModal({ open: false, data: {} });
-      setShouldRender((prev) => !prev);
-    }
+  const editBrandItems = async (record: any) => {
+    setOpenEditModal({
+      open: true,
+      data: record,
+    });
   };
+
+  // const onEditFinish: FormProps<MaterialType>["onFinish"] = async (
+  //   values: MaterialType
+  // ) => {
+  //   const res = await MaterialService.updateMaterial({
+  //     ...values,
+  //     materialId: openEditModal?.data?.materialId,
+  //   });
+  //   if (res.code === 0) {
+  //     setOpenEditModal(undefined);
+  //     setShouldRender((x) => !x);
+  //   }
+  // };
 
   return (
     <>
@@ -170,7 +180,7 @@ export default function MaterialPage() {
           wrapperCol={{ span: 16 }}
           style={{ maxWidth: 600 }}
           initialValues={openEditModal.data}
-          onFinish={onFinishEdit}
+          // onFinish={onFinishEdit}
           autoComplete="off"
         >
           <Form.Item

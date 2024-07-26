@@ -5,6 +5,7 @@ import {
   Column,
   DataType,
   ForeignKey,
+  HasMany,
   Model,
   PrimaryKey,
   Table,
@@ -17,6 +18,7 @@ import { Materials } from "./Materials";
 import { Origins } from "./Origins";
 import { Styles } from "./Styles";
 import { DataTypes } from "sequelize";
+import { ProductDetails } from "./ProductDetails";
 
 @Table({
   tableName: "products",
@@ -42,12 +44,15 @@ export class Products extends Model {
   public price?: number;
 
   @Column({
-    type: DataTypes.BOOLEAN
+    type: DataTypes.BOOLEAN,
   })
   public status?: boolean;
 
   @Column
   public display?: boolean;
+
+  @Column(DataType.TEXT("long"))
+  public description?: string;
 
   @ForeignKey(() => Origins)
   @Column
@@ -76,6 +81,9 @@ export class Products extends Model {
 
   @BelongsTo(() => Brands)
   public brand?: Brands;
+
+  @HasMany(() => ProductDetails)
+  public productDetails?: ProductDetails;
 
   @BeforeCreate
   static genaratorProductCode(instance: Products) {

@@ -7,7 +7,7 @@ import {
   HasMany,
   AutoIncrement,
 } from "sequelize-typescript";
-import { SizeProductDetails } from "./SizeProductDetails";
+import { ProductDetails } from "./ProductDetails";
 
 @Table({
   tableName: "sizes",
@@ -22,7 +22,4 @@ export class Sizes extends Model {
 
   @Column
   name!: number;
-
-  @HasMany(() => SizeProductDetails)
-  sizeProductDetails!: SizeProductDetails[];
 }

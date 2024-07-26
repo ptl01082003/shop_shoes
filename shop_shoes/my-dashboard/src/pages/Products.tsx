@@ -60,7 +60,7 @@ const ProductPage: React.FC = () => {
   }>({ open: false, mode: "create" });
   const [form] = Form.useForm();
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
-  const productDetails = useRef<string>("");
+  const details = useRef<string>("");
   const [formattedPrice, setFormattedPrice] = useState<string>("");
 
   const formatNumber = (num) => {
@@ -100,19 +100,30 @@ const ProductPage: React.FC = () => {
 
   console.log("fileList", fileList);
 
-
   const onFinish = async (values: any) => {
     try {
       const lstImageGallery = fileList.map((files) =>
         files.response ? files.response?.data?.[0] : files?.name
       );
+
+      console.log("lstImageGallery:", lstImageGallery);
+      console.log("modalInfo:", modalInfo);
+      console.log("values:", values);
+      console.log("details.current:", details.current);
+
       const productData = {
         ...modalInfo?.data,
         ...values,
         gallery: lstImageGallery,
-        productDetails: productDetails.current,
-        sizeQuantities: values.productDetails,
+        description: details.current,
+        sizeQuantities: values.productDetails
+          ? values.productDetails.map((detail: any) => ({
+              sizeId: detail.sizeId,
+              quantity: detail.quantity,
+            }))
+          : [],
       };
+
       let response;
       if (modalInfo.mode === "create") {
         response = await ProductService.createProduct(productData);
@@ -156,22 +167,22 @@ const ProductPage: React.FC = () => {
   };
 
   const handleEditProduct = (product: any) => {
-    productDetails.current = product?.description || "";
+    details.current = product?.description || "";
     if (product?.gallery && Array.isArray(product.gallery)) {
       const transferImage = product.gallery.map((images) => ({
         uid: images?.path,
         name: images?.path,
-        path:  images?.path,
+        path: images?.path,
         status: "done",
         url: URL_IMAGE(images?.path),
       }));
       setFileList(transferImage);
     }
 
-    const productSizes =
-      product?.sizes?.map((size: any) => ({
-        sizeId: size.sizeId,
-        quantity: size.quantity,
+    const productDetails =
+      product?.productDetails?.map((detail: any) => ({
+        sizeId: detail.sizeId,
+        quantity: detail.quantity,
       })) || [];
 
     setModalInfo({
@@ -179,7 +190,7 @@ const ProductPage: React.FC = () => {
       mode: "edit",
       data: {
         ...product,
-        productSizes,
+        productDetails,
       },
     });
     setSelectedProduct(product);
@@ -212,7 +223,7 @@ const ProductPage: React.FC = () => {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
-      render: (status: boolean) => (status ? "Kích hoạt" : "Ngừng hoạt động"),
+      render: (status: any) => (status ? "Kích hoạt" : "Ngừng hoạt động"),
     },
     {
       title: "Thương hiệu",
@@ -331,7 +342,7 @@ const ProductPage: React.FC = () => {
         }
         onClose={() => {
           setFileList([]);
-          productDetails.current = "";
+          details.current = "";
           setModalInfo({ open: false, mode: modalInfo.mode });
         }}
       >
@@ -459,7 +470,7 @@ const ProductPage: React.FC = () => {
           <div className="col-span-2">
             <Divider />
             <h1 className="mb-2">Size sản phẩm:</h1>
-            <Form.List name="productSizes">
+            <Form.List name="productDetails">
               {(fields, { add, remove }) => (
                 <>
                   <div className="grid grid-cols-2 gap-5">
@@ -526,10 +537,10 @@ const ProductPage: React.FC = () => {
                 },
               }}
               editor={ClassicEditor}
-              data={productDetails.current}
+              data={details.current}
               onChange={(event, editor) => {
                 const data = editor.getData();
-                productDetails.current = data;
+                details.current = data;
               }}
             />
           </div>

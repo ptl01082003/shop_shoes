@@ -1,22 +1,18 @@
-// productdetails.model.ts
 import {
-  Table,
-  Model,
-  Column,
-  PrimaryKey,
   AutoIncrement,
+  Column,
   ForeignKey,
+  Model,
+  PrimaryKey,
+  Table,
   BelongsTo,
-  HasMany,
-  DataType,
 } from "sequelize-typescript";
-import { Products } from "../models/Products";
-import { SizeProductDetails } from "../models/SizeProductDetails";
+import { Sizes } from "./Sizes";
+import { Products } from "./Products";
+
 @Table({
   tableName: "product_details",
   modelName: "ProductDetails",
-  charset: 'utf8mb4',
-  collate: 'utf8mb4_unicode_ci',
   timestamps: true,
 })
 export class ProductDetails extends Model {
@@ -25,21 +21,20 @@ export class ProductDetails extends Model {
   @Column
   public productDetailId!: number;
 
+  @ForeignKey(() => Sizes)
   @Column
-  public name!: string;
-
-  @Column({
-    type: DataType.TEXT("long")
-  })
-  public description!: string;
+  public sizeId!: number;
 
   @ForeignKey(() => Products)
   @Column
   public productId!: number;
 
+  @Column
+  public quantity!: number;
+
+  @BelongsTo(() => Sizes)
+  public sizes!: Sizes;
+
   @BelongsTo(() => Products)
   public products!: Products;
-
-  @HasMany(() => SizeProductDetails)
-  sizeProductDetails!: SizeProductDetails[];
 }

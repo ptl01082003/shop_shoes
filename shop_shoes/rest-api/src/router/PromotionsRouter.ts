@@ -1,6 +1,6 @@
 import { Router } from "express";
 import PromotionsController from "../controller/PromotionsController";
-import productsRouter from "./ProductsRouter";
+// import productsRouter from "./ProductsRouter";
 import { checkAuth } from "../middleware/checkAuth";
 import { checkRoles } from "../middleware/checkRoles";
 import { ROLE_TYPES } from "../models/Roles";

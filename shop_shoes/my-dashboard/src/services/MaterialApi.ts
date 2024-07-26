@@ -20,7 +20,8 @@ const MaterialService = {
   getMaterialById: async (materialId: number) => {
     try {
       const response = await AxiosClient.post<any, Response<any>>(
-        `${API_URL}/${materialId}`
+        `${API_URL}`,
+        materialId
       );
       return response;
     } catch (error) {
@@ -44,15 +45,16 @@ const MaterialService = {
   },
 
   // Cập nhật thông tin một màu sắc đã có
-  updateMaterial: async (materialId: number, materialData: any) => {
+  updateMaterial: async (params) => {
     try {
       const response = await AxiosClient.post<any, Response<any>>(
-        `${API_URL}/edit/${materialId}`,
-        materialData
+        `${API_URL}/edit`,
+        {
+          params,
+        }
       );
       return response;
     } catch (error) {
-      console.error(`Lỗi khi cập nhật màu sắc ${materialId}`, error);
       throw error;
     }
   },

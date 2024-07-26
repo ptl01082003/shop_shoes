@@ -29,7 +29,4 @@ export class Promotions extends Model {
 
   @Column
   public endDay!: Date;
-
-  // @Column
-  // public!: boolean;
 }

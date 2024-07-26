@@ -2,7 +2,7 @@
 
 import AxiosClient from "../networks/AxiosRequest";
 import { Response } from "../constants/constants";
-const API_URL = "/products"; 
+const API_URL = "/products";
 
 const ProductService = {
   getProducts: async () => {

@@ -9,15 +9,15 @@ import routerImage from "./ImagesRouter";
 import routerMaterial from "./MaterialsRouter";
 import routerOrigin from "./OriginsRouter";
 import paymentRouter from "./PaymentOnlineRouter";
-import routerProductDetail from "./ProductDetailsRouter";
 
 import routerProductPromotion from "./ProductPromotionRouter";
-import productsRouter from "./ProductsRouter";
+// import productsRouter from "./ProductsRouter";
 import routerPromotions from "./PromotionsRouter";
 import routerSize from "./SizeRouter";
 import routerStyle from "./StylesRouter";
 import { uploadRouter } from "./uploadRouter";
 import userRouter from "./UserRouter";
+import productsRouter from "./ProductsRouter";
 
 const router = express.Router();
 
@@ -36,7 +36,7 @@ export function appRouter() {
   router.use("/materials", routerMaterial);
   router.use("/promotions", routerPromotions);
   router.use("/payment-orders", paymentRouter);
-  router.use("/product-details", routerProductDetail);
+  // router.use("/product-details", routerProductDetail);
   router.use("/product-promotions", routerProductPromotion);
 
   router.use("*", (_, res) => {

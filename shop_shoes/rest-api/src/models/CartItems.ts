@@ -9,6 +9,7 @@ import {
 } from "sequelize-typescript";
 import { Products } from "./Products";
 import { ShoppingCarts } from "./ShoppingCarts";
+import { ProductDetails } from "./ProductDetails";
 
 @Table({
   tableName: "cart_items",
@@ -21,16 +22,16 @@ export class CartItems extends Model {
   @Column
   public cartItemId!: number;
 
-  @ForeignKey(() => Products)
+  @ForeignKey(() => ProductDetails)
   @Column
-  public productId!: number;
+  public productDetailId!: number;
 
   @ForeignKey(() => ShoppingCarts)
   @Column
   public cartId!: number;
 
-  @BelongsTo(() => Products)
-  public products!: Products;
+  @BelongsTo(() => ProductDetails)
+  public productDetails!: ProductDetails;
 
   @BelongsTo(() => ShoppingCarts)
   public carts!: ShoppingCarts;

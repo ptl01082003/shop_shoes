@@ -39,9 +39,9 @@ const CartsController = {
         where: { cartId: instanceCarts?.cartId },
         include: [Products],
       });
-      carts.forEach((items) => {
-        cartsAmounts += (Number(items.products.price) || 0) * items.quanity;
-      });
+      // carts.forEach((items) => {
+      //   cartsAmounts += (Number(items.products.price) || 0) * items.quanity;
+      // });
 
       instanceCarts.totals = cartTotals;
       instanceCarts.amount = cartsAmounts;
@@ -98,10 +98,10 @@ const CartsController = {
           where: { cartId: carts?.cartId },
           include: [Products],
         });
-        products.forEach((product) => {
-          cartsAmount +=
-            (Number(product.products.price) || 0) * product.quanity;
-        });
+        // products.forEach((product) => {
+        //   cartsAmount +=
+        //     (Number(product.products.price) || 0) * product.quanity;
+        // });
         carts.amount = cartsAmount;
         carts.totals -= 1;
 

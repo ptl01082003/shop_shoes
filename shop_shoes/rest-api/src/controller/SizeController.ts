@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { RESPONSE_CODE, ResponseBody } from "../constants";
-import { SizeProductDetails } from "../models/SizeProductDetails";
+import { ProductDetails } from "../models/ProductDetails";
 import { Sizes } from "../models/Sizes";
 
 const SizeController = {
@@ -31,8 +31,8 @@ const SizeController = {
           code: RESPONSE_CODE.SUCCESS,
           data: sizes,
           message: "Thực hiện thành công",
-        }
-        ));
+        })
+      );
     } catch (error) {
       next(error);
     }
@@ -98,7 +98,7 @@ const SizeController = {
     try {
       const { sizeId } = req.body;
       const size = await Sizes.findByPk(sizeId, {
-        include: [SizeProductDetails], // Include SizeProductDetails if needed
+        // include: [ProductDetails], // Include SizeProductDetails if needed
       });
 
       if (size) {

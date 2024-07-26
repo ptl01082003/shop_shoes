@@ -172,7 +172,7 @@ const PaymentOnlineController = {
         attributes: ["totals", "amount", "userId", "cartId"],
         include: {
           model: CartItems,
-          attributes: ["quanity", "productsID"],
+          attributes: ["quanity", "productId"],
         },
       });
       if (carts) {
@@ -181,10 +181,10 @@ const PaymentOnlineController = {
           totals: carts.totals,
           amount: carts.amount,
         });
-        for await (const products of carts.cartItems) {
+        for await (const productDetails of carts.cartItems) {
           await OrderItems.create({
-            quanity: products.quanity,
-            productsID: products.productId,
+            quanity: productDetails.quanity,
+            productDetailId: productDetails.productDetailId,
             orderDetailsID: newOrders.orderDetailId,
           });
         }

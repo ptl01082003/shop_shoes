@@ -1,3 +1,5 @@
+
+
 import {
   IMPRIMANTE_PANTUM_BM5100FDW,
   IMPRIMANTE_PANTUM_BP5100DN,
@@ -42,6 +44,20 @@ import {
 } from "../assets/images/index";
 
 import "./style.css";
+
+export const URL_IMAGE = (path) => {
+  return `http://localhost:5500/${path}`;
+};
+
+
+
+export const TRANSFER_PRICE = (price) => {
+  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' })
+    .format(parseFloat(price))
+    .replace('₫', 'VNĐ') || "";
+};
+
+
 
 export const KEY_STORAGE = {
   TOKEN: "token",
