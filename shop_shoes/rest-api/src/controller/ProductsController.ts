@@ -131,6 +131,65 @@ const ProductsController = {
     }
   },
 
+  getLstProducts: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const products = await Products.findAll({
+        include: [
+          {
+            model: Materials,
+            attributes: ["name"],
+          },
+          {
+            model: Origins,
+            attributes: ["name"],
+          },
+          {
+            model: Styles,
+            attributes: ["name"],
+          },
+          {
+            model: Brands,
+            attributes: ["name"],
+          },
+        ],
+      });
+
+      const transferData = [];
+
+      for await (const product of products) {
+        const productDetails = await ProductDetails.findAll({
+          where: { productId: product.productId },
+          attributes: ["sizeId", "quantity"],
+          include: [{ model: Sizes, attributes: ["name"] }],
+        });
+
+        const images = await Images.findAll({
+          where: { productId: product.productId },
+          attributes: ["path"],
+        });
+
+        transferData.push({
+          ...product.toJSON(),
+          productDetails: productDetails.map((productDetails) => ({
+            productId: productDetails.productId,
+            sizeId: productDetails.sizeId,
+            quantity: productDetails.quantity,
+          })),
+          gallery: images,
+        });
+      }
+
+      res.json({
+        message: "Thực hiện thành công",
+        code: RESPONSE_CODE.SUCCESS,
+        data: transferData,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+
   getById: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { productId } = req.params;

@@ -7,6 +7,9 @@ import { ROLE_TYPES } from "../models/Roles";
 
 const productsRouter = express.Router();
 
+productsRouter.post("/lst-products", ProductsController.getLstProducts);
+
+
 productsRouter.post("/", ProductsController.getProducts);
 
 // productsRouter.use(checkAuth);
