@@ -4,6 +4,7 @@ import { Products } from "../models/Products";
 import { redis } from "../config/ConnectRedis";
 import { CartItems } from "../models/CartItems";
 import { RESPONSE_CODE, ResponseBody, STATUS_CODE } from "../constants";
+import { ProductDetails } from "../models/ProductDetails";
 
 const CartsController = {
   create: async (req: Request, res: Response, next: NextFunction) => {
@@ -12,55 +13,59 @@ const CartsController = {
       const { cartItems } = req.body;
 
       let cartTotals = 0;
-      let cartsAmounts = 0;
 
+      // Tìm hoặc tạo giỏ hàng cho người dùng
       const [instanceCarts, created] = await ShoppingCarts.findOrCreate({
         where: { userId },
         include: [CartItems],
       });
 
       if (Array.isArray(cartItems) && cartItems.length > 0) {
-        for await (const items of cartItems) {
-          const quanity = items.quanity;
-          const productsId = items.productsId;
-          const [cartProducts] = await CartItems.findOrCreate({
-            where: { productsId, cartId: instanceCarts.cartId },
-          });
-          if (cartProducts) {
+        for (const item of cartItems) {
+          const { quanity, productDetailId } = item;
+
+          if (!productDetailId || !quanity) {
+            continue; // Bỏ qua nếu thiếu thông tin quan trọng
+          }
+
+          const [cartProductDetails, createdProduct] =
+            await CartItems.findOrCreate({
+              where: { productDetailId, cartId: instanceCarts.cartId },
+            });
+
+          if (cartProductDetails) {
             cartTotals += quanity;
-            cartProducts.quanity = quanity;
-            await cartProducts.save();
+            cartProductDetails.quanity = quanity;
+            await cartProductDetails.save();
           }
         }
       }
 
-      // cập nhật giá của giỏ hàng
-      const carts = await CartItems.findAll({
-        where: { cartId: instanceCarts?.cartId },
-        include: [Products],
-      });
-      // carts.forEach((items) => {
-      //   cartsAmounts += (Number(items.products.price) || 0) * items.quanity;
-      // });
-
+      // Cập nhật tổng số lượng giỏ hàng
       instanceCarts.totals = cartTotals;
-      instanceCarts.amount = cartsAmounts;
-
       await instanceCarts.save();
 
+      // Lấy giỏ hàng hiện tại và lưu vào Redis
       const currentCarts = await ShoppingCarts.findOne({
         where: { userId },
         attributes: ["totals", "amount"],
-        include: {
-          model: CartItems,
-          attributes: ["quanity"],
-          include: [
-            {
-              model: Products,
-              attributes: ["productPrice", "productsName"],
-            },
-          ],
-        },
+        include: [
+          {
+            model: CartItems,
+            attributes: ["quanity"],
+            include: [
+              {
+                model: ProductDetails,
+                include: [
+                  {
+                    model: Products,
+                    attributes: ["price", "name"],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
       });
 
       await redis.set(`carts-${userId}`, JSON.stringify(currentCarts));
@@ -75,13 +80,14 @@ const CartsController = {
       next(error);
     }
   },
+
   remove: async (req: Request, res: Response) => {
     const userId = req.userId;
-    const { productsId } = req.body;
+    const { productDetailId } = req.body;
 
     const carts = await ShoppingCarts.findOne({ where: { userId } });
     const cartsItems = await CartItems.findOne({
-      where: { productsId, cartId: carts?.cartId },
+      where: { productDetailId, cartId: carts?.cartId },
     });
     if (carts) {
       if (cartsItems) {

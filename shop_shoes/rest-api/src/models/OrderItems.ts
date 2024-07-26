@@ -9,6 +9,7 @@ import {
 } from "sequelize-typescript";
 import { OrderDetails } from "./OrderDetails";
 import { Products } from "./Products";
+import { ProductDetails } from "./ProductDetails";
 
 @Table({
   tableName: "order_items",
@@ -24,16 +25,16 @@ export class OrderItems extends Model {
   @Column
   public quanity!: number;
 
-  @ForeignKey(() => Products)
+  @ForeignKey(() => ProductDetails)
   @Column
-  public productId!: number;
+  public productDetailId!: number;
 
   @ForeignKey(() => OrderDetails)
   @Column
   public orderDetailId!: number;
 
-  @BelongsTo(() => Products)
-  public products!: Products;
+  @BelongsTo(() => ProductDetails)
+  public productDetails!: ProductDetails;
 
   @BelongsTo(() => OrderDetails)
   public orderDetails!: OrderDetails;
