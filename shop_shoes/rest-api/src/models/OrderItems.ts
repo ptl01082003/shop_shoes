@@ -38,4 +38,5 @@ export class OrderItems extends Model {
 
   @BelongsTo(() => OrderDetails)
   public orderDetails!: OrderDetails;
+  
 }

@@ -43,6 +43,9 @@ export class Products extends Model {
   @Column(DataType.DECIMAL(16, 2))
   public price?: number;
 
+  @Column(DataType.DECIMAL(16, 2))
+  public priceDiscount?: number;
+
   @Column({
     type: DataTypes.BOOLEAN,
   })

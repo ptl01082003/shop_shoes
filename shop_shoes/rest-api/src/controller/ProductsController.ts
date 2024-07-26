@@ -26,6 +26,7 @@ const ProductsController = {
         description,
       } = req.body;
 
+      const priceDiscount = price;
       // Tạo sản phẩm
       const product = await Products.create({
         name,
@@ -37,6 +38,7 @@ const ProductsController = {
         materialId,
         brandId,
         description,
+        priceDiscount,
       });
 
       console.log("Product created:", product);
@@ -188,7 +190,6 @@ const ProductsController = {
       next(error);
     }
   },
-
 
   getById: async (req: Request, res: Response, next: NextFunction) => {
     try {
