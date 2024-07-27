@@ -11,6 +11,7 @@ import { RESPONSE_CODE, ResponseBody } from "../constants";
 import { OrderDetails } from "../models/OrderDetails";
 import { OrderItems } from "../models/OrderItems";
 import { PAYMENT_PROVIDER, PaymentDetails } from "../models/PaymentDetails";
+import { redis } from "../config/ConnectRedis";
 
 const PaymentOnlineController = {
   order: async (req: Request, res: Response, next: NextFunction) => {
@@ -119,19 +120,24 @@ const PaymentOnlineController = {
     }
   },
 
-  createMomo: async (): Promise<string> => {
+  createMomo: async ({
+    amount,
+    orderCode,
+  }: {
+    amount: number;
+    orderCode: string;
+  }): Promise<string> => {
     const partnerCode = "MOMO";
     const accessKey = "F8BBA842ECF85";
     const secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
 
     const requestId = partnerCode + new Date().getTime();
-    const orderId = new Date().getTime() + 450;
-    const orderInfo = "Đơn hàng cần thanh toán FDO430DFK";
+    const orderId = orderCode;
+    const orderInfo = `Thanh toán đơn hàng ${orderCode}`;
     const ipnUrl = process.env["momo_Checkout"];
     const redirectUrl = process.env["momo_Checkout"];
-    const amount = "10000";
     const requestType = "captureWallet";
-    const extraData = "eyJ1c2VybmFtZSI6ICJtb21vIn0=";
+    const extraData = "";
 
     const rawSignature = `accessKey=${accessKey}&amount=${amount}&extraData=${extraData}&ipnUrl=${ipnUrl}&orderId=${orderId}&orderInfo=${orderInfo}&partnerCode=${partnerCode}&redirectUrl=${redirectUrl}&requestId=${requestId}&requestType=${requestType}`;
 
@@ -166,51 +172,65 @@ const PaymentOnlineController = {
   createOrder: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.userId;
-      const { cartId, provider } = req.body;
+      const { provider } = req.body;
+      let amount = 0;
       const carts = await ShoppingCarts.findOne({
-        where: { userId, cartId },
-        attributes: ["totals", "amount", "userId", "cartId"],
-        include: {
-          model: CartItems,
-          attributes: ["quanity", "productId"],
-        },
+        where: { userId },
+        attributes: ["totals", "amount", "cartId"],
       });
+
       if (carts) {
+        amount = carts.amount;
         const newOrders = await OrderDetails.create({
           userId,
+          amount,
           totals: carts.totals,
-          amount: carts.amount,
         });
-        for await (const productDetails of carts.cartItems) {
+
+        const cartItems = await CartItems.findAll({
+          where: { cartId: carts?.cartId },
+        });
+
+        for await (const products of cartItems) {
           await OrderItems.create({
-            quanity: productDetails.quanity,
-            productDetailId: productDetails.productDetailId,
-            orderDetailsID: newOrders.orderDetailId,
+            amount,
+            quanity: products.quanity,
+            orderDetailId: newOrders.orderDetailId,
+            productDetailId: products.productDetailId,
           });
+          await products.destroy();
         }
+
         await PaymentDetails.create({
+          amount,
           provider,
-          amount: carts.amount,
           orderDetailsId: newOrders.orderDetailId,
         });
 
-        //xóa các sản phẩm hiện có trong giỏ hàng
-        await CartItems.destroy({
-          where: { cartId: carts.cartId },
-        });
-
-        //reset giỏ hàng sau khi tạo order thành công
         await carts.destroy();
+
+        await redis.del(`carts-${userId}`);
 
         switch (provider) {
           case PAYMENT_PROVIDER.MOMO:
-            const paymentUrl = await PaymentOnlineController.createMomo();
-            return res.redirect(paymentUrl);
+            const paymentUrl = await PaymentOnlineController.createMomo({
+              amount,
+              orderCode: newOrders.orderCode,
+            });
+            return res.json(
+              ResponseBody({
+                data: paymentUrl,
+                code: RESPONSE_CODE.SUCCESS,
+                message: "Thực hiện thành công",
+              })
+            );
+          case PAYMENT_PROVIDER.VN_PAY:
+            break;
         }
       } else {
         return res.json(
           ResponseBody({
-            code: RESPONSE_CODE.SUCCESS,
+            code: RESPONSE_CODE.ERRORS,
             data: null,
             message:
               "Giỏ hàng của bạn đang trống, vui lòng thêm sản phẩm trước khi thanh toán",

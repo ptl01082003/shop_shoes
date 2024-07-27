@@ -57,49 +57,69 @@ const CartsController = {
 
         await carts.save();
 
-        const currentCarts = await ShoppingCarts.findOne({
+        let transferCarts: { [key: string]: any } = {};
+
+        const currentCard = await ShoppingCarts.findOne({
           where: { userId },
-          attributes: ["totals", "amount"],
+          attributes: ["totals", "amount", "cartId"],
+        });
+
+        transferCarts = { ...currentCard?.toJSON() };
+        delete transferCarts["cartId"];
+
+        const productItems = await CartItems.findAll({
+          where: { cartId: currentCard?.cartId },
+          attributes: ["productDetailId", "quanity", "amount"],
           include: [
             {
-              model: CartItems,
-              attributes: ["quanity", "amount"],
+              model: ProductDetails,
               include: [
                 {
-                  model: ProductDetails,
-                  attributes: ["productId", "sizeId"],
+                  model: Products,
+                  attributes: ["priceDiscount", "name"],
                   include: [
                     {
-                      model: Products,
-                      attributes: ["priceDiscount", "name"],
-                      include: [
-                        {
-                          model: Images,
-                          attributes: ["path"],
-                        },
-                      ],
-                    },
-                    {
-                      model: Sizes,
-                      attributes: ["name"],
+                      model: Images,
+                      attributes: ["path"],
                     },
                   ],
+                },
+                {
+                  model: Sizes,
+                  attributes: ["name"],
                 },
               ],
             },
           ],
         });
 
-        await redis.set(`carts-${userId}`, JSON.stringify(currentCarts));
+        transferCarts["cartItems"] = productItems.map((products) => {
+          return {
+            quanity: products?.quanity,
+            amount: products?.amount,
+            productDetailId: products?.productDetailId,
+            name: products?.productDetails?.products?.name,
+            sizeName: products?.productDetails?.sizes?.name,
+            quanityLimit: products?.productDetails?.quantity,
+            path: products?.productDetails?.products?.gallery?.[0]?.path,
+            priceDiscount: products?.productDetails?.products?.priceDiscount,
+          };
+        });
+
+        await redis.set(`carts-${userId}`, JSON.stringify(transferCarts));
+
         return res.json(
           ResponseBody({
-            code: RESPONSE_CODE.ERRORS,
+            code: RESPONSE_CODE.SUCCESS,
             message: isExceedQuanity
               ? `Bạn chỉ có thể thêm tối đa ${productDetails.quantity} sản phẩm`
               : "Thực hiện thành công",
             data: {
               amount,
+              cartTotals,
+              cartsAmount,
               productDetailId,
+              carts: transferCarts,
               quanity: actualQuanity,
             },
           })
@@ -121,70 +141,94 @@ const CartsController = {
     const userId = req.userId;
     const { productDetailId } = req.body;
 
+    let cartTotals = 0;
+    let cartsAmount = 0;
+
     const carts = await ShoppingCarts.findOne({ where: { userId } });
-    const cartsItems = await CartItems.findOne({
-      where: { productDetailId, cartId: carts?.cartId },
+
+    await CartItems.destroy({
+      where: {
+        productDetailId,
+        cartId: carts?.cartId,
+      },
     });
-    if (carts) {
-      if (cartsItems) {
-        if (cartsItems.quanity > 1) {
-          cartsItems.quanity -= 1;
-          await cartsItems.save();
-        } else {
-          await cartsItems.destroy();
-        }
 
-        let cartsAmount = 0;
+    let transferCarts: { [key: string]: any } = {};
 
-        const products = await CartItems.findAll({
-          where: { cartId: carts?.cartId },
-          include: [Products],
-        });
-        // products.forEach((product) => {
-        //   cartsAmount +=
-        //     (Number(product.products.price) || 0) * product.quanity;
-        // });
-        carts.amount = cartsAmount;
-        carts.totals -= 1;
+    const currentCard = await ShoppingCarts.findOne({
+      where: { userId },
+      attributes: ["totals", "amount", "cartId"],
+    });
+    if (currentCard) {
+      const lstCartsItems = await CartItems.findAll({
+        where: { cartId: currentCard.cartId },
+      });
 
-        await carts.save();
+      lstCartsItems.forEach((cartItems) => {
+        (cartTotals += cartItems.quanity), (cartsAmount += cartItems.amount);
+      });
 
-        const getCarts = await ShoppingCarts.findOne({
-          where: { userId },
-          attributes: ["totals", "amount"],
-          include: {
-            model: CartItems,
-            attributes: ["quanity"],
+      currentCard.amount = cartsAmount;
+      currentCard.totals = cartTotals;
+
+      await currentCard.save();
+
+      transferCarts = { ...currentCard?.toJSON() };
+      delete transferCarts["cartId"];
+
+      const productItems = await CartItems.findAll({
+        where: { cartId: currentCard?.cartId },
+        attributes: ["productDetailId", "quanity", "amount"],
+        include: [
+          {
+            model: ProductDetails,
             include: [
               {
                 model: Products,
-                attributes: ["productPrice", "productsName"],
+                attributes: ["priceDiscount", "name"],
+                include: [
+                  {
+                    model: Images,
+                    attributes: ["path"],
+                  },
+                ],
+              },
+              {
+                model: Sizes,
+                attributes: ["name"],
               },
             ],
           },
-        });
+        ],
+      });
 
-        await redis.set(`carts-${userId}`, JSON.stringify(getCarts));
+      transferCarts["cartItems"] = productItems.map((products) => {
+        return {
+          quanity: products?.quanity,
+          amount: products?.amount,
+          productDetailId: products?.productDetailId,
+          name: products?.productDetails?.products?.name,
+          sizeName: products?.productDetails?.sizes?.name,
+          quanityLimit: products?.productDetails?.quantity,
+          path: products?.productDetails?.products?.gallery?.[0]?.path,
+          priceDiscount: products?.productDetails?.products?.priceDiscount,
+        };
+      });
 
-        return res.status(STATUS_CODE.SUCCESS).json(
-          ResponseBody({
-            code: RESPONSE_CODE.SUCCESS,
-            message: `Thực hiện thành công`,
-          })
-        );
-      } else {
-        return res.json(
-          ResponseBody({
-            code: RESPONSE_CODE.ERRORS,
-            message: `Sản phẩm không tồn tại không giỏ hàng`,
-          })
-        );
-      }
+      await redis.set(`carts-${userId}`, JSON.stringify(transferCarts));
+      return res.json(
+        ResponseBody({
+          data: transferCarts,
+          code: RESPONSE_CODE.SUCCESS,
+          message: `Thực hiện thành công`,
+        })
+      );
     } else {
       return res.json(
         ResponseBody({
+          data: null,
           code: RESPONSE_CODE.ERRORS,
-          message: `Giỏ hàng chưa được tạo`,
+          message: `Giỏ hàng của bạn đang trống`,
         })
       );
     }
@@ -202,46 +246,72 @@ const CartsController = {
         })
       );
     }
-    const currentCartsInDb = await ShoppingCarts.findOne({
+    let transferCarts: { [key: string]: any } = {};
+
+    const currentCard = await ShoppingCarts.findOne({
       where: { userId },
-      attributes: ["totals", "amount"],
-      include: [
-        {
-          model: CartItems,
-          attributes: ["quanity", "amount"],
-          include: [
-            {
-              model: ProductDetails,
-              attributes: ["productId", "sizeId"],
-              include: [
-                {
-                  model: Products,
-                  attributes: ["priceDiscount", "name"],
-                  include: [
-                    {
-                      model: Images,
-                      attributes: ["path"],
-                    },
-                  ],
-                },
-                {
-                  model: Sizes,
-                  attributes: ["name"],
-                },
-              ],
-            },
-          ],
-        },
-      ],
+      attributes: ["totals", "amount", "cartId"],
     });
-    await redis.set(`carts-${userId}`, JSON.stringify(currentCartsInDb));
-    return res.status(STATUS_CODE.SUCCESS).json(
-      ResponseBody({
-        code: RESPONSE_CODE.SUCCESS,
-        data: currentCartsInDb,
-        message: `Thực hiện thành công`,
-      })
-    );
+    if (currentCard) {
+      transferCarts = { ...currentCard?.toJSON() };
+      delete transferCarts["cartId"];
+
+      const productItems = await CartItems.findAll({
+        where: { cartId: currentCard?.cartId },
+        attributes: ["productDetailId", "quanity", "amount"],
+        include: [
+          {
+            model: ProductDetails,
+            include: [
+              {
+                model: Products,
+                attributes: ["priceDiscount", "name"],
+                include: [
+                  {
+                    model: Images,
+                    attributes: ["path"],
+                  },
+                ],
+              },
+              {
+                model: Sizes,
+                attributes: ["name"],
+              },
+            ],
+          },
+        ],
+      });
+
+      transferCarts["cartItems"] = productItems.map((products) => {
+        return {
+          quanity: products?.quanity,
+          amount: products?.amount,
+          productDetailId: products?.productDetailId,
+          name: products?.productDetails?.products?.name,
+          sizeName: products?.productDetails?.sizes?.name,
+          quanityLimit: products?.productDetails?.quantity,
+          path: products?.productDetails?.products?.gallery?.[0]?.path,
+          priceDiscount: products?.productDetails?.products?.priceDiscount,
+        };
+      });
+
+      await redis.set(`carts-${userId}`, JSON.stringify(transferCarts));
+      return res.json(
+        ResponseBody({
+          code: RESPONSE_CODE.SUCCESS,
+          data: transferCarts,
+          message: `Thực hiện thành công`,
+        })
+      );
+    } else {
+      return res.json(
+        ResponseBody({
+          code: RESPONSE_CODE.ERRORS,
+          data: null,
+          message: `Giỏ hàng của bạn đang trống`,
+        })
+      );
+    }
   },
 };
 

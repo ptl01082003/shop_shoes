@@ -2,7 +2,10 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import PrivateRouter from "./components/PrivateRouter/PrivateRouter";
+import "slick-carousel/slick/slick-theme.css";
+import "slick-carousel/slick/slick.css";
+import Layout from "./components/Layout/Layout";
+import { PATH_ROUTER } from "./constants";
 import About from "./pages/About/About";
 import SignIn from "./pages/Account/SignIn";
 import SignUp from "./pages/Account/SignUp";
@@ -14,15 +17,7 @@ import Offer from "./pages/Offer/Offer";
 import Payment from "./pages/payment/Payment";
 import ProductDetails from "./pages/ProductDetails/ProductDetails";
 import Shop from "./pages/Shop/Shop";
-import { KEY_STORAGE, PATH_ROUTER } from "./constants";
-import { useEffect } from "react";
-import { fetchGetUserInfo } from "./redux/thunks/userThunk";
-import { selectUserInfo } from "./redux/slices/usersSlice";
-import { useDispatch, useSelector } from "react-redux";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import { fetchGetLstCarts } from "./redux/thunks/cartThunk";
-import Layout from "./components/Layout/Layout";
+import Oders from "./pages/Order/Order";
 
 function App() {
   return (
@@ -52,6 +47,7 @@ function App() {
             <Route path="category/:category" element={<Offer />} />
             <Route path="product/:code" element={<ProductDetails />} />
             <Route path="cart" element={<Cart />} />
+            <Route path="create-orders" element={<Oders />} />
             <Route path="paymentgateway" element={<Payment />} />
           </Route>
         </Routes>

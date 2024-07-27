@@ -1,6 +1,7 @@
 import {
   AutoIncrement,
   BeforeCreate,
+  BeforeUpdate,
   BelongsTo,
   Column,
   DataType,
@@ -98,5 +99,10 @@ export class Products extends Model {
     instance.priceDiscount = instance.price;
     instance.productId = genaratorProductsId();
     instance.code = uuid.slice(0, 6).toUpperCase();
+  }
+  @BeforeUpdate
+  static updateProducts(instance: Products) {
+    instance.priceDiscount = instance.price;
+   
   }
 }

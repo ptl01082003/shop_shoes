@@ -23,6 +23,9 @@ export class OrderItems extends Model {
   public orderItemId!: number;
 
   @Column
+  public amount!: number;
+  
+  @Column
   public quanity!: number;
 
   @ForeignKey(() => ProductDetails)

@@ -6,6 +6,8 @@ import { Users } from "../models/Users";
 import fs from "fs";
 import { Images } from "../models/Images";
 import { Products } from "../models/Products";
+import { ShoppingCarts } from "../models/ShoppingCarts";
+import { CartItems } from "../models/CartItems";
 
 export async function connectDB() {
   const sequelize = new Sequelize({
@@ -51,7 +53,6 @@ export async function connectDB() {
   //     }
   //   })
   // });
-
 
   // const products = await Products.findAll();
   // for await (const product of products) {

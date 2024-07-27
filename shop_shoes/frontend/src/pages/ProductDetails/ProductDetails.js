@@ -1,4 +1,5 @@
 import Slider from "react-slick";
+import { CaretRightOutlined, CaretLeftOutlined } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useRef, useState } from "react";
 import AxiosClient from "../../networks/AxiosClient";
@@ -7,6 +8,32 @@ import { Divider, InputNumber, Tabs } from "antd";
 import clsx from "clsx";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUserInfo } from "../../redux/slices/usersSlice";
+import { addToCard, changeCarts } from "../../redux/slices/cartsSlice";
+import { toast } from "react-toastify";
+
+function SampleNextArrow(props) {
+  const { onClick } = props;
+  return (
+    <div
+      onClick={onClick}
+      className="absolute z-50 bottom-[5%] right-[5%] w-[9%] h-[9%] cursor-pointer flex justify-center items-center rounded-xl bg-[#EDF0F8]"
+    >
+      <CaretRightOutlined className="text-2xl" />
+    </div>
+  );
+}
+
+function SamplePrevArrow(props) {
+  const { onClick } = props;
+  return (
+    <div
+      onClick={onClick}
+      className="absolute z-50 bottom-[5%] right-[16%] w-[9%] h-[9%] cursor-pointer flex justify-center items-center rounded-xl bg-[#EDF0F8]"
+    >
+      <CaretLeftOutlined className="text-2xl" />
+    </div>
+  );
+}
 
 export default function ProductDetails() {
   const dispatch = useDispatch();
@@ -42,47 +69,58 @@ export default function ProductDetails() {
     setCurrentSize(size);
   };
 
-  const addProductsToCart = (products) => {
-    if (selUserInfo) {
-      alert("them");
+  const addProductsToCart = async () => {
+    const newCarts = await AxiosClient.post("/carts/create", {
+      quanity: counterSize,
+      productDetailId: currentSize?.productDetailId,
+    });
+    if (newCarts?.code === 0) {
+      setCounterSize(newCarts.data?.quanity)
+      dispatch(changeCarts(newCarts.data?.carts));
     } else {
-      navigation(PATH_ROUTER.SIGN_IN);
+      toast.error(newCarts?.messsage);
     }
   };
 
   return (
     <div className="container mx-auto">
-      <div className="flex">
+      <div className="flex gap-6">
         <div className="w-[550px]">
           <Slider
-            arrows={false}
+            arrows={true}
             asNavFor={nav2}
+            nextArrow={<SampleNextArrow />}
+            prevArrow={<SamplePrevArrow />}
             ref={(slider) => (sliderRef1 = slider)}
           >
             {products?.gallery?.map((images) => (
-              <div className="aspect-square w-full overflow-hidden rounded-xl">
-                <img
-                  src={URL_IMAGE(images?.path)}
-                  className="w-full h-full object-cover rounded-xl transition-all duration-200 ease-out hover:scale-150"
-                />
+              <div className="px-2">
+                <div className="w-full overflow-hidden cursor-pointer aspect-square rounded-xl">
+                  <img
+                    src={URL_IMAGE(images?.path)}
+                    className="object-cover w-full h-full transition-all duration-200 ease-out rounded-xl hover:scale-150"
+                  />
+                </div>
               </div>
             ))}
           </Slider>
-          <div className="">
+          <div className="mt-2">
             <Slider
               asNavFor={nav1}
               ref={(slider) => (sliderRef2 = slider)}
               slidesToShow={4}
               swipeToSlide={true}
-              arrows={true}
+              arrows={false}
               focusOnSelect={true}
             >
               {products?.gallery?.map((images) => (
-                <div className="aspect-square w-full overflow-hidden rounded-xl">
-                  <img
-                    src={URL_IMAGE(images?.path)}
-                    className="w-full h-full object-cover rounded-xl transition-all duration-200 ease-out hover:scale-150"
-                  />
+                <div className="px-2">
+                  <div className="w-full overflow-hidden cursor-pointer aspect-square rounded-xl">
+                    <img
+                      src={URL_IMAGE(images?.path)}
+                      className="object-cover w-full h-full transition-all duration-200 ease-out rounded-xl hover:scale-150"
+                    />
+                  </div>
                 </div>
               ))}
             </Slider>
@@ -108,15 +146,19 @@ export default function ProductDetails() {
                 className={clsx(
                   "px-4 py-3 cursor-pointer rounded-lg  text-center w-[85px]",
                   {
-                    "bg-[#cad7fb]": currentSize?.sizeId == size?.sizeId,
-                    "bg-[#F3F3F3]": currentSize?.sizeId != size?.sizeId,
+                    "bg-[#cad7fb]":
+                      currentSize?.productDetailId == size?.productDetailId,
+                    "bg-[#F3F3F3]":
+                      currentSize?.productDetailId != size?.productDetailId,
                   }
                 )}
               >
                 <h3
                   className={clsx("text-lg font-bold", {
-                    "text-[#3A4980]": currentSize?.sizeId == size?.sizeId,
-                    "text-[#726C6C]": currentSize?.sizeId != size?.sizeId,
+                    "text-[#3A4980]":
+                      currentSize?.productDetailId == size?.productDetailId,
+                    "text-[#726C6C]":
+                      currentSize?.productDetailId != size?.productDetailId,
                   })}
                 >
                   {size?.sizes?.name}
@@ -124,26 +166,23 @@ export default function ProductDetails() {
               </div>
             ))}
           </div>
-          <h3 className="italic">
+          <h3 className="mb-5 italic">
             Kho: <span>{currentSize?.quantity}</span>
           </h3>
+          <InputNumber
+            min={1}
+            defaultValue={1}
+            value={counterSize}
+            max={currentSize?.quantity}
+            onChange={(counter) => setCounterSize(counter)}
+          />
           <Divider />
-          <div className="flex items-center gap-5">
-            <InputNumber
-              min={1}
-              className=""
-              defaultValue={1}
-              value={counterSize}
-              max={currentSize?.quantity}
-              onChange={(e) => setCounterSize(e)}
-            />
-            <button
-              onClick={addProductsToCart}
-              className="w-[330px] px-5 py-3 rounded-full tex-center bg-[#3A4980] font-bold text-white"
-            >
-              THÊM VÀO GIỎ HÀNG
-            </button>
-          </div>
+          <button
+            onClick={addProductsToCart}
+            className="w-[260px] px-5 py-3 rounded-full tex-center bg-[#3A4980] font-bold text-white"
+          >
+            THÊM VÀO GIỎ HÀNG
+          </button>
         </div>
       </div>
       <Tabs

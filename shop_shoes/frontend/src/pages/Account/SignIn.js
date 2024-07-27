@@ -17,8 +17,7 @@ const SignIn = () => {
     if (response.code === 0) {
       localStorage.setItem(KEY_STORAGE.TOKEN, response.data.accessToken);
       localStorage.setItem(KEY_STORAGE.RF_TOKEN, response.data.refreshToken);
-      await dispatch(fetchGetUserInfo());
-      navigation("/", { replace: true });
+      window.location.replace("/");
     } else {
       toast.error(response.message);
     }
@@ -43,8 +42,8 @@ const SignIn = () => {
 
   return (
     <div className="font-[sans-serif]">
-      <div className="min-h-screen flex fle-col items-center justify-center py-6 px-4">
-        <div className="grid md:grid-cols-2 items-center gap-4 max-w-6xl w-full">
+      <div className="fle-col min-h-screen flex justify-center items-center px-4 py-6">
+        <div className="w-full max-w-6xl grid items-center gap-4 md:grid-cols-2">
           <div className="border border-gray-300 rounded-lg p-6 max-w-md shadow-[0_2px_22px_-4px_rgba(93,96,127,0.2)] max-md:mx-auto">
             <form
               className="space-y-4"
@@ -52,12 +51,12 @@ const SignIn = () => {
               autoComplete="false"
             >
               <div className="mb-8">
-                <h3 className="text-gray-800 text-3xl font-bold text-center">
+                <h3 className="text-3xl font-bold text-center text-gray-800">
                   ĐĂNG NHẬP
                 </h3>
               </div>
               <div>
-                <label className="text-gray-800 text-sm mb-2 block">
+                <label className="block mb-2 text-sm text-gray-800">
                   Tài khoản
                 </label>
                 <div className="relative flex items-center">
@@ -65,7 +64,7 @@ const SignIn = () => {
                     {...register("userName")}
                     type="text"
                     placeholder="Nhập tại đây"
-                    className="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-blue-600"
+                    className="w-full px-4 py-3 text-sm text-gray-800 rounded-lg border border-gray-300 outline-blue-600"
                   />
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -86,17 +85,19 @@ const SignIn = () => {
                     ></path>
                   </svg>
                 </div>
-                <p className="text-sm text-red-600 italic mt-2">
+                <p className="mt-2 text-sm italic text-red-600">
                   {errors.userName?.message}
                 </p>
               </div>
               <div>
-                <label className="text-gray-800 text-sm mb-2 block">Mật khẩu</label>
+                <label className="block mb-2 text-sm text-gray-800">
+                  Mật khẩu
+                </label>
                 <div className="relative flex items-center">
                   <input
                     type="password"
                     {...register("password")}
-                    className="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-blue-600"
+                    className="w-full px-4 py-3 text-sm text-gray-800 rounded-lg border border-gray-300 outline-blue-600"
                     placeholder="Nhập tại đây"
                   />
                   <svg
@@ -112,14 +113,14 @@ const SignIn = () => {
                     ></path>
                   </svg>
                 </div>
-                <p className="text-sm text-red-600 italic mt-2">
+                <p className="mt-2 text-sm italic text-red-600">
                   {errors.password?.message}
                 </p>
               </div>
               <div className="mt-8">
                 <button
                   type="submit"
-                  className="w-full shadow-xl py-3 px-4 text-sm tracking-wide rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none"
+                  className="w-full px-4 py-3 text-sm tracking-wide text-white bg-blue-600 rounded-lg shadow-xl focus:outline-none hover:bg-blue-700"
                 >
                   Đăng nhập
                 </button>
@@ -127,7 +128,7 @@ const SignIn = () => {
               <Link to={PATH_ROUTER.SIGN_UP}>
                 <p className="text-sm !mt-8 text-center text-gray-800">
                   Bạn chưa có tài khoản?{" "}
-                  <span className="text-blue-600 font-semibold hover:underline ml-1 whitespace-nowrap">
+                  <span className="ml-1 font-semibold text-blue-600 whitespace-nowrap hover:underline">
                     Đăng ký ngay
                   </span>
                 </p>
@@ -137,7 +138,7 @@ const SignIn = () => {
           <div className="lg:h-[400px] md:h-[300px] max-md:mt-8">
             <img
               src="https://readymadeui.com/login-image.webp"
-              className="w-full h-full max-md:w-4/5 mx-auto block object-cover"
+              className="mx-auto w-full h-full object-cover block max-md:w-4/5"
               alt="Dining Experience"
             />
           </div>

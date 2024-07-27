@@ -4,10 +4,12 @@ import { fetchGetLstCarts } from "../thunks/cartThunk";
 export const cartsSlice = createSlice({
   name: "cartsSlice",
   initialState: {
-    lstCarts: [],
+    lstCarts: {},
   },
   reducers: {
-    addToCard(state, action) {
+     changeCarts(state, action) {
+      const params = action.payload;
+      state.lstCarts = params;
     },
   },
   extraReducers: (builder) => {
@@ -17,7 +19,7 @@ export const cartsSlice = createSlice({
   },
 });
 
-export const {} = cartsSlice.actions;
+export const {changeCarts} = cartsSlice.actions;
 
 export default cartsSlice.reducer;
 

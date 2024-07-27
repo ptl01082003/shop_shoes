@@ -3,6 +3,7 @@ import {
   BeforeCreate,
   BelongsTo,
   Column,
+  DataType,
   Default,
   ForeignKey,
   HasMany,
@@ -34,6 +35,16 @@ export class OrderDetails extends Model {
   @Column
   public amount!: number;
 
+  @Column
+  public name!: string;
+
+  @Column(DataType.STRING(500))
+  public address!: string;
+
+  @Column
+  public phone!: number;
+
+
   @ForeignKey(() => Users)
   @Column
   public userId!: number;
@@ -46,6 +57,6 @@ export class OrderDetails extends Model {
 
   @BeforeCreate
   static genaratorOrderCode(instance: OrderDetails) {
-    instance.orderCode = uuidv4().slice(0, 6).toUpperCase();
+    instance.orderCode = uuidv4().slice(0, 8).toUpperCase();
   }
 }
