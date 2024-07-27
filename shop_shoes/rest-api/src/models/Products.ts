@@ -19,6 +19,7 @@ import { Origins } from "./Origins";
 import { Styles } from "./Styles";
 import { DataTypes } from "sequelize";
 import { ProductDetails } from "./ProductDetails";
+import { Images } from "./Images";
 
 @Table({
   tableName: "products",
@@ -88,9 +89,13 @@ export class Products extends Model {
   @HasMany(() => ProductDetails)
   public productDetails?: ProductDetails;
 
+  @HasMany(() => Images)
+  public gallery!: Images[];
+
   @BeforeCreate
   static genaratorProductCode(instance: Products) {
     const uuid = uuidv4();
+    instance.priceDiscount = instance.price;
     instance.productId = genaratorProductsId();
     instance.code = uuid.slice(0, 6).toUpperCase();
   }

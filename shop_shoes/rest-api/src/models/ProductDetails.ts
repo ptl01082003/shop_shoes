@@ -6,9 +6,11 @@ import {
   PrimaryKey,
   Table,
   BelongsTo,
+  HasMany,
 } from "sequelize-typescript";
 import { Sizes } from "./Sizes";
 import { Products } from "./Products";
+import { Images } from "./Images";
 
 @Table({
   tableName: "product_details",
@@ -37,4 +39,5 @@ export class ProductDetails extends Model {
 
   @BelongsTo(() => Products)
   public products!: Products;
+
 }

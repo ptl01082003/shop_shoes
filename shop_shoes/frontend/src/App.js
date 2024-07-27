@@ -19,17 +19,12 @@ import { useEffect } from "react";
 import { fetchGetUserInfo } from "./redux/thunks/userThunk";
 import { selectUserInfo } from "./redux/slices/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import { fetchGetLstCarts } from "./redux/thunks/cartThunk";
+import Layout from "./components/Layout/Layout";
 
 function App() {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    const token = localStorage.getItem(KEY_STORAGE.TOKEN);
-    if (token) {
-      dispatch(fetchGetUserInfo());
-    }
-  }, []);
-
   return (
     <div className="font-bodyFont">
       <ToastContainer
@@ -48,14 +43,14 @@ function App() {
         <Routes>
           <Route path={PATH_ROUTER.SIGN_UP} element={<SignUp />} />
           <Route path={PATH_ROUTER.SIGN_IN} element={<SignIn />} />
-          <Route path="/*" element={<PrivateRouter />}>
+          <Route path="/*" element={<Layout />}>
             <Route path="" element={<Home />} />
             <Route path="shop" element={<Shop />} />
             <Route path="about" element={<About />} />
             <Route path="contact" element={<Contact />} />
             <Route path="journal" element={<Journal />} />
             <Route path="category/:category" element={<Offer />} />
-            <Route path="product/:_id" element={<ProductDetails />} />
+            <Route path="product/:code" element={<ProductDetails />} />
             <Route path="cart" element={<Cart />} />
             <Route path="paymentgateway" element={<Payment />} />
           </Route>

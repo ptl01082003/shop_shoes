@@ -12,6 +12,7 @@ import {
 import storage from "redux-persist/lib/storage";
 import orebiReducer from "./orebiSlice";
 import usersSlice from "./slices/usersSlice";
+import cartsSlice from "./slices/cartsSlice";
 
 const persistConfig = {
   key: "root",
@@ -22,7 +23,7 @@ const persistConfig = {
 const persistedReducer = persistReducer(persistConfig, orebiReducer);
 
 export const store = configureStore({
-  reducer: { orebiReducer: persistedReducer, users: usersSlice },
+  reducer: { orebiReducer: persistedReducer, users: usersSlice, carts: cartsSlice },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {

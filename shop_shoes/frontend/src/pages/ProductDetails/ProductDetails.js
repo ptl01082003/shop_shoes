@@ -1,130 +1,170 @@
-import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import Breadcrumbs from "../../components/pageProps/Breadcrumbs";
-import ProductInfo from "../../components/pageProps/productDetails/ProductInfo";
-import { FaDownload } from "react-icons/fa";
+import Slider from "react-slick";
+import { useNavigate, useParams } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import AxiosClient from "../../networks/AxiosClient";
+import { URL_IMAGE, TRANSFER_PRICE, PATH_ROUTER } from "../../constants";
+import { Divider, InputNumber, Tabs } from "antd";
+import clsx from "clsx";
+import { useDispatch, useSelector } from "react-redux";
+import { selectUserInfo } from "../../redux/slices/usersSlice";
 
-const tabs = [
-  {
-    id: "Fiche Technique",
-    label: "Fiche Technique",
-  },
-  {
-    id: "Description",
-    label: "Description",
-    content:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic excepturi quibusdam odio deleniti reprehenderit facilis.",
-  },
-  {
-    id: "Video",
-    label: "Video",
-    content: (
-      <iframe
-        width="560"
-        height="315"
-        src="https://www.youtube.com/embed/watch?v=6e0yIRDVPlA&list=RD6e0yIRDVPlA&start_radio=1"
-        title="YouTube Video"
-        frameBorder="0"
-        allowFullScreen
-      ></iframe>
-    ),
-  },
-  // Add more tabs as needed
-];
+export default function ProductDetails() {
+  const dispatch = useDispatch();
+  const navigation = useNavigate();
+  const selUserInfo = useSelector(selectUserInfo);
 
-const ProductDetails = () => {
-  const location = useLocation();
-  const [prevLocation, setPrevLocation] = useState("");
-  const [productInfo, setProductInfo] = useState([]);
-  const [activeTab, setActiveTab] = useState(tabs[0].id);
+  let sliderRef2 = useRef(null);
+  let sliderRef1 = useRef(null);
+  const [nav1, setNav1] = useState(null);
+  const [nav2, setNav2] = useState(null);
 
-  const handleTabClick = (tabId) => {
-    setActiveTab(tabId);
-  };
+  const { code } = useParams();
+  const [products, setProducts] = useState({});
+  const [counterSize, setCounterSize] = useState(1);
+  const [currentSize, setCurrentSize] = useState();
 
   useEffect(() => {
-    setProductInfo(location.state.item);
-    setPrevLocation(location.pathname);
-  }, [location, productInfo.ficheTech]);
+    (async () => {
+      const response = await AxiosClient.post("/products/product-details", {
+        code,
+      });
+      setCurrentSize(response?.data?.sizes?.[0] || {});
+      setProducts(response?.data || {});
+    })();
+  }, []);
+
+  useEffect(() => {
+    setNav1(sliderRef1);
+    setNav2(sliderRef2);
+  }, []);
+
+  const selectSize = (size) => {
+    setCurrentSize(size);
+  };
+
+  const addProductsToCart = (products) => {
+    if (selUserInfo) {
+      alert("them");
+    } else {
+      navigation(PATH_ROUTER.SIGN_IN);
+    }
+  };
 
   return (
-    <div className="w-full mx-auto border-b-[1px] border-b-gray-300">
-      <div className="max-w-container mx-auto px-4">
-        <div className="xl:-mt-10 -mt-7">
-          <Breadcrumbs title="" prevLocation={prevLocation} />
-        </div>
-        <div className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-4 h-full -mt-5 xl:-mt-8 pb-10 bg-gray-100 p-4">
-          <div className="h-full xl:col-span-2">
-            <img
-              className="w-full h-full "
-              src={productInfo.img}
-              alt={productInfo.img}
-            />
-          </div>
-          <div className="h-full w-full md:col-span-2 xl:col-span-4 xl:px-4 flex flex-col gap-6 justify-center">
-            <ProductInfo productInfo={productInfo} />
-          </div>
-        </div>
-        <div>
-          <div className=" space-x-4  pt-4">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                className={`${
-                  activeTab === tab.id
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-200 text-gray-800"
-                } py-2 px-4  focus:outline-none`}
-                onClick={() => handleTabClick(tab.id)}
-              >
-                {tab.label}
-              </button>
+    <div className="container mx-auto">
+      <div className="flex">
+        <div className="w-[550px]">
+          <Slider
+            arrows={false}
+            asNavFor={nav2}
+            ref={(slider) => (sliderRef1 = slider)}
+          >
+            {products?.gallery?.map((images) => (
+              <div className="aspect-square w-full overflow-hidden rounded-xl">
+                <img
+                  src={URL_IMAGE(images?.path)}
+                  className="w-full h-full object-cover rounded-xl transition-all duration-200 ease-out hover:scale-150"
+                />
+              </div>
             ))}
+          </Slider>
+          <div className="">
+            <Slider
+              asNavFor={nav1}
+              ref={(slider) => (sliderRef2 = slider)}
+              slidesToShow={4}
+              swipeToSlide={true}
+              arrows={true}
+              focusOnSelect={true}
+            >
+              {products?.gallery?.map((images) => (
+                <div className="aspect-square w-full overflow-hidden rounded-xl">
+                  <img
+                    src={URL_IMAGE(images?.path)}
+                    className="w-full h-full object-cover rounded-xl transition-all duration-200 ease-out hover:scale-150"
+                  />
+                </div>
+              ))}
+            </Slider>
           </div>
-          <div className="my-4">
-            {tabs.map((tab) => (
+        </div>
+        <div class="flex-1">
+          <h1 className="mb-3 text-4xl font-bold">
+            <span>{products?.name}</span>
+          </h1>
+          <h3 className="text-lg">
+            Giá: <span>{TRANSFER_PRICE(products?.price)}</span>
+          </h3>
+          <Divider />
+          <h3>Chọn sizes:</h3>
+          <div className="flex flex-wrap gap-4 mb-5">
+            {products?.sizes?.map((size) => (
               <div
-                key={tab.id}
-                className={activeTab === tab.id ? "" : "hidden"}
-              >
-                {tab.id === "Fiche Technique" && productInfo.ficheTech ? (
-                  <div>
-                    <table className="table-auto w-full">
-                      <tbody>
-                        {productInfo.ficheTech.map((row) => (
-                          <tr key={row.label} className="bg-gray-100">
-                            <td className="border px-4 py-2 font-semibold">
-                              {row.label}
-                            </td>
-                            <td className="border px-4 py-2">{row.value}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                    <div className="my-4 flex justify-end">
-                      <button className="inline-flex items-center px-4 py-2 border border-gray-300 bg-blue-500 hover:bg-blue-600 text-white font-bodyFont">
-                        <FaDownload className="h-5 w-5 mr-2 text-white" />
-                        <a
-                          href={productInfo.pdf}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-white"
-                        >
-                          Download PDF
-                        </a>{" "}
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <p>{tab.content}</p>
+                key={size?.sizeId}
+                onClick={() => {
+                  setCounterSize(1);
+                  selectSize(size);
+                }}
+                className={clsx(
+                  "px-4 py-3 cursor-pointer rounded-lg  text-center w-[85px]",
+                  {
+                    "bg-[#cad7fb]": currentSize?.sizeId == size?.sizeId,
+                    "bg-[#F3F3F3]": currentSize?.sizeId != size?.sizeId,
+                  }
                 )}
+              >
+                <h3
+                  className={clsx("text-lg font-bold", {
+                    "text-[#3A4980]": currentSize?.sizeId == size?.sizeId,
+                    "text-[#726C6C]": currentSize?.sizeId != size?.sizeId,
+                  })}
+                >
+                  {size?.sizes?.name}
+                </h3>
               </div>
             ))}
           </div>
+          <h3 className="italic">
+            Kho: <span>{currentSize?.quantity}</span>
+          </h3>
+          <Divider />
+          <div className="flex items-center gap-5">
+            <InputNumber
+              min={1}
+              className=""
+              defaultValue={1}
+              value={counterSize}
+              max={currentSize?.quantity}
+              onChange={(e) => setCounterSize(e)}
+            />
+            <button
+              onClick={addProductsToCart}
+              className="w-[330px] px-5 py-3 rounded-full tex-center bg-[#3A4980] font-bold text-white"
+            >
+              THÊM VÀO GIỎ HÀNG
+            </button>
+          </div>
         </div>
       </div>
+      <Tabs
+        defaultActiveKey="1"
+        items={[
+          {
+            key: "1",
+            label: "Mô tả",
+            children: (
+              <div
+                dangerouslySetInnerHTML={{ __html: products?.description }}
+              />
+            ),
+          },
+          {
+            key: "2",
+            label: "Đánh giá",
+            children: "Content of Tab Pane 2",
+          },
+        ]}
+      />
     </div>
   );
-};
-
-export default ProductDetails;
+}

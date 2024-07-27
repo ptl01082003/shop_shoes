@@ -42,12 +42,14 @@ const authCtrl = {
   loginWeb: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { userName, password } = req.body;
+      console.log("userName", userName);
       const user = await Users.findOne({
         where: { userName: userName },
         include: {
           model: Roles,
         },
       });
+      console.log("user", user);
       if (user) {
         const isHavePassword = await bcrypt.compare(
           password,
@@ -235,7 +237,7 @@ const authCtrl = {
 
   generateAccessToken: (params: any) => {
     return jwt.sign(params, process.env.AC_TOKEN_KEY as string, {
-      expiresIn: "1m",
+      expiresIn: "1d",
     });
   },
 

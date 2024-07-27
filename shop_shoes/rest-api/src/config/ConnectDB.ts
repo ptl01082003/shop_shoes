@@ -5,6 +5,7 @@ import { ROLE_TYPES, Roles } from "../models/Roles";
 import { Users } from "../models/Users";
 import fs from "fs";
 import { Images } from "../models/Images";
+import { Products } from "../models/Products";
 
 export async function connectDB() {
   const sequelize = new Sequelize({
@@ -50,6 +51,13 @@ export async function connectDB() {
   //     }
   //   })
   // });
+
+
+  // const products = await Products.findAll();
+  // for await (const product of products) {
+  //   product.priceDiscount = product.price;
+  //   await product.save();
+  // }
 
   console.log("Connection has been established successfully.");
 }

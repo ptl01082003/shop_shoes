@@ -1,5 +1,10 @@
 import Axios from "axios";
-import { KEY_STORAGE, RESPONSE_CODE } from "../constants";
+import {
+  KEY_STORAGE,
+  PATH_ROUTER,
+  removeStorage,
+  RESPONSE_CODE,
+} from "../constants";
 
 const AxiosConfig = {
   baseURL: "http://localhost:5500/api/v1",
@@ -29,10 +34,11 @@ AxiosClient.interceptors.request.use(
 AxiosClient.interceptors.response.use(
   async function (response) {
     const { code } = response.data;
-    if (code == RESPONSE_CODE.NOT_AUTHOR) {
-      return window.location.replace("/sign-in");
+    if ([RESPONSE_CODE.NOT_AUTHOR, RESPONSE_CODE.INCORRECT].includes(code)) {
+      removeStorage();
+      return window.location.replace(PATH_ROUTER.SIGN_IN);
     }
-    if ([RESPONSE_CODE.NOT_AUTHEN, RESPONSE_CODE.INCORRECT].includes(code)) {
+    if (RESPONSE_CODE.NOT_AUTHEN == code) {
       const getNewToken = await Axios.create(AxiosConfig).post(
         "auth/refresh-token",
         {
@@ -53,10 +59,12 @@ AxiosClient.interceptors.response.use(
         if (reCallRequest.data.code === 0) {
           return reCallRequest.data;
         } else {
-          return window.location.replace("/sign-in");
+          removeStorage();
+          return window.location.replace(PATH_ROUTER.SIGN_IN);
         }
       } else {
-        return window.location.replace("/sign-in");
+        removeStorage();
+        return window.location.replace(PATH_ROUTER.SIGN_IN);
       }
     }
     return response.data;

@@ -9,6 +9,7 @@ const productsRouter = express.Router();
 
 productsRouter.post("/lst-products", ProductsController.getLstProducts);
 
+productsRouter.post("/product-details", ProductsController.getProductDeatails);
 
 productsRouter.post("/", ProductsController.getProducts);
 

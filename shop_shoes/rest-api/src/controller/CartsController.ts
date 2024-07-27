@@ -5,77 +5,113 @@ import { redis } from "../config/ConnectRedis";
 import { CartItems } from "../models/CartItems";
 import { RESPONSE_CODE, ResponseBody, STATUS_CODE } from "../constants";
 import { ProductDetails } from "../models/ProductDetails";
+import { Images } from "../models/Images";
+import { Sizes } from "../models/Sizes";
 
 const CartsController = {
   create: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.userId;
-      const { cartItems } = req.body;
+      const { productDetailId, quanity } = req.body;
 
       let cartTotals = 0;
+      let cartsAmount = 0;
 
-      // Tìm hoặc tạo giỏ hàng cho người dùng
-      const [instanceCarts, created] = await ShoppingCarts.findOrCreate({
+      const [carts] = await ShoppingCarts.findOrCreate({
         where: { userId },
-        include: [CartItems],
       });
 
-      if (Array.isArray(cartItems) && cartItems.length > 0) {
-        for (const item of cartItems) {
-          const { quanity, productDetailId } = item;
+      const productDetails = await ProductDetails.findOne({
+        where: { productDetailId },
+        include: {
+          model: Products,
+        },
+      });
 
-          if (!productDetailId || !quanity) {
-            continue; // Bỏ qua nếu thiếu thông tin quan trọng
-          }
+      if (productDetails) {
+        const isExceedQuanity = productDetails.quantity < quanity;
+        const actualQuanity = isExceedQuanity
+          ? productDetails.quantity
+          : quanity;
+        const amount =
+          actualQuanity * Number(productDetails.products.priceDiscount);
 
-          const [cartProductDetails, createdProduct] =
-            await CartItems.findOrCreate({
-              where: { productDetailId, cartId: instanceCarts.cartId },
-            });
+        const [cartIitems] = await CartItems.findOrCreate({
+          where: { productDetailId, cartId: carts.cartId },
+        });
 
-          if (cartProductDetails) {
-            cartTotals += quanity;
-            cartProductDetails.quanity = quanity;
-            await cartProductDetails.save();
-          }
-        }
+        cartIitems.amount = amount;
+        cartIitems.quanity = actualQuanity;
+        await cartIitems.save();
+
+        const lstCartsItems = await CartItems.findAll({
+          where: { cartId: carts.cartId },
+        });
+
+        lstCartsItems.forEach((cartItems) => {
+          (cartTotals += cartItems.quanity), (cartsAmount += cartItems.amount);
+        });
+
+        carts.amount = cartsAmount;
+        carts.totals = cartTotals;
+
+        await carts.save();
+
+        const currentCarts = await ShoppingCarts.findOne({
+          where: { userId },
+          attributes: ["totals", "amount"],
+          include: [
+            {
+              model: CartItems,
+              attributes: ["quanity", "amount"],
+              include: [
+                {
+                  model: ProductDetails,
+                  attributes: ["productId", "sizeId"],
+                  include: [
+                    {
+                      model: Products,
+                      attributes: ["priceDiscount", "name"],
+                      include: [
+                        {
+                          model: Images,
+                          attributes: ["path"],
+                        },
+                      ],
+                    },
+                    {
+                      model: Sizes,
+                      attributes: ["name"],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        });
+
+        await redis.set(`carts-${userId}`, JSON.stringify(currentCarts));
+        return res.json(
+          ResponseBody({
+            code: RESPONSE_CODE.ERRORS,
+            message: isExceedQuanity
+              ? `Bạn chỉ có thể thêm tối đa ${productDetails.quantity} sản phẩm`
+              : "Thực hiện thành công",
+            data: {
+              amount,
+              productDetailId,
+              quanity: actualQuanity,
+            },
+          })
+        );
+      } else {
+        return res.json(
+          ResponseBody({
+            code: RESPONSE_CODE.ERRORS,
+            message: `Sản phẩm không tồn tại`,
+          })
+        );
       }
-
-      // Cập nhật tổng số lượng giỏ hàng
-      instanceCarts.totals = cartTotals;
-      await instanceCarts.save();
-
-      // Lấy giỏ hàng hiện tại và lưu vào Redis
-      const currentCarts = await ShoppingCarts.findOne({
-        where: { userId },
-        attributes: ["totals", "amount"],
-        include: [
-          {
-            model: CartItems,
-            attributes: ["quanity"],
-            include: [
-              {
-                model: ProductDetails,
-                include: [
-                  {
-                    model: Products,
-                    attributes: ["price", "name"],
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      });
-
-      await redis.set(`carts-${userId}`, JSON.stringify(currentCarts));
-
-      return res.json(
-        ResponseBody({
-          code: RESPONSE_CODE.SUCCESS,
-          message: `${created ? "Tạo mới" : "Cập nhật"} giỏ hàng thành công`,
-        })
-      );
     } catch (error) {
       next(error);
     }
@@ -153,6 +189,7 @@ const CartsController = {
       );
     }
   },
+
   lstCarts: async (req: Request, res: Response) => {
     const userId = req.userId;
     const cartsInRedis = await redis.get(`carts-${userId}`);
@@ -165,25 +202,43 @@ const CartsController = {
         })
       );
     }
-    const cartsInDatabase = await ShoppingCarts.findOne({
+    const currentCartsInDb = await ShoppingCarts.findOne({
       where: { userId },
       attributes: ["totals", "amount"],
-      include: {
-        model: CartItems,
-        attributes: ["quanity"],
-        include: [
-          {
-            model: Products,
-            attributes: ["productPrice", "productsName"],
-          },
-        ],
-      },
+      include: [
+        {
+          model: CartItems,
+          attributes: ["quanity", "amount"],
+          include: [
+            {
+              model: ProductDetails,
+              attributes: ["productId", "sizeId"],
+              include: [
+                {
+                  model: Products,
+                  attributes: ["priceDiscount", "name"],
+                  include: [
+                    {
+                      model: Images,
+                      attributes: ["path"],
+                    },
+                  ],
+                },
+                {
+                  model: Sizes,
+                  attributes: ["name"],
+                },
+              ],
+            },
+          ],
+        },
+      ],
     });
-    await redis.set(`carts-${userId}`, JSON.stringify(cartsInDatabase));
+    await redis.set(`carts-${userId}`, JSON.stringify(currentCartsInDb));
     return res.status(STATUS_CODE.SUCCESS).json(
       ResponseBody({
         code: RESPONSE_CODE.SUCCESS,
-        data: cartsInDatabase,
+        data: currentCartsInDb,
         message: `Thực hiện thành công`,
       })
     );

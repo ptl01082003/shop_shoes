@@ -191,49 +191,63 @@ const ProductsController = {
     }
   },
 
-  getById: async (req: Request, res: Response, next: NextFunction) => {
+  getProductDeatails: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
-      const { productId } = req.params;
-      const product = await Products.findOne({
-        where: { productId },
+      const { code } = req.body;
+      const products = await Products.findOne({
+        where: { code },
         include: [
-          { model: Materials, attributes: ["name"] },
-          { model: Origins, attributes: ["name"] },
-          { model: Styles, attributes: ["name"] },
-          { model: Brands, attributes: ["name"] },
+          {
+            model: Materials,
+            attributes: ["name"],
+          },
+          {
+            model: Origins,
+            attributes: ["name"],
+          },
+          {
+            model: Styles,
+            attributes: ["name"],
+          },
+          {
+            model: Brands,
+            attributes: ["name"],
+          },
         ],
       });
 
-      if (!product) {
-        return res.status(404).json({
-          message: "Sản phẩm không tồn tại",
+      if (products) {
+        const sizes = await ProductDetails.findAll({
+          where: { productId: products.productId },
+          attributes: ["sizeId", "quantity", "productDetailId"],
+          include: [{ model: Sizes, attributes: ["name"] }],
+        });
+
+        const gallery = await Images.findAll({
+          where: { productId: products.productId },
+          attributes: ["path"],
+        });
+
+        res.json({
+          message: "Thực hiện thành công",
+          code: RESPONSE_CODE.SUCCESS,
+          data: {
+            gallery,
+            sizes,
+            ...products.toJSON(),
+          },
+        });
+      } else {
+         res.json({
+          message: "Không tìm thấy sản phẩm",
           code: RESPONSE_CODE.ERRORS,
+          data: null,
         });
       }
-
-      const productDetails = await ProductDetails.findAll({
-        where: { productId },
-        include: [{ model: Sizes, attributes: ["name"] }],
-      });
-
-      const images = await Images.findAll({
-        where: { productId },
-        attributes: ["path"],
-      });
-
-      res.json({
-        message: "Thực hiện thành công",
-        code: RESPONSE_CODE.SUCCESS,
-        data: {
-          ...product.toJSON(),
-          productDetails: productDetails.map((productDetails) => ({
-            productId: productDetails.productId,
-            sizeId: productDetails.sizeId,
-            quantity: productDetails.quantity,
-          })),
-          gallery: images,
-        },
-      });
     } catch (error) {
       next(error);
     }

@@ -38,4 +38,7 @@ export class CartItems extends Model {
 
   @Column
   public quanity!: number;
+
+  @Column
+  public amount!: number;
 }

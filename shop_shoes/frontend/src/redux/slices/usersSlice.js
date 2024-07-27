@@ -4,12 +4,12 @@ import { fetchGetUserInfo } from "../thunks/userThunk";
 export const usersSlice = createSlice({
   name: "usersSlice",
   initialState: {
-    userInfo: {},
+    userInfo: undefined,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchGetUserInfo.fulfilled, (state, action) => {
-      state.userInfo = action.payload || {};
+      state.userInfo = action.payload;
     })
   },
 });

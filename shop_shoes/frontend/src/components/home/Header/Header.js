@@ -1,19 +1,29 @@
-import React, { useEffect, useState } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
-import { MdClose } from "react-icons/md";
-import { HiMenuAlt2 } from "react-icons/hi";
+import { ShoppingCartOutlined } from "@ant-design/icons";
+import { Badge, Dropdown } from "antd";
 import { motion } from "framer-motion";
-import { logo, logoLight } from "../../../assets/images";
-import Image from "../../designLayouts/Image";
-import { KEY_STORAGE, navBarList, PATH_ROUTER } from "../../../constants";
-import Flex from "../../designLayouts/Flex";
+import React, { useEffect, useState } from "react";
+import { HiMenuAlt2 } from "react-icons/hi";
+import { MdClose } from "react-icons/md";
 import { useSelector } from "react-redux";
-import { selectUserInfo } from "../../../redux/slices/usersSlice";
-import { Button, Dropdown } from "antd";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { logo, logoLight } from "../../../assets/images";
+import {
+  isLogin,
+  navBarList,
+  PATH_ROUTER,
+  removeStorage,
+} from "../../../constants";
 import AxiosClient from "../../../networks/AxiosClient";
+import { selectCarts } from "../../../redux/slices/cartsSlice";
+import { selectUserInfo } from "../../../redux/slices/usersSlice";
+import Flex from "../../designLayouts/Flex";
+import Image from "../../designLayouts/Image";
 
 const Header = () => {
+  const navigation = useNavigate();
   const selUserInfo = useSelector(selectUserInfo);
+  const selCarts = useSelector(selectCarts);
+
   const [showMenu, setShowMenu] = useState(true);
   const [sidenav, setSidenav] = useState(false);
   const [category, setCategory] = useState(false);
@@ -35,8 +45,7 @@ const Header = () => {
   const onLogout = async () => {
     const response = await AxiosClient.post("/auth/logout");
     if (response.code == 0) {
-      localStorage.removeItem(KEY_STORAGE.TOKEN);
-      localStorage.removeItem(KEY_STORAGE.RF_TOKEN);
+      removeStorage();
       window.location.replace(PATH_ROUTER.SIGN_IN);
     } else {
     }
@@ -46,10 +55,10 @@ const Header = () => {
     {
       label: (
         <>
-          <h3 className="font-bold text-center mb-1">
+          <h3 className="mb-1 font-bold text-center">
             {selUserInfo?.fullName}
           </h3>
-          <div className="flex text-xs italic space-x-1 justify-center items-center">
+          <div className="flex justify-center items-center space-x-1 text-xs italic">
             <h3>ID:</h3>
             <h3>{selUserInfo?.userId}</h3>
           </div>
@@ -63,7 +72,7 @@ const Header = () => {
     {
       label: (
         <button
-          className="py-2 bg-slate-500 rounded-md w-full text-center font-bold text-white"
+          className="w-full py-2 font-bold text-center text-white bg-slate-500 rounded-md"
           onClick={onLogout}
         >
           Đăng xuất
@@ -75,8 +84,8 @@ const Header = () => {
 
   return (
     <div className="w-full h-20 bg-white sticky top-0 z-50 border-b-[1px] border-b-gray-200">
-      <nav className="h-full px-4 max-w-container mx-auto relative">
-        <Flex className="flex items-center justify-between h-full">
+      <nav className="max-w-container mx-auto h-full relative px-4">
+        <Flex className="h-full flex justify-between items-center">
           <Link to="/">
             <div>
               <Image className="w-32 object-cover" imgSrc={logo} />
@@ -88,7 +97,7 @@ const Header = () => {
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5 }}
-                className="flex items-center w-auto z-50 p-0"
+                className="w-auto z-50 flex items-center p-0"
               >
                 {navBarList.map(({ _id, title, link }) => (
                   <NavLink
@@ -101,16 +110,26 @@ const Header = () => {
                   </NavLink>
                 ))}
 
-                {Object.values(selUserInfo)?.length > 0 ? (
-                  <Dropdown
-                    menu={{
-                      items,
-                    }}
+                {isLogin ? (
+                  <div
+                    className="flex items-center pl-5 space-x-1 cursor-pointer"
+                  
                   >
-                    <p className="flex font-normal hover:font-bold px-5 text-base text-[#767676] hover:underline underline-offset-[4px] decoration-[1px] hover:text-[#262626] md:border-r-[2px] border-r-gray-300 hoverEffect last:border-r-0">
-                      Thông tin
-                    </p>
-                  </Dropdown>
+                    <Badge count={selCarts?.cartItems?.length || 0}   onClick={() => {
+                      navigation("/cart");
+                    }}>
+                      <ShoppingCartOutlined className="text-2xl text-gray-500" />
+                    </Badge>
+                    <Dropdown
+                      menu={{
+                        items,
+                      }}
+                    >
+                      <p className="flex font-normal hover:font-bold px-5 text-base text-[#767676] hover:underline underline-offset-[4px] decoration-[1px] hover:text-[#262626] md:border-r-[2px] border-r-gray-300 hoverEffect last:border-r-0">
+                        Thông tin
+                      </p>
+                    </Dropdown>
+                  </div>
                 ) : (
                   <NavLink
                     className="flex font-normal hover:font-bold justify-center items-center px-6 h-4 text-base text-[#767676] hover:underline underline-offset-[4px] decoration-[1px] hover:text-[#262626] md:border-r-[2px] border-r-gray-300 hoverEffect last:border-r-0"
@@ -124,23 +143,23 @@ const Header = () => {
             )}
             <HiMenuAlt2
               onClick={() => setSidenav(!sidenav)}
-              className="inline-block md:hidden cursor-pointer w-8 h-6 absolute top-6 right-4"
+              className="w-8 h-6 absolute right-4 top-6 inline-block cursor-pointer md:hidden"
             />
             {sidenav && (
-              <div className="fixed top-0 left-0 w-full h-screen bg-black text-gray-200 bg-opacity-80 z-50">
+              <div className="bg-opacity-80 w-full h-screen fixed top-0 left-0 z-50 text-gray-200 bg-black">
                 <motion.div
                   initial={{ x: -300, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ duration: 0.5 }}
                   className="w-[80%] h-full relative"
                 >
-                  <div className="w-full h-full bg-primeColor p-6">
+                  <div className="bg-primeColor w-full h-full p-6">
                     <img
                       className="w-28 mb-6"
                       src={logoLight}
                       alt="logoLight"
                     />
-                    <ul className="text-gray-200 flex flex-col gap-2">
+                    <ul className="flex flex-col gap-2 text-gray-200">
                       {navBarList.map((item) => (
                         <li
                           className="font-normal hover:font-bold items-center text-lg text-gray-200 hover:underline underline-offset-[4px] decoration-[1px] hover:text-white md:border-r-[2px] border-r-gray-300 hoverEffect last:border-r-0"
@@ -159,7 +178,7 @@ const Header = () => {
                     <div className="mt-4">
                       <h1
                         onClick={() => setCategory(!category)}
-                        className="flex justify-between text-base cursor-pointer items-center font-titleFont mb-2"
+                        className="font-titleFont flex justify-between items-center mb-2 text-base cursor-pointer"
                       >
                         Shop by Category{" "}
                         <span className="text-lg">{category ? "-" : "+"}</span>
@@ -169,7 +188,7 @@ const Header = () => {
                           initial={{ y: 15, opacity: 0 }}
                           animate={{ y: 0, opacity: 1 }}
                           transition={{ duration: 0.4 }}
-                          className="text-sm flex flex-col gap-1"
+                          className="flex flex-col gap-1 text-sm"
                         >
                           <li className="headerSedenavLi">New Arrivals</li>
                           <li className="headerSedenavLi">Gudgets</li>
@@ -182,7 +201,7 @@ const Header = () => {
                     <div className="mt-4">
                       <h1
                         onClick={() => setBrand(!brand)}
-                        className="flex justify-between text-base cursor-pointer items-center font-titleFont mb-2"
+                        className="font-titleFont flex justify-between items-center mb-2 text-base cursor-pointer"
                       >
                         Shop by Brand
                         <span className="text-lg">{brand ? "-" : "+"}</span>
@@ -192,7 +211,7 @@ const Header = () => {
                           initial={{ y: 15, opacity: 0 }}
                           animate={{ y: 0, opacity: 1 }}
                           transition={{ duration: 0.4 }}
-                          className="text-sm flex flex-col gap-1"
+                          className="flex flex-col gap-1 text-sm"
                         >
                           <li className="headerSedenavLi">New Arrivals</li>
                           <li className="headerSedenavLi">Gudgets</li>

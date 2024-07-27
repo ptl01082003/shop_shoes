@@ -26,7 +26,6 @@ export const checkAuth = (req: Request, res: Response, next: NextFunction) => {
             );
             if (tokenInRedis === token) {
               req.userId = decoded.userId;
-              console.log("req.userId", req.userId)
               next();
             } else {
               return res.json(
@@ -41,10 +40,10 @@ export const checkAuth = (req: Request, res: Response, next: NextFunction) => {
         }
       );
     } else {
-      return res.status(STATUS_CODE.NOT_AUTHEN).json(
+      return res.json(
         ResponseBody({
           data: null,
-          code: RESPONSE_CODE.ERRORS,
+          code: RESPONSE_CODE.INCORRECT,
           message: "Bạn chưa đăng nhập",
         })
       );

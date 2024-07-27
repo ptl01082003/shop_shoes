@@ -58,6 +58,13 @@ export const TRANSFER_PRICE = (price) => {
 };
 
 
+export const removeStorage = () => {
+  localStorage.removeItem(KEY_STORAGE.TOKEN);
+  localStorage.removeItem(KEY_STORAGE.RF_TOKEN);
+}
+
+
+export const isLogin = () => localStorage.removeItem(KEY_STORAGE.TOKEN) != undefined;
 
 export const KEY_STORAGE = {
   TOKEN: "token",
