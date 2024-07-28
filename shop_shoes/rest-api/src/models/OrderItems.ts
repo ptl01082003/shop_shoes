@@ -2,14 +2,20 @@ import {
   AutoIncrement,
   BelongsTo,
   Column,
+  Default,
   ForeignKey,
   Model,
   PrimaryKey,
   Table,
 } from "sequelize-typescript";
 import { OrderDetails } from "./OrderDetails";
-import { Products } from "./Products";
 import { ProductDetails } from "./ProductDetails";
+
+export enum ODER_STATUS {
+  CHO_THANH_TOAN = "CHO_THANH_TOAN",
+  CHO_GIAO_HANG = "CHO_GIAO_HANG",
+  DA_GIAO = "DA_GIAO",
+}
 
 @Table({
   tableName: "order_items",
@@ -24,7 +30,11 @@ export class OrderItems extends Model {
 
   @Column
   public amount!: number;
-  
+
+  @Default(ODER_STATUS.CHO_THANH_TOAN)
+  @Column
+  public status!: string;
+
   @Column
   public quanity!: number;
 
@@ -41,5 +51,4 @@ export class OrderItems extends Model {
 
   @BelongsTo(() => OrderDetails)
   public orderDetails!: OrderDetails;
-  
 }

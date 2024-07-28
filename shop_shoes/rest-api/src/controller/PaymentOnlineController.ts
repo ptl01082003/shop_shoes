@@ -10,7 +10,11 @@ import { CartItems } from "../models/CartItems";
 import { RESPONSE_CODE, ResponseBody } from "../constants";
 import { OrderDetails } from "../models/OrderDetails";
 import { OrderItems } from "../models/OrderItems";
-import { PAYMENT_PROVIDER, PaymentDetails } from "../models/PaymentDetails";
+import {
+  PAYMENT_PROVIDER,
+  PAYMENT_STATUS,
+  PaymentDetails,
+} from "../models/PaymentDetails";
 import { redis } from "../config/ConnectRedis";
 
 const PaymentOnlineController = {
@@ -112,8 +116,23 @@ const PaymentOnlineController = {
         process.env["momo_query_Url"] as string,
         requestBody
       );
+      const { orderId: orderCode, amount } = transaction?.data;
       if (transaction?.data.resultCode == 0) {
-        res.json(transaction.data);
+        const oderDetails = (await OrderDetails.findOne({
+          where: { orderCode },
+        })) as OrderDetails;
+        
+        const paymentDetails = (await PaymentDetails.findOne({
+          where: { orderDetailId: oderDetails?.orderDetailId },
+        })) as PaymentDetails;
+
+        const orderItems = (await OrderItems.findAll({
+          where: { orderDetailId: oderDetails?.orderDetailId },
+        })) as OrderItems[];
+
+        paymentDetails.status = PAYMENT_STATUS.SUCCESS;
+        await paymentDetails.save();
+      } else {
       }
     } catch (error) {
       next(error);
@@ -172,7 +191,7 @@ const PaymentOnlineController = {
   createOrder: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.userId;
-      const { provider } = req.body;
+      const { provider, name, address, phone } = req.body;
       let amount = 0;
       const carts = await ShoppingCarts.findOne({
         where: { userId },
@@ -184,6 +203,9 @@ const PaymentOnlineController = {
         const newOrders = await OrderDetails.create({
           userId,
           amount,
+          name,
+          address,
+          phone,
           totals: carts.totals,
         });
 

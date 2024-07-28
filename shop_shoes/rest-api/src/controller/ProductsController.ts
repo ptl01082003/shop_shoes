@@ -41,8 +41,6 @@ const ProductsController = {
         priceDiscount,
       });
 
-      console.log("Product created:", product);
-
       // Tạo chi tiết sản phẩm
       if (Array.isArray(productDetails)) {
         const productDetailsData = productDetails.map((detail: any) => ({
@@ -52,7 +50,6 @@ const ProductsController = {
         }));
 
         await ProductDetails.bulkCreate(productDetailsData);
-        console.log("Product details created:", productDetailsData);
       }
 
       // Thêm hình ảnh vào bảng Images
@@ -63,7 +60,6 @@ const ProductsController = {
         }));
 
         await Images.bulkCreate(imagesData);
-        console.log("Images created:", imagesData);
       }
 
       res.json({

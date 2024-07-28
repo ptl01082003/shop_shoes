@@ -585,7 +585,7 @@ function Tables() {
           <Col xs="24" xl={24}>
             <Card
               bordered={false}
-              className="criclebox tablespace mb-24"
+              className="mb-24 criclebox tablespace"
               title="Authors Table"
               extra={
                 <>
@@ -608,7 +608,7 @@ function Tables() {
 
             <Card
               bordered={false}
-              className="criclebox tablespace mb-24"
+              className="mb-24 criclebox tablespace"
               title="Projects Table"
               extra={
                 <>
@@ -628,7 +628,7 @@ function Tables() {
                   className="ant-border-space"
                 />
               </div>
-              <div className="uploadfile pb-15 shadow-none">
+              <div className="shadow-none uploadfile pb-15">
                 <Upload {...formProps}>
                   <Button
                     type="dashed"

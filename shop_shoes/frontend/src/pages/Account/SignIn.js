@@ -42,8 +42,8 @@ const SignIn = () => {
 
   return (
     <div className="font-[sans-serif]">
-      <div className="fle-col min-h-screen flex justify-center items-center px-4 py-6">
-        <div className="w-full max-w-6xl grid items-center gap-4 md:grid-cols-2">
+      <div className="flex items-center justify-center min-h-screen px-4 py-6 fle-col">
+        <div className="grid items-center w-full max-w-6xl gap-4 md:grid-cols-2">
           <div className="border border-gray-300 rounded-lg p-6 max-w-md shadow-[0_2px_22px_-4px_rgba(93,96,127,0.2)] max-md:mx-auto">
             <form
               className="space-y-4"
@@ -64,7 +64,7 @@ const SignIn = () => {
                     {...register("userName")}
                     type="text"
                     placeholder="Nhập tại đây"
-                    className="w-full px-4 py-3 text-sm text-gray-800 rounded-lg border border-gray-300 outline-blue-600"
+                    className="w-full px-4 py-3 text-sm text-gray-800 border border-gray-300 rounded-lg outline-blue-600"
                   />
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -97,7 +97,7 @@ const SignIn = () => {
                   <input
                     type="password"
                     {...register("password")}
-                    className="w-full px-4 py-3 text-sm text-gray-800 rounded-lg border border-gray-300 outline-blue-600"
+                    className="w-full px-4 py-3 text-sm text-gray-800 border border-gray-300 rounded-lg outline-blue-600"
                     placeholder="Nhập tại đây"
                   />
                   <svg
@@ -138,7 +138,7 @@ const SignIn = () => {
           <div className="lg:h-[400px] md:h-[300px] max-md:mt-8">
             <img
               src="https://readymadeui.com/login-image.webp"
-              className="mx-auto w-full h-full object-cover block max-md:w-4/5"
+              className="block object-cover w-full h-full mx-auto max-md:w-4/5"
               alt="Dining Experience"
             />
           </div>

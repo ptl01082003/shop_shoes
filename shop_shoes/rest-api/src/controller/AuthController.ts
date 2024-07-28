@@ -42,14 +42,12 @@ const authCtrl = {
   loginWeb: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { userName, password } = req.body;
-      console.log("userName", userName);
       const user = await Users.findOne({
         where: { userName: userName },
         include: {
           model: Roles,
         },
       });
-      console.log("user", user);
       if (user) {
         const isHavePassword = await bcrypt.compare(
           password,

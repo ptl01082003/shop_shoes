@@ -8,6 +8,9 @@ import { Images } from "../models/Images";
 import { Products } from "../models/Products";
 import { ShoppingCarts } from "../models/ShoppingCarts";
 import { CartItems } from "../models/CartItems";
+import { PaymentDetails } from "../models/PaymentDetails";
+import { OrderDetails } from "../models/OrderDetails";
+import { OrderItems } from "../models/OrderItems";
 
 export async function connectDB() {
   const sequelize = new Sequelize({
