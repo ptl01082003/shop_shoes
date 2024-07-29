@@ -8,6 +8,7 @@ import { connectDB } from "./config/ConnectDB";
 import { redis } from "./config/ConnectRedis";
 import { RESPONSE_CODE, ResponseBody, STATUS_CODE } from "./constants";
 import { appRouter } from "./router/appRouter";
+
 declare global {
   namespace Express {
     interface Request {

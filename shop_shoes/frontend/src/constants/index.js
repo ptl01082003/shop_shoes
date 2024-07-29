@@ -63,13 +63,14 @@ export const removeStorage = () => {
   localStorage.removeItem(KEY_STORAGE.RF_TOKEN);
 }
 
-
-export const isLogin = () => localStorage.removeItem(KEY_STORAGE.TOKEN) != undefined;
-
 export const KEY_STORAGE = {
   TOKEN: "token",
   RF_TOKEN: "refreshToken",
 };
+
+export const isLogin = (() => localStorage.getItem(KEY_STORAGE.TOKEN) != undefined)();
+
+
 
 export const RESPONSE_CODE = {
   SUCCESS: 0,

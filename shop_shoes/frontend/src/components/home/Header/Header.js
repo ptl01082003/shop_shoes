@@ -29,7 +29,7 @@ const Header = () => {
   const [category, setCategory] = useState(false);
   const [brand, setBrand] = useState(false);
   const location = useLocation();
-
+  
   useEffect(() => {
     let ResponsiveMenu = () => {
       if (window.innerWidth < 667) {
@@ -58,7 +58,7 @@ const Header = () => {
           <h3 className="mb-1 font-bold text-center">
             {selUserInfo?.fullName}
           </h3>
-          <div className="flex justify-center items-center space-x-1 text-xs italic">
+          <div className="flex items-center justify-center space-x-1 text-xs italic">
             <h3>ID:</h3>
             <h3>{selUserInfo?.userId}</h3>
           </div>
@@ -72,7 +72,7 @@ const Header = () => {
     {
       label: (
         <button
-          className="w-full py-2 font-bold text-center text-white bg-slate-500 rounded-md"
+          className="w-full py-2 font-bold text-center text-white rounded-md bg-slate-500"
           onClick={onLogout}
         >
           Đăng xuất
@@ -84,11 +84,11 @@ const Header = () => {
 
   return (
     <div className="w-full h-20 bg-white sticky top-0 z-50 border-b-[1px] border-b-gray-200">
-      <nav className="max-w-container mx-auto h-full relative px-4">
-        <Flex className="h-full flex justify-between items-center">
+      <nav className="relative h-full px-4 mx-auto max-w-container">
+        <Flex className="flex items-center justify-between h-full">
           <Link to="/">
             <div>
-              <Image className="w-32 object-cover" imgSrc={logo} />
+              <Image className="object-cover w-32" imgSrc={logo} />
             </div>
           </Link>
           <div>
@@ -97,7 +97,7 @@ const Header = () => {
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5 }}
-                className="w-auto z-50 flex items-center p-0"
+                className="z-50 flex items-center w-auto p-0"
               >
                 {navBarList.map(({ _id, title, link }) => (
                   <NavLink
@@ -143,19 +143,19 @@ const Header = () => {
             )}
             <HiMenuAlt2
               onClick={() => setSidenav(!sidenav)}
-              className="w-8 h-6 absolute right-4 top-6 inline-block cursor-pointer md:hidden"
+              className="absolute inline-block w-8 h-6 cursor-pointer right-4 top-6 md:hidden"
             />
             {sidenav && (
-              <div className="bg-opacity-80 w-full h-screen fixed top-0 left-0 z-50 text-gray-200 bg-black">
+              <div className="fixed top-0 left-0 z-50 w-full h-screen text-gray-200 bg-black bg-opacity-80">
                 <motion.div
                   initial={{ x: -300, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ duration: 0.5 }}
                   className="w-[80%] h-full relative"
                 >
-                  <div className="bg-primeColor w-full h-full p-6">
+                  <div className="w-full h-full p-6 bg-primeColor">
                     <img
-                      className="w-28 mb-6"
+                      className="mb-6 w-28"
                       src={logoLight}
                       alt="logoLight"
                     />
@@ -178,7 +178,7 @@ const Header = () => {
                     <div className="mt-4">
                       <h1
                         onClick={() => setCategory(!category)}
-                        className="font-titleFont flex justify-between items-center mb-2 text-base cursor-pointer"
+                        className="flex items-center justify-between mb-2 text-base cursor-pointer font-titleFont"
                       >
                         Shop by Category{" "}
                         <span className="text-lg">{category ? "-" : "+"}</span>
@@ -201,7 +201,7 @@ const Header = () => {
                     <div className="mt-4">
                       <h1
                         onClick={() => setBrand(!brand)}
-                        className="font-titleFont flex justify-between items-center mb-2 text-base cursor-pointer"
+                        className="flex items-center justify-between mb-2 text-base cursor-pointer font-titleFont"
                       >
                         Shop by Brand
                         <span className="text-lg">{brand ? "-" : "+"}</span>

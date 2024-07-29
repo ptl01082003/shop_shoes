@@ -13,7 +13,9 @@ import { ProductDetails } from "./ProductDetails";
 
 export enum ODER_STATUS {
   CHO_THANH_TOAN = "CHO_THANH_TOAN",
+  CHO_LAY_HANG = "CHO_LAY_HANG",
   CHO_GIAO_HANG = "CHO_GIAO_HANG",
+  KHONG_DU_SO_LUONG = "KHONG_DU_SO_LUONG",
   DA_GIAO = "DA_GIAO",
 }
 

@@ -9,13 +9,86 @@ import { ShoppingCarts } from "../models/ShoppingCarts";
 import { CartItems } from "../models/CartItems";
 import { RESPONSE_CODE, ResponseBody } from "../constants";
 import { OrderDetails } from "../models/OrderDetails";
-import { OrderItems } from "../models/OrderItems";
+import { ODER_STATUS, OrderItems } from "../models/OrderItems";
 import {
   PAYMENT_PROVIDER,
   PAYMENT_STATUS,
   PaymentDetails,
 } from "../models/PaymentDetails";
 import { redis } from "../config/ConnectRedis";
+import { ProductDetails } from "../models/ProductDetails";
+
+async function lockProductsById(
+  keyName: string,
+  expireTimer = 5000,
+  retryDelay = 100
+): Promise<string> {
+  let counter = 0;
+  return new Promise(async (resolve) => {
+    const delayFunc = setInterval(async () => {
+      const isLocker = await redis.get(keyName);
+      if (isLocker) {
+        resolve(isLocker);
+      } else {
+        await redis.set(keyName, "locked");
+      }
+      counter += retryDelay;
+      if (counter > expireTimer) {
+        clearInterval(delayFunc);
+        resolve(isLocker || "");
+      }
+    }, retryDelay);
+  });
+}
+
+async function createMomo({
+  amount,
+  orderCode,
+}: {
+  amount: number;
+  orderCode: string;
+}): Promise<string> {
+  const partnerCode = "MOMO";
+  const accessKey = "F8BBA842ECF85";
+  const secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
+
+  const requestId = partnerCode + new Date().getTime();
+  const orderId = orderCode;
+  const orderInfo = `Thanh toán đơn hàng ${orderCode}`;
+  const ipnUrl = process.env["momo_Checkout"];
+  const redirectUrl = process.env["momo_Checkout"];
+  const requestType = "captureWallet";
+  const extraData = "";
+
+  const rawSignature = `accessKey=${accessKey}&amount=${amount}&extraData=${extraData}&ipnUrl=${ipnUrl}&orderId=${orderId}&orderInfo=${orderInfo}&partnerCode=${partnerCode}&redirectUrl=${redirectUrl}&requestId=${requestId}&requestType=${requestType}`;
+
+  // Tạo chữ ký
+  const signature = crypto
+    .createHmac("sha256", secretKey)
+    .update(rawSignature)
+    .digest("hex");
+
+  const requestBody = {
+    partnerCode: partnerCode,
+    accessKey: accessKey,
+    requestId: requestId,
+    amount: amount,
+    orderId: orderId,
+    orderInfo: orderInfo,
+    redirectUrl: redirectUrl,
+    ipnUrl: ipnUrl,
+    extraData: extraData,
+    requestType: requestType,
+    signature: signature,
+    lang: "vi",
+  };
+
+  const payments = await axios.post(
+    process.env["momo_Url"] as string,
+    requestBody
+  );
+  return payments.data.payUrl;
+}
 
 const PaymentOnlineController = {
   order: async (req: Request, res: Response, next: NextFunction) => {
@@ -116,78 +189,61 @@ const PaymentOnlineController = {
         process.env["momo_query_Url"] as string,
         requestBody
       );
+
       const { orderId: orderCode, amount } = transaction?.data;
       if (transaction?.data.resultCode == 0) {
+        let refundAmount = 0;
         const oderDetails = (await OrderDetails.findOne({
           where: { orderCode },
         })) as OrderDetails;
-        
-        const paymentDetails = (await PaymentDetails.findOne({
-          where: { orderDetailId: oderDetails?.orderDetailId },
-        })) as PaymentDetails;
 
         const orderItems = (await OrderItems.findAll({
           where: { orderDetailId: oderDetails?.orderDetailId },
         })) as OrderItems[];
 
+        const paymentDetails = (await PaymentDetails.findOne({
+          where: { orderDetailId: oderDetails?.orderDetailId },
+        })) as PaymentDetails;
+
+        const amountDetails = Number(oderDetails.amount);
+
+        for await (const orders of orderItems) {
+          const productLockKey = `products-lock-${orders?.productDetailId}`;
+
+          await lockProductsById(productLockKey);
+
+          const productDetails = (await ProductDetails.findOne({
+            where: { productDetailId: orders.productDetailId },
+          })) as ProductDetails;
+
+          if (orders.quanity <= productDetails.quantity) {
+            productDetails.quantity -= orders.quanity;
+            productDetails.save();
+            redis.del(productLockKey);
+          } else {
+            refundAmount = Number(orders.amount);
+            oderDetails.amount = amountDetails - Number(orders.amount);
+            orders.status = ODER_STATUS.KHONG_DU_SO_LUONG;
+          }
+          await oderDetails.save();
+          await orders.save();
+        }
+      
         paymentDetails.status = PAYMENT_STATUS.SUCCESS;
         await paymentDetails.save();
+
+        //Thực hiện logic refund tiền về momo thanh toán của người dùng
+        if(refundAmount > 0) {
+
+        }
       } else {
+
       }
+      res.redirect("http://localhost:3001/about");
     } catch (error) {
       next(error);
     }
   },
-
-  createMomo: async ({
-    amount,
-    orderCode,
-  }: {
-    amount: number;
-    orderCode: string;
-  }): Promise<string> => {
-    const partnerCode = "MOMO";
-    const accessKey = "F8BBA842ECF85";
-    const secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
-
-    const requestId = partnerCode + new Date().getTime();
-    const orderId = orderCode;
-    const orderInfo = `Thanh toán đơn hàng ${orderCode}`;
-    const ipnUrl = process.env["momo_Checkout"];
-    const redirectUrl = process.env["momo_Checkout"];
-    const requestType = "captureWallet";
-    const extraData = "";
-
-    const rawSignature = `accessKey=${accessKey}&amount=${amount}&extraData=${extraData}&ipnUrl=${ipnUrl}&orderId=${orderId}&orderInfo=${orderInfo}&partnerCode=${partnerCode}&redirectUrl=${redirectUrl}&requestId=${requestId}&requestType=${requestType}`;
-
-    // Tạo chữ ký
-    const signature = crypto
-      .createHmac("sha256", secretKey)
-      .update(rawSignature)
-      .digest("hex");
-
-    const requestBody = {
-      partnerCode: partnerCode,
-      accessKey: accessKey,
-      requestId: requestId,
-      amount: amount,
-      orderId: orderId,
-      orderInfo: orderInfo,
-      redirectUrl: redirectUrl,
-      ipnUrl: ipnUrl,
-      extraData: extraData,
-      requestType: requestType,
-      signature: signature,
-      lang: "vi",
-    };
-
-    const payments = await axios.post(
-      process.env["momo_Url"] as string,
-      requestBody
-    );
-    return payments.data.payUrl;
-  },
-
   createOrder: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.userId;
@@ -226,7 +282,7 @@ const PaymentOnlineController = {
         await PaymentDetails.create({
           amount,
           provider,
-          orderDetailsId: newOrders.orderDetailId,
+          orderDetailId: newOrders.orderDetailId,
         });
 
         await carts.destroy();
@@ -235,7 +291,7 @@ const PaymentOnlineController = {
 
         switch (provider) {
           case PAYMENT_PROVIDER.MOMO:
-            const paymentUrl = await PaymentOnlineController.createMomo({
+            const paymentUrl = await createMomo({
               amount,
               orderCode: newOrders.orderCode,
             });
