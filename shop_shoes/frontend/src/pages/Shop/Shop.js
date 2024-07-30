@@ -20,8 +20,8 @@ export default function Shop() {
   
   return (
     <>
-      <div className="container flex mx-auto">
-        <div className="w-[330px]"></div>
+      <div className="container flex mx-auto my-10">
+        <div className="w-[350px]"></div>
         <div className="grid flex-1 grid-cols-4 gap-x-4 gap-y-6">
           {lstProducts?.map((product) => (
             <div
@@ -38,7 +38,7 @@ export default function Shop() {
                 />
               </div>
               <div className="p-4">
-                <h1 className="text-lg text-[#667085] mb-3 min-h-[3.5rem]">
+                <h1 className="text-lg text-[#667085] mb-3 line-clamp-2 min-h-[3.5rem]">
                   {product?.name}
                 </h1>
                 <h1 className="text-[#344054] font-bold mb-4">
