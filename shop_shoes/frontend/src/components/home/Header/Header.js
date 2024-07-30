@@ -83,12 +83,12 @@ const Header = () => {
   ];
 
   return (
-    <div className="w-full h-20 bg-white sticky top-0 z-50 border-b-[1px] border-b-gray-200">
+    <div className="w-full h-20 bg-[#111111] sticky top-0 z-50 border-b-[1px] border-b-gray-200">
       <nav className="relative h-full px-4 mx-auto max-w-container">
         <Flex className="flex items-center justify-between h-full">
           <Link to="/">
             <div>
-              <Image className="object-cover w-32" imgSrc={logo} />
+              {/* <Image className="object-cover w-32" imgSrc={logo} /> */}
             </div>
           </Link>
           <div>
@@ -102,7 +102,7 @@ const Header = () => {
                 {navBarList.map(({ _id, title, link }) => (
                   <NavLink
                     key={_id}
-                    className="flex font-normal hover:font-bold justify-center items-center px-6 h-4 text-base text-[#767676] hover:underline underline-offset-[4px] decoration-[1px] hover:text-[#262626] md:border-r-[2px] border-r-gray-300 hoverEffect last:border-r-0"
+                    className="flex font-normal hover:font-bold justify-center items-center px-6 h-4 text-base text-white hover:underline underline-offset-[4px] decoration-[1px] hover:text-[#fffafa] md:border-r-[2px] border-r-gray-300 last:border-r-0"
                     to={link}
                     state={{ data: location.pathname.split("/")[1] }}
                   >
@@ -118,21 +118,21 @@ const Header = () => {
                     <Badge count={selCarts?.cartItems?.length || 0}   onClick={() => {
                       navigation("/cart");
                     }}>
-                      <ShoppingCartOutlined className="text-2xl text-gray-500" />
+                      <ShoppingCartOutlined className="text-2xl text-white" />
                     </Badge>
                     <Dropdown
                       menu={{
                         items,
                       }}
                     >
-                      <p className="flex font-normal hover:font-bold px-5 text-base text-[#767676] hover:underline underline-offset-[4px] decoration-[1px] hover:text-[#262626] md:border-r-[2px] border-r-gray-300 hoverEffect last:border-r-0">
+                      <p className="flex font-normal hover:font-bold px-5 text-base text-white hover:underline underline-offset-[4px] decoration-[1px] hover:text-[#fffafa] md:border-r-[2px] border-r-gray-300 hoverEffect last:border-r-0">
                         Thông tin
                       </p>
                     </Dropdown>
                   </div>
                 ) : (
                   <NavLink
-                    className="flex font-normal hover:font-bold justify-center items-center px-6 h-4 text-base text-[#767676] hover:underline underline-offset-[4px] decoration-[1px] hover:text-[#262626] md:border-r-[2px] border-r-gray-300 hoverEffect last:border-r-0"
+                    className="flex font-normal hover:font-bold justify-center items-center px-6 h-4 text-base text-white hover:underline underline-offset-[4px] decoration-[1px] hover:text-[#fffafa] md:border-r-[2px] border-r-gray-300 hoverEffect last:border-r-0"
                     to={PATH_ROUTER.SIGN_IN}
                     state={{ data: location.pathname.split("/")[1] }}
                   >
@@ -146,7 +146,7 @@ const Header = () => {
               className="absolute inline-block w-8 h-6 cursor-pointer right-4 top-6 md:hidden"
             />
             {sidenav && (
-              <div className="fixed top-0 left-0 z-50 w-full h-screen text-gray-200 bg-black bg-opacity-80">
+              <div className="fixed top-0 left-0 z-50 w-full h-screen text-white bg-black bg-opacity-80">
                 <motion.div
                   initial={{ x: -300, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
@@ -159,10 +159,10 @@ const Header = () => {
                       src={logoLight}
                       alt="logoLight"
                     />
-                    <ul className="flex flex-col gap-2 text-gray-200">
+                    <ul className="flex flex-col gap-2 text-white">
                       {navBarList.map((item) => (
                         <li
-                          className="font-normal hover:font-bold items-center text-lg text-gray-200 hover:underline underline-offset-[4px] decoration-[1px] hover:text-white md:border-r-[2px] border-r-gray-300 hoverEffect last:border-r-0"
+                          className="font-normal hover:font-bold items-center text-lg text-white hover:underline underline-offset-[4px] decoration-[1px] hover:text-white md:border-r-[2px] border-r-gray-300 hoverEffect last:border-r-0"
                           key={item._id}
                         >
                           <NavLink

@@ -14,6 +14,18 @@
   }
 }
 
+@font-face {
+  font-family: 'Product Sans';
+  font-weight: 400;
+  src: local('Product Sans'), url('./assets/fonts/product_sans_regular.otf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Product Sans';
+  font-weight: 700;
+  src: local('Product Sans'), url('./assets/fonts/product_sans_bold.otf') format('truetype');
+}
+
 /* ============= NavLink active Start here ============== */
 nav .active li {
   color: black;
@@ -27,6 +39,10 @@ nav .active li {
     font-weight: 600;
     text-decoration: 1px underline white;
   }
+}
+
+body {
+  font-family: "Product Sans";
 }
 
 .scrollbar-hide::-webkit-scrollbar {
@@ -46,4 +62,12 @@ nav .active li {
   to {
     background-position-x: -200%;
   }
+}
+
+.custom-slider .slick-slide > div {
+  padding: 0 15px;
+}
+
+.custom-slider .slick-list {
+  margin: 0 -15px;
 }

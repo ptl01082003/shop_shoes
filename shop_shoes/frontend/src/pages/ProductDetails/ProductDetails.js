@@ -90,7 +90,7 @@ export default function ProductDetails() {
             arrows={true}
             asNavFor={nav2}
             nextArrow={<SampleNextArrow />}
-            prevArrow={<SamplePrevArrow />}
+            prevArrow={<SamplePrevArrow />} 
             ref={(slider) => (sliderRef1 = slider)}
           >
             {products?.gallery?.map((images) => (

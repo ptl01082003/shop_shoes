@@ -24,7 +24,6 @@ export default function Layout(props) {
       <Header />
       <Outlet/>
       <Footer />
-      <FooterBottom />
     </>
   );
 }
