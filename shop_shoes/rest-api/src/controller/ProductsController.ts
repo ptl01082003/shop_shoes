@@ -161,19 +161,26 @@ const ProductsController = {
           include: [{ model: Sizes, attributes: ["name"] }],
         });
 
+        const productDetailsLevel = productDetails.map((detail) =>
+          detail.get({ plain: true })
+        );
+
         const images = await Images.findAll({
           where: { productId: product.productId },
           attributes: ["path"],
         });
 
+        const imagesLevel = images.map((image) => image.get({ plain: true }));
+
         transferData.push({
           ...product.toJSON(),
-          productDetails: productDetails.map((productDetails) => ({
-            productId: productDetails.productId,
-            sizeId: productDetails.sizeId,
-            quantity: productDetails.quantity,
-          })),
-          gallery: images,
+          productDetails: productDetailsLevel,
+          // productDetails: productDetails.map((productDetails) => ({
+          //   productId: productDetails.productId,
+          //   sizeId: productDetails.sizeId,
+          //   quantity: productDetails.quantity,
+          // })),
+          gallery: imagesLevel,
         });
       }
 

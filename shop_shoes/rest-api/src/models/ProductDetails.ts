@@ -39,10 +39,13 @@ export class ProductDetails extends Model {
   @Column
   public quantity!: number;
 
+  @Default(0)
+  @Column
+  public numberStatistics!: number;
+
   @BelongsTo(() => Sizes)
   public sizes!: Sizes;
 
   @BelongsTo(() => Products)
   public products!: Products;
-
 }

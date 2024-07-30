@@ -161,8 +161,8 @@ const ProductPage: React.FC = () => {
 
   const handleEditProduct = (product: any) => {
     details.current = product?.description || "";
-    if (product?.gallery && Array.isArray(product?.gallery)) {
-      const transferImage = product?.gallery.map((images) => ({
+    if (product?.gallery && Array.isArray(product.gallery)) {
+      const transferImage = product.gallery.map((images) => ({
         uid: images?.path,
         name: images?.path,
         path: images?.path,
@@ -174,8 +174,8 @@ const ProductPage: React.FC = () => {
 
     const productDetails =
       product?.productDetails?.map((detail: any) => ({
-        sizeId: detail?.sizeId,
-        quantity: detail?.quantity,
+        sizeId: detail.sizeId,
+        quantity: detail.quantity,
       })) || [];
 
     setModalInfo({

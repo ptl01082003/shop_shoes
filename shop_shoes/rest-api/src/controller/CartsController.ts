@@ -252,6 +252,7 @@ const CartsController = {
       where: { userId },
       attributes: ["totals", "amount", "cartId"],
     });
+
     if (currentCard) {
       transferCarts = { ...currentCard?.toJSON() };
       delete transferCarts["cartId"];
@@ -312,6 +313,17 @@ const CartsController = {
         })
       );
     }
+
+    // Tạo đối tượng phản hồi mới
+
+    // await redis.set(`carts-${userId}`, JSON.stringify(currentCartsInDb));
+    // return res.status(STATUS_CODE.SUCCESS).json(
+    //   ResponseBody({
+    //     code: RESPONSE_CODE.SUCCESS,
+    //     data: currentCartsInDb,
+    //     message: `Thực hiện thành công`,
+    //   })
+    // );
   },
 };
 
