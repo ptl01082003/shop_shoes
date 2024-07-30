@@ -1,15 +1,14 @@
-import Slider from "react-slick";
-import { CaretRightOutlined, CaretLeftOutlined } from "@ant-design/icons";
-import { useNavigate, useParams } from "react-router-dom";
-import React, { useEffect, useRef, useState } from "react";
-import AxiosClient from "../../networks/AxiosClient";
-import { URL_IMAGE, TRANSFER_PRICE, PATH_ROUTER } from "../../constants";
 import { Divider, InputNumber, Tabs } from "antd";
 import clsx from "clsx";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectUserInfo } from "../../redux/slices/usersSlice";
-import { addToCard, changeCarts } from "../../redux/slices/cartsSlice";
+import { useNavigate, useParams } from "react-router-dom";
+import Slider from "react-slick";
 import { toast } from "react-toastify";
+import { TRANSFER_PRICE, URL_IMAGE } from "../../constants";
+import AxiosClient from "../../networks/AxiosClient";
+import { changeCarts } from "../../redux/slices/cartsSlice";
+import { selectUserInfo } from "../../redux/slices/usersSlice";
 
 function SampleNextArrow(props) {
   const { onClick } = props;
@@ -18,7 +17,21 @@ function SampleNextArrow(props) {
       onClick={onClick}
       className="absolute z-50 bottom-[5%] right-[5%] w-[9%] h-[9%] cursor-pointer flex justify-center items-center rounded-xl bg-[#EDF0F8]"
     >
-      <CaretRightOutlined className="text-2xl" />
+      <svg
+        width="30"
+        height="30"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M8.43805 5.42987C8.75047 5.11745 9.257 5.11745 9.56942 5.42987L15.5697 11.4301C15.7197 11.5801 15.804 11.7836 15.804 11.9958C15.804 12.208 15.7197 12.4115 15.5697 12.5615L9.56588 18.5653C9.25346 18.8777 8.74693 18.8777 8.43451 18.5653C8.12209 18.2529 8.12209 17.7463 8.43451 17.4339L13.8726 11.9958L8.43805 6.56124C8.12563 6.24882 8.12563 5.74229 8.43805 5.42987Z"
+          fill="black"
+          class="my-path"
+        ></path>
+      </svg>
     </div>
   );
 }
@@ -30,7 +43,21 @@ function SamplePrevArrow(props) {
       onClick={onClick}
       className="absolute z-50 bottom-[5%] right-[16%] w-[9%] h-[9%] cursor-pointer flex justify-center items-center rounded-xl bg-[#EDF0F8]"
     >
-      <CaretLeftOutlined className="text-2xl" />
+      <svg
+        width="30"
+        height="30"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M15.5692 5.43012C15.8816 5.74253 15.8816 6.24907 15.5692 6.56149L10.1311 11.9996L15.5656 17.4341C15.8781 17.7466 15.8781 18.2531 15.5656 18.5655C15.2532 18.8779 14.7467 18.8779 14.4343 18.5655L8.43402 12.5653C8.28399 12.4152 8.19971 12.2118 8.19971 11.9996C8.19971 11.7874 8.28399 11.5839 8.43402 11.4339L14.4378 5.43012C14.7502 5.1177 15.2568 5.1177 15.5692 5.43012Z"
+          fill="black"
+          class="my-path"
+        ></path>
+      </svg>
     </div>
   );
 }
@@ -75,7 +102,7 @@ export default function ProductDetails() {
       productDetailId: currentSize?.productDetailId,
     });
     if (newCarts?.code === 0) {
-      setCounterSize(newCarts.data?.quanity)
+      setCounterSize(newCarts.data?.quanity);
       dispatch(changeCarts(newCarts.data?.carts));
     } else {
       toast.error(newCarts?.messsage);
@@ -83,22 +110,22 @@ export default function ProductDetails() {
   };
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto my-10">
       <div className="flex gap-6">
         <div className="w-[550px]">
           <Slider
             arrows={true}
             asNavFor={nav2}
             nextArrow={<SampleNextArrow />}
-            prevArrow={<SamplePrevArrow />} 
+            prevArrow={<SamplePrevArrow />}
             ref={(slider) => (sliderRef1 = slider)}
           >
             {products?.gallery?.map((images) => (
               <div className="px-2">
-                <div className="w-full overflow-hidden cursor-pointer aspect-square rounded-xl">
+                <div className="aspect-square w-full overflow-hidden rounded-xl cursor-pointer">
                   <img
                     src={URL_IMAGE(images?.path)}
-                    className="object-cover w-full h-full transition-all duration-200 ease-out rounded-xl hover:scale-150"
+                    className="w-full h-full object-cover rounded-xl transition-all duration-200 ease-out hover:scale-150"
                   />
                 </div>
               </div>
@@ -115,10 +142,10 @@ export default function ProductDetails() {
             >
               {products?.gallery?.map((images) => (
                 <div className="px-2">
-                  <div className="w-full overflow-hidden cursor-pointer aspect-square rounded-xl">
+                  <div className="aspect-square w-full overflow-hidden rounded-xl cursor-pointer">
                     <img
                       src={URL_IMAGE(images?.path)}
-                      className="object-cover w-full h-full transition-all duration-200 ease-out rounded-xl hover:scale-150"
+                      className="w-full h-full object-cover rounded-xl transition-all duration-200 ease-out hover:scale-150"
                     />
                   </div>
                 </div>

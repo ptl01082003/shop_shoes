@@ -19,6 +19,10 @@ import ProductDetails from "./pages/ProductDetails/ProductDetails";
 import Shop from "./pages/Shop/Shop";
 import Oders from "./pages/Order/Order";
 import SuccessPayment from "./pages/SuccessPayment";
+import UserFeature from "./pages/UserFeature/UserFeature";
+import UserInfo from "./pages/UserFeature/Components/UserInfo";
+import PaymentInfo from "./pages/UserFeature/Components/PaymentInfo";
+import OderDetails from "./pages/UserFeature/Components/OderDetails";
 
 function App() {
   return (
@@ -41,6 +45,11 @@ function App() {
           <Route path={PATH_ROUTER.SIGN_IN} element={<SignIn />} />
           <Route path="/*" element={<Layout />}>
             <Route path="" element={<Home />} />
+            <Route path="users/*" element={<UserFeature />}>
+            <Route path="" element={<UserInfo />} />
+            <Route path="payment" element={<PaymentInfo />} />
+            <Route path="orders" element={<OderDetails />} />
+            </Route>
             <Route path="shop" element={<Shop />} />
             <Route path="success-payment" element={<SuccessPayment />} />
             <Route path="about" element={<About />} />

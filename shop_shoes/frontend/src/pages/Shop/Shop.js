@@ -25,7 +25,7 @@ export default function Shop() {
       setTimeout(() => {
         setFetchLstProducts(false);
         setLstProducts(products?.data || []);
-      }, 250);
+      }, 200);
     })();
   }, [filterParams]);
 
@@ -47,7 +47,7 @@ export default function Shop() {
 
   return (
     <>
-      <div className="container flex mx-auto my-10 px-5 gap-6">
+      <div className="container mx-auto flex gap-6 px-5 my-10">
         <div className="w-[350px]">
           <h1 className="mb-3 italic font-bold">Thương hiệu</h1>
           <div className="flex flex-wrap gap-3">
@@ -59,7 +59,7 @@ export default function Shop() {
                     brandId: brands?.brandId,
                   }));
                 }}
-                className="px-3 py-2 text-sm border rounded-xl cursor-pointer"
+                className="px-3 py-2 text-sm rounded-xl border cursor-pointer"
               >
                 {brands?.name}
               </div>
@@ -87,7 +87,7 @@ export default function Shop() {
                 >
                   <div className="w-full aspect-square bg-[#F7F5F7]">
                     <img
-                      className="object-contain w-full h-full"
+                      className="w-full h-full object-contain"
                       src={URL_IMAGE(product?.gallery?.[0]?.path)}
                     />
                   </div>
@@ -110,13 +110,13 @@ export default function Shop() {
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center w-full">
+            <div className="w-full flex flex-col items-center">
               <iframe
                 width={400}
                 height={400}
                 src="https://lottie.host/embed/623b28ef-ba6d-470d-b396-9cdbc970bfcf/D3Torrrrb4.json"
               />
-              <h1 className="italic font-bold text-xl mt-4">
+              <h1 className="mt-4 text-xl italic font-bold">
                 Không tìm thấy sản phẩm
               </h1>
             </div>

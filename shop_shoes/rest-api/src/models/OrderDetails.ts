@@ -42,7 +42,7 @@ export class OrderDetails extends Model {
   public address!: string;
 
   @Column
-  public phone!: number;
+  public phone!: string;
 
 
   @ForeignKey(() => Users)

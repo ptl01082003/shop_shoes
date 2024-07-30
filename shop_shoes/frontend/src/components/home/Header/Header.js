@@ -6,7 +6,7 @@ import { HiMenuAlt2 } from "react-icons/hi";
 import { MdClose } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-import { logo, logoLight } from "../../../assets/images";
+import { logoLight } from "../../../assets/images";
 import {
   isLogin,
   navBarList,
@@ -17,7 +17,6 @@ import AxiosClient from "../../../networks/AxiosClient";
 import { selectCarts } from "../../../redux/slices/cartsSlice";
 import { selectUserInfo } from "../../../redux/slices/usersSlice";
 import Flex from "../../designLayouts/Flex";
-import Image from "../../designLayouts/Image";
 
 const Header = () => {
   const navigation = useNavigate();
@@ -29,7 +28,7 @@ const Header = () => {
   const [category, setCategory] = useState(false);
   const [brand, setBrand] = useState(false);
   const location = useLocation();
-  
+
   useEffect(() => {
     let ResponsiveMenu = () => {
       if (window.innerWidth < 667) {
@@ -58,7 +57,7 @@ const Header = () => {
           <h3 className="mb-1 font-bold text-center">
             {selUserInfo?.fullName}
           </h3>
-          <div className="flex items-center justify-center space-x-1 text-xs italic">
+          <div className="flex justify-center items-center space-x-1 text-xs italic">
             <h3>ID:</h3>
             <h3>{selUserInfo?.userId}</h3>
           </div>
@@ -72,7 +71,7 @@ const Header = () => {
     {
       label: (
         <button
-          className="w-full py-2 font-bold text-center text-white rounded-md bg-slate-500"
+          className="w-full py-2 font-bold text-center text-white bg-slate-500 rounded-md"
           onClick={onLogout}
         >
           Đăng xuất
@@ -84,11 +83,11 @@ const Header = () => {
 
   return (
     <div className="w-full h-20 bg-[#111111] sticky top-0 z-50 border-b-[1px] border-b-gray-200">
-      <nav className="relative h-full px-4 mx-auto max-w-container">
-        <Flex className="flex items-center justify-between h-full">
+      <nav className="max-w-container mx-auto h-full relative px-4">
+        <Flex className="h-full flex justify-between items-center">
           <Link to="/">
             <div>
-              {/* <Image className="object-cover w-32" imgSrc={logo} /> */}
+              {/* <Image className="w-32 object-cover" imgSrc={logo} /> */}
             </div>
           </Link>
           <div>
@@ -97,7 +96,7 @@ const Header = () => {
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5 }}
-                className="z-50 flex items-center w-auto p-0"
+                className="w-auto z-50 flex items-center p-0"
               >
                 {navBarList.map(({ _id, title, link }) => (
                   <NavLink
@@ -106,29 +105,25 @@ const Header = () => {
                     to={link}
                     state={{ data: location.pathname.split("/")[1] }}
                   >
-                    <li>{title}</li>
+                    <li style={{ color: "white" }}>{title}</li>
                   </NavLink>
                 ))}
 
                 {isLogin ? (
-                  <div
-                    className="flex items-center pl-5 space-x-1 cursor-pointer"
-                  
-                  >
-                    <Badge count={selCarts?.cartItems?.length || 0}   onClick={() => {
-                      navigation("/cart");
-                    }}>
-                      <ShoppingCartOutlined className="text-2xl text-white" />
-                    </Badge>
-                    <Dropdown
-                      menu={{
-                        items,
+                  <div className="flex items-center pl-5 space-x-1 cursor-pointer">
+                    <Badge
+                      count={selCarts?.cartItems?.length || 0}
+                      onClick={() => {
+                        navigation("/cart");
                       }}
                     >
+                      <ShoppingCartOutlined className="text-2xl text-white" />
+                    </Badge>
+                    <Link to={"/users"}>
                       <p className="flex font-normal hover:font-bold px-5 text-base text-white hover:underline underline-offset-[4px] decoration-[1px] hover:text-[#fffafa] md:border-r-[2px] border-r-gray-300 hoverEffect last:border-r-0">
                         Thông tin
                       </p>
-                    </Dropdown>
+                    </Link>
                   </div>
                 ) : (
                   <NavLink
@@ -143,19 +138,19 @@ const Header = () => {
             )}
             <HiMenuAlt2
               onClick={() => setSidenav(!sidenav)}
-              className="absolute inline-block w-8 h-6 cursor-pointer right-4 top-6 md:hidden"
+              className="w-8 h-6 absolute right-4 top-6 inline-block cursor-pointer md:hidden"
             />
             {sidenav && (
-              <div className="fixed top-0 left-0 z-50 w-full h-screen text-white bg-black bg-opacity-80">
+              <div className="bg-opacity-80 w-full h-screen fixed top-0 left-0 z-50 text-white bg-black">
                 <motion.div
                   initial={{ x: -300, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ duration: 0.5 }}
                   className="w-[80%] h-full relative"
                 >
-                  <div className="w-full h-full p-6 bg-primeColor">
+                  <div className="bg-primeColor w-full h-full p-6">
                     <img
-                      className="mb-6 w-28"
+                      className="w-28 mb-6"
                       src={logoLight}
                       alt="logoLight"
                     />
@@ -178,7 +173,7 @@ const Header = () => {
                     <div className="mt-4">
                       <h1
                         onClick={() => setCategory(!category)}
-                        className="flex items-center justify-between mb-2 text-base cursor-pointer font-titleFont"
+                        className="font-titleFont flex justify-between items-center mb-2 text-base cursor-pointer"
                       >
                         Shop by Category{" "}
                         <span className="text-lg">{category ? "-" : "+"}</span>
@@ -201,7 +196,7 @@ const Header = () => {
                     <div className="mt-4">
                       <h1
                         onClick={() => setBrand(!brand)}
-                        className="flex items-center justify-between mb-2 text-base cursor-pointer font-titleFont"
+                        className="font-titleFont flex justify-between items-center mb-2 text-base cursor-pointer"
                       >
                         Shop by Brand
                         <span className="text-lg">{brand ? "-" : "+"}</span>

@@ -39,7 +39,7 @@ const Cart = () => {
   };
 
   return (
-    <div className="px-4 mx-auto max-w-container">
+    <div className="max-w-container mx-auto px-4">
       <Breadcrumbs title="Cart" />
       {selCarts?.cartItems?.length > 0 ? (
         <div className="flex gap-12">
@@ -50,7 +50,7 @@ const Cart = () => {
                   <div className="w-[160px] aspect-square flex-shrink-0">
                     <img
                       src={URL_IMAGE(items?.path)}
-                      className="object-cover w-full h-full rounded-xl"
+                      className="w-full h-full object-cover rounded-xl"
                     />
                   </div>
                   <div className="flex-1">
@@ -91,19 +91,46 @@ const Cart = () => {
                         }}
                       >
                         <svg
-                          aria-hidden="true"
-                          focusable="false"
+                          width="28"
+                          height="28"
                           viewBox="0 0 24 24"
-                          role="img"
-                          width="24px"
-                          height="24px"
                           fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
                         >
                           <path
-                            stroke="currentColor"
-                            stroke-miterlimit="10"
-                            stroke-width="1.5"
-                            d="M14.25 7.5v12m-4.5-12v12M5.25 6v13.5c0 1.24 1.01 2.25 2.25 2.25h9c1.24 0 2.25-1.01 2.25-2.25V5.25h2.75m-2.75 0H21m-12-3h5.25c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5H3"
+                            d="M5 7L5.29949 14.7868C5.41251 17.7252 5.46902 19.1944 6.40719 20.0972C7.34537 21 8.81543 21 11.7555 21H12.2433C15.1842 21 16.6547 21 17.5928 20.0972C18.531 19.1944 18.5875 17.7252 18.7006 14.7868L19 7"
+                            stroke="black"
+                            stroke-width="null"
+                            stroke-linecap="round"
+                            class="my-path"
+                          ></path>
+                          <path
+                            d="M10 13V16"
+                            stroke="black"
+                            stroke-width="null"
+                            stroke-linecap="round"
+                            class="my-path"
+                          ></path>
+                          <path
+                            d="M14 13V16"
+                            stroke="black"
+                            stroke-width="null"
+                            stroke-linecap="round"
+                            class="my-path"
+                          ></path>
+                          <path
+                            d="M20.4706 4.43329C18.6468 4.27371 17.735 4.19392 16.8229 4.13611C13.6109 3.93249 10.3891 3.93249 7.17707 4.13611C6.26506 4.19392 5.35318 4.27371 3.52942 4.43329"
+                            stroke="black"
+                            stroke-width="null"
+                            stroke-linecap="round"
+                            class="my-path"
+                          ></path>
+                          <path
+                            d="M13.7647 3.95212C13.7647 3.95212 13.3993 2.98339 11.6471 2.9834C9.8949 2.9834 9.52942 3.95211 9.52942 3.95211"
+                            stroke="black"
+                            stroke-width="null"
+                            stroke-linecap="round"
+                            class="my-path"
                           ></path>
                         </svg>
                       </div>
@@ -137,21 +164,21 @@ const Cart = () => {
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.4 }}
-          className="flex flex-col items-center justify-center gap-4 pb-20 mdl:flex-row"
+          className="flex flex-col justify-center items-center gap-4 pb-20 mdl:flex-row"
         >
           <div>
             <img
-              className="p-4 mx-auto rounded-lg w-80"
+              className="mx-auto w-80 p-4 rounded-lg"
               src={emptyCart}
               alt="emptyCart"
             />
           </div>
           <div className="max-w-[500px] p-4 py-8 bg-white flex gap-4 flex-col items-center rounded-md shadow-lg">
-            <h1 className="text-xl font-bold uppercase font-titleFont">
+            <h1 className="font-titleFont text-xl font-bold uppercase">
               Giỏ hàng của bạn đang trống
             </h1>
             <Link to="/shop">
-              <button className="px-8 py-2 text-lg font-semibold text-gray-200 duration-300 rounded-md cursor-pointer bg-primeColor font-titleFont active:bg-gray-900 hover:text-white hover:bg-black">
+              <button className="bg-primeColor font-titleFont px-8 py-2 text-lg font-semibold text-gray-200 rounded-md duration-300 cursor-pointer active:bg-gray-900 hover:text-white hover:bg-black">
                 Mua hàng
               </button>
             </Link>

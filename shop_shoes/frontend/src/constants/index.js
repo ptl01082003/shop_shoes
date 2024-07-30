@@ -1,5 +1,3 @@
-
-
 import {
   IMPRIMANTE_PANTUM_BM5100FDW,
   IMPRIMANTE_PANTUM_BP5100DN,
@@ -49,28 +47,38 @@ export const URL_IMAGE = (path) => {
   return `http://localhost:5500/${path}`;
 };
 
+export const PAYMENT_STATUS = {
+  IDLE: "Chờ thanh toán",
+  SUCCESS: "Thành công",
+  ERRORS: "Giao dịch lỗi",
+};
+export const PAYMENT_STATUS_COLOR = {
+  IDLE: "#faad14",
+  SUCCESS: "#018601",
+  ERRORS: "#f5222d",
+};
 
 
 export const TRANSFER_PRICE = (price) => {
-  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' })
-    .format(parseFloat(price))
-    .replace('₫', 'VNĐ') || "";
+  return (
+    new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" })
+      .format(parseFloat(price))
+      .replace("₫", "VNĐ") || ""
+  );
 };
-
 
 export const removeStorage = () => {
   localStorage.removeItem(KEY_STORAGE.TOKEN);
   localStorage.removeItem(KEY_STORAGE.RF_TOKEN);
-}
+};
 
 export const KEY_STORAGE = {
   TOKEN: "token",
   RF_TOKEN: "refreshToken",
 };
 
-export const isLogin = (() => localStorage.getItem(KEY_STORAGE.TOKEN) != undefined)();
-
-
+export const isLogin = (() =>
+  localStorage.getItem(KEY_STORAGE.TOKEN) != undefined)();
 
 export const RESPONSE_CODE = {
   SUCCESS: 0,
@@ -106,7 +114,7 @@ export const navBarList = [
     _id: 1004,
     title: "Contact",
     link: "contact",
-  }
+  },
 ];
 // =================== NavBarList End here ======================
 // =================== Special Offer data Start here ============

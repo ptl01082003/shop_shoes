@@ -87,7 +87,7 @@ async function createMomo({
     process.env["momo_Url"] as string,
     requestBody
   );
-  console.log("payments", payments)
+  console.log("payments", payments);
   return payments.data.payUrl;
 }
 
@@ -237,16 +237,15 @@ const PaymentOnlineController = {
 
         //Thực hiện logic refund tiền về momo thanh toán của người dùng
         if (refundAmount > 0) {
-
         }
       } else {
-
       }
       res.redirect(process.env["payment_Success_Url"] as string);
     } catch (error) {
       next(error);
     }
   },
+
   createOrder: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.userId;
@@ -319,7 +318,38 @@ const PaymentOnlineController = {
         );
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
+      next(error);
+    }
+  },
+  getLstOrders: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.userId;
+
+      const oderDetails = await OrderDetails.findAll({
+        where: { userId },
+      });
+      let transferData: any[] = [];
+      for await (const orders of oderDetails) {
+        const paymentDetails = await PaymentDetails.findOne({
+          where: { orderDetailId: orders?.orderDetailId },
+        }) as PaymentDetails;
+        
+        transferData.push({
+          ...orders?.toJSON(),
+          ...paymentDetails?.toJSON(),
+        })
+      }
+
+     
+      res.json(
+        ResponseBody({
+          code: RESPONSE_CODE.SUCCESS,
+          message: "Thực hiện thành công",
+          data: transferData,
+        })
+      );
+    } catch (error) {
       next(error);
     }
   },
