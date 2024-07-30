@@ -108,7 +108,14 @@ export default function Shop() {
             ))}
           </div>
         ) : (
-          <div>Không có dữ liệu</div>
+          <div className="flex flex-col items-center w-full">
+            <iframe
+              width={400}
+              height={400}
+              src="https://lottie.host/embed/0f13753a-e76b-43ec-8d9d-81938b202733/IxEkFyWkxz.json"
+            />
+            <h1 className="italic font-bold text-xl mt-4">Không tìm thấy sản phẩm</h1>
+          </div>
         )}
       </div>
     </>
