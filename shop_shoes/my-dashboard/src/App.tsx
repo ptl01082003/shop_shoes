@@ -20,7 +20,6 @@ import OriginsPage from "./pages/Origins";
 import SizePage from "./pages/Sizes";
 import PromotionsPage from "./pages/Promotions";
 import ProductPage from "./pages/Products";
-// import ProductDetailsPage from "./pages/ProductDetails";
 
 function App() {
   return (

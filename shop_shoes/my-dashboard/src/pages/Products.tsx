@@ -59,7 +59,6 @@ const ProductPage: React.FC = () => {
     data?: any;
   }>({ open: false, mode: "create" });
   const [form] = Form.useForm();
-  const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const details = useRef<string>("");
   const [formattedPrice, setFormattedPrice] = useState<string>("");
 
@@ -105,12 +104,6 @@ const ProductPage: React.FC = () => {
       const lstImageGallery = fileList.map((files) =>
         files.response ? files.response?.data?.[0] : files?.name
       );
-
-      console.log("lstImageGallery:", lstImageGallery);
-      console.log("modalInfo:", modalInfo);
-      console.log("values:", values);
-      console.log("details.current:", details.current);
-
       const productData = {
         ...modalInfo?.data,
         ...values,
@@ -142,7 +135,7 @@ const ProductPage: React.FC = () => {
           modalInfo.mode === "create"
             ? [...prev, response.data]
             : prev.map((item) =>
-                item.productId === response.data.productId
+                item?.productId === response.data?.productId
                   ? response.data
                   : item
               )
@@ -193,7 +186,6 @@ const ProductPage: React.FC = () => {
         productDetails,
       },
     });
-    setSelectedProduct(product);
   };
 
   const columns = [

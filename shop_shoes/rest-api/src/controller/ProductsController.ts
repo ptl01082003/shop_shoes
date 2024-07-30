@@ -238,7 +238,7 @@ const ProductsController = {
           },
         });
       } else {
-         res.json({
+        res.json({
           message: "Không tìm thấy sản phẩm",
           code: RESPONSE_CODE.ERRORS,
           data: null,
@@ -269,7 +269,7 @@ const ProductsController = {
       const product = await Products.findOne({ where: { productId } });
 
       if (!product) {
-        return res.status(404).json({
+        return res.json({
           message: "Sản phẩm không tồn tại",
           code: RESPONSE_CODE.ERRORS,
         });
@@ -324,8 +324,51 @@ const ProductsController = {
         await Images.bulkCreate(imagesData);
       }
 
+      const productInfo = await Products.findOne({
+        where: { productId },
+        include: [
+          {
+            model: Materials,
+            attributes: ["name"],
+          },
+          {
+            model: Origins,
+            attributes: ["name"],
+          },
+          {
+            model: Styles,
+            attributes: ["name"],
+          },
+          {
+            model: Brands,
+            attributes: ["name"],
+          },
+        ],
+      });
+
+
+      const productDetailsInfo = await ProductDetails.findAll({
+        where: { productId: product.productId },
+        attributes: ["sizeId", "quantity"],
+        include: [{ model: Sizes, attributes: ["name"] }],
+      });
+
+      const images = await Images.findAll({
+        where: { productId: product.productId },
+        attributes: ["path"],
+      });
+
       res.json({
         code: RESPONSE_CODE.SUCCESS,
+        data: {
+          ...productInfo?.toJSON(),
+          productDetails: productDetailsInfo.map((details) => ({
+            productId: details.productId,
+            sizeId: details.sizeId,
+            quantity: details.quantity,
+          })),
+          gallery: images,
+        },
         message: "Thực hiện thành công",
       });
     } catch (error) {

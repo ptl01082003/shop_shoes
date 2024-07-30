@@ -87,6 +87,7 @@ async function createMomo({
     process.env["momo_Url"] as string,
     requestBody
   );
+  console.log("payments", payments)
   return payments.data.payUrl;
 }
 
@@ -218,7 +219,9 @@ const PaymentOnlineController = {
 
           if (orders.quanity <= productDetails.quantity) {
             productDetails.quantity -= orders.quanity;
+            productDetails.sellQuanity = orders.quanity;
             productDetails.save();
+            orders.status = ODER_STATUS.CHO_LAY_HANG;
             redis.del(productLockKey);
           } else {
             refundAmount = Number(orders.amount);
@@ -228,18 +231,18 @@ const PaymentOnlineController = {
           await oderDetails.save();
           await orders.save();
         }
-      
+
         paymentDetails.status = PAYMENT_STATUS.SUCCESS;
         await paymentDetails.save();
 
         //Thực hiện logic refund tiền về momo thanh toán của người dùng
-        if(refundAmount > 0) {
+        if (refundAmount > 0) {
 
         }
       } else {
 
       }
-      res.redirect("http://localhost:3001/about");
+      res.redirect(process.env["payment_Success_Url"] as string);
     } catch (error) {
       next(error);
     }
@@ -316,6 +319,7 @@ const PaymentOnlineController = {
         );
       }
     } catch (error) {
+      console.log(error)
       next(error);
     }
   },

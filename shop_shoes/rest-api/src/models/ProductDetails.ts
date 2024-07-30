@@ -7,6 +7,7 @@ import {
   Table,
   BelongsTo,
   HasMany,
+  Default,
 } from "sequelize-typescript";
 import { Sizes } from "./Sizes";
 import { Products } from "./Products";
@@ -30,6 +31,10 @@ export class ProductDetails extends Model {
   @ForeignKey(() => Products)
   @Column
   public productId!: number;
+
+  @Default(0)
+  @Column
+  public sellQuanity!: number;
 
   @Column
   public quantity!: number;

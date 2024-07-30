@@ -18,6 +18,7 @@ import Payment from "./pages/payment/Payment";
 import ProductDetails from "./pages/ProductDetails/ProductDetails";
 import Shop from "./pages/Shop/Shop";
 import Oders from "./pages/Order/Order";
+import SuccessPayment from "./pages/SuccessPayment";
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
           <Route path="/*" element={<Layout />}>
             <Route path="" element={<Home />} />
             <Route path="shop" element={<Shop />} />
+            <Route path="success-payment" element={<SuccessPayment />} />
             <Route path="about" element={<About />} />
             <Route path="contact" element={<Contact />} />
             <Route path="journal" element={<Journal />} />
