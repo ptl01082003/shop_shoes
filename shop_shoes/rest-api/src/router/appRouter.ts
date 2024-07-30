@@ -12,12 +12,12 @@ import paymentRouter from "./PaymentOnlineRouter";
 
 import routerProductPromotion from "./ProductPromotionRouter";
 // import productsRouter from "./ProductsRouter";
+import productsRouter from "./ProductsRouter";
 import routerPromotions from "./PromotionsRouter";
 import routerSize from "./SizeRouter";
 import routerStyle from "./StylesRouter";
 import { uploadRouter } from "./uploadRouter";
 import userRouter from "./UserRouter";
-import productsRouter from "./ProductsRouter";
 
 const router = express.Router();
 

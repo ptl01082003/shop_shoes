@@ -8,6 +8,7 @@ import { Materials } from "../models/Materials";
 import { Origins } from "../models/Origins";
 import { Styles } from "../models/Styles";
 import { Brands } from "../models/Brands";
+import { Op } from "sequelize";
 
 const ProductsController = {
   addProduct: async (req: Request, res: Response, next: NextFunction) => {
@@ -130,8 +131,27 @@ const ProductsController = {
   },
 
   getLstProducts: async (req: Request, res: Response, next: NextFunction) => {
+    const where: any = {};
+    const { styleId, materialId, brandId, priceMin, priceMax } = req.body;
     try {
+      if (styleId) {
+        where.styleId = styleId;
+      }
+      if (materialId) {
+        where.materialId = materialId;
+      }
+      if (brandId) {
+        where.brandId = brandId;
+      }
+      if (priceMin != undefined) {
+        where.priceDiscount[Op.gte] = priceMin;
+      }
+      if (priceMax != undefined) {
+        where.priceDiscount[Op.lte] = priceMax;
+      }
+
       const products = await Products.findAll({
+        where,
         include: [
           {
             model: Materials,
@@ -175,11 +195,6 @@ const ProductsController = {
         transferData.push({
           ...product.toJSON(),
           productDetails: productDetailsLevel,
-          // productDetails: productDetails.map((productDetails) => ({
-          //   productId: productDetails.productId,
-          //   sizeId: productDetails.sizeId,
-          //   quantity: productDetails.quantity,
-          // })),
           gallery: imagesLevel,
         });
       }

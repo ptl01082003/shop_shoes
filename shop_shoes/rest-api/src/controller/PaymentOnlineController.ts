@@ -274,7 +274,7 @@ const PaymentOnlineController = {
 
         for await (const products of cartItems) {
           await OrderItems.create({
-            amount,
+            amount: products.amount,
             quanity: products.quanity,
             orderDetailId: newOrders.orderDetailId,
             productDetailId: products.productDetailId,

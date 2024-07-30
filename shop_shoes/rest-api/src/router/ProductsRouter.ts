@@ -1,9 +1,6 @@
 // routes/productsRoutes.ts
 import express from "express";
 import ProductsController from "../controller/ProductsController";
-import { checkAuth } from "../middleware/checkAuth";
-import { checkRoles } from "../middleware/checkRoles";
-import { ROLE_TYPES } from "../models/Roles";
 
 const productsRouter = express.Router();
 
