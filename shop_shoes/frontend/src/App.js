@@ -23,6 +23,7 @@ import UserFeature from "./pages/UserFeature/UserFeature";
 import UserInfo from "./pages/UserFeature/Components/UserInfo";
 import PaymentInfo from "./pages/UserFeature/Components/PaymentInfo";
 import OderDetails from "./pages/UserFeature/Components/OderDetails";
+import ProfileLogout from "./pages/UserFeature/Components/ProfileLogout";
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
               <Route path="" element={<UserInfo />} />
               <Route path="payment" element={<PaymentInfo />} />
               <Route path="orders" element={<OderDetails />} />
+              <Route path="logout" element={<ProfileLogout />} />
             </Route>
             <Route path="shop" element={<Shop />} />
             <Route path="success-payment" element={<SuccessPayment />} />
