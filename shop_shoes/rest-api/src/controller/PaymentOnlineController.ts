@@ -17,6 +17,7 @@ import {
 } from "../models/PaymentDetails";
 import { redis } from "../config/ConnectRedis";
 import { ProductDetails } from "../models/ProductDetails";
+import { v4 as uuidv4 } from "uuid";
 
 async function lockProductsById(
   keyName: string,
@@ -322,6 +323,60 @@ const PaymentOnlineController = {
       next(error);
     }
   },
+
+  repayment: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.userId;
+      const { orderCode } = req.body;
+
+      const oderDetails = await OrderDetails.findOne({
+        where: {
+          userId,
+          orderCode,
+        }
+      })
+
+      if (oderDetails) {
+        const newOderCode = uuidv4().slice(0, 8).toUpperCase();
+        oderDetails.orderCode = newOderCode;
+        await oderDetails.save();
+        const payments = await PaymentDetails.findOne({
+          where: {
+            orderDetailId: oderDetails?.orderDetailId
+          }
+        })
+        switch (payments?.provider) {
+          case PAYMENT_PROVIDER.MOMO:
+            const paymentUrl = await createMomo({
+              amount: oderDetails.amount,
+              orderCode: newOderCode,
+            });
+            return res.json(
+              ResponseBody({
+                data: paymentUrl,
+                code: RESPONSE_CODE.SUCCESS,
+                message: "Thực hiện thành công",
+              })
+            );
+          case PAYMENT_PROVIDER.VN_PAY:
+            break;
+        }
+      } else {
+        return res.json(
+          ResponseBody({
+            code: RESPONSE_CODE.ERRORS,
+            data: null,
+            message:
+              "Đơn hàng không tồn tại",
+          })
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  },
+
   getLstOrders: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.userId;
@@ -334,14 +389,14 @@ const PaymentOnlineController = {
         const paymentDetails = await PaymentDetails.findOne({
           where: { orderDetailId: orders?.orderDetailId },
         }) as PaymentDetails;
-        
+
         transferData.push({
           ...orders?.toJSON(),
           ...paymentDetails?.toJSON(),
         })
       }
 
-     
+
       res.json(
         ResponseBody({
           code: RESPONSE_CODE.SUCCESS,
@@ -353,6 +408,7 @@ const PaymentOnlineController = {
       next(error);
     }
   },
+
 };
 
 export default PaymentOnlineController;

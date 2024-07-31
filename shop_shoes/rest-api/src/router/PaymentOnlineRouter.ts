@@ -13,5 +13,7 @@ paymentRouter.use(checkAuth);
 paymentRouter.get("/", PaymentOnlineController.order);
 paymentRouter.post("/lst-oders", PaymentOnlineController.getLstOrders);
 paymentRouter.post("/create-order", PaymentOnlineController.createOrder);
+paymentRouter.post("/repayment", PaymentOnlineController.repayment);
+
 
 export default paymentRouter;

@@ -17,25 +17,50 @@ export default function PaymentInfo() {
     })();
   }, []);
 
+  const repayment = async (orderCode) => {
+    const response = await AxiosClient.post("/payment-orders/repayment", {
+      orderCode,
+    });
+    if (response.code === 0) {
+      window.location.replace(response.data);
+    } else {
+    }
+  };
+
   return (
     <div className="space-y-6">
       {lstOders?.map((oders) => (
         <>
-          <div style={{borderColor: PAYMENT_STATUS_COLOR[oders?.status]}} className="px-5 py-4 rounded-xl border">
+          <div
+            style={{ borderColor: PAYMENT_STATUS_COLOR[oders?.status] }}
+            className="px-5 py-4 rounded-xl border"
+          >
             <div className="flex justify-between mb-3">
               <h1 className="text-xl">
                 Đơn hàng: <span className="font-bold">{oders?.orderCode}</span>
               </h1>
-              <h1
-                style={{ color: PAYMENT_STATUS_COLOR[oders?.status] }}
-                className="text-lg font-bold"
-              >
-                {PAYMENT_STATUS[oders?.status]}
-              </h1>
+              <div>
+                <h1
+                  style={{ color: PAYMENT_STATUS_COLOR[oders?.status] }}
+                  className="text-lg font-bold"
+                >
+                  {PAYMENT_STATUS[oders?.status]}
+                </h1>
+              </div>
             </div>
             <h1>
               Hình thức thanh toán: <span>{oders?.provider}</span>
             </h1>
+            {oders?.status === "IDLE" && (
+              <button
+                onClick={() => {
+                  repayment(oders?.orderCode);
+                }}
+                className="border border-[#f4a200] text-[#f4a200] font-bold rounded-lg px-4 py-2 mt-4 text-sm"
+              >
+                THANH TOÁN
+              </button>
+            )}
             <Divider>Thông tin nhận hàng</Divider>
             <div className="space-y-4">
               <h1 className="flex items-center gap-4">

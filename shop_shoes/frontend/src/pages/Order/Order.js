@@ -37,6 +37,7 @@ const Oders = () => {
 
   const dispatch = useDispatch();
   const selCarts = useSelector(selectCarts);
+
   const createNewOders = async (params) => {
     const response = await AxiosClient.post("/payment-orders/create-order", {
       ...params,
@@ -47,6 +48,7 @@ const Oders = () => {
     } else {
     }
   };
+  
   return (
     <div className="px-4 mx-auto max-w-container">
       <Breadcrumbs title="Cart" />

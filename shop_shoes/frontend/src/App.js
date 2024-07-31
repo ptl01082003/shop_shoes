@@ -46,9 +46,9 @@ function App() {
           <Route path="/*" element={<Layout />}>
             <Route path="" element={<Home />} />
             <Route path="users/*" element={<UserFeature />}>
-            <Route path="" element={<UserInfo />} />
-            <Route path="payment" element={<PaymentInfo />} />
-            <Route path="orders" element={<OderDetails />} />
+              <Route path="" element={<UserInfo />} />
+              <Route path="payment" element={<PaymentInfo />} />
+              <Route path="orders" element={<OderDetails />} />
             </Route>
             <Route path="shop" element={<Shop />} />
             <Route path="success-payment" element={<SuccessPayment />} />
