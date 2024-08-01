@@ -11,7 +11,8 @@ paymentRouter.get("/check-out-vnpay", PaymentOnlineController.checkoutVnpay);
 paymentRouter.use(checkAuth);
 
 paymentRouter.get("/", PaymentOnlineController.order);
-paymentRouter.post("/lst-oders", PaymentOnlineController.getLstOrders);
+paymentRouter.post("/lst-orders", PaymentOnlineController.getLstOders);
+paymentRouter.post("/lst-payments", PaymentOnlineController.getLstPayments);
 paymentRouter.post("/create-order", PaymentOnlineController.createOrder);
 paymentRouter.post("/repayment", PaymentOnlineController.repayment);
 

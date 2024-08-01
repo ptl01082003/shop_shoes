@@ -8,12 +8,12 @@ import {
 import AxiosClient from "../../../networks/AxiosClient";
 
 export default function PaymentInfo() {
-  const [lstOders, setLstOders] = useState();
+  const [lstPayments, setLstPayments] = useState();
 
   useEffect(() => {
     (async () => {
-      const oders = await AxiosClient.post("/payment-orders/lst-oders");
-      setLstOders(oders?.data || []);
+      const oders = await AxiosClient.post("/payment-orders/lst-payments");
+      setLstPayments(oders?.data || []);
     })();
   }, []);
 
@@ -29,7 +29,7 @@ export default function PaymentInfo() {
 
   return (
     <div className="space-y-6">
-      {lstOders?.map((oders) => (
+      {lstPayments?.map((oders) => (
         <>
           <div
             style={{ borderColor: PAYMENT_STATUS_COLOR[oders?.status] }}

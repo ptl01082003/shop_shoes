@@ -377,7 +377,7 @@ const PaymentOnlineController = {
     }
   },
 
-  getLstOrders: async (req: Request, res: Response, next: NextFunction) => {
+  getLstPayments: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.userId;
 
@@ -408,7 +408,38 @@ const PaymentOnlineController = {
       next(error);
     }
   },
+  getLstOders: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.userId;
 
+      const oderDetails = await OrderItems.findAll({
+        where: { userId },
+      });
+      let transferData: any[] = [];
+      for await (const orders of oderDetails) {
+        const paymentDetails = await PaymentDetails.findOne({
+          where: { orderDetailId: orders?.orderDetailId },
+        }) as PaymentDetails;
+
+        transferData.push({
+          ...orders?.toJSON(),
+          ...paymentDetails?.toJSON(),
+        })
+      }
+
+
+      res.json(
+        ResponseBody({
+          code: RESPONSE_CODE.SUCCESS,
+          message: "Thực hiện thành công",
+          data: oderDetails,
+        })
+      );
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  },
 };
 
 export default PaymentOnlineController;

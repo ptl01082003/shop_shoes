@@ -52,12 +52,43 @@ export const PAYMENT_STATUS = {
   SUCCESS: "Thành công",
   ERRORS: "Giao dịch lỗi",
 };
+
 export const PAYMENT_STATUS_COLOR = {
   IDLE: "#faad14",
   SUCCESS: "#018601",
   ERRORS: "#f5222d",
 };
 
+export const ODER_STATUS = {
+  DA_GIAO: "DA_GIAO",
+  CHO_LAY_HANG: "CHO_LAY_HANG",
+  CHO_GIAO_HANG: "CHO_GIAO_HANG",
+  CHO_THANH_TOAN: "CHO_THANH_TOAN",
+  KHONG_DU_SO_LUONG: "KHONG_DU_SO_LUONG",
+};
+
+export const ODER_STATUS_STRING = [
+  {
+    label: "Không đủ số lượng",
+    value: "KHONG_DU_SO_LUONG",
+  },
+  {
+    label: "Chờ thanh toán",
+    value: "CHO_THANH_TOAN",
+  },
+  {
+    label: "Chờ lấy hàng",
+    value: "CHO_LAY_HANG",
+  },
+  {
+    label: "Chờ giao hàng",
+    value: "CHO_GIAO_HANG",
+  },
+  {
+    label: "Đã giao",
+    value: "DA_GIAO",
+  },
+];
 
 export const TRANSFER_PRICE = (price) => {
   return (
