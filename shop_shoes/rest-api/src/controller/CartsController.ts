@@ -46,29 +46,6 @@ const CartsController = {
 
         const lstCartsItems = await CartItems.findAll({
           where: { cartId: carts.cartId },
-        });
-
-        lstCartsItems.forEach((cartItems) => {
-          (cartTotals += cartItems.quanity), (cartsAmount += cartItems.amount);
-        });
-
-        carts.amount = cartsAmount;
-        carts.totals = cartTotals;
-
-        await carts.save();
-
-        let transferCarts: { [key: string]: any } = {};
-
-        const currentCard = await ShoppingCarts.findOne({
-          where: { userId },
-          attributes: ["totals", "amount", "cartId"],
-        });
-
-        transferCarts = { ...currentCard?.toJSON() };
-        delete transferCarts["cartId"];
-
-        const productItems = await CartItems.findAll({
-          where: { cartId: currentCard?.cartId },
           attributes: ["productDetailId", "quanity", "amount"],
           include: [
             {
@@ -76,7 +53,7 @@ const CartsController = {
               include: [
                 {
                   model: Products,
-                  attributes: ["priceDiscount", "name"],
+                  attributes: ["priceDiscount", "name", "price"],
                   include: [
                     {
                       model: Images,
@@ -93,19 +70,34 @@ const CartsController = {
           ],
         });
 
-        transferCarts["cartItems"] = productItems.map((products) => {
-          return {
-            quanity: products?.quanity,
-            amount: products?.amount,
-            productDetailId: products?.productDetailId,
-            name: products?.productDetails?.products?.name,
-            sizeName: products?.productDetails?.sizes?.name,
-            quanityLimit: products?.productDetails?.quantity,
-            path: products?.productDetails?.products?.gallery?.[0]?.path,
-            priceDiscount: products?.productDetails?.products?.priceDiscount,
-          };
+        lstCartsItems.forEach((cartItems) => {
+          cartTotals += cartItems.quanity;
+          cartsAmount += cartItems.amount;
         });
 
+        carts.amount = cartsAmount;
+        carts.totals = cartTotals;
+
+        await carts.save();
+
+        let transferCarts: { [key: string]: any } = {};
+
+        transferCarts = { ...carts?.toJSON() };
+
+        transferCarts["cartItems"] = lstCartsItems.map((cartItems) => {
+          return {
+            quanity: cartItems?.quanity,
+            amount: cartItems?.amount,
+            productDetailId: cartItems?.productDetailId,
+            name: cartItems?.productDetails?.products?.name,
+            sizeName: cartItems?.productDetails?.sizes?.name,
+            price: cartItems?.productDetails?.products?.price,
+            quanityLimit: cartItems?.productDetails?.quantity,
+            path: cartItems?.productDetails?.products?.gallery?.[0]?.path,
+            priceDiscount: cartItems?.productDetails?.products?.priceDiscount,
+          };
+        });
+        console.log(transferCarts);
         await redis.set(`carts-${userId}`, JSON.stringify(transferCarts));
 
         return res.json(
@@ -210,6 +202,7 @@ const CartsController = {
           name: products?.productDetails?.products?.name,
           sizeName: products?.productDetails?.sizes?.name,
           quanityLimit: products?.productDetails?.quantity,
+          price: products?.productDetails?.products?.price,
           path: products?.productDetails?.products?.gallery?.[0]?.path,
           priceDiscount: products?.productDetails?.products?.priceDiscount,
         };
@@ -255,8 +248,6 @@ const CartsController = {
 
     if (currentCard) {
       transferCarts = { ...currentCard?.toJSON() };
-      delete transferCarts["cartId"];
-
       const productItems = await CartItems.findAll({
         where: { cartId: currentCard?.cartId },
         attributes: ["productDetailId", "quanity", "amount"],
@@ -266,7 +257,7 @@ const CartsController = {
             include: [
               {
                 model: Products,
-                attributes: ["priceDiscount", "name"],
+                attributes: ["priceDiscount", "name", "price"],
                 include: [
                   {
                     model: Images,
@@ -291,6 +282,7 @@ const CartsController = {
           name: products?.productDetails?.products?.name,
           sizeName: products?.productDetails?.sizes?.name,
           quanityLimit: products?.productDetails?.quantity,
+          price: products?.productDetails?.products?.price,
           path: products?.productDetails?.products?.gallery?.[0]?.path,
           priceDiscount: products?.productDetails?.products?.priceDiscount,
         };
@@ -313,17 +305,6 @@ const CartsController = {
         })
       );
     }
-
-    // Tạo đối tượng phản hồi mới
-
-    // await redis.set(`carts-${userId}`, JSON.stringify(currentCartsInDb));
-    // return res.status(STATUS_CODE.SUCCESS).json(
-    //   ResponseBody({
-    //     code: RESPONSE_CODE.SUCCESS,
-    //     data: currentCartsInDb,
-    //     message: `Thực hiện thành công`,
-    //   })
-    // );
   },
 };
 

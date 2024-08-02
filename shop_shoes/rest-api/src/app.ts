@@ -8,7 +8,7 @@ import { connectDB } from "./config/ConnectDB";
 import { redis } from "./config/ConnectRedis";
 import { RESPONSE_CODE, ResponseBody, STATUS_CODE } from "./constants";
 import { appRouter } from "./router/appRouter";
-
+import cron from "node-cron";
 declare global {
   namespace Express {
     interface Request {
@@ -50,6 +50,18 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 appRouter();
+
+cron.schedule(
+  "40 21 * * *",
+  () => {
+    console.log("hello");
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ho_Chi_Minh",
+  }
+);
+
 
 app.use((errors: any, _: Request, res: Response) => {
   res.json(errors);

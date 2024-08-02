@@ -1,7 +1,6 @@
-import { Request, Response, NextFunction } from "express";
-import { Brands } from "../models/Brands";
-import { Op } from "sequelize";
+import { NextFunction, Request, Response } from "express";
 import { RESPONSE_CODE, ResponseBody } from "../constants";
+import { Brands } from "../models/Brands";
 
 const BrandsController = {
   addBrand: async (req: Request, res: Response, next: NextFunction) => {
