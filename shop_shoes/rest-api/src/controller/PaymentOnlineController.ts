@@ -274,6 +274,7 @@ const PaymentOnlineController = {
 
         for await (const products of cartItems) {
           await OrderItems.create({
+            userId,
             amount: products.amount,
             quanity: products.quanity,
             orderDetailId: newOrders.orderDetailId,
@@ -408,6 +409,7 @@ const PaymentOnlineController = {
       next(error);
     }
   },
+
   getLstOders: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.userId;

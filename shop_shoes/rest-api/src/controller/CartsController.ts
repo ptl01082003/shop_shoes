@@ -49,7 +49,8 @@ const CartsController = {
         });
 
         lstCartsItems.forEach((cartItems) => {
-          (cartTotals += cartItems.quanity), (cartsAmount += cartItems.amount);
+          cartTotals += cartItems.quanity;
+          cartsAmount += cartItems.amount;
         });
 
         carts.amount = cartsAmount;
@@ -65,7 +66,6 @@ const CartsController = {
         });
 
         transferCarts = { ...currentCard?.toJSON() };
-        delete transferCarts["cartId"];
 
         const productItems = await CartItems.findAll({
           where: { cartId: currentCard?.cartId },
@@ -313,17 +313,6 @@ const CartsController = {
         })
       );
     }
-
-    // Tạo đối tượng phản hồi mới
-
-    // await redis.set(`carts-${userId}`, JSON.stringify(currentCartsInDb));
-    // return res.status(STATUS_CODE.SUCCESS).json(
-    //   ResponseBody({
-    //     code: RESPONSE_CODE.SUCCESS,
-    //     data: currentCartsInDb,
-    //     message: `Thực hiện thành công`,
-    //   })
-    // );
   },
 };
 
