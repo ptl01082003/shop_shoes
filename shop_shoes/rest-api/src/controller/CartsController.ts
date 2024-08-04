@@ -46,6 +46,32 @@ const CartsController = {
 
         const lstCartsItems = await CartItems.findAll({
           where: { cartId: carts.cartId },
+<<<<<<< HEAD
+=======
+        });
+
+        lstCartsItems.forEach((cartItems) => {
+          cartTotals += cartItems.quanity;
+          cartsAmount += cartItems.amount;
+        });
+
+        carts.amount = cartsAmount;
+        carts.totals = cartTotals;
+
+        await carts.save();
+
+        let transferCarts: { [key: string]: any } = {};
+
+        const currentCard = await ShoppingCarts.findOne({
+          where: { userId },
+          attributes: ["totals", "amount", "cartId"],
+        });
+
+        transferCarts = { ...currentCard?.toJSON() };
+
+        const productItems = await CartItems.findAll({
+          where: { cartId: currentCard?.cartId },
+>>>>>>> dee6f1da5985dc3bc8b3c2adbb1100be93366128
           attributes: ["productDetailId", "quanity", "amount"],
           include: [
             {
