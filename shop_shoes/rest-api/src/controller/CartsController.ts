@@ -33,46 +33,17 @@ const CartsController = {
         const actualQuanity = isExceedQuanity
           ? productDetails.quantity
           : quanity;
-        const amount =
-          actualQuanity * Number(productDetails.products.priceDiscount);
 
-        const [cartIitems] = await CartItems.findOrCreate({
+        const [cartItems] = await CartItems.findOrCreate({
           where: { productDetailId, cartId: carts.cartId },
         });
 
-        cartIitems.amount = amount;
-        cartIitems.quanity = actualQuanity;
-        await cartIitems.save();
+        cartItems.quanity = actualQuanity;
+        await cartItems.save();
 
         const lstCartsItems = await CartItems.findAll({
           where: { cartId: carts.cartId },
-<<<<<<< HEAD
-=======
-        });
-
-        lstCartsItems.forEach((cartItems) => {
-          cartTotals += cartItems.quanity;
-          cartsAmount += cartItems.amount;
-        });
-
-        carts.amount = cartsAmount;
-        carts.totals = cartTotals;
-
-        await carts.save();
-
-        let transferCarts: { [key: string]: any } = {};
-
-        const currentCard = await ShoppingCarts.findOne({
-          where: { userId },
-          attributes: ["totals", "amount", "cartId"],
-        });
-
-        transferCarts = { ...currentCard?.toJSON() };
-
-        const productItems = await CartItems.findAll({
-          where: { cartId: currentCard?.cartId },
->>>>>>> dee6f1da5985dc3bc8b3c2adbb1100be93366128
-          attributes: ["productDetailId", "quanity", "amount"],
+          attributes: ["productDetailId", "quanity", "amount", "cartItemId"],
           include: [
             {
               model: ProductDetails,
@@ -96,10 +67,14 @@ const CartsController = {
           ],
         });
 
-        lstCartsItems.forEach((cartItems) => {
-          cartTotals += cartItems.quanity;
-          cartsAmount += cartItems.amount;
-        });
+
+        for await (const products of lstCartsItems) {
+          const amount = products.quanity * Number(products.productDetails.products.priceDiscount);
+          products.amount = amount;
+          await products.save();
+          cartTotals += products.quanity;
+          cartsAmount += products.amount;
+        }
 
         carts.amount = cartsAmount;
         carts.totals = cartTotals;
@@ -123,7 +98,7 @@ const CartsController = {
             priceDiscount: cartItems?.productDetails?.products?.priceDiscount,
           };
         });
-        console.log(transferCarts);
+
         await redis.set(`carts-${userId}`, JSON.stringify(transferCarts));
 
         return res.json(
@@ -133,7 +108,6 @@ const CartsController = {
               ? `Bạn chỉ có thể thêm tối đa ${productDetails.quantity} sản phẩm`
               : "Thực hiện thành công",
             data: {
-              amount,
               cartTotals,
               cartsAmount,
               productDetailId,
@@ -173,29 +147,29 @@ const CartsController = {
 
     let transferCarts: { [key: string]: any } = {};
 
-    const currentCard = await ShoppingCarts.findOne({
+    const currentCarts = await ShoppingCarts.findOne({
       where: { userId },
       attributes: ["totals", "amount", "cartId"],
     });
-    if (currentCard) {
+    if (currentCarts) {
       const lstCartsItems = await CartItems.findAll({
-        where: { cartId: currentCard.cartId },
+        where: { cartId: currentCarts.cartId },
       });
 
       lstCartsItems.forEach((cartItems) => {
         (cartTotals += cartItems.quanity), (cartsAmount += cartItems.amount);
       });
 
-      currentCard.amount = cartsAmount;
-      currentCard.totals = cartTotals;
+      currentCarts.amount = cartsAmount;
+      currentCarts.totals = cartTotals;
 
-      await currentCard.save();
+      await currentCarts.save();
 
-      transferCarts = { ...currentCard?.toJSON() };
+      transferCarts = { ...currentCarts?.toJSON() };
       delete transferCarts["cartId"];
 
       const productItems = await CartItems.findAll({
-        where: { cartId: currentCard?.cartId },
+        where: { cartId: currentCarts?.cartId },
         attributes: ["productDetailId", "quanity", "amount"],
         include: [
           {
