@@ -67,9 +67,10 @@ const CartsController = {
           ],
         });
 
-
         for await (const products of lstCartsItems) {
-          const amount = products.quanity * Number(products.productDetails.products.priceDiscount);
+          const amount =
+            products.quanity *
+            Number(products.productDetails.products.priceDiscount);
           products.amount = amount;
           await products.save();
           cartTotals += products.quanity;
@@ -108,11 +109,7 @@ const CartsController = {
               ? `Bạn chỉ có thể thêm tối đa ${productDetails.quantity} sản phẩm`
               : "Thực hiện thành công",
             data: {
-              cartTotals,
-              cartsAmount,
-              productDetailId,
-              carts: transferCarts,
-              quanity: actualQuanity,
+              carts: transferCarts
             },
           })
         );
@@ -228,29 +225,49 @@ const CartsController = {
   },
 
   lstCarts: async (req: Request, res: Response) => {
+    let cartTotals = 0;
+    let cartsAmount = 0;
+    let transferCarts: { [key: string]: any } = {};
+
     const userId = req.userId;
     const cartsInRedis = await redis.get(`carts-${userId}`);
     if (cartsInRedis) {
+      const transferCarts = JSON.parse(cartsInRedis);
+      for await (const cartProduct of transferCarts["cartItems"]) {
+        const productDetails = await ProductDetails.findOne({
+          where: { productDetailId: cartProduct["productDetailId"] },
+          include: {
+            model: Products,
+          },
+        });
+        cartProduct["price"] = productDetails?.products.price;
+        cartProduct["priceDiscount"] = productDetails?.products.priceDiscount;
+        cartProduct["amount"] =
+          cartProduct["quanity"] * Number(cartProduct["priceDiscount"]);
+        cartsAmount += cartProduct["amount"];
+      }
+      transferCarts["amount"] = cartsAmount;
+      console.log(transferCarts);
+      await redis.set(`carts-${userId}`, JSON.stringify(transferCarts));
+
       return res.status(STATUS_CODE.SUCCESS).json(
         ResponseBody({
+          data: transferCarts,
           code: RESPONSE_CODE.SUCCESS,
-          data: JSON.parse(cartsInRedis),
           message: `Thực hiện thành công`,
         })
       );
     }
-    let transferCarts: { [key: string]: any } = {};
 
-    const currentCard = await ShoppingCarts.findOne({
+    const carts = await ShoppingCarts.findOne({
       where: { userId },
       attributes: ["totals", "amount", "cartId"],
     });
 
-    if (currentCard) {
-      transferCarts = { ...currentCard?.toJSON() };
-      const productItems = await CartItems.findAll({
-        where: { cartId: currentCard?.cartId },
-        attributes: ["productDetailId", "quanity", "amount"],
+    if (carts) {
+      const lstCartsItems = await CartItems.findAll({
+        where: { cartId: carts.cartId },
+        attributes: ["productDetailId", "quanity", "amount", "cartItemId"],
         include: [
           {
             model: ProductDetails,
@@ -274,21 +291,39 @@ const CartsController = {
         ],
       });
 
-      transferCarts["cartItems"] = productItems.map((products) => {
+      for await (const products of lstCartsItems) {
+        const amount =
+          products.quanity *
+          Number(products.productDetails.products.priceDiscount);
+        products.amount = amount;
+        await products.save();
+        cartTotals += products.quanity;
+        cartsAmount += products.amount;
+      }
+
+      carts.amount = cartsAmount;
+      carts.totals = cartTotals;
+
+      await carts.save();
+
+      transferCarts = { ...carts?.toJSON() };
+
+      transferCarts["cartItems"] = lstCartsItems.map((cartItems) => {
         return {
-          quanity: products?.quanity,
-          amount: products?.amount,
-          productDetailId: products?.productDetailId,
-          name: products?.productDetails?.products?.name,
-          sizeName: products?.productDetails?.sizes?.name,
-          quanityLimit: products?.productDetails?.quantity,
-          price: products?.productDetails?.products?.price,
-          path: products?.productDetails?.products?.gallery?.[0]?.path,
-          priceDiscount: products?.productDetails?.products?.priceDiscount,
+          quanity: cartItems?.quanity,
+          amount: cartItems?.amount,
+          productDetailId: cartItems?.productDetailId,
+          name: cartItems?.productDetails?.products?.name,
+          sizeName: cartItems?.productDetails?.sizes?.name,
+          price: cartItems?.productDetails?.products?.price,
+          quanityLimit: cartItems?.productDetails?.quantity,
+          path: cartItems?.productDetails?.products?.gallery?.[0]?.path,
+          priceDiscount: cartItems?.productDetails?.products?.priceDiscount,
         };
       });
 
       await redis.set(`carts-${userId}`, JSON.stringify(transferCarts));
+
       return res.json(
         ResponseBody({
           code: RESPONSE_CODE.SUCCESS,

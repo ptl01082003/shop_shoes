@@ -1,17 +1,15 @@
 import {
   AutoIncrement,
+  BelongsTo,
   Column,
+  Default,
   ForeignKey,
   Model,
   PrimaryKey,
-  Table,
-  BelongsTo,
-  HasMany,
-  Default,
+  Table
 } from "sequelize-typescript";
-import { Sizes } from "./Sizes";
 import { Products } from "./Products";
-import { Images } from "./Images";
+import { Sizes } from "./Sizes";
 
 @Table({
   tableName: "product_details",
