@@ -16,41 +16,41 @@ export class Vouchers extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  public voucherId!: number;
+  public vouchersId!: number;
 
   @Column
-  public voucherDescribe?: string;
+  public describe?: string;
 
   @Column
-  public voucherDiscountType?: string;
+  public discountType?: string;
 
   @Column(DataType.DOUBLE)
-  public voucherDiscount?: number;
+  public discount?: number;
 
   @Column(DataType.DECIMAL(12, 2))
-  public voucherValueOder?: number;
+  public valueOder?: number;
 
   @Column(DataType.DECIMAL(12, 2))
-  public voucherDiscountMax?: number;
+  public discountMax?: number;
 
   @Column
-  public voucherStartDay?: Date;
+  public startDay?: Date;
 
   @Column
-  public voucherEndDay?: Date;
+  public endDay?: Date;
 
   @Column
-  public voucherQuantity?: number;
+  public quantity?: number;
 
   @Column
-  public voucherStatusDelete?: boolean;
+  public statusDelete?: boolean;
 
   @Column
-  public voucherFormPay?: number;
+  public formPay?: number;
 
   @Column
-  public voucherStatus?: number;
+  public status?: number;
 
   @Column
-  public voucherObjectuUse?: number;
+  public objectuUse?: number;
 }

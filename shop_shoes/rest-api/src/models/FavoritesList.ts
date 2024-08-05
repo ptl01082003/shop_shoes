@@ -8,7 +8,6 @@ import {
   Table,
 } from "sequelize-typescript";
 import { Products } from "./Products";
-import { Customers } from "./Customers";
 
 @Table({
   tableName: "favorites_list",
@@ -18,15 +17,8 @@ import { Customers } from "./Customers";
 export class FavoritesList extends Model {
   @ForeignKey(() => Products)
   @Column
-  public productID!: number;
-
-  @ForeignKey(() => Customers)
-  @Column
-  public customerID!: number;
+  public productId!: number;
 
   @BelongsTo(() => Products)
-  public product!: Products;
-
-  @BelongsTo(() => Customers)
-  public customer!: Customers;
+  public products!: Products;
 }

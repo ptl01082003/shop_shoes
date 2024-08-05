@@ -1,135 +1,433 @@
-import { Request, Response, NextFunction } from "express";
-import { Op } from "sequelize";
+import { NextFunction, Request, Response } from "express";
+import { RESPONSE_CODE } from "../constants";
+import { Images } from "../models/Images";
+import { ProductDetails } from "../models/ProductDetails";
 import { Products } from "../models/Products";
+import { Sizes } from "../models/Sizes";
+import { Materials } from "../models/Materials";
+import { Origins } from "../models/Origins";
+import { Styles } from "../models/Styles";
+import { Brands } from "../models/Brands";
+import { Op } from "sequelize";
 
-const ProductController = {
-  // CREATE - Add a new product
+const ProductsController = {
   addProduct: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const {
-        productsName,
-        productImportPrice,
-        productPrice,
+        name,
+        importPrice,
+        price,
         status,
-        display,
-        productLineID,
-        originID,
-        styleID,
-        materialID,
-        colorID,
+        originId,
+        styleId,
+        materialId,
+        brandId,
+        gallery,
+        productDetails,
+        description,
       } = req.body;
 
-      // Kiểm tra dữ liệu đầu vào
-      // if (
-      //   !productsName ||
-      //   !productImportPrice ||
-      //   !productLineID ||
-      //   !originID ||
-      //   !styleID ||
-      //   !materialID ||
-      //   !colorID
-      // ) {
-      //   return res.status(400).json({ message: "Missing required fields" });
-      // }
-
+      const priceDiscount = price;
+      // Tạo sản phẩm
       const product = await Products.create({
-        productsName,
-        productImportPrice,
-        productPrice,
+        name,
+        importPrice,
+        price,
         status,
-        display,
-        productLineID,
-        originID,
-        styleID,
-        materialID,
-        colorID,
+        originId,
+        styleId,
+        materialId,
+        brandId,
+        description,
+        priceDiscount,
       });
 
-      res.json({ data: product, message: "Product added successfully" });
+      // Tạo chi tiết sản phẩm
+      if (Array.isArray(productDetails)) {
+        const productDetailsData = productDetails.map((detail: any) => ({
+          productId: product.productId,
+          sizeId: detail.sizeId,
+          quantity: detail.quantity,
+        }));
+
+        await ProductDetails.bulkCreate(productDetailsData);
+      }
+
+      // Thêm hình ảnh vào bảng Images
+      if (Array.isArray(gallery)) {
+        const imagesData = gallery.map((path: string) => ({
+          path,
+          productId: product.productId,
+        }));
+
+        await Images.bulkCreate(imagesData);
+      }
+
+      res.json({
+        code: RESPONSE_CODE.SUCCESS,
+        message: "Thực hiện thành công",
+      });
     } catch (error) {
-      console.error(error);
+      console.error("Error:", error);
       next(error);
     }
   },
-
-  // READ - Get all products
   getProducts: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id, productName, productLineID } = req.query;
-      const whereClause: any = {};
+      const products = await Products.findAll({
+        include: [
+          {
+            model: Materials,
+            attributes: ["name"],
+          },
+          {
+            model: Origins,
+            attributes: ["name"],
+          },
+          {
+            model: Styles,
+            attributes: ["name"],
+          },
+          {
+            model: Brands,
+            attributes: ["name"],
+          },
+        ],
+      });
 
-      if (id) {
-        whereClause.id = id;
-      }
-      if (productName) {
-        whereClause.productName = { [Op.like]: `%${productName}%` };
-      }
-      if (productLineID) {
-        whereClause.productLineID = productLineID;
+      const transferData = [];
+
+      for await (const product of products) {
+        const productDetails = await ProductDetails.findAll({
+          where: { productId: product.productId },
+          attributes: ["sizeId", "quantity"],
+          include: [{ model: Sizes, attributes: ["name"] }],
+        });
+
+        const images = await Images.findAll({
+          where: { productId: product.productId },
+          attributes: ["path"],
+        });
+
+        transferData.push({
+          ...product.toJSON(),
+          productDetails: productDetails.map((productDetails) => ({
+            productId: productDetails.productId,
+            sizeId: productDetails.sizeId,
+            quantity: productDetails.quantity,
+          })),
+          gallery: images,
+        });
       }
 
-      const products = await Products.findAll({ where: whereClause });
-      res.json({ data: products });
+      res.json({
+        message: "Thực hiện thành công",
+        code: RESPONSE_CODE.SUCCESS,
+        data: transferData,
+      });
     } catch (error) {
-      console.error(error);
       next(error);
     }
   },
 
-  // READ - Get product by ID
-  getProductById: async (req: Request, res: Response, next: NextFunction) => {
+  getLstProducts: async (req: Request, res: Response, next: NextFunction) => {
+    const where: any = {};
+    const { styleId, materialId, brandId, priceMin, priceMax } = req.body;
     try {
-      const { id } = req.params;
-      const product = await Products.findByPk(id);
-      if (product) {
-        res.json({ data: product });
-      } else {
-        res.status(404).json({ message: "Product not found" });
+      if (styleId) {
+        where.styleId = styleId;
       }
+      if (materialId) {
+        where.materialId = materialId;
+      }
+      if (brandId) {
+        where.brandId = brandId;
+      }
+      if (priceMin != undefined) {
+        where.priceDiscount[Op.gte] = priceMin;
+      }
+      if (priceMax != undefined) {
+        where.priceDiscount[Op.lte] = priceMax;
+      }
+
+      const products = await Products.findAll({
+        where,
+        include: [
+          {
+            model: Materials,
+            attributes: ["name"],
+          },
+          {
+            model: Origins,
+            attributes: ["name"],
+          },
+          {
+            model: Styles,
+            attributes: ["name"],
+          },
+          {
+            model: Brands,
+            attributes: ["name"],
+          },
+        ],
+      });
+
+      const transferData = [];
+
+      for await (const product of products) {
+        const productDetails = await ProductDetails.findAll({
+          where: { productId: product.productId },
+          attributes: ["sizeId", "quantity"],
+          include: [{ model: Sizes, attributes: ["name"] }],
+        });
+
+        const productDetailsLevel = productDetails.map((detail) =>
+          detail.get({ plain: true })
+        );
+
+        const images = await Images.findAll({
+          where: { productId: product.productId },
+          attributes: ["path"],
+        });
+
+        const imagesLevel = images.map((image) => image.get({ plain: true }));
+
+        transferData.push({
+          ...product.toJSON(),
+          productDetails: productDetailsLevel,
+          gallery: imagesLevel,
+        });
+      }
+
+      res.json({
+        message: "Thực hiện thành công",
+        code: RESPONSE_CODE.SUCCESS,
+        data: transferData,
+      });
     } catch (error) {
-      console.error(error);
       next(error);
     }
   },
 
-  // UPDATE - Update product by ID
+  getProductDeatails: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { code } = req.body;
+      const products = await Products.findOne({
+        where: { code },
+        include: [
+          {
+            model: Materials,
+            attributes: ["name"],
+          },
+          {
+            model: Origins,
+            attributes: ["name"],
+          },
+          {
+            model: Styles,
+            attributes: ["name"],
+          },
+          {
+            model: Brands,
+            attributes: ["name"],
+          },
+        ],
+      });
+
+      if (products) {
+        const sizes = await ProductDetails.findAll({
+          where: { productId: products.productId },
+          attributes: ["sizeId", "quantity", "productDetailId"],
+          include: [{ model: Sizes, attributes: ["name"] }],
+        });
+
+        const gallery = await Images.findAll({
+          where: { productId: products.productId },
+          attributes: ["path"],
+        });
+
+        res.json({
+          message: "Thực hiện thành công",
+          code: RESPONSE_CODE.SUCCESS,
+          data: {
+            gallery,
+            sizes,
+            ...products.toJSON(),
+          },
+        });
+      } else {
+        res.json({
+          message: "Không tìm thấy sản phẩm",
+          code: RESPONSE_CODE.ERRORS,
+          data: null,
+        });
+      }
+    } catch (error) {
+      next(error);
+    }
+  },
+
   updateProduct: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const { productsName, productPrice } = req.body;
+      const {
+        productId,
+        name,
+        importPrice,
+        price,
+        status,
+        originId,
+        styleId,
+        materialId,
+        brandId,
+        gallery,
+        productDetails,
+        description,
+      } = req.body;
 
-      const product = await Products.findByPk(id);
-      if (product) {
-        await product.update({
-          productsName,
-          productPrice,
+      const product = await Products.findOne({ where: { productId } });
+
+      if (!product) {
+        return res.json({
+          message: "Sản phẩm không tồn tại",
+          code: RESPONSE_CODE.ERRORS,
         });
-        res.json({ message: "Product updated successfully" });
-      } else {
-        res.status(404).json({ message: "Product not found" });
       }
+
+      await product.update({
+        name,
+        importPrice,
+        price,
+        status,
+        originId,
+        styleId,
+        materialId,
+        brandId,
+        description,
+      });
+
+      if (Array.isArray(productDetails)) {
+        for (const detail of productDetails) {
+          const productDetail = await ProductDetails.findOne({
+            where: {
+              productId: product.productId,
+              sizeId: detail.sizeId,
+            },
+          });
+
+          if (productDetail) {
+            await productDetail.update({
+              quantity: detail.quantity,
+            });
+          } else {
+            await ProductDetails.create({
+              productId: detail.productId,
+              sizeId: detail.sizeId,
+              quantity: detail.quantity,
+            });
+          }
+        }
+      }
+
+      // Cập nhật hình ảnh
+      await Images.destroy({
+        where: { productId },
+      });
+
+      if (Array.isArray(gallery)) {
+        const imagesData = gallery.map((path) => ({
+          path,
+          productId,
+        }));
+
+        await Images.bulkCreate(imagesData);
+      }
+
+      const productInfo = await Products.findOne({
+        where: { productId },
+        include: [
+          {
+            model: Materials,
+            attributes: ["name"],
+          },
+          {
+            model: Origins,
+            attributes: ["name"],
+          },
+          {
+            model: Styles,
+            attributes: ["name"],
+          },
+          {
+            model: Brands,
+            attributes: ["name"],
+          },
+        ],
+      });
+
+
+      const productDetailsInfo = await ProductDetails.findAll({
+        where: { productId: product.productId },
+        attributes: ["sizeId", "quantity"],
+        include: [{ model: Sizes, attributes: ["name"] }],
+      });
+
+      const images = await Images.findAll({
+        where: { productId: product.productId },
+        attributes: ["path"],
+      });
+
+      res.json({
+        code: RESPONSE_CODE.SUCCESS,
+        data: {
+          ...productInfo?.toJSON(),
+          productDetails: productDetailsInfo.map((details) => ({
+            productId: details.productId,
+            sizeId: details.sizeId,
+            quantity: details.quantity,
+          })),
+          gallery: images,
+        },
+        message: "Thực hiện thành công",
+      });
     } catch (error) {
-      console.error(error);
       next(error);
     }
   },
 
-  // DELETE - Delete product by ID
   deleteProduct: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const product = await Products.findByPk(id);
-      if (product) {
-        await product.destroy();
-        res.json({ message: "Product deleted successfully" });
-      } else {
-        res.status(404).json({ message: "Product not found" });
+      const { productId } = req.body;
+      const product = await Products.findOne({ where: { productId } });
+
+      if (!product) {
+        return res.status(404).json({
+          message: "Sản phẩm không tồn tại",
+          code: RESPONSE_CODE.ERRORS,
+        });
       }
+
+      await Images.destroy({
+        where: { productId },
+      });
+
+      await ProductDetails.destroy({
+        where: { productId },
+      });
+
+      await product.destroy();
+
+      res.json({
+        code: RESPONSE_CODE.SUCCESS,
+        message: "Thực hiện thành công",
+      });
     } catch (error) {
-      console.error(error);
       next(error);
     }
   },
 };
 
-export default ProductController;
+export default ProductsController;

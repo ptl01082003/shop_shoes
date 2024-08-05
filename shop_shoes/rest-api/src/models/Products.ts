@@ -1,21 +1,26 @@
 import {
   AutoIncrement,
   BeforeCreate,
+  BeforeUpdate,
   BelongsTo,
   Column,
   DataType,
   ForeignKey,
+  HasMany,
   Model,
   PrimaryKey,
   Table,
 } from "sequelize-typescript";
-
-import { ProductLines } from "./ProductLines";
-import { Styles } from "./Styles";
-import { Origins } from "./Origins";
-import { Materials } from "./Materials";
-import { Colors } from "./Colors";
+import { v4 as uuidv4 } from "uuid";
 import { genaratorProductsId } from "../utils/utils";
+import { Brands } from "./Brands";
+
+import { Materials } from "./Materials";
+import { Origins } from "./Origins";
+import { Styles } from "./Styles";
+import { DataTypes } from "sequelize";
+import { ProductDetails } from "./ProductDetails";
+import { Images } from "./Images";
 
 @Table({
   tableName: "products",
@@ -24,61 +29,80 @@ import { genaratorProductsId } from "../utils/utils";
 })
 export class Products extends Model {
   @PrimaryKey
+  @AutoIncrement
   @Column
-  public productsID!: number;
+  public productId!: number;
 
   @Column
-  public productsName!: string;
+  public name!: string;
+
+  @Column(DataType.STRING(6))
+  public code!: string;
 
   @Column(DataType.DECIMAL(16, 2))
-  public productImportPrice!: number;
+  public importPrice!: number;
 
   @Column(DataType.DECIMAL(16, 2))
-  public productPrice?: number;
+  public price?: number;
 
-  @Column
+  @Column(DataType.DECIMAL(16, 2))
+  public priceDiscount?: number;
+
+  @Column({
+    type: DataTypes.BOOLEAN,
+  })
   public status?: boolean;
 
   @Column
   public display?: boolean;
 
-  @ForeignKey(() => ProductLines)
-  @Column
-  public productLineID?: number;
-
-  @BelongsTo(() => ProductLines)
-  public productLine?: ProductLines;
+  @Column(DataType.TEXT("long"))
+  public description?: string;
 
   @ForeignKey(() => Origins)
   @Column
-  public originID?: number;
+  public originId?: number;
 
   @BelongsTo(() => Origins)
   public origin?: Origins;
 
   @ForeignKey(() => Styles)
   @Column
-  public styleID?: number;
+  public styleId?: number;
 
   @BelongsTo(() => Styles)
   public style?: Styles;
 
   @ForeignKey(() => Materials)
   @Column
-  public materialID?: number;
+  public materialId?: number;
 
   @BelongsTo(() => Materials)
   public material?: Materials;
 
-  @ForeignKey(() => Colors)
+  @ForeignKey(() => Brands)
   @Column
-  public colorID?: number;
+  public brandId?: number;
 
-  @BelongsTo(() => Colors)
-  public color?: Colors;
+  @BelongsTo(() => Brands)
+  public brand?: Brands;
+
+  @HasMany(() => ProductDetails)
+  public productDetails?: ProductDetails;
+
+  @HasMany(() => Images)
+  public gallery!: Images[];
 
   @BeforeCreate
-  static genaratorUserId(instance: Products) {
-    instance.productsID = genaratorProductsId();
+  static genaratorProductCode(instance: Products) {
+    const uuid = uuidv4();
+    instance.priceDiscount = instance.price;
+    instance.productId = genaratorProductsId();
+    instance.code = uuid.slice(0, 6).toUpperCase();
+  }
+  @BeforeUpdate
+  static updateProducts(instance: Products) {
+    instance.priceDiscount = instance.price;
+   
   }
 }

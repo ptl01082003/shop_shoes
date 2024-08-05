@@ -8,8 +8,6 @@ class Redis {
       this.redis = createClient();
       await this.redis.connect();
       console.log("create new a connection to redis server");
-      // const test = await this.redis.get("test");
-      // console.log(test);
     } catch (error) {
       console.log("error connecting to redis server:: ", error);
     }
@@ -23,6 +21,9 @@ class Redis {
   }
   async setEx(key: string, value: string) {
     await this.redis.set(key, value);
+  }
+  async del(key: string) {
+    await this.redis.del(key);
   }
 }
 

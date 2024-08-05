@@ -19,16 +19,16 @@ export class ProductPromotion extends Model {
   @PrimaryKey
   @ForeignKey(() => Products)
   @Column
-  public productID!: number;
+  public productId!: number;
 
   @PrimaryKey
   @ForeignKey(() => Promotions)
   @Column
-  public promotionID!: number;
+  public promotionId!: number;
 
   @BelongsTo(() => Products)
-  public product!: Products;
+  public products!: Products;
 
   @BelongsTo(() => Promotions)
-  public promotion!: Promotions;
+  public promotions!: Promotions;
 }

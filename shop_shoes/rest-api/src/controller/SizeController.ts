@@ -1,114 +1,126 @@
-import { Request, Response, NextFunction } from "express";
-import { Sizes } from "../models/Sizes";
+import { NextFunction, Request, Response } from "express";
+import { RESPONSE_CODE, ResponseBody } from "../constants";
 import { ProductDetails } from "../models/ProductDetails";
+import { Sizes } from "../models/Sizes";
 
-const SizesController = {
-  addSize: async (req: Request, res: Response, next: NextFunction) => {
+const SizeController = {
+  createSize: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { sizeName, sizeQuantity, productDetailID } = req.body;
+      const { name } = req.body;
+      const newSize = await Sizes.create({ name });
 
-      // Kiểm tra dữ liệu đầu vào
-      if (!sizeName || !productDetailID) {
-        return res.status(400).json({ message: "Missing required fields" });
-      }
-
-      const productDetail = await ProductDetails.findByPk(productDetailID);
-
-      if (!productDetail) {
-        return res.status(404).json({ message: "ProductDetail not found" });
-      }
-
-      const size = await Sizes.create({
-        sizeName,
-        sizeQuantity,
-        productDetailID,
+      res.status(201).json({
+        message: "Size created successfully",
+        code: 0,
+        data: newSize,
       });
-
-      res.json({ data: size, message: "Add new size successfully" });
     } catch (error) {
-      console.log(error);
-      next(error);
+      console.error("Error creating size:", error);
+      res.status(500).json({
+        message: "Failed to create size",
+        code: 1,
+      });
     }
   },
 
-  getSizes: async (req: Request, res: Response, next: NextFunction) => {
+  getAllSizes: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { productDetailID } = req.query;
-      const whereClause: any = {};
-
-      if (productDetailID) {
-        whereClause.productDetailID = productDetailID;
-      }
-
-      const sizes = await Sizes.findAll({ where: whereClause });
-      res.json({ data: sizes });
+      const sizes = await Sizes.findAll();
+      res.json(
+        ResponseBody({
+          code: RESPONSE_CODE.SUCCESS,
+          data: sizes,
+          message: "Thực hiện thành công",
+        })
+      );
     } catch (error) {
-      console.log(error);
-      next(error);
-    }
-  },
-
-  getSizeById: async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { id } = req.params;
-      const size = await Sizes.findByPk(id);
-      if (size) {
-        res.json({ data: size });
-      } else {
-        res.status(404).json({ message: "Size not found" });
-      }
-    } catch (error) {
-      console.log(error);
       next(error);
     }
   },
 
   updateSize: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const { sizeName, sizeQuantity, productDetailID } = req.body;
+      const { sizeId } = req.body;
+      const { name } = req.body;
+      const size = await Sizes.findByPk(sizeId);
 
-      // Kiểm tra dữ liệu đầu vào
-      if (!sizeName || !productDetailID) {
-        return res.status(400).json({ message: "Missing required fields" });
+      if (size) {
+        await size.update({ name });
+
+        res.status(200).json({
+          message: "Size updated successfully",
+          code: 0,
+          data: size,
+        });
+      } else {
+        res.status(404).json({
+          message: "Size not found",
+          code: 1,
+        });
       }
-
-      const size = await Sizes.findByPk(id);
-
-      if (!size) {
-        return res.status(404).json({ message: "Size not found" });
-      }
-
-      const productDetail = await ProductDetails.findByPk(productDetailID);
-
-      if (!productDetail) {
-        return res.status(404).json({ message: "ProductDetail not found" });
-      }
-
-      await size.update({ sizeName, sizeQuantity, productDetailID });
-
-      res.json({ message: "Size updated successfully" });
     } catch (error) {
-      console.log(error);
-      next(error);
+      console.error(`Error updating size ${req.body.id}:`, error);
+      res.status(500).json({
+        message: "Failed to update size",
+        code: 1,
+      });
     }
   },
 
   deleteSize: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const size = await Sizes.findByPk(id);
+      const { sizeId } = req.body;
+      const size = await Sizes.findByPk(sizeId);
+
       if (size) {
-        await size.destroy();
-        res.json({ message: "Size deleted successfully" });
+        await size.destroy(); // Changed to instance method destroy()
+
+        res.status(200).json({
+          message: "Size deleted successfully",
+          code: 0,
+        });
       } else {
-        res.status(404).json({ message: "Size not found" });
+        res.status(404).json({
+          message: "Size not found",
+          code: 1,
+        });
       }
     } catch (error) {
-      console.log(error);
-      next(error);
+      console.error(`Error deleting size ${req.body.id}:`, error);
+      res.status(500).json({
+        message: "Failed to delete size",
+        code: 1,
+      });
+    }
+  },
+
+  getSizeById: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { sizeId } = req.body;
+      const size = await Sizes.findByPk(sizeId, {
+        // include: [ProductDetails], // Include SizeProductDetails if needed
+      });
+
+      if (size) {
+        res.status(200).json({
+          message: "Size fetched successfully",
+          code: 0,
+          data: size,
+        });
+      } else {
+        res.status(404).json({
+          message: "Size not found",
+          code: 1,
+        });
+      }
+    } catch (error) {
+      console.error(`Error fetching size ${req.body.id}:`, error);
+      res.status(500).json({
+        message: "Failed to fetch size",
+        code: 1,
+      });
     }
   },
 };
 
-export default SizesController;
+export default SizeController;

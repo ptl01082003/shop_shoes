@@ -10,16 +10,16 @@ const ProductPromotionController = {
     next: NextFunction
   ) => {
     try {
-      const { productID, promotionID } = req.body;
+      const { productId, promotionId } = req.body;
 
       // Kiểm tra dữ liệu đầu vào
-      if (!productID || !promotionID) {
+      if (!productId || !promotionId) {
         return res.status(400).json({ message: "Thiếu trường bắt buộc" });
       }
 
       // Kiểm tra sự tồn tại của Product và Promotions
-      const product = await Products.findByPk(productID);
-      const promotion = await Promotions.findByPk(promotionID);
+      const product = await Products.findByPk(productId);
+      const promotion = await Promotions.findByPk(promotionId);
 
       if (!product || !promotion) {
         return res
@@ -28,8 +28,8 @@ const ProductPromotionController = {
       }
 
       const productPromotion = await ProductPromotion.create({
-        productID,
-        promotionID,
+        productId,
+        promotionId,
       });
 
       res.json({
@@ -64,9 +64,9 @@ const ProductPromotionController = {
     next: NextFunction
   ) => {
     try {
-      const { productID, promotionID } = req.params;
+      const { productId, promotionId } = req.body;
       const productPromotion = await ProductPromotion.findOne({
-        where: { productID, promotionID },
+        where: { productId, promotionId },
         include: [Products, Promotions],
       });
       if (productPromotion) {
@@ -86,21 +86,21 @@ const ProductPromotionController = {
     next: NextFunction
   ) => {
     try {
-      const { productID, promotionID } = req.params;
-      const { newProductID, newPromotionID } = req.body;
+      const { productId, promotionId } = req.body;
+      const { newProductId, newPromotionId } = req.body;
 
       // Kiểm tra dữ liệu đầu vào
-      if (!newProductID || !newPromotionID) {
+      if (!newProductId || !newPromotionId) {
         return res.status(400).json({ message: "Thiếu trường bắt buộc" });
       }
 
       const productPromotion = await ProductPromotion.findOne({
-        where: { productID, promotionID },
+        where: { productId, promotionId },
       });
       if (productPromotion) {
         await productPromotion.update({
-          productID: newProductID,
-          promotionID: newPromotionID,
+          productId: newProductId,
+          promotionId: newPromotionId,
         });
         res.json({ message: "Cập nhật ProductPromotion thành công" });
       } else {
@@ -118,9 +118,9 @@ const ProductPromotionController = {
     next: NextFunction
   ) => {
     try {
-      const { productID, promotionID } = req.params;
+      const { productId, promotionId } = req.body;
       const productPromotion = await ProductPromotion.findOne({
-        where: { productID, promotionID },
+        where: { productId, promotionId },
       });
       if (productPromotion) {
         await productPromotion.destroy();

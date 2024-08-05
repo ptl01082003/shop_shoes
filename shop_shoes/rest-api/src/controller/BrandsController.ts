@@ -1,79 +1,116 @@
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
+import { RESPONSE_CODE, ResponseBody } from "../constants";
 import { Brands } from "../models/Brands";
-import { Op } from "sequelize";
 
 const BrandsController = {
   addBrand: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { brandName } = req.body;
-      const brand = await Brands.create({ brandName });
-      res.json({ data: brand, message: "Add new brand successfully" });
+      const { name } = req.body;
+      console.log(name);
+      const brands = await Brands.create({ name });
+      res.json(ResponseBody({
+        code: RESPONSE_CODE.SUCCESS,
+        data: brands,
+        message: "Thực hiện thành công",
+      }))
     } catch (error) {
-      next(error);
+      next(error)
     }
   },
 
   getBrands: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id, brandName } = req.query;
-      const whereClause: any = {};
-
-      if (id) {
-        whereClause.id = id;
-      }
-      if (brandName) {
-        whereClause.brandName = { [Op.like]: `%${brandName}%` };
-      }
-
-      const brands = await Brands.findAll({ where: whereClause });
-      res.json({ data: brands });
+      const brands = await Brands.findAll();
+      res.json(ResponseBody({
+        code: RESPONSE_CODE.SUCCESS,
+        data: brands,
+        message: "Thực hiện thành công",
+      }))
     } catch (error) {
-      next(error);
+      next(error)
     }
   },
 
   getById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const brand = await Brands.findByPk(id);
-      if (brand) {
-        res.json({ data: brand });
+      const { brandId } = req.body;
+      const brands = await Brands.findByPk(brandId);
+      if (brands) {
+        res.status(200).json({
+          message: "Thực hiện thành công",
+          code: 0,
+          data: brands,
+        });
       } else {
-        res.status(404).json({ message: "Brand not found" });
+        res.status(404).json({
+          message: "Thương hiệu không tồn tại",
+          code: 1,
+        });
       }
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
   updateBrand: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const { brandName } = req.body;
-      const brand = await Brands.findByPk(id);
-      if (brand) {
-        await brand.update({ brandName });
-        res.json({ message: "Brand updated successfully" });
+      const { brandId, name } = req.body;
+      const brands = await Brands.findByPk(brandId);
+      if (brands) {
+        await brands.update({ name });
+        res.status(200).json({
+          message: "Thực hiện thành công",
+          code: 0,
+          data: brands,
+        });
       } else {
-        res.status(404).json({ message: "Brand not found" });
+        res.json({
+          message: "Thương hiệu không tồn tại",
+          code: 1,
+        });
       }
     } catch (error) {
-      next(error);
+      next(error)
     }
   },
 
   deleteBrand: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const brand = await Brands.findByPk(id);
-      if (brand) {
-        await brand.destroy();
-        res.json({ message: "Brand deleted successfully" });
+      const { brandId } = req.body;
+
+      const brands = await Brands.findByPk(brandId);
+      if (brands) {
+        await brands.destroy();
+        res.status(200).json({
+          message: "Thực hiện thành công",
+          code: 0,
+        });
       } else {
-        res.status(404).json({ message: "Brand not found" });
+        res.json({
+          message: "Thương hiệu không tồn tại",
+          code: 1,
+        });
       }
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 };

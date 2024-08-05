@@ -1,27 +1,45 @@
 import express from "express";
 import ProductPromotionController from "../controller/ProductPromotionController";
+// import productsRouter from "./ProductsRouter";
+import { checkAuth } from "../middleware/checkAuth";
+import { checkRoles } from "../middleware/checkRoles";
+import { ROLE_TYPES } from "../models/Roles";
 
 const routerProductPromotion = express.Router();
 
-// Routes for ProductPromotion
 routerProductPromotion.post(
-  "/",
-  ProductPromotionController.addProductPromotion
-);
-routerProductPromotion.get(
   "/",
   ProductPromotionController.getProductPromotions
 );
-routerProductPromotion.get(
+routerProductPromotion.post(
   "/:productID/:promotionID",
   ProductPromotionController.getProductPromotionById
 );
-routerProductPromotion.put(
+
+routerProductPromotion.use(checkAuth);
+
+routerProductPromotion.use(
+  checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN])
+);
+// Routes for ProductPromotion
+routerProductPromotion.post(
+  "/create",
+  ProductPromotionController.addProductPromotion
+);
+routerProductPromotion.post(
+  "/",
+  ProductPromotionController.getProductPromotions
+);
+routerProductPromotion.post(
   "/:productID/:promotionID",
+  ProductPromotionController.getProductPromotionById
+);
+routerProductPromotion.post(
+  "/edit/:productID/:promotionID",
   ProductPromotionController.updateProductPromotion
 );
-routerProductPromotion.delete(
-  "/:productID/:promotionID",
+routerProductPromotion.post(
+  "/remove/:productID/:promotionID",
   ProductPromotionController.deleteProductPromotion
 );
 

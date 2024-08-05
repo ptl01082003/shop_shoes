@@ -1,12 +1,14 @@
-import "dotenv/config";
-import cors from "cors";
-import express from "express";
-import { appRouter } from "./router/appRouter";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
+import cors from "cors";
+import "dotenv/config";
+import express, { Request, Response } from "express";
+import { Send } from "express-serve-static-core";
 import { connectDB } from "./config/ConnectDB";
 import { redis } from "./config/ConnectRedis";
-import { Send } from "express-serve-static-core";
+import { RESPONSE_CODE, ResponseBody, STATUS_CODE } from "./constants";
+import { appRouter } from "./router/appRouter";
+import cron from "node-cron";
 declare global {
   namespace Express {
     interface Request {
@@ -29,7 +31,7 @@ export const app = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
+    origin: ["http://localhost:3001", "http://localhost:3000"],
     credentials: true,
   })
 );
@@ -49,8 +51,29 @@ app.use(cookieParser());
 
 appRouter();
 
+cron.schedule(
+  "40 21 * * *",
+  () => {
+    console.log("hello");
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ho_Chi_Minh",
+  }
+);
+
+
+app.use((errors: any, _: Request, res: Response) => {
+  res.json(errors);
+});
+
 app.use("*", (_, res) => {
-  res.status(404).json({ mess: "404 Not Found" });
+  res.status(STATUS_CODE.NOT_FOUND).json(
+    ResponseBody({
+      code: RESPONSE_CODE.ERRORS,
+      message: "Đường dẫn không tồn tại",
+    })
+  );
 });
 
 app.listen(process.env.SERVER_PORT, () =>

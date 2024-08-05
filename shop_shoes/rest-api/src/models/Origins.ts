@@ -18,5 +18,5 @@ export class Origins extends Model {
   public originId!: number;
 
   @Column
-  public originName!: string;
+  public name!: string;
 }

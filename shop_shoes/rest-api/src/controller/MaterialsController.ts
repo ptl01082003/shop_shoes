@@ -1,80 +1,143 @@
-// controllers/MaterialsController.ts
 import { Request, Response, NextFunction } from "express";
 import { Materials } from "../models/Materials";
 import { Op } from "sequelize";
+import { RESPONSE_CODE, ResponseBody } from "../constants";
 
 const MaterialsController = {
   addMaterial: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { materialName } = req.body;
-      const material = await Materials.create({ materialName });
-      res.json({ data: material, message: "Add new material successfully" });
+      const { name } = req.body;
+      const material = await Materials.create({ name });
+      res.json(ResponseBody({
+        data: material,
+        code: RESPONSE_CODE.SUCCESS,
+        message: "Thực hiện thành công",
+      }));
     } catch (error) {
-      next(error);
+      next(error)
     }
   },
 
   getMaterials: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { materialId, materialName } = req.query;
+      const { materialId, materialsName } = req.query;
       const whereClause: any = {};
 
       if (materialId) {
         whereClause.materialId = materialId;
       }
-      if (materialName) {
-        whereClause.materialName = { [Op.like]: `%${materialName}%` };
+      if (materialsName) {
+        whereClause.materialsName = { [Op.like]: `%${materialsName}%` };
       }
 
-      const materials = await Materials.findAll({ where: whereClause });
-      res.json({ data: materials });
+      const materialss = await Materials.findAll({ where: whereClause });
+      res.status(200).json({
+        message: "Thực hiện thành công",
+        code: 0,
+        data: materialss,
+      });
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
   getById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const material = await Materials.findByPk(id);
-      if (material) {
-        res.json({ data: material });
+      const { materialId } = req.body;
+      const materials = await Materials.findByPk(materialId);
+      if (materials) {
+        res.status(200).json({
+          message: "Thực hiện thành công",
+          code: 0,
+          data: materials,
+        });
       } else {
-        res.status(404).json({ message: "Material not found" });
+        res.status(404).json({
+          message: "Vật liệu không tồn tại",
+          code: 1,
+        });
       }
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
   updateMaterial: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const { materialName } = req.body;
-      const material = await Materials.findByPk(id);
-      if (material) {
-        await material.update({ materialName });
-        res.json({ message: "Material updated successfully" });
+      const { materialId, materialsName } = req.body;
+      const materials = await Materials.findByPk(materialId);
+      if (materials) {
+        await materials.update({ materialsName });
+        res.status(200).json({
+          message: "Thực hiện thành công",
+          code: 0,
+          data: materials,
+        });
       } else {
-        res.status(404).json({ message: "Material not found" });
+        res.status(404).json({
+          message: "Vật liệu không tồn tại",
+          code: 1,
+        });
       }
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
   deleteMaterial: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const material = await Materials.findByPk(id);
-      if (material) {
-        await material.destroy();
-        res.json({ message: "Material deleted successfully" });
+      const { materialId } = req.body;
+      const materials = await Materials.findByPk(materialId);
+      if (materials) {
+        await materials.destroy();
+        res.status(200).json({
+          message: "Thực hiện thành công",
+          code: 0,
+        });
       } else {
-        res.status(404).json({ message: "Material not found" });
+        res.status(404).json({
+          message: "Vật liệu không tồn tại",
+          code: 1,
+        });
       }
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 };

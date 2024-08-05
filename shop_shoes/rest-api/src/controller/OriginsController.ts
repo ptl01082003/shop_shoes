@@ -1,4 +1,3 @@
-// controllers/OriginsController.ts
 import { Request, Response, NextFunction } from "express";
 import { Origins } from "../models/Origins";
 import { Op } from "sequelize";
@@ -6,75 +5,148 @@ import { Op } from "sequelize";
 const OriginsController = {
   addOrigin: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { originName } = req.body;
-      const origin = await Origins.create({ originName });
-      res.json({ data: origin, message: "Add new origin successfully" });
+      const { name } = req.body;
+      const origins = await Origins.create({ name });
+      res.status(201).json({
+        message: "Thực hiện thành công",
+        code: 0,
+        data: origins,
+      });
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
   getOrigins: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { originId, originName } = req.query;
+      const { originId, name } = req.query;
       const whereClause: any = {};
 
       if (originId) {
         whereClause.originId = originId;
       }
-      if (originName) {
-        whereClause.originName = { [Op.like]: `%${originName}%` };
+      if (name) {
+        whereClause.name = { [Op.like]: `%${name}%` };
       }
 
-      const origins = await Origins.findAll({ where: whereClause });
-      res.json({ data: origins });
+      const originss = await Origins.findAll({ where: whereClause });
+      res.status(200).json({
+        message: "Thực hiện thành công",
+        code: 0,
+        data: originss,
+      });
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
   getById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const origin = await Origins.findByPk(id);
-      if (origin) {
-        res.json({ data: origin });
+      const { originId } = req.body;
+      const origins = await Origins.findByPk(originId);
+      if (origins) {
+        res.status(200).json({
+          message: "Thực hiện thành công",
+          code: 0,
+          data: origins,
+        });
       } else {
-        res.status(404).json({ message: "Origin not found" });
+        res.status(404).json({
+          message: "Nguồn gốc không tồn tại",
+          code: 1,
+        });
       }
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
   updateOrigin: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const { originName } = req.body;
-      const origin = await Origins.findByPk(id);
-      if (origin) {
-        await origin.update({ originName });
-        res.json({ message: "Origin updated successfully" });
+      const { originId } = req.params;
+      const { name } = req.body;
+      const origins = await Origins.findByPk(originId);
+      if (origins) {
+        await origins.update({ name });
+        res.status(200).json({
+          message: "Thực hiện thành công",
+          code: 0,
+          data: origins,
+        });
       } else {
-        res.status(404).json({ message: "Origin not found" });
+        res.status(404).json({
+          message: "Nguồn gốc không tồn tại",
+          code: 1,
+        });
       }
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
   deleteOrigin: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const origin = await Origins.findByPk(id);
-      if (origin) {
-        await origin.destroy();
-        res.json({ message: "Origin deleted successfully" });
+      const { originId } = req.params;
+      const origins = await Origins.findByPk(originId);
+      if (origins) {
+        await origins.destroy();
+        res.status(200).json({
+          message: "Thực hiện thành công",
+          code: 0,
+        });
       } else {
-        res.status(404).json({ message: "Origin not found" });
+        res.status(404).json({
+          message: "Nguồn gốc không tồn tại",
+          code: 1,
+        });
       }
     } catch (error) {
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 };

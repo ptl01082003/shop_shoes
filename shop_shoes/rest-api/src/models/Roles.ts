@@ -6,6 +6,12 @@ import {
   Table,
 } from "sequelize-typescript";
 
+export enum ROLE_TYPES {
+  USER = "USER",
+  ADMIN = "ADMIN",
+  MEMBERSHIP = "MEMBERSHIP",
+}
+
 @Table({
   tableName: "roles",
   modelName: "Roles",
@@ -15,7 +21,7 @@ export class Roles extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  public id!: number;
+  public roleId!: number;
 
   @Column
   public type!: string;

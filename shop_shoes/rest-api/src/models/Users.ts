@@ -1,5 +1,6 @@
 import {
   BeforeCreate,
+  BelongsTo,
   Column,
   DataType,
   Default,
@@ -8,8 +9,8 @@ import {
   PrimaryKey,
   Table,
 } from "sequelize-typescript";
-import { Roles } from "./Roles";
 import { generateUniqueUserId } from "../utils/utils";
+import { Roles } from "./Roles";
 
 @Table({
   tableName: "users",
@@ -33,21 +34,24 @@ export class Users extends Model {
   @Column
   public password!: string;
 
-  @ForeignKey(() => Roles)
-  @Default(1)
-  @Column
-  public rolesId!: string;
+  @Column({
+    type: DataType.DATE,
+  })
+  public birth?: string;
 
   @Column
   public fullName!: string;
+
+  @ForeignKey(() => Roles)
+  @Default(1)
+  @Column
+  public roleId!: number;
+
+  @BelongsTo(() => Roles)
+  public roles!: Roles;
 
   @BeforeCreate
   static genaratorUserId(instance: Users) {
     instance.userId = generateUniqueUserId();
   }
-
-  @Column({
-    type: DataType.DATE,
-  })
-  public birth?: string;
 }

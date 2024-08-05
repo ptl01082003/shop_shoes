@@ -5,29 +5,22 @@ const PromotionsController = {
   // Thêm một promotion mới
   addPromotion: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { promotionName, promotionDiscount, startDay, endDay, status } =
-        req.body;
+      const { name, discount, startDay, endDay, status } = req.body;
 
       // Kiểm tra dữ liệu đầu vào
-      if (
-        !promotionName ||
-        promotionDiscount == null ||
-        !startDay ||
-        !endDay ||
-        status == null
-      ) {
+      if (!name || discount == null || !startDay || !endDay || status == null) {
         return res.status(400).json({ message: "Thiếu các trường bắt buộc" });
       }
 
-      const promotion = await Promotions.create({
-        promotionName,
-        promotionDiscount,
+      const promotions = await Promotions.create({
+        name,
+        discount,
         startDay,
         endDay,
         status,
       });
 
-      res.json({ data: promotion, message: "Thêm promotion mới thành công" });
+      res.json({ data: promotions, message: "Thêm promotion mới thành công" });
     } catch (error) {
       console.log(error);
       next(error);
@@ -45,13 +38,13 @@ const PromotionsController = {
     }
   },
 
-  // Lấy promotion theo ID
+  // Lấy promotion theo Id
   getPromotionById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const promotion = await Promotions.findByPk(id);
-      if (promotion) {
-        res.json({ data: promotion });
+      const { promotionId } = req.params;
+      const promotions = await Promotions.findByPk(promotionId);
+      if (promotions) {
+        res.json({ data: promotions });
       } else {
         res.status(404).json({ message: "Không tìm thấy promotion" });
       }
@@ -64,26 +57,19 @@ const PromotionsController = {
   // Cập nhật promotion
   updatePromotion: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const { promotionName, promotionDiscount, startDay, endDay, status } =
-        req.body;
+      const { promotionId } = req.params;
+      const { name, discount, startDay, endDay, status } = req.body;
 
       // Kiểm tra dữ liệu đầu vào
-      if (
-        !promotionName ||
-        promotionDiscount == null ||
-        !startDay ||
-        !endDay ||
-        status == null
-      ) {
+      if (!name || discount == null || !startDay || !endDay || status == null) {
         return res.status(400).json({ message: "Thiếu các trường bắt buộc" });
       }
 
-      const promotion = await Promotions.findByPk(id);
-      if (promotion) {
-        await promotion.update({
-          promotionName,
-          promotionDiscount,
+      const promotions = await Promotions.findByPk(promotionId);
+      if (promotions) {
+        await promotions.update({
+          name,
+          discount,
           startDay,
           endDay,
           status,
@@ -101,10 +87,10 @@ const PromotionsController = {
   // Xóa promotion
   deletePromotion: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const promotion = await Promotions.findByPk(id);
-      if (promotion) {
-        await promotion.destroy();
+      const { promotionId } = req.params;
+      const promotions = await Promotions.findByPk(promotionId);
+      if (promotions) {
+        await promotions.destroy();
         res.json({ message: "Xóa promotion thành công" });
       } else {
         res.status(404).json({ message: "Không tìm thấy promotion" });

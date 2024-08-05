@@ -2,11 +2,11 @@ import {
   AutoIncrement,
   BelongsTo,
   Column,
+  Default,
   ForeignKey,
-  HasMany,
   Model,
   PrimaryKey,
-  Table,
+  Table
 } from "sequelize-typescript";
 import { Products } from "./Products";
 import { Sizes } from "./Sizes";
@@ -20,21 +20,30 @@ export class ProductDetails extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
-  pDetailID!: number;
+  public productDetailId!: number;
 
+  @ForeignKey(() => Sizes)
   @Column
-  pDetailQuantity?: number;
-
-  @Column
-  pDetailStatus?: boolean;
+  public sizeId!: number;
 
   @ForeignKey(() => Products)
   @Column
-  productID!: number;
+  public productId!: number;
+
+  @Default(0)
+  @Column
+  public sellQuanity!: number;
+
+  @Column
+  public quantity!: number;
+
+  @Default(0)
+  @Column
+  public numberStatistics!: number;
+
+  @BelongsTo(() => Sizes)
+  public sizes!: Sizes;
 
   @BelongsTo(() => Products)
-  product!: Products;
-
-  @HasMany(() => Sizes)
-  sizes!: Sizes[];
+  public products!: Products;
 }

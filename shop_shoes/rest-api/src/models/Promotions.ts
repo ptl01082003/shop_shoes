@@ -19,17 +19,14 @@ export class Promotions extends Model {
   public promotionId!: number;
 
   @Column
-  public promotionName!: string;
+  public name!: string;
 
   @Column(DataType.DOUBLE)
-  public promotionDiscount!: number;
+  public discount!: number;
 
   @Column
   public startDay!: Date;
 
   @Column
   public endDay!: Date;
-
-  @Column
-  public status!: boolean;
 }

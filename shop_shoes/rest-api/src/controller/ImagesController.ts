@@ -6,19 +6,19 @@ import { Op } from "sequelize";
 const ImagesController = {
   addImage: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { imagePath, productID } = req.body;
+      const { path, productId } = req.body;
 
       // Kiểm tra dữ liệu đầu vào
-      if (!imagePath) {
+      if (!path) {
         return res.status(400).json({ message: "Missing required fields" });
       }
 
-      const image = await Images.create({
-        imagePath,
-        productID,
+      const images = await Images.create({
+        path,
+        productId,
       });
 
-      res.json({ data: image, message: "Add new image successfully" });
+      res.json({ data: images, message: "Add new images successfully" });
     } catch (error) {
       console.log(error);
       next(error);
@@ -34,25 +34,25 @@ const ImagesController = {
         whereClause.productId = productId;
       }
 
-      // Find all images with optional Product association
-      const images = await Images.findAll({
+      // Find all imagess with optional Product association
+      const imagess = await Images.findAll({
         where: whereClause,
         include: [Products],
       });
 
-      res.json({ data: images });
+      res.json({ data: imagess });
     } catch (error) {
-      console.error("Error retrieving images:", error);
+      console.error("Error retrieving imagess:", error);
       next(error);
     }
   },
 
   getImageById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const image = await Images.findByPk(id, { include: [Products] });
-      if (image) {
-        res.json({ data: image });
+      const { imageId } = req.body;
+      const images = await Images.findByPk(imageId, { include: [Products] });
+      if (images) {
+        res.json({ data: images });
       } else {
         res.status(404).json({ message: "Image not found" });
       }
@@ -64,19 +64,19 @@ const ImagesController = {
 
   updateImage: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const { imagePath, productID } = req.body;
+      const { imageId } = req.body;
+      const { path, productId } = req.body;
 
       // Kiểm tra dữ liệu đầu vào
-      if (!imagePath) {
+      if (!path) {
         return res.status(400).json({ message: "Missing required fields" });
       }
 
-      const image = await Images.findByPk(id);
-      if (image) {
-        await image.update({
-          imagePath,
-          productID,
+      const imagess = await Images.findByPk(imageId);
+      if (imagess) {
+        await imagess.update({
+          path,
+          productId,
         });
         res.json({ message: "Image updated successfully" });
       } else {
@@ -90,10 +90,10 @@ const ImagesController = {
 
   deleteImage: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const image = await Images.findByPk(id);
-      if (image) {
-        await image.destroy();
+      const { imageId } = req.body;
+      const images = await Images.findByPk(imageId);
+      if (images) {
+        await images.destroy();
         res.json({ message: "Image deleted successfully" });
       } else {
         res.status(404).json({ message: "Image not found" });

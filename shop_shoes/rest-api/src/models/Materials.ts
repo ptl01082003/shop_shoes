@@ -18,5 +18,5 @@ export class Materials extends Model {
   public materialId!: number;
 
   @Column
-  public materialName!: string;
+  public name!: string;
 }
