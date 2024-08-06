@@ -10,10 +10,9 @@ import routerMaterial from "./MaterialsRouter";
 import routerOrigin from "./OriginsRouter";
 import paymentRouter from "./PaymentOnlineRouter";
 
-import routerProductPromotion from "./ProductPromotionRouter";
 // import productsRouter from "./ProductsRouter";
 import productsRouter from "./ProductsRouter";
-import routerPromotions from "./PromotionsRouter";
+
 import routerSize from "./SizeRouter";
 import routerStyle from "./StylesRouter";
 import { uploadRouter } from "./uploadRouter";
@@ -34,9 +33,8 @@ export function appRouter() {
   router.use("/origins", routerOrigin);
   router.use("/products", productsRouter);
   router.use("/materials", routerMaterial);
-  router.use("/promotions", routerPromotions);
+
   router.use("/payment-orders", paymentRouter);
-  router.use("/product-promotions", routerProductPromotion);
 
   router.use("*", (_, res) => {
     res.status(STATUS_CODE.NOT_FOUND).json(
