@@ -2,6 +2,7 @@ import {
   AutoIncrement,
   BelongsTo,
   Column,
+  DataType,
   ForeignKey,
   HasMany,
   Model,
@@ -25,7 +26,7 @@ export class ShoppingCarts extends Model {
   @Column
   public totals!: number;
 
-  @Column
+  @Column(DataType.DECIMAL(16, 2))
   public amount!: number;
 
   @ForeignKey(() => Users)
