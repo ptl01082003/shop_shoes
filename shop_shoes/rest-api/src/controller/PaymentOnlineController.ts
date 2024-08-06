@@ -466,14 +466,15 @@ const PaymentOnlineController = {
           for await (const products of orderItems) {
             const productsAmount = products.quanity * Number(products.productDetails.products.priceDiscount);
             products.price = products.productDetails.products.price || 0;
-            products.priceDiscount = products.productDetails.products.priceDiscount || 0;
             products.amount = productsAmount;
+            products.priceDiscount = products.productDetails.products.priceDiscount || 0;
             ordersAmount += productsAmount;
             await products.save();
           }
 
           orders.amount = ordersAmount;
           paymentDetails.amount = ordersAmount;
+
           await orders.save();
           await paymentDetails.save();
         }
@@ -517,18 +518,48 @@ const PaymentOnlineController = {
     try {
       const userId = req.userId;
 
-      const oderDetails = await OrderItems.findAll({
+      const orderItems = await OrderItems.findAll({
         where: { userId },
+        include: [
+          {
+            model: ProductDetails,
+            include: [
+              {
+                model: Products,
+                include: [
+                  {
+                    model: Images,
+                  },
+                ],
+              },
+              {
+                model: Sizes,
+              },
+            ],
+          },
+          {
+            model: OrderDetails,
+          }
+        ],
       });
       let transferData: any[] = [];
-      for await (const orders of oderDetails) {
-        const paymentDetails = await PaymentDetails.findOne({
-          where: { orderDetailId: orders?.orderDetailId },
-        }) as PaymentDetails;
-
+      for await (const orders of orderItems) {
+        const payments = await PaymentDetails.findOne({
+          where: { orderDetailId: orders.orderDetailId }
+        })
+        const isPaid = payments?.status === PAYMENT_STATUS.SUCCESS;
         transferData.push({
-          ...orders?.toJSON(),
-          ...paymentDetails?.toJSON(),
+          status: orders.status,
+          paymentStatus: payments?.status,
+          price: isPaid ? orders.price : orders.productDetails.products.price,
+          amount: isPaid ? orders?.amount : orders.quanity * Number(orders.productDetails.products.priceDiscount),
+          quanity: orders?.quanity,
+          priceDiscount: isPaid ? orders.priceDiscount : orders.productDetails.products.priceDiscount,
+          productDetailId: orders?.productDetailId,
+          name: orders?.productDetails?.products?.name,
+          sizeName: orders?.productDetails?.sizes?.name,
+          quanityLimit: orders?.productDetails?.quantity,
+          path: orders?.productDetails?.products?.gallery?.[0]?.path,
         })
       }
 
@@ -537,7 +568,7 @@ const PaymentOnlineController = {
         ResponseBody({
           code: RESPONSE_CODE.SUCCESS,
           message: "Thực hiện thành công",
-          data: oderDetails,
+          data: transferData,
         })
       );
     } catch (error) {

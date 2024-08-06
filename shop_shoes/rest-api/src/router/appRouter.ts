@@ -36,7 +36,6 @@ export function appRouter() {
   router.use("/materials", routerMaterial);
   router.use("/promotions", routerPromotions);
   router.use("/payment-orders", paymentRouter);
-  // router.use("/product-details", routerProductDetail);
   router.use("/product-promotions", routerProductPromotion);
 
   router.use("*", (_, res) => {

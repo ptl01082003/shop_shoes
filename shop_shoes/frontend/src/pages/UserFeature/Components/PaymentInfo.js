@@ -161,7 +161,6 @@ export default function PaymentInfo() {
             </div>
             <div className="mt-5 mb-2">
               <Collapse
-                defaultActiveKey={["products"]}
                 items={[
                   {
                     key: "products",

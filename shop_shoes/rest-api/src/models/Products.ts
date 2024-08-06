@@ -65,6 +65,7 @@ export class Products extends Model {
 
   @BelongsTo(() => Origins)
   public origin?: Origins;
+  
 
   @ForeignKey(() => Styles)
   @Column
