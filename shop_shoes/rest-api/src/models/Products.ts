@@ -103,6 +103,5 @@ export class Products extends Model {
   @BeforeUpdate
   static updateProducts(instance: Products) {
     instance.priceDiscount = instance.price;
-   
   }
 }
