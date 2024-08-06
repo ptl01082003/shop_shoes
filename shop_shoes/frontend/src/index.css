@@ -26,7 +26,6 @@
   src: local('Product Sans'), url('./assets/fonts/product_sans_bold.otf') format('truetype');
 }
 
-/* ============= NavLink active Start here ============== */
 nav .active li {
   color: black;
   font-weight: 600;
@@ -49,8 +48,6 @@ body {
   display: none;
 }
 
-/* ============= NavLink active End here ================ */
-
 .box-skeleton {
   background: #eee;
   background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
@@ -64,10 +61,15 @@ body {
   }
 }
 
-.custom-slider .slick-slide > div {
+.custom-slider .slick-slide>div {
   padding: 0 15px;
 }
 
 .custom-slider .slick-list {
   margin: 0 -15px;
+}
+
+.custom-order-details-tabs .ant-tabs-tab-btn {
+  display: flex;
+  align-items: center;
 }

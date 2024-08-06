@@ -2,6 +2,7 @@ import {
   AutoIncrement,
   BelongsTo,
   Column,
+  DataType,
   Default,
   ForeignKey,
   Model,
@@ -30,7 +31,7 @@ export class OrderItems extends Model {
   @Column
   public orderItemId!: number;
 
-  @Column
+  @Column(DataType.DECIMAL(16, 2))
   public amount!: number;
 
   @Default(ODER_STATUS.CHO_THANH_TOAN)
@@ -38,8 +39,13 @@ export class OrderItems extends Model {
   public status!: string;
 
   @Column
+  public price!: number;
+  @Column
+  public priceDiscount!: number;
+
+  @Column
   public userId!: number;
-  
+
   @Column
   public quanity!: number;
 

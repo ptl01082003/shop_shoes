@@ -32,7 +32,7 @@ export class OrderDetails extends Model {
   @Column
   public orderCode!: string;
 
-  @Column
+  @Column(DataType.DECIMAL(16, 2))
   public amount!: number;
 
   @Column
@@ -43,7 +43,6 @@ export class OrderDetails extends Model {
 
   @Column
   public phone!: string;
-
 
   @ForeignKey(() => Users)
   @Column

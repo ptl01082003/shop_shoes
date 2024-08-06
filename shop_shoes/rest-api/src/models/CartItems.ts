@@ -2,6 +2,7 @@ import {
   AutoIncrement,
   BelongsTo,
   Column,
+  DataType,
   ForeignKey,
   Model,
   PrimaryKey,
@@ -39,6 +40,6 @@ export class CartItems extends Model {
   @Column
   public quanity!: number;
 
-  @Column
+  @Column(DataType.DECIMAL(16, 2))
   public amount!: number;
 }

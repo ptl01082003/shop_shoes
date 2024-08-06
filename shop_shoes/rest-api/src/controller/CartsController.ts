@@ -109,7 +109,7 @@ const CartsController = {
               ? `Bạn chỉ có thể thêm tối đa ${productDetails.quantity} sản phẩm`
               : "Thực hiện thành công",
             data: {
-              carts: transferCarts
+              carts: transferCarts,
             },
           })
         );
