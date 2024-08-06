@@ -64,11 +64,13 @@ const Cart = () => {
                     </div>
                     {items?.priceDiscount === items?.price ? (
                       <h1 className="mb-2 text-xl">
+                        <span>{items?.quanity} x </span>
                         {TRANSFER_PRICE(items?.price)}
                       </h1>
                     ) : (
                       <div className="flex mb-2 space-x-4">
                         <h1 className="text-xl">
+                          <span>{items?.quanity} x </span>
                           {TRANSFER_PRICE(items?.priceDiscount)}
                         </h1>
                         <h1 className="text-lg line-through">
@@ -76,7 +78,6 @@ const Cart = () => {
                         </h1>
                       </div>
                     )}
-
                     <h1 className="mb-4 text-xl">
                       Size: <span>{items?.sizeName}</span>
                     </h1>
@@ -158,7 +159,7 @@ const Cart = () => {
               Số lượng: <span>{selCarts?.totals}</span>
             </h3>
             <h3 className="text-2xl">
-              Giá tiền: <span>{TRANSFER_PRICE(selCarts?.amount)}</span>{" "}
+              Giá tiền: <span>{TRANSFER_PRICE(selCarts?.amount)}</span>
             </h3>
             <Divider />
             <button

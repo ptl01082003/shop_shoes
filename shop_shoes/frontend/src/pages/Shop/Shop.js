@@ -95,9 +95,20 @@ export default function Shop() {
                     <h1 className="text-lg text-[#667085] mb-3 line-clamp-2 min-h-[3.5rem]">
                       {product?.name}
                     </h1>
-                    <h1 className="text-[#344054] font-bold mb-4">
-                      {TRANSFER_PRICE(product?.price)}
-                    </h1>
+                    {product?.priceDiscount === product?.price ? (
+                      <h1 className="text-[#344054] font-bold mb-4">
+                        {TRANSFER_PRICE(product?.price)}
+                      </h1>
+                    ) : (
+                      <div className="flex items-center mb-4 space-x-3">
+                        <h1 className="text-[#344054] text-lg font-bold">
+                          {TRANSFER_PRICE(product?.priceDiscount)}
+                        </h1>
+                        <h1 className="text-[#344054] text-sm line-through">
+                          {TRANSFER_PRICE(product?.price)}
+                        </h1>
+                      </div>
+                    )}
                     <h1 className="text-[#344054] mb-1">
                       <span className=""> {product?.brand?.name}</span>
                     </h1>

@@ -38,8 +38,13 @@ export class OrderItems extends Model {
   public status!: string;
 
   @Column
+  public price!: number;
+  @Column
+  public priceDiscount!: number;
+
+  @Column
   public userId!: number;
-  
+
   @Column
   public quanity!: number;
 

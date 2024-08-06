@@ -18,6 +18,9 @@ import {
 import { redis } from "../config/ConnectRedis";
 import { ProductDetails } from "../models/ProductDetails";
 import { v4 as uuidv4 } from "uuid";
+import { Products } from "../models/Products";
+import { Images } from "../models/Images";
+import { Sizes } from "../models/Sizes";
 
 async function lockProductsById(
   keyName: string,
@@ -88,7 +91,6 @@ async function createMomo({
     process.env["momo_Url"] as string,
     requestBody
   );
-  console.log("payments", payments);
   return payments.data.payUrl;
 }
 
@@ -251,17 +253,16 @@ const PaymentOnlineController = {
     try {
       const userId = req.userId;
       const { provider, name, address, phone } = req.body;
-      let amount = 0;
+      let ordersAmount = 0;
       const carts = await ShoppingCarts.findOne({
         where: { userId },
-        attributes: ["totals", "amount", "cartId"],
       });
 
       if (carts) {
-        amount = carts.amount;
+
         const newOrders = await OrderDetails.create({
           userId,
-          amount,
+          amount: ordersAmount,
           name,
           address,
           phone,
@@ -270,24 +271,42 @@ const PaymentOnlineController = {
 
         const cartItems = await CartItems.findAll({
           where: { cartId: carts?.cartId },
+          include: [
+            {
+              model: ProductDetails,
+              include: [
+                {
+                  model: Products,
+                },
+              ],
+            },
+          ],
         });
 
         for await (const products of cartItems) {
+          const productsAmount = products.quanity * Number(products.productDetails.products.priceDiscount);
           await OrderItems.create({
             userId,
-            amount: products.amount,
+            amount: productsAmount,
             quanity: products.quanity,
             orderDetailId: newOrders.orderDetailId,
             productDetailId: products.productDetailId,
+            price: products.productDetails.products.price,
+            priceDiscount: products.productDetails.products.priceDiscount,
           });
+          ordersAmount += productsAmount;
           await products.destroy();
         }
 
         await PaymentDetails.create({
-          amount,
+          amount: ordersAmount,
           provider,
           orderDetailId: newOrders.orderDetailId,
         });
+
+        newOrders.amount = ordersAmount;
+
+        await newOrders.save();
 
         await carts.destroy();
 
@@ -296,7 +315,7 @@ const PaymentOnlineController = {
         switch (provider) {
           case PAYMENT_PROVIDER.MOMO:
             const paymentUrl = await createMomo({
-              amount,
+              amount: ordersAmount,
               orderCode: newOrders.orderCode,
             });
             return res.json(
@@ -320,13 +339,13 @@ const PaymentOnlineController = {
         );
       }
     } catch (error) {
-      console.log(error);
       next(error);
     }
   },
 
   repayment: async (req: Request, res: Response, next: NextFunction) => {
     try {
+      let ordersAmount = 0;
       const userId = req.userId;
       const { orderCode } = req.body;
 
@@ -338,18 +357,47 @@ const PaymentOnlineController = {
       })
 
       if (oderDetails) {
+
+        const orderItems = await OrderItems.findAll({
+          where: { orderDetailId: oderDetails.orderDetailId },
+          include: [
+            {
+              model: ProductDetails,
+              include: [
+                {
+                  model: Products,
+                },
+              ],
+            },
+          ],
+        });
+
+        for await (const orders of orderItems) {
+          orders.price = orders.productDetails.products.price || 0;
+          orders.priceDiscount = orders.productDetails.products.priceDiscount || 0;
+          ordersAmount += orders.quanity * Number(orders.productDetails.products.priceDiscount);
+          await orders.save();
+        }
+
         const newOderCode = uuidv4().slice(0, 8).toUpperCase();
         oderDetails.orderCode = newOderCode;
+
+        oderDetails.amount = ordersAmount;
+
         await oderDetails.save();
         const payments = await PaymentDetails.findOne({
           where: {
             orderDetailId: oderDetails?.orderDetailId
           }
         })
+        payments!.amount = ordersAmount;
+
+        await payments?.save();
+
         switch (payments?.provider) {
           case PAYMENT_PROVIDER.MOMO:
             const paymentUrl = await createMomo({
-              amount: oderDetails.amount,
+              amount: ordersAmount,
               orderCode: newOderCode,
             });
             return res.json(
@@ -373,7 +421,6 @@ const PaymentOnlineController = {
         );
       }
     } catch (error) {
-      console.log(error);
       next(error);
     }
   },
@@ -381,22 +428,78 @@ const PaymentOnlineController = {
   getLstPayments: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.userId;
+      let transferData: any[] = [];
 
       const oderDetails = await OrderDetails.findAll({
         where: { userId },
       });
-      let transferData: any[] = [];
+
       for await (const orders of oderDetails) {
+        let ordersAmount = 0;
         const paymentDetails = await PaymentDetails.findOne({
           where: { orderDetailId: orders?.orderDetailId },
         }) as PaymentDetails;
 
+        const orderItems = await OrderItems.findAll({
+          where: { orderDetailId: orders.orderDetailId },
+          include: [
+            {
+              model: ProductDetails,
+              include: [
+                {
+                  model: Products,
+                  include: [
+                    {
+                      model: Images,
+                    },
+                  ],
+                },
+                {
+                  model: Sizes,
+                },
+              ],
+            },
+          ],
+        });
+        // Trong trường hợp đơn hàng chưa được thanh toán cập nhật lại giá
+        if (paymentDetails.status != PAYMENT_STATUS.SUCCESS) {
+          for await (const products of orderItems) {
+            const productsAmount = products.quanity * Number(products.productDetails.products.priceDiscount);
+            products.price = products.productDetails.products.price || 0;
+            products.priceDiscount = products.productDetails.products.priceDiscount || 0;
+            products.amount = productsAmount;
+            ordersAmount += productsAmount;
+            await products.save();
+          }
+
+          orders.amount = ordersAmount;
+          paymentDetails.amount = ordersAmount;
+          await orders.save();
+          await paymentDetails.save();
+        }
+
+
+        const mergeProducts = orderItems.map((products) => {
+          return {
+            price: products.price,
+            amount: products?.amount,
+            quanity: products?.quanity,
+            priceDiscount: products.priceDiscount,
+            productDetailId: products?.productDetailId,
+            name: products?.productDetails?.products?.name,
+            sizeName: products?.productDetails?.sizes?.name,
+            quanityLimit: products?.productDetails?.quantity,
+            path: products?.productDetails?.products?.gallery?.[0]?.path,
+          };
+        });
+
+
         transferData.push({
           ...orders?.toJSON(),
           ...paymentDetails?.toJSON(),
+          orderItems: mergeProducts
         })
       }
-
 
       res.json(
         ResponseBody({
@@ -438,7 +541,6 @@ const PaymentOnlineController = {
         })
       );
     } catch (error) {
-      console.log(error);
       next(error);
     }
   },
