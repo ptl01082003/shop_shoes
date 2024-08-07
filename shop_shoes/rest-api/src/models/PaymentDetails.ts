@@ -42,7 +42,7 @@ export class PaymentDetails extends Model {
   @Column
   public status!: string;
 
-  @Column(DataType.DECIMAL(16, 2))
+  @Column
   public amount!: number;
 
   @Column

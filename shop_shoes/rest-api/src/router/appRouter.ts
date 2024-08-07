@@ -17,6 +17,8 @@ import routerSize from "./SizeRouter";
 import routerStyle from "./StylesRouter";
 import { uploadRouter } from "./uploadRouter";
 import userRouter from "./UserRouter";
+import routerPromotion from "./PromotitonRouter";
+import routerVouchers from "./VoucherRouter";
 
 const router = express.Router();
 
@@ -33,7 +35,8 @@ export function appRouter() {
   router.use("/origins", routerOrigin);
   router.use("/products", productsRouter);
   router.use("/materials", routerMaterial);
-
+  router.use("/promotions", routerPromotion);
+  router.use("/vouchers", routerVouchers);
   router.use("/payment-orders", paymentRouter);
 
   router.use("*", (_, res) => {

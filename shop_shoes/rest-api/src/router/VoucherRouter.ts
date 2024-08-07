@@ -1,20 +1,12 @@
-// routes/styles.ts
 import { Router } from "express";
-import VoucherController from "../controller/VoucherController";
-import { checkAuth } from "../middleware/checkAuth";
-import { checkRoles } from "../middleware/checkRoles";
-import { ROLE_TYPES } from "../models/Roles";
+import VouchersController from "../controller/VoucherController";
 
-const routerVoucher = Router();
+const routerVouchers = Router();
 
-routerVoucher.post("/", VoucherController.getVouchers);
+routerVouchers.post("/create", VouchersController.addVoucher);
+routerVouchers.post("/", VouchersController.getVouchers);
+routerVouchers.post("/:vouchersId", VouchersController.getById);
+routerVouchers.post("/update", VouchersController.updateVoucher);
+routerVouchers.post("/delete/:vouchersId", VouchersController.deleteVoucher);
 
-routerVoucher.use(checkAuth);
-
-routerVoucher.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
-
-routerVoucher.post("/create", VoucherController.addVoucher);
-routerVoucher.post("/update", VoucherController.updateVoucher);
-routerVoucher.post("/remove", VoucherController.deleteVoucher);
-
-export default routerVoucher;
+export default routerVouchers;

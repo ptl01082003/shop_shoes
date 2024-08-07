@@ -1,20 +1,20 @@
-import express from "express";
-import AddressController from "../controller/AddressController";
-import productsRouter from "./ProductsRouter";
-import { checkAuth } from "../middleware/checkAuth";
-import { checkRoles } from "../middleware/checkRoles";
-import { ROLE_TYPES } from "../models/Roles";
+// import express from "express";
 
-const routerAddress = express.Router();
-routerAddress.post("/", AddressController.getAddresses);
+// import productsRouter from "./ProductsRouter";
+// import { checkAuth } from "../middleware/checkAuth";
+// import { checkRoles } from "../middleware/checkRoles";
+// import { ROLE_TYPES } from "../models/Roles";
 
-productsRouter.use(checkAuth);
+// const routerAddress = express.Router();
+// routerAddress.post("/", AddressController.getAddresses);
 
-productsRouter.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
+// productsRouter.use(checkAuth);
 
-routerAddress.post("/create", AddressController.addAddress);
+// productsRouter.use(checkRoles([ROLE_TYPES.MEMBERSHIP, ROLE_TYPES.ADMIN]));
 
-routerAddress.post("/edit", AddressController.updateAddress);
-routerAddress.post("/remove", AddressController.deleteAddress);
+// routerAddress.post("/create", AddressController.addAddress);
 
-export default routerAddress;
+// routerAddress.post("/edit", AddressController.updateAddress);
+// routerAddress.post("/remove", AddressController.deleteAddress);
+
+// export default routerAddress;

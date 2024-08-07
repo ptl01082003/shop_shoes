@@ -40,6 +40,6 @@ export class CartItems extends Model {
   @Column
   public quanity!: number;
 
-  @Column(DataType.DECIMAL(16, 2))
+  @Column
   public amount!: number;
 }

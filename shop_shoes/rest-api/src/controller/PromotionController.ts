@@ -1,34 +1,22 @@
 import { NextFunction, Request, Response } from "express";
 import { RESPONSE_CODE, ResponseBody } from "../constants";
-import { Vouchers } from "../models/Vouchers";
+import { Promotions } from "../models/Promotions";
 
-const VouchersController = {
-  addVoucher: async (req: Request, res: Response, next: NextFunction) => {
+const PromotionsController = {
+  addPromotion: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const {
-        code,
-        description,
-        valueOrder,
-        disscoutMax,
+      const { name, discountPrice, startDay, endDay, productId } = req.body;
+      const promotion = await Promotions.create({
+        name,
+        discountPrice,
         startDay,
         endDay,
-        quantity,
-        status,
-      } = req.body;
-      const voucher = await Vouchers.create({
-        code,
-        description,
-        valueOrder,
-        disscoutMax,
-        startDay,
-        endDay,
-        quantity,
-        status,
+        productId,
       });
       res.json(
         ResponseBody({
           code: RESPONSE_CODE.SUCCESS,
-          data: voucher,
+          data: promotion,
           message: "Thực hiện thành công",
         })
       );
@@ -37,13 +25,13 @@ const VouchersController = {
     }
   },
 
-  getVouchers: async (req: Request, res: Response, next: NextFunction) => {
+  getPromotions: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const vouchers = await Vouchers.findAll();
+      const promotions = await Promotions.findAll();
       res.json(
         ResponseBody({
           code: RESPONSE_CODE.SUCCESS,
-          data: vouchers,
+          data: promotions,
           message: "Thực hiện thành công",
         })
       );
@@ -54,17 +42,17 @@ const VouchersController = {
 
   getById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { vouchersId } = req.params;
-      const voucher = await Vouchers.findByPk(vouchersId);
-      if (voucher) {
+      const { promotionId } = req.params;
+      const promotion = await Promotions.findByPk(promotionId);
+      if (promotion) {
         res.status(200).json({
           message: "Thực hiện thành công",
           code: 0,
-          data: voucher,
+          data: promotion,
         });
       } else {
         res.status(404).json({
-          message: "Voucher không tồn tại",
+          message: "Khuyến mãi không tồn tại",
           code: 1,
         });
       }
@@ -82,39 +70,27 @@ const VouchersController = {
     }
   },
 
-  updateVoucher: async (req: Request, res: Response, next: NextFunction) => {
+  updatePromotion: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const {
-        vouchersId,
-        code,
-        description,
-        valueOrder,
-        disscoutMax,
-        startDay,
-        endDay,
-        quantity,
-        status,
-      } = req.body;
-      const voucher = await Vouchers.findByPk(vouchersId);
-      if (voucher) {
-        await voucher.update({
-          code,
-          description,
-          valueOrder,
-          disscoutMax,
+      const { promotionId, name, discountPrice, startDay, endDay, productId } =
+        req.body;
+      const promotion = await Promotions.findByPk(promotionId);
+      if (promotion) {
+        await promotion.update({
+          name,
+          discountPrice,
           startDay,
           endDay,
-          quantity,
-          status,
+          productId,
         });
         res.status(200).json({
           message: "Thực hiện thành công",
           code: 0,
-          data: voucher,
+          data: promotion,
         });
       } else {
         res.json({
-          message: "Voucher không tồn tại",
+          message: "Khuyến mãi không tồn tại",
           code: 1,
         });
       }
@@ -123,19 +99,19 @@ const VouchersController = {
     }
   },
 
-  deleteVoucher: async (req: Request, res: Response, next: NextFunction) => {
+  deletePromotion: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { vouchersId } = req.params;
-      const voucher = await Vouchers.findByPk(vouchersId);
-      if (voucher) {
-        await voucher.destroy();
+      const { promotionId } = req.params;
+      const promotion = await Promotions.findByPk(promotionId);
+      if (promotion) {
+        await promotion.destroy();
         res.status(200).json({
           message: "Thực hiện thành công",
           code: 0,
         });
       } else {
         res.json({
-          message: "Voucher không tồn tại",
+          message: "Khuyến mãi không tồn tại",
           code: 1,
         });
       }
@@ -154,4 +130,4 @@ const VouchersController = {
   },
 };
 
-export default VouchersController;
+export default PromotionsController;

@@ -368,7 +368,6 @@ const ProductsController = {
         ],
       });
 
-
       const productDetailsInfo = await ProductDetails.findAll({
         where: { productId: product.productId },
         attributes: ["sizeId", "quantity"],
