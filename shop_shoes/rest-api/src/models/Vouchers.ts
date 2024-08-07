@@ -2,10 +2,21 @@ import {
   AutoIncrement,
   Column,
   DataType,
+  Default,
   Model,
   PrimaryKey,
   Table,
 } from "sequelize-typescript";
+
+export enum Vouchers_TYPE {
+  MONEY = "MONEY",
+  PERCENT = "PERCENT",
+}
+
+export enum Vouchers_STATUS {
+  ISACTIVE = "ISACTIVE",
+  EXPIRED = "EXPIRED",
+}
 
 @Table({
   tableName: "vouchers",
@@ -19,38 +30,27 @@ export class Vouchers extends Model {
   public vouchersId!: number;
 
   @Column
-  public describe?: string;
+  public code!: string;
+
+  @Column(DataType.TEXT("long"))
+  public description?: string;
+
+  @Column(DataType.DECIMAL(16, 2))
+  public valueOrder!: number;
+
+  @Column(DataType.DECIMAL(16, 2))
+  public disscoutMax!: number;
+
+  @Column(DataType.DATE)
+  public startDay!: string;
+
+  @Column(DataType.DATE)
+  public endDay!: string;
 
   @Column
-  public discountType?: string;
+  public quantity!: number;
 
-  @Column(DataType.DOUBLE)
-  public discount?: number;
-
-  @Column(DataType.DECIMAL(12, 2))
-  public valueOder?: number;
-
-  @Column(DataType.DECIMAL(12, 2))
-  public discountMax?: number;
-
+  @Default(Vouchers_STATUS.ISACTIVE)
   @Column
-  public startDay?: Date;
-
-  @Column
-  public endDay?: Date;
-
-  @Column
-  public quantity?: number;
-
-  @Column
-  public statusDelete?: boolean;
-
-  @Column
-  public formPay?: number;
-
-  @Column
-  public status?: number;
-
-  @Column
-  public objectuUse?: number;
+  public status?: string;
 }

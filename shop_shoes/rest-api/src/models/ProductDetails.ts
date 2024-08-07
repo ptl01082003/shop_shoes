@@ -6,7 +6,7 @@ import {
   ForeignKey,
   Model,
   PrimaryKey,
-  Table
+  Table,
 } from "sequelize-typescript";
 import { Products } from "./Products";
 import { Sizes } from "./Sizes";

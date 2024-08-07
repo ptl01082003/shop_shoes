@@ -69,24 +69,234 @@ export const ODER_STATUS = {
 
 export const ODER_STATUS_STRING = [
   {
-    label: "Không đủ số lượng",
-    value: "KHONG_DU_SO_LUONG",
-  },
-  {
     label: "Chờ thanh toán",
     value: "CHO_THANH_TOAN",
+    icon: (
+      <svg
+        width="25"
+        height="25"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M15 9.71429C15 8.76751 14.2325 8 13.2857 8H11C9.89543 8 9 8.89543 9 10C9 11.1046 9.89543 12 11 12H13C14.1046 12 15 12.8954 15 14C15 15.1046 14.1046 16 13 16H10.7143C9.76751 16 9 15.2325 9 14.2857M12 6.5V17.5M12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21Z"
+          stroke="currentColor"
+          stroke-width="null"
+          stroke-linecap="round"
+          class="my-path"
+        ></path>
+      </svg>
+    ),
   },
+
   {
     label: "Chờ lấy hàng",
     value: "CHO_LAY_HANG",
+    icon: (
+      <svg
+        width="25"
+        height="25"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M21 7.00195V17.002C21 18.8876 21 19.8304 20.4142 20.4162C19.8284 21.002 18.8856 21.002 17 21.002H7C5.11438 21.002 4.17157 21.002 3.58579 20.4162C3 19.8304 3 18.8876 3 17.002V7.00195M21 7.00195C21 5.11634 21 4.17353 20.4142 3.58774C19.8284 3.00195 18.8856 3.00195 17 3.00195H7C5.11438 3.00195 4.17157 3.00195 3.58579 3.58774C3 4.17353 3 5.11633 3 7.00195M21 7.00195V9.00195H3V7.00195M12.1016 6.00195H12.1516M9.05078 6.00195H9.10078M6 6.00195H6.05"
+          stroke="currentColor"
+          stroke-width="null"
+          stroke-linecap="round"
+          class="my-path"
+        ></path>
+      </svg>
+    ),
   },
   {
     label: "Chờ giao hàng",
     value: "CHO_GIAO_HANG",
+    icon: (
+      <svg
+        width="25"
+        height="25"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M3 8C3 6.11438 3 5.17157 3.58579 4.58579C4.17157 4 5.11438 4 7 4H10C11.8856 4 12.8284 4 13.4142 4.58579C14 5.17157 14 6.11438 14 8V15H7C5.11438 15 4.17157 15 3.58579 14.4142C3 13.8284 3 12.8856 3 11V8Z"
+          stroke="currentColor"
+          stroke-width="null"
+          class="my-path"
+        ></path>
+        <path
+          d="M9 17.5C9 18.8807 7.88071 20 6.5 20C5.11929 20 4 18.8807 4 17.5C4 16.1193 5.11929 15 6.5 15C7.88071 15 9 16.1193 9 17.5Z"
+          stroke="currentColor"
+          stroke-width="null"
+          class="my-path"
+        ></path>
+        <path
+          d="M18 17.5C18 18.8807 16.8807 20 15.5 20C14.1193 20 13 18.8807 13 17.5C13 16.1193 14.1193 15 15.5 15C16.8807 15 18 16.1193 18 17.5Z"
+          stroke="black"
+          stroke-width="null"
+          class="my-path"
+        ></path>
+        <path
+          d="M14 15H17C18.8856 15 19.8284 15 20.4142 14.4142C21 13.8284 21 12.8856 21 11V9.9005C21 9.56057 21 9.39061 20.9459 9.23286C20.8917 9.0751 20.7874 8.94094 20.5787 8.67262L19.0429 6.69795C18.8051 6.39223 18.6862 6.23936 18.527 6.14346C18.4771 6.11337 18.4246 6.08771 18.3702 6.06677C18.1968 6 18.0031 6 17.6158 6C16.1008 6 15.3433 6 14.8144 6.38929C14.6521 6.50877 14.5088 6.6521 14.3893 6.81442C14 7.3433 14 8.1008 14 9.61579L14 15Z"
+          stroke="currentColor"
+          stroke-width="null"
+          class="my-path"
+        ></path>
+        <path
+          d="M17.5 12L17.5 10"
+          stroke="currentColor"
+          stroke-width="null"
+          stroke-linecap="round"
+          class="my-path"
+        ></path>
+      </svg>
+    ),
   },
   {
     label: "Đã giao",
     value: "DA_GIAO",
+    icon: (
+      <svg
+        width="25"
+        height="25"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M16 3V5.63636C16 6.38948 16.6105 7 17.3636 7H20"
+          stroke="currentColor"
+          stroke-width="null"
+          class="my-path"
+        ></path>
+        <path
+          d="M7 11H13"
+          stroke="currentColor"
+          stroke-width="null"
+          stroke-linecap="round"
+          class="my-path"
+        ></path>
+        <path
+          d="M7 15H11"
+          stroke="currentColor"
+          stroke-width="null"
+          stroke-linecap="round"
+          class="my-path"
+        ></path>
+        <path
+          d="M7 7H11"
+          stroke="currentColor"
+          stroke-width="null"
+          stroke-linecap="round"
+          class="my-path"
+        ></path>
+        <path
+          d="M18.0746 13.995L14.8423 17.272C14.6397 17.4773 14.5385 17.5799 14.4712 17.7046C14.4039 17.8293 14.3741 17.9695 14.3145 18.2498L14.0011 19.7236C13.9718 19.8612 13.9572 19.93 13.9968 19.9681C14.0364 20.0062 14.1058 19.99 14.2445 19.9576L15.7466 19.6069C16.021 19.5428 16.1582 19.5108 16.2799 19.4441C16.4016 19.3774 16.5017 19.2794 16.7018 19.0834L19.9889 15.8644C20.2082 15.6496 20.3179 15.5422 20.3845 15.4296C20.5613 15.1307 20.5677 14.7626 20.4013 14.4581C20.3387 14.3433 20.2327 14.2324 20.0209 14.0104C19.7953 13.774 19.6825 13.6558 19.5641 13.5854C19.2495 13.3983 18.8564 13.3952 18.5386 13.5773C18.419 13.6458 18.3042 13.7622 18.0746 13.995Z"
+          stroke="currentColor"
+          stroke-width="null"
+          class="my-path"
+        ></path>
+        <path
+          d="M19 17L17 15"
+          stroke="black"
+          stroke-width="null"
+          class="my-path"
+        ></path>
+        <path
+          d="M11 21H10C7.17157 21 5.75736 21 4.87868 20.1213C4 19.2426 4 17.8284 4 15V9C4 6.17157 4 4.75736 4.87868 3.87868C5.75736 3 7.17157 3 10 3H15.3431C16.1606 3 16.5694 3 16.9369 3.15224C17.3045 3.30448 17.5935 3.59351 18.1716 4.17157L18.8284 4.82843C19.4065 5.40647 19.6955 5.69552 19.8478 6.06306C20 6.4306 20 6.83935 20 7.65685V11"
+          stroke="currentColor"
+          stroke-width="null"
+          stroke-linecap="round"
+          class="my-path"
+        ></path>
+      </svg>
+    ),
+  },
+  {
+    label: "Không đủ số lượng",
+    value: "KHONG_DU_SO_LUONG",
+    icon: (
+      <svg
+        width="25"
+        height="25"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M3 8.50002C3 6.6144 3 5.67159 3.58579 5.08581C4.17157 4.50002 5.11438 4.50002 6.99999 4.50002L17 4.5C18.8856 4.5 19.8284 4.5 20.4142 5.08578C21 5.67157 21 6.61438 21 8.5V17C21 18.8856 21 19.8285 20.4142 20.4142C19.8284 21 18.8856 21 17 21H7C5.11438 21 4.17157 21 3.58579 20.4142C3 19.8285 3 18.8856 3 17V8.50002Z"
+          stroke="currentColor"
+          stroke-width="null"
+          class="my-path"
+        ></path>
+        <path
+          d="M3 10H21"
+          stroke="currentColor"
+          stroke-width="null"
+          class="my-path"
+        ></path>
+        <path
+          d="M8.05 14L8 14"
+          stroke="currentColor"
+          stroke-width="null"
+          stroke-linecap="round"
+          class="my-path"
+        ></path>
+        <path
+          d="M8.05 17L8 17"
+          stroke="currentColor"
+          stroke-width="null"
+          stroke-linecap="round"
+          class="my-path"
+        ></path>
+        <path
+          d="M12.05 14L12 14"
+          stroke="currentColor"
+          stroke-width="null"
+          stroke-linecap="round"
+          class="my-path"
+        ></path>
+        <path
+          d="M12.05 17L12 17"
+          stroke="currentColor"
+          stroke-width="null"
+          stroke-linecap="round"
+          class="my-path"
+        ></path>
+        <path
+          d="M16.05 14L16 14"
+          stroke="currentColor"
+          stroke-width="null"
+          stroke-linecap="round"
+          class="my-path"
+        ></path>
+        <path
+          d="M16.05 17L16 17"
+          stroke="currentColor"
+          stroke-width="null"
+          stroke-linecap="round"
+          class="my-path"
+        ></path>
+        <path
+          d="M8 3V6"
+          stroke="currentColor"
+          stroke-width="null"
+          stroke-linecap="round"
+          class="my-path"
+        ></path>
+        <path
+          d="M16 3L16 6"
+          stroke="currentColor"
+          stroke-width="null"
+          stroke-linecap="round"
+          class="my-path"
+        ></path>
+      </svg>
+    ),
   },
 ];
 

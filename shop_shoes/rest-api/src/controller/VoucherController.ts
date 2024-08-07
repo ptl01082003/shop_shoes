@@ -1,112 +1,157 @@
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
+import { RESPONSE_CODE, ResponseBody } from "../constants";
 import { Vouchers } from "../models/Vouchers";
 
-const VoucherController = {
-  // CREATE - Add a new voucher
+const VouchersController = {
   addVoucher: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const {
-        describe,
-        discountType,
-        discount,
-        valueOder,
-        discountMax,
+        code,
+        description,
+        valueOrder,
+        disscoutMax,
         startDay,
         endDay,
         quantity,
-        statusDelete,
-        formPay,
         status,
-        objectuUse,
       } = req.body;
-
       const voucher = await Vouchers.create({
-        describe,
-        discountType,
-        discount,
-        valueOder,
-        discountMax,
+        code,
+        description,
+        valueOrder,
+        disscoutMax,
         startDay,
         endDay,
         quantity,
-        statusDelete,
-        formPay,
         status,
-        objectuUse,
       });
-
-      res.json({ data: voucher, message: "Voucher added successfully" });
+      res.json(
+        ResponseBody({
+          code: RESPONSE_CODE.SUCCESS,
+          data: voucher,
+          message: "Thực hiện thành công",
+        })
+      );
     } catch (error) {
-      console.error(error);
       next(error);
     }
   },
 
-  // READ - Get all vouchers
   getVouchers: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const vouchers = await Vouchers.findAll();
-      res.json({ data: vouchers });
+      res.json(
+        ResponseBody({
+          code: RESPONSE_CODE.SUCCESS,
+          data: vouchers,
+          message: "Thực hiện thành công",
+        })
+      );
     } catch (error) {
-      console.error(error);
       next(error);
     }
   },
 
-  // READ - Get voucher by Id
-  getVoucherById: async (req: Request, res: Response, next: NextFunction) => {
+  getById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { voucherId } = req.params;
-      const vouchers = await Vouchers.findByPk(voucherId);
-      if (vouchers) {
-        res.json({ data: vouchers });
+      const { vouchersId } = req.params;
+      const voucher = await Vouchers.findByPk(vouchersId);
+      if (voucher) {
+        res.status(200).json({
+          message: "Thực hiện thành công",
+          code: 0,
+          data: voucher,
+        });
       } else {
-        res.status(404).json({ message: "Voucher not found" });
+        res.status(404).json({
+          message: "Voucher không tồn tại",
+          code: 1,
+        });
       }
     } catch (error) {
-      console.error(error);
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 
-  // UPDATE - Update voucher by Id
   updateVoucher: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { voucherId } = req.params;
-      const { describe, discount } = req.body;
-
-      const vouchers = await Vouchers.findByPk(voucherId);
-      if (vouchers) {
-        await vouchers.update({
-          describe,
-          discount,
+      const {
+        vouchersId,
+        code,
+        description,
+        valueOrder,
+        disscoutMax,
+        startDay,
+        endDay,
+        quantity,
+        status,
+      } = req.body;
+      const voucher = await Vouchers.findByPk(vouchersId);
+      if (voucher) {
+        await voucher.update({
+          code,
+          description,
+          valueOrder,
+          disscoutMax,
+          startDay,
+          endDay,
+          quantity,
+          status,
         });
-        res.json({ message: "Voucher updated successfully" });
+        res.status(200).json({
+          message: "Thực hiện thành công",
+          code: 0,
+          data: voucher,
+        });
       } else {
-        res.status(404).json({ message: "Voucher not found" });
+        res.json({
+          message: "Voucher không tồn tại",
+          code: 1,
+        });
       }
     } catch (error) {
-      console.error(error);
       next(error);
     }
   },
 
-  // DELETE - Delete voucher by Id
   deleteVoucher: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { voucherId } = req.params;
-      const vouchers = await Vouchers.findByPk(voucherId);
-      if (vouchers) {
-        await vouchers.destroy();
-        res.json({ message: "Voucher deleted successfully" });
+      const { vouchersId } = req.params;
+      const voucher = await Vouchers.findByPk(vouchersId);
+      if (voucher) {
+        await voucher.destroy();
+        res.status(200).json({
+          message: "Thực hiện thành công",
+          code: 0,
+        });
       } else {
-        res.status(404).json({ message: "Voucher not found" });
+        res.json({
+          message: "Voucher không tồn tại",
+          code: 1,
+        });
       }
     } catch (error) {
-      console.error(error);
-      next(error);
+      console.log(error);
+      let errorMessage = "Thực hiện thất bại";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Thực hiện thất bại",
+        code: 1,
+        error: errorMessage,
+      });
     }
   },
 };
 
-export default VoucherController;
+export default VouchersController;

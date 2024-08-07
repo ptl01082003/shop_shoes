@@ -32,7 +32,7 @@ export class OrderDetails extends Model {
   @Column
   public orderCode!: string;
 
-  @Column(DataType.DECIMAL(16, 2))
+  @Column
   public amount!: number;
 
   @Column

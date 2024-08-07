@@ -6,11 +6,11 @@ import { checkAuth } from "../middleware/checkAuth";
 const paymentRouter = Router();
 
 paymentRouter.get("/check-out-momo", PaymentOnlineController.checkoutMomo);
-paymentRouter.get("/check-out-vnpay", PaymentOnlineController.checkoutVnpay);
+paymentRouter.get("/check-out-vnpay", PaymentOnlineController.checkout);
+paymentRouter.get("/", PaymentOnlineController.order);
 
 paymentRouter.use(checkAuth);
 
-paymentRouter.get("/", PaymentOnlineController.order);
 paymentRouter.post("/lst-orders", PaymentOnlineController.getLstOders);
 paymentRouter.post("/lst-payments", PaymentOnlineController.getLstPayments);
 paymentRouter.post("/create-order", PaymentOnlineController.createOrder);
