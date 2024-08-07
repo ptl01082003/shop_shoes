@@ -245,7 +245,7 @@ const PaymentOnlineController = {
         }
       } else {
       }
-      res.redirect(process.env["payment_Success_Url"] as string);
+      res.redirect(`${process.env["paymen_Url"]}?type=success`);
     } catch (error) {
       next(error);
     }

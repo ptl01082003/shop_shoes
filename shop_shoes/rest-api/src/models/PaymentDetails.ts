@@ -2,12 +2,11 @@ import {
   AutoIncrement,
   BelongsTo,
   Column,
-  DataType,
   Default,
   ForeignKey,
   Model,
   PrimaryKey,
-  Table,
+  Table
 } from "sequelize-typescript";
 import { OrderDetails } from "./OrderDetails";
 
