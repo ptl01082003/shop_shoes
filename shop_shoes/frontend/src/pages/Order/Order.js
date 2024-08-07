@@ -1,16 +1,14 @@
-import { Button, Divider, InputNumber, Radio } from "antd";
-import { motion } from "framer-motion";
-import React from "react";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Checkbox, Divider } from "antd";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { emptyCart } from "../../assets/images/index";
+import * as yup from "yup";
 import Breadcrumbs from "../../components/pageProps/Breadcrumbs";
 import { TRANSFER_PRICE, URL_IMAGE } from "../../constants";
 import AxiosClient from "../../networks/AxiosClient";
-import { selectCarts } from "../../redux/slices/cartsSlice";
-import * as yup from "yup";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { changeCarts, selectCarts } from "../../redux/slices/cartsSlice";
+import { useNavigate } from "react-router-dom";
 
 const schema = yup
   .object({
@@ -36,23 +34,30 @@ const Oders = () => {
   });
 
   const dispatch = useDispatch();
+  const navigation = useNavigate();
   const selCarts = useSelector(selectCarts);
+  const [provider, setProvider] = useState("MOMO");
 
   const createNewOders = async (params) => {
     const response = await AxiosClient.post("/payment-orders/create-order", {
       ...params,
-      provider: "MOMO",
+      provider,
     });
-    if (response.code === 0) {
-      window.location.replace(response.data);
+    if (response?.code === 0) {
+      if (response?.data) {
+        window.location.replace(response.data);
+      } else {
+        dispatch(changeCarts({}));
+        navigation("/payment?type=cash", { replace: true , });
+      }
     } else {
     }
   };
-  
+
   return (
-    <div className="px-4 mx-auto max-w-container">
+    <div className="px-4 mx-auto max-w-container py-[3%]">
       <Breadcrumbs title="Cart" />
-      <div className="grid grid-cols-3 gap-8">
+      <div className="grid grid-cols-3 gap-10">
         <div className="col-span-2 space-y-8">
           {selCarts.cartItems?.map((items) => (
             <>
@@ -180,14 +185,39 @@ const Oders = () => {
             <h1 className="mb-4 text-lg italic">
               Lựa chọn hình thức thanh toán
             </h1>
-            <div className="flex items-center space-x-5">
-              <div className="w-[60px]">
-                <img
-                  className="w-full"
-                  src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-MoMo-Circle.png"
+            <div className="space-y-5">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center space-x-4">
+                  <div className="w-[38px]">
+                    <img
+                      className="w-full"
+                      src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png"
+                    />
+                  </div>
+                  <h1>QR Momo</h1>
+                </div>
+                <Checkbox
+                  value={"MOMO"}
+                  checked={provider === "MOMO"}
+                  onChange={(e) => setProvider(e.target.value)}
                 />
               </div>
-              <h1>QR Momo</h1>
+              <div className="flex justify-between items-center">
+                <div className="flex items-center space-x-4">
+                  <div className="w-[38px]">
+                    <img
+                      className="w-full"
+                      src="https://static.vecteezy.com/system/resources/previews/013/484/039/original/secure-payment-3d-icon-png.png"
+                    />
+                  </div>
+                  <h1>Thanh toán khi nhận hàng</h1>
+                </div>
+                <Checkbox
+                  value={"CASH"}
+                  checked={provider === "CASH"}
+                  onChange={(e) => setProvider(e.target.value)}
+                />
+              </div>
             </div>
             <Divider />
             <h3 className="mb-2 text-lg">

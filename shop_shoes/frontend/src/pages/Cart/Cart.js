@@ -39,7 +39,7 @@ const Cart = () => {
   };
 
   return (
-    <div className="px-4 mx-auto max-w-container">
+    <div className="mx-auto max-w-container py-[3%]">
       <Breadcrumbs title="Cart" />
       {selCarts?.cartItems?.length > 0 ? (
         <div className="flex gap-12">

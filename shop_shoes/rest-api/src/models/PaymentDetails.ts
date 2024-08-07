@@ -19,8 +19,9 @@ export enum PAYMENT_PROVIDER {
 
 export enum PAYMENT_STATUS {
   IDLE = "IDLE",
-  SUCCESS = "SUCCESS",
   ERRORS = "ERRORS",
+  SUCCESS = "SUCCESS",
+  CASH = "CASH",
 }
 
 @Table({

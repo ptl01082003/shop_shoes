@@ -150,7 +150,7 @@ export default function UserFeature() {
   const location = useLocation();
 
   return (
-    <div className="container mx-auto flex gap-8 p-8">
+    <div className="container mx-auto flex gap-8 py-[2%]">
       <div className="relative">
         <div className="w-[280px] sticky top-[112px] z-20">
           <ul className="space-y-3">

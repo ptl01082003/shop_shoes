@@ -216,11 +216,11 @@ export default function PaymentInfo() {
               />
             </div>
             <Divider />
-            <h1 className="mb-2 text-right">
+            <h1 className="mb-2 text-left">
               Số lượng: <span className="font-bold">{oders?.totals}</span>
             </h1>
-            <h1 className="text-right">
-              Tổng:{" "}
+            <h1 className="text-left">
+              Tổng:
               <span className="font-bold">{TRANSFER_PRICE(oders?.amount)}</span>
             </h1>
           </div>

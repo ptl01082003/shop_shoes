@@ -103,7 +103,7 @@ const PaymentOnlineController = {
 
       let date = new Date();
       let createDate = moment(date).format("YYYYMMDDHHmmss");
-      const orderId = moment(date).format("DDHHmmss") + "dsdsds";
+      const orderId = moment(date).format("DDHHmmss");
 
       let vnp_Params: any = {};
       vnp_Params["vnp_Version"] = "2.1.0";
@@ -113,7 +113,6 @@ const PaymentOnlineController = {
       vnp_Params["vnp_TxnRef"] = orderId;
       vnp_Params["vnp_TmnCode"] = process.env["vnp_TmnCode"];
       vnp_Params["vnp_OrderInfo"] = "tuyendev";
-      vnp_Params["vnp_BankCode"] = "NCB";
       vnp_Params["vnp_OrderType"] = "other";
       vnp_Params["vnp_Amount"] = 100000 * 100;
       vnp_Params["vnp_ReturnUrl"] = process.env["vnpay_Checkout"];
@@ -136,6 +135,7 @@ const PaymentOnlineController = {
       next(error);
     }
   },
+
   checkout: async (req: Request, res: Response, next: NextFunction) => {
     try {
       let vnp_Params: any = req.query;
@@ -157,7 +157,8 @@ const PaymentOnlineController = {
       //kiểm tra tính toàn vẹn dữ liệu của giao dịch , sử dụng các tham số trên url trả về
       //thực hiện tuần tự các bước như yêu cầu thanh toán và check với mã băm trả về
       if (secureHash === signed) {
-        console.log("hihi");
+        console.log("vnp_Params", vnp_Params);
+        res.redirect(process.env["payment_Success_Url"] as string);
       } else {
         //check đơn hàng tại đây và lưu vào database
       }
@@ -165,6 +166,7 @@ const PaymentOnlineController = {
       next(error);
     }
   },
+
   checkoutMomo: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const accessKey = "F8BBA842ECF85";
@@ -293,15 +295,17 @@ const PaymentOnlineController = {
             productDetailId: products.productDetailId,
             price: products.productDetails.products.price,
             priceDiscount: products.productDetails.products.priceDiscount,
+            status: provider == PAYMENT_PROVIDER.CASH ? ODER_STATUS.CHO_XAC_NHAN : ODER_STATUS.CHO_THANH_TOAN,
           });
           ordersAmount += productsAmount;
           await products.destroy();
         }
 
         await PaymentDetails.create({
-          amount: ordersAmount,
           provider,
+          amount: ordersAmount,
           orderDetailId: newOrders.orderDetailId,
+          status: provider == PAYMENT_PROVIDER.CASH ? PAYMENT_STATUS.CASH : PAYMENT_STATUS.IDLE,
         });
 
         newOrders.amount = ordersAmount;
@@ -327,6 +331,14 @@ const PaymentOnlineController = {
             );
           case PAYMENT_PROVIDER.VN_PAY:
             break;
+          case PAYMENT_PROVIDER.CASH:
+            return res.json(
+              ResponseBody({
+                data: null,
+                code: RESPONSE_CODE.SUCCESS,
+                message: "Thực hiện thành công",
+              })
+            );
         }
       } else {
         return res.json(
