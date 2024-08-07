@@ -53,4 +53,11 @@ export class Vouchers extends Model {
   @Default(Vouchers_STATUS.ISACTIVE)
   @Column
   public status?: string;
+
+  @Default(Vouchers_TYPE.MONEY)
+  @Column
+  public typeValue?: string;
+
+  @Column
+  public productId!: number;
 }

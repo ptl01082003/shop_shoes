@@ -5,8 +5,8 @@ const routerVouchers = Router();
 
 routerVouchers.post("/create", VouchersController.addVoucher);
 routerVouchers.post("/", VouchersController.getVouchers);
-routerVouchers.post("/:vouchersId", VouchersController.getById);
-routerVouchers.post("/update", VouchersController.updateVoucher);
-routerVouchers.post("/delete/:vouchersId", VouchersController.deleteVoucher);
+routerVouchers.post("/", VouchersController.getById);
+routerVouchers.post("/edit", VouchersController.updateVoucher);
+routerVouchers.post("/remove", VouchersController.deleteVoucher);
 
 export default routerVouchers;
