@@ -20,6 +20,7 @@ import OriginsPage from "./pages/Origins";
 import SizePage from "./pages/Sizes";
 import PromotionsPage from "./pages/Promotions";
 import ProductPage from "./pages/Products";
+import VouchersPage from "./pages/Vouchers";
 
 function App() {
   return (
@@ -54,6 +55,7 @@ function App() {
             <Route path={"sizes"} element={<SizePage />} />
             <Route path={"promotions"} element={<PromotionsPage />} />
             <Route path={"products"} element={<ProductPage />} />
+            <Route path={"vouchers"} element={<VouchersPage />} />
             {/* <Route path={"product-details"} element={<ProductDetailsPage />} /> */}
           </Route>
         </Routes>

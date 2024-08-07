@@ -3,6 +3,7 @@ import {
   BelongsTo,
   Column,
   DataType,
+  Default,
   ForeignKey,
   Model,
   PrimaryKey,
@@ -36,6 +37,10 @@ export class Promotions extends Model {
 
   @Column(DataType.DATE)
   public endDay?: string;
+
+  @Default(PROMOTIONS_STATUS.ISACTIVE)
+  @Column
+  public status?: string;
 
   @Column
   public productId!: number;

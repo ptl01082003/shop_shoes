@@ -14,24 +14,29 @@ import {
   message,
 } from "antd";
 import { useEffect, useState } from "react";
-import PromotionService from "../services/PromotionApi";
+import VoucherService from "../services/VoucherApi";
 import { tableCustomizeStyle } from "../styles/styles";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import moment from "moment";
-import { PROMOTIONS_STATUS } from "../constants/constants";
+import { Vouchers_STATUS, Vouchers_TYPE } from "../constants/constants";
+
 const { Option } = Select;
 
 type FieldType = {
-  name?: string;
-  discountPrice?: number;
+  code?: string;
+  description?: string;
+  valueOrder?: number;
+  disscoutMax?: number;
   startDay?: moment.Moment;
   endDay?: moment.Moment;
+  quantity?: number;
   status?: string;
+  typeValue?: string;
   productId?: number;
 };
 
-export default function PromotionsPage() {
-  const [lstPromotions, setLstPromotions] = useState<any[]>([]);
+export default function VouchersPage() {
+  const [lstVouchers, setLstVouchers] = useState<any[]>([]);
   const [shouldRender, setShouldRender] = useState<boolean>(false);
   const [isOpenCreateModal, setOpenCreateModal] = useState<boolean>(false);
   const [openEditModal, setOpenEditModal] = useState<any>({
@@ -42,18 +47,28 @@ export default function PromotionsPage() {
   const columns = [
     {
       title: "ID",
-      dataIndex: "promotionId",
-      key: "promotionId",
+      dataIndex: "voucherId",
+      key: "voucherId",
     },
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
+      title: "Code",
+      dataIndex: "code",
+      key: "code",
     },
     {
-      title: "Discount Price",
-      dataIndex: "discountPrice",
-      key: "discountPrice",
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+    },
+    {
+      title: "Value Order",
+      dataIndex: "valueOrder",
+      key: "valueOrder",
+    },
+    {
+      title: "Discount Max",
+      dataIndex: "disscoutMax",
+      key: "disscoutMax",
     },
     {
       title: "Start Day",
@@ -68,9 +83,19 @@ export default function PromotionsPage() {
       render: (text: string) => moment(text).format("YYYY-MM-DD"),
     },
     {
+      title: "Quantity",
+      dataIndex: "quantity",
+      key: "quantity",
+    },
+    {
       title: "Status",
       dataIndex: "status",
       key: "status",
+    },
+    {
+      title: "Type Value",
+      dataIndex: "typeValue",
+      key: "typeValue",
     },
     {
       title: "Product ID",
@@ -83,13 +108,13 @@ export default function PromotionsPage() {
         <Space size="middle">
           <Button
             icon={<EditOutlined />}
-            onClick={() => editPromotionItems(record)}
+            onClick={() => editVoucherItems(record)}
           >
             Edit
           </Button>
           <Button
             icon={<DeleteOutlined />}
-            onClick={() => deletePromotionItems(record)}
+            onClick={() => deleteVoucherItems(record)}
           >
             Delete
           </Button>
@@ -100,22 +125,22 @@ export default function PromotionsPage() {
 
   useEffect(() => {
     (async () => {
-      const getPromotions = await PromotionService.getPromotions();
-      setLstPromotions(getPromotions?.data || []);
+      const getVouchers = await VoucherService.getVouchers();
+      setLstVouchers(getVouchers?.data || []);
     })();
   }, [shouldRender]);
 
-  const deletePromotionItems = async (record: any) => {
-    const res: any = await PromotionService.deletePromotion(record.promotionId);
+  const deleteVoucherItems = async (record: any) => {
+    const res: any = await VoucherService.deleteVoucher(record.voucherId);
     if (res.code === 0) {
-      message.success("Promotion deleted successfully");
+      message.success("Voucher deleted successfully");
       setShouldRender((x) => !x);
     } else {
-      message.error("Failed to delete promotion");
+      message.error("Failed to delete voucher");
     }
   };
 
-  const editPromotionItems = async (record: any) => {
+  const editVoucherItems = async (record: any) => {
     setOpenEditModal({
       open: true,
       data: {
@@ -129,30 +154,35 @@ export default function PromotionsPage() {
   const onFinish: FormProps<FieldType>["onFinish"] = async (
     values: FieldType
   ) => {
-    const res = await PromotionService.createPromotion({
+    const res = await VoucherService.createVoucher({
       ...values,
       startDay: values.startDay?.format("YYYY-MM-DD"),
       endDay: values.endDay?.format("YYYY-MM-DD"),
     });
     if (res.code === 0) {
-      message.success("Promotion created successfully");
+      message.success("Voucher created successfully");
       setOpenCreateModal(false);
       setShouldRender((x) => !x);
     } else {
-      message.error("Failed to create promotion");
+      message.error("Failed to create voucher");
     }
   };
 
   const onEditFinish: FormProps<FieldType>["onFinish"] = async (
     values: FieldType
   ) => {
-    const res = await PromotionService.updatePromotion({
+    const res = await VoucherService.updateVoucher({
       ...values,
-      promotionId: openEditModal?.data?.promotionId,
+      voucherId: openEditModal?.data?.voucherId,
+      startDay: values.startDay?.format("YYYY-MM-DD"),
+      endDay: values.endDay?.format("YYYY-MM-DD"),
     });
     if (res.code === 0) {
+      message.success("Voucher updated successfully");
       setOpenEditModal(undefined);
       setShouldRender((x) => !x);
+    } else {
+      message.error("Failed to update voucher");
     }
   };
 
@@ -172,7 +202,7 @@ export default function PromotionsPage() {
       <div css={tableCustomizeStyle} className="table-responsive">
         <Table
           columns={columns}
-          dataSource={lstPromotions}
+          dataSource={lstVouchers}
           pagination={false}
           className="ant-border-space"
         />
@@ -200,16 +230,30 @@ export default function PromotionsPage() {
           autoComplete="off"
         >
           <Form.Item<FieldType>
-            label="Name"
-            name="name"
-            rules={[{ required: true, message: "Name is required!" }]}
+            label="Code"
+            name="code"
+            rules={[{ required: true, message: "Code is required!" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item<FieldType>
-            label="Discount Price"
-            name="discountPrice"
-            rules={[{ required: true, message: "Discount Price is required!" }]}
+            label="Description"
+            name="description"
+            rules={[{ required: true, message: "Description is required!" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item<FieldType>
+            label="Value Order"
+            name="valueOrder"
+            rules={[{ required: true, message: "Value Order is required!" }]}
+          >
+            <InputNumber min={0} style={{ width: "100%" }} />
+          </Form.Item>
+          <Form.Item<FieldType>
+            label="Discount Max"
+            name="disscoutMax"
+            rules={[{ required: true, message: "Discount Max is required!" }]}
           >
             <InputNumber min={0} style={{ width: "100%" }} />
           </Form.Item>
@@ -228,14 +272,28 @@ export default function PromotionsPage() {
             <DatePicker style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item<FieldType>
+            label="Quantity"
+            name="quantity"
+            rules={[{ required: true, message: "Quantity is required!" }]}
+          >
+            <InputNumber min={0} style={{ width: "100%" }} />
+          </Form.Item>
+          <Form.Item<FieldType>
             label="Status"
             name="status"
             rules={[{ required: true, message: "Status is required!" }]}
           >
             <Select>
-              <Option value={PROMOTIONS_STATUS.ISACTIVE}>ISACTIVE</Option>
-              <Option value={PROMOTIONS_STATUS.PERCENT}>PERCENT</Option>
+              <Option value={Vouchers_STATUS.ISACTIVE}>ISACTIVE</Option>
+              <Option value={Vouchers_STATUS.EXPIRED}>PERCENT</Option>
             </Select>
+          </Form.Item>
+          <Form.Item<FieldType>
+            label="Type Value"
+            name="typeValue"
+            rules={[{ required: true, message: "Type Value is required!" }]}
+          >
+            <Input />
           </Form.Item>
           <Form.Item<FieldType>
             label="Product ID"
@@ -257,7 +315,7 @@ export default function PromotionsPage() {
         title=""
         centered
         closable
-        open={openEditModal?.open}
+        open={openEditModal.open}
         destroyOnClose={true}
         onCancel={() => {
           setOpenEditModal(undefined);
@@ -270,21 +328,35 @@ export default function PromotionsPage() {
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
           style={{ maxWidth: 600 }}
-          initialValues={openEditModal?.data}
+          initialValues={openEditModal.data}
           onFinish={onEditFinish}
           autoComplete="off"
         >
           <Form.Item<FieldType>
-            label="Name"
-            name="name"
-            rules={[{ required: true, message: "Name is required!" }]}
+            label="Code"
+            name="code"
+            rules={[{ required: true, message: "Code is required!" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item<FieldType>
-            label="Discount Price"
-            name="discountPrice"
-            rules={[{ required: true, message: "Discount Price is required!" }]}
+            label="Description"
+            name="description"
+            rules={[{ required: true, message: "Description is required!" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item<FieldType>
+            label="Value Order"
+            name="valueOrder"
+            rules={[{ required: true, message: "Value Order is required!" }]}
+          >
+            <InputNumber min={0} style={{ width: "100%" }} />
+          </Form.Item>
+          <Form.Item<FieldType>
+            label="Discount Max"
+            name="disscoutMax"
+            rules={[{ required: true, message: "Discount Max is required!" }]}
           >
             <InputNumber min={0} style={{ width: "100%" }} />
           </Form.Item>
@@ -303,14 +375,28 @@ export default function PromotionsPage() {
             <DatePicker style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item<FieldType>
+            label="Quantity"
+            name="quantity"
+            rules={[{ required: true, message: "Quantity is required!" }]}
+          >
+            <InputNumber min={0} style={{ width: "100%" }} />
+          </Form.Item>
+          <Form.Item<FieldType>
             label="Status"
             name="status"
             rules={[{ required: true, message: "Status is required!" }]}
           >
             <Select>
-              <Option value={PROMOTIONS_STATUS.ISACTIVE}>ISACTIVE</Option>
-              <Option value={PROMOTIONS_STATUS.PERCENT}>PERCENT</Option>
+              <Option value={Vouchers_STATUS.ISACTIVE}>ISACTIVE</Option>
+              <Option value={Vouchers_STATUS.EXPIRED}>PERCENT</Option>
             </Select>
+          </Form.Item>
+          <Form.Item<FieldType>
+            label="Type Value"
+            name="typeValue"
+            rules={[{ required: true, message: "Type Value is required!" }]}
+          >
+            <Input />
           </Form.Item>
           <Form.Item<FieldType>
             label="Product ID"
