@@ -28,6 +28,15 @@ const CartsController = {
         },
       });
 
+      if (quanity < 0) {
+        return res.json(
+          ResponseBody({
+            code: RESPONSE_CODE.ERRORS,
+            message: `Số lượng sản phẩm không hợp lệ`,
+          })
+        );
+      }
+      
       if (productDetails) {
         const isExceedQuanity = productDetails.quantity < quanity;
         const actualQuanity = isExceedQuanity

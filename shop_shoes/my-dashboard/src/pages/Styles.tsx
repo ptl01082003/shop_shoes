@@ -1,10 +1,11 @@
 /**@jsxImportSource @emotion/react */
 
 import React, { useEffect, useState } from "react";
-import { Button, Form, Input, Modal, Table } from "antd";
+import { Button, Form, Input, Modal, Space, Table } from "antd";
 import StyleService from "../services/StyleApi";
 import { FormProps } from "antd/lib";
 import { tableCustomizeStyle } from "../styles/styles";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 type StyleType = {
   styleId?: number;
@@ -95,22 +96,20 @@ const StylesPage: React.FC = () => {
     {
       title: "Actions",
       render: (_: any, record: StyleType) => (
-        <div className="flex space-x-4">
+        <Space size="middle">
           <Button
-            size="large"
-            type="primary"
+            icon={<EditOutlined />}
             onClick={() => editStyleItems(record)}
           >
-            SỬA
+            Sửa
           </Button>
           <Button
-            size="large"
-            type="dashed"
+            icon={<DeleteOutlined />}
             onClick={() => deleteStyleItems(record)}
           >
-            XÓA
+            Xóa
           </Button>
-        </div>
+        </Space>
       ),
     },
   ];
