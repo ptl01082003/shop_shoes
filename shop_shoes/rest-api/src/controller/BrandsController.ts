@@ -6,7 +6,6 @@ const BrandsController = {
   addBrand: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { name } = req.body;
-      console.log(name);
       const brands = await Brands.create({ name });
       res.json(
         ResponseBody({

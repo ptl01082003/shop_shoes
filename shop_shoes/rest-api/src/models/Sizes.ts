@@ -1,13 +1,11 @@
 // models/Sizes.ts
 import {
+  AutoIncrement,
   Column,
   Model,
   PrimaryKey,
-  Table,
-  HasMany,
-  AutoIncrement,
+  Table
 } from "sequelize-typescript";
-import { ProductDetails } from "./ProductDetails";
 
 @Table({
   tableName: "sizes",

@@ -210,7 +210,7 @@ const Oders = () => {
                       src="https://static.vecteezy.com/system/resources/previews/013/484/039/original/secure-payment-3d-icon-png.png"
                     />
                   </div>
-                  <h1>Thanh toán khi nhận hàng</h1>
+                  <h1>Thanh toánnhận hàng</h1>
                 </div>
                 <Checkbox
                   value={"CASH"}

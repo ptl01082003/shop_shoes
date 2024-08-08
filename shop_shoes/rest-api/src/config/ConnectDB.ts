@@ -1,19 +1,5 @@
-import bcrypt from "bcrypt";
 import path from "path";
 import { Sequelize } from "sequelize-typescript";
-import { ROLE_TYPES, Roles } from "../models/Roles";
-import { Users } from "../models/Users";
-// <<<<<<< Updated upstream
-// import fs from "fs";
-// import { Images } from "../models/Images";
-// import { Products } from "../models/Products";
-// import { ShoppingCarts } from "../models/ShoppingCarts";
-// import { CartItems } from "../models/CartItems";
-// import { PaymentDetails } from "../models/PaymentDetails";
-// import { OrderDetails } from "../models/OrderDetails";
-// import { OrderItems } from "../models/OrderItems";
-// =======
-// >>>>>>> Stashed changes
 
 export async function connectDB() {
   const sequelize = new Sequelize({
@@ -33,7 +19,6 @@ export async function connectDB() {
   await sequelize.authenticate();
   await sequelize.sync({ force: false, alter: true });
 
-  // <<<<<<< Updated upstream
   //   // fs.readdir("./public/Uploads", async (err, files) => {
   //   //   const images = await Images.findAll();
   //   //   const lstPath = images.map(image => image.path);
@@ -53,6 +38,5 @@ export async function connectDB() {
   //   // }
 
   // =======
-  // >>>>>>> Stashed changes
   console.log("Connection has been established successfully.");
 }

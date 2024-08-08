@@ -2,6 +2,7 @@ import {
   AutoIncrement,
   BelongsTo,
   Column,
+  DataType,
   Default,
   ForeignKey,
   Model,
@@ -47,6 +48,12 @@ export class OrderItems extends Model {
 
   @Column
   public userId!: number;
+
+  @Default(false)
+  @Column({
+    type: DataType.BOOLEAN
+  })
+  public isReview!: boolean;
 
   @Column
   public quanity!: number;

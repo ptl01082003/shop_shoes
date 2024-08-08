@@ -48,7 +48,7 @@ export const URL_IMAGE = (path) => {
 };
 
 export const PAYMENT_STATUS = {
-  CASH: "Thanh toán khi nhận hàng",
+  CASH: "Ship COD",
   IDLE: "Chờ thanh toán",
   SUCCESS: "Thành công",
   ERRORS: "Giao dịch lỗi",

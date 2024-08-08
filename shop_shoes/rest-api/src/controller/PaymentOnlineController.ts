@@ -445,82 +445,91 @@ const PaymentOnlineController = {
       const oderDetails = await OrderDetails.findAll({
         where: { userId },
       });
-
-      for await (const orders of oderDetails) {
-        let ordersAmount = 0;
-        const paymentDetails = await PaymentDetails.findOne({
-          where: { orderDetailId: orders?.orderDetailId },
-        }) as PaymentDetails;
-
-        const orderItems = await OrderItems.findAll({
-          where: { orderDetailId: orders.orderDetailId },
-          include: [
-            {
-              model: ProductDetails,
-              include: [
-                {
-                  model: Products,
-                  include: [
-                    {
-                      model: Images,
-                    },
-                  ],
-                },
-                {
-                  model: Sizes,
-                },
-              ],
-            },
-          ],
-        });
-        // Trong trường hợp đơn hàng chưa được thanh toán cập nhật lại giá
-        if (paymentDetails.status != PAYMENT_STATUS.SUCCESS) {
-          for await (const products of orderItems) {
-            const productsAmount = products.quanity * Number(products.productDetails.products.priceDiscount);
-            products.price = products.productDetails.products.price || 0;
-            products.amount = productsAmount;
-            products.priceDiscount = products.productDetails.products.priceDiscount || 0;
-            ordersAmount += productsAmount;
-            await products.save();
+      if(oderDetails) {
+        for await (const orders of oderDetails) {
+          let ordersAmount = 0;
+          const paymentDetails = await PaymentDetails.findOne({
+            where: { orderDetailId: orders?.orderDetailId },
+          }) as PaymentDetails;
+  
+          const orderItems = await OrderItems.findAll({
+            where: { orderDetailId: orders.orderDetailId },
+            include: [
+              {
+                model: ProductDetails,
+                include: [
+                  {
+                    model: Products,
+                    include: [
+                      {
+                        model: Images,
+                      },
+                    ],
+                  },
+                  {
+                    model: Sizes,
+                  },
+                ],
+              },
+            ],
+          });
+          // Trong trường hợp đơn hàng chưa được thanh toán cập nhật lại giá
+          if (paymentDetails.status != PAYMENT_STATUS.SUCCESS) {
+            for await (const products of orderItems) {
+              const productsAmount = products.quanity * Number(products.productDetails.products.priceDiscount);
+              products.price = products.productDetails.products.price || 0;
+              products.amount = productsAmount;
+              products.priceDiscount = products.productDetails.products.priceDiscount || 0;
+              ordersAmount += productsAmount;
+              await products.save();
+            }
+  
+            orders.amount = ordersAmount;
+            paymentDetails.amount = ordersAmount;
+  
+            await orders.save();
+            await paymentDetails.save();
           }
-
-          orders.amount = ordersAmount;
-          paymentDetails.amount = ordersAmount;
-
-          await orders.save();
-          await paymentDetails.save();
+  
+  
+          const mergeProducts = orderItems.map((products) => {
+            return {
+              price: products.price,
+              amount: products?.amount,
+              quanity: products?.quanity,
+              priceDiscount: products.priceDiscount,
+              productDetailId: products?.productDetailId,
+              name: products?.productDetails?.products?.name,
+              sizeName: products?.productDetails?.sizes?.name,
+              quanityLimit: products?.productDetails?.quantity,
+              path: products?.productDetails?.products?.gallery?.[0]?.path,
+            };
+          });
+  
+  
+          transferData.push({
+            ...orders?.toJSON(),
+            ...paymentDetails?.toJSON(),
+            orderItems: mergeProducts
+          })
         }
-
-
-        const mergeProducts = orderItems.map((products) => {
-          return {
-            price: products.price,
-            amount: products?.amount,
-            quanity: products?.quanity,
-            priceDiscount: products.priceDiscount,
-            productDetailId: products?.productDetailId,
-            name: products?.productDetails?.products?.name,
-            sizeName: products?.productDetails?.sizes?.name,
-            quanityLimit: products?.productDetails?.quantity,
-            path: products?.productDetails?.products?.gallery?.[0]?.path,
-          };
-        });
-
-
-        transferData.push({
-          ...orders?.toJSON(),
-          ...paymentDetails?.toJSON(),
-          orderItems: mergeProducts
-        })
+  
+        res.json(
+          ResponseBody({
+            code: RESPONSE_CODE.SUCCESS,
+            message: "Thực hiện thành công",
+            data: transferData,
+          })
+        );
+      }else {
+        res.json(
+          ResponseBody({
+            code: RESPONSE_CODE.SUCCESS,
+            message: "Bạn chưa có hóa đơn",
+            data: [],
+          })
+        );
       }
-
-      res.json(
-        ResponseBody({
-          code: RESPONSE_CODE.SUCCESS,
-          message: "Thực hiện thành công",
-          data: transferData,
-        })
-      );
     } catch (error) {
       next(error);
     }
@@ -528,10 +537,14 @@ const PaymentOnlineController = {
 
   getLstOders: async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const { status } = req.body;
       const userId = req.userId;
-
+      const where: any = { userId };
+      if (status) {
+        where["status"] = status;
+      }
       const orderItems = await OrderItems.findAll({
-        where: { userId },
+        where,
         include: [
           {
             model: ProductDetails,
@@ -554,35 +567,46 @@ const PaymentOnlineController = {
           }
         ],
       });
-      let transferData: any[] = [];
-      for await (const orders of orderItems) {
-        const payments = await PaymentDetails.findOne({
-          where: { orderDetailId: orders.orderDetailId }
-        })
-        const isPaid = payments?.status === PAYMENT_STATUS.SUCCESS;
-        transferData.push({
-          status: orders.status,
-          paymentStatus: payments?.status,
-          price: isPaid ? orders.price : orders.productDetails.products.price,
-          amount: isPaid ? orders?.amount : orders.quanity * Number(orders.productDetails.products.priceDiscount),
-          quanity: orders?.quanity,
-          priceDiscount: isPaid ? orders.priceDiscount : orders.productDetails.products.priceDiscount,
-          productDetailId: orders?.productDetailId,
-          name: orders?.productDetails?.products?.name,
-          sizeName: orders?.productDetails?.sizes?.name,
-          quanityLimit: orders?.productDetails?.quantity,
-          path: orders?.productDetails?.products?.gallery?.[0]?.path,
-        })
+      if (orderItems) {
+        let transferData: any[] = [];
+        for await (const orders of orderItems) {
+          const payments = await PaymentDetails.findOne({
+            where: { orderDetailId: orders.orderDetailId }
+          })
+          const isPaid = payments?.status === PAYMENT_STATUS.SUCCESS;
+          transferData.push({
+            status: orders.status,
+            isReview: orders.isReview,
+            paymentStatus: payments?.status,
+            price: isPaid ? orders.price : orders.productDetails.products.price,
+            amount: isPaid ? orders?.amount : orders.quanity * Number(orders.productDetails.products.priceDiscount),
+            quanity: orders?.quanity,
+            priceDiscount: isPaid ? orders.priceDiscount : orders.productDetails.products.priceDiscount,
+            productDetailId: orders?.productDetailId,
+            name: orders?.productDetails?.products?.name,
+            sizeName: orders?.productDetails?.sizes?.name,
+            quanityLimit: orders?.productDetails?.quantity,
+            path: orders?.productDetails?.products?.gallery?.[0]?.path,
+          })
+        }
+
+        res.json(
+          ResponseBody({
+            code: RESPONSE_CODE.SUCCESS,
+            message: "Thực hiện thành công",
+            data: transferData,
+          })
+        );
+      } else {
+        res.json(
+          ResponseBody({
+            code: RESPONSE_CODE.SUCCESS,
+            message: "Bạn chưa mua sản phẩm",
+            data: [],
+          })
+        );
       }
 
-
-      res.json(
-        ResponseBody({
-          code: RESPONSE_CODE.SUCCESS,
-          message: "Thực hiện thành công",
-          data: transferData,
-        })
-      );
     } catch (error) {
       next(error);
     }
