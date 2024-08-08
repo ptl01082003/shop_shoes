@@ -9,6 +9,9 @@ import { Origins } from "../models/Origins";
 import { Styles } from "../models/Styles";
 import { Brands } from "../models/Brands";
 import { Op } from "sequelize";
+import { Reviewers } from "../models/Reviewers";
+import { Users } from "../models/Users";
+import { ReviewerPhoto } from "../models/ReviewerPhoto";
 
 const ProductsController = {
   addProduct: async (req: Request, res: Response, next: NextFunction) => {
@@ -250,6 +253,22 @@ const ProductsController = {
           attributes: ["path"],
         });
 
+        const reviewers = await Reviewers.findAll({
+          where: { productId: products.productId },
+          attributes: ["contents", "stars", "reviewerId", "createdAt"],
+          order: [['createdAt', 'DESC']],
+          include: [
+            {
+              model: Users,
+              attributes: ["fullName"]
+            },
+            {
+              model: ReviewerPhoto,
+              attributes: ["path"]
+            }
+          ]
+        })
+
         res.json({
           message: "Thực hiện thành công",
           code: RESPONSE_CODE.SUCCESS,
@@ -257,6 +276,7 @@ const ProductsController = {
             gallery,
             sizes,
             ...products.toJSON(),
+            reviewers
           },
         });
       } else {

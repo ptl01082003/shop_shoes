@@ -1,6 +1,6 @@
-import { Divider, InputNumber, Tabs } from "antd";
+import { Carousel, Divider, InputNumber, Rate, Tabs, Watermark } from "antd";
 import clsx from "clsx";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import Slider from "react-slick";
@@ -9,7 +9,7 @@ import { TRANSFER_PRICE, URL_IMAGE } from "../../constants";
 import AxiosClient from "../../networks/AxiosClient";
 import { changeCarts } from "../../redux/slices/cartsSlice";
 import { selectUserInfo } from "../../redux/slices/usersSlice";
-
+import moment from "moment";
 function SampleNextArrow(props) {
   const { onClick } = props;
   return (
@@ -108,6 +108,15 @@ export default function ProductDetails() {
       toast.error(newCarts?.messsage);
     }
   };
+
+  const averageRating = useMemo(
+    () =>
+      (products?.reviewers?.reduce(
+        (value, review) => value + review?.stars,
+        0
+      ) || 0) / (products?.reviewers?.length || 1),
+    [products]
+  );
 
   return (
     <div className="container mx-auto my-10">
@@ -227,7 +236,42 @@ export default function ProductDetails() {
           {
             key: "2",
             label: "Đánh giá",
-            children: "Content of Tab Pane 2",
+            children: (
+              <div className="space-y-4">
+                <div className="flex items-center space-x-5"> <h1 className="text-[#ee4d2d] font-bold text-lg">
+                  {averageRating.toFixed(1)} trên 5
+                </h1>
+                <Rate allowHalf value={averageRating} /></div>
+                <Divider />
+                {products?.reviewers?.map((review) => {
+                  return (
+                    <div>
+                      <h1 className="font-bold">{review?.user?.fullName}</h1>
+                      <h1 className="text-sm mb-2">
+                        {moment(review?.createdAt).format("HH:mm DD/MM/YYYY")}
+                      </h1>
+                      <Rate value={review?.stars} />
+                      <h1 className="mb-5 mt-2">{review?.contents}</h1>
+                      <div className="w-[30%]">
+                        <Carousel arrows infinite={true} autoplay={true}>
+                          {review?.reviewerPhoto?.map((photo) => (
+                            <Watermark content={products?.name}>
+                              <div className="aspect-video bg-slate-100">
+                                <img
+                                  src={URL_IMAGE(photo?.path)}
+                                  className="w-full h-full object-contain"
+                                />
+                              </div>
+                            </Watermark>
+                          ))}
+                        </Carousel>
+                      </div>
+                      <Divider />
+                    </div>
+                  );
+                })}
+              </div>
+            ),
           },
         ]}
       />

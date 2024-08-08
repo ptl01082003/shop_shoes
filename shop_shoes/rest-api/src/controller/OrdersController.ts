@@ -135,16 +135,16 @@ const OrdersController = {
           );
         }
       }
-      } else {
-        res.json(
-          ResponseBody({
-            code: RESPONSE_CODE.SUCCESS,
-            message: "Đơn hàng chưa hoàn thành",
-            data: null,
-          })
-        );
-      }
+    } else {
+      res.json(
+        ResponseBody({
+          code: RESPONSE_CODE.SUCCESS,
+          message: "Đơn hàng chưa hoàn thành",
+          data: null,
+        })
+      );
     }
   }
+}
 
-  export default OrdersController;
+export default OrdersController;

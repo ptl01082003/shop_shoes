@@ -82,7 +82,7 @@ const Header = () => {
   ];
 
   return (
-    <div className="w-full h-20 bg-[#111111] sticky top-0 z-50 border-b-[1px] border-b-gray-200">
+    <div className="w-full h-20 bg-[#111111] sticky  top-0 z-[60] border-b-[1px] border-b-gray-200">
       <nav className="max-w-container mx-auto h-full relative px-4">
         <Flex className="h-full flex justify-between items-center">
           <Link to="/">
