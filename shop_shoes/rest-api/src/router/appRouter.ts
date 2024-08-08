@@ -19,6 +19,7 @@ import { uploadRouter } from "./uploadRouter";
 import userRouter from "./UserRouter";
 import routerPromotion from "./PromotitonRouter";
 import routerVouchers from "./VoucherRouter";
+import ordersRouter from "./OrdersRouter";
 
 const router = express.Router();
 
@@ -38,6 +39,7 @@ export function appRouter() {
   router.use("/promotions", routerPromotion);
   router.use("/vouchers", routerVouchers);
   router.use("/payment-orders", paymentRouter);
+  router.use("/orders", ordersRouter);
 
   router.use("*", (_, res) => {
     res.status(STATUS_CODE.NOT_FOUND).json(
