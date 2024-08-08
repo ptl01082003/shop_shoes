@@ -1,4 +1,12 @@
-import { Carousel, Divider, InputNumber, Rate, Tabs, Watermark } from "antd";
+import {
+  Carousel,
+  Divider,
+  Empty,
+  InputNumber,
+  Rate,
+  Tabs,
+  Watermark,
+} from "antd";
 import clsx from "clsx";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -102,7 +110,7 @@ export default function ProductDetails() {
       productDetailId: currentSize?.productDetailId,
     });
     if (newCarts?.code === 0) {
-      setCounterSize(newCarts.data?.quanity);
+      setCounterSize(newCarts.data?.quanity || 1);
       dispatch(changeCarts(newCarts.data?.carts));
     } else {
       toast.error(newCarts?.messsage);
@@ -167,10 +175,10 @@ export default function ProductDetails() {
             <span>{products?.name}</span>
           </h1>
           <h3 className="text-lg">
-            Giá: <span>{TRANSFER_PRICE(products?.price)}</span>
+            <span>{TRANSFER_PRICE(products?.price)}</span>
           </h3>
           <Divider />
-          <h3>Chọn sizes:</h3>
+          <h3 className="mb-2">Chọn sizes:</h3>
           <div className="flex flex-wrap gap-4 mb-5">
             {products?.sizes?.map((size) => (
               <div
@@ -203,7 +211,7 @@ export default function ProductDetails() {
             ))}
           </div>
           <h3 className="mb-5 italic">
-            Kho: <span>{currentSize?.quantity}</span>
+            Số lượng: <span>{currentSize?.quantity}</span>
           </h3>
           <InputNumber
             min={1}
@@ -215,7 +223,7 @@ export default function ProductDetails() {
           <Divider />
           <button
             onClick={addProductsToCart}
-            className="w-[260px] px-5 py-3 rounded-full tex-center bg-[#3A4980] font-bold text-white"
+            className="w-[260px] px-5 py-3 rounded-full tex-center bg-[#eef2fe] font-bold text-[#6b63e9]"
           >
             THÊM VÀO GIỎ HÀNG
           </button>
@@ -229,6 +237,7 @@ export default function ProductDetails() {
             label: "Mô tả",
             children: (
               <div
+                className="view-product-details"
                 dangerouslySetInnerHTML={{ __html: products?.description }}
               />
             ),
@@ -238,38 +247,65 @@ export default function ProductDetails() {
             label: "Đánh giá",
             children: (
               <div className="space-y-4">
-                <div className="flex items-center space-x-5"> <h1 className="text-[#ee4d2d] font-bold text-lg">
-                  {averageRating.toFixed(1)} trên 5
-                </h1>
-                <Rate allowHalf value={averageRating} /></div>
+                <div className="flex flex-col items-center space-x-5 bg-[#fffbeb] p-8 rounded-xl">
+                  <h1 className="font-manrope font-bold text-5xl text-amber-400 mb-6">
+                    {averageRating == 0 ? 0 : averageRating.toFixed(1)}
+                  </h1>
+                  <Rate
+                    style={{ color: "#fbbf24", fontSize: 25 }}
+                    allowHalf
+                    value={averageRating}
+                  />
+                  <h1 className="mt-5 font-medium text-xl leading-8 text-gray-900 text-center">
+                    {products?.reviewers?.length || 0} đánh giá
+                  </h1>
+                </div>
                 <Divider />
-                {products?.reviewers?.map((review) => {
-                  return (
-                    <div>
-                      <h1 className="font-bold">{review?.user?.fullName}</h1>
-                      <h1 className="text-sm mb-2">
-                        {moment(review?.createdAt).format("HH:mm DD/MM/YYYY")}
-                      </h1>
-                      <Rate value={review?.stars} />
-                      <h1 className="mb-5 mt-2">{review?.contents}</h1>
-                      <div className="w-[30%]">
-                        <Carousel arrows infinite={true} autoplay={true}>
-                          {review?.reviewerPhoto?.map((photo) => (
-                            <Watermark content={products?.name}>
-                              <div className="aspect-video bg-slate-100">
-                                <img
-                                  src={URL_IMAGE(photo?.path)}
-                                  className="w-full h-full object-contain"
-                                />
-                              </div>
-                            </Watermark>
-                          ))}
-                        </Carousel>
+                {Array.isArray(products?.reviewers) &&
+                products?.reviewers?.length != 0 ? (
+                  products?.reviewers?.map((review) => {
+                    return (
+                      <div>
+                        <div className="flex justify-between items-center">
+                          <Rate
+                            value={review?.stars}
+                            style={{ color: "#fbbf24", fontSize: 24 }}
+                          />
+                          <div className="flex items-center space-x-3">
+                            <h1 className="font-semibold text-lg leading-8 text-black">
+                              {review?.user?.fullName}
+                            </h1>
+                            <h1 className="font-medium text-base leading-7 text-gray-400">
+                              {moment(review?.createdAt).format(
+                                "HH:mm DD/MM/YYYY"
+                              )}
+                            </h1>
+                          </div>
+                        </div>
+                        <h1 className="mb-5 mt-2 text-base italic">{review?.contents}</h1>
+                        <div className="w-[30%]">
+                          <Carousel arrows infinite={true} autoplay={true}>
+                            {review?.reviewerPhoto?.map((photo) => (
+                              <Watermark content={products?.name}>
+                                <div className="aspect-video bg-slate-100">
+                                  <img
+                                    src={URL_IMAGE(photo?.path)}
+                                    className="w-full h-full object-contain"
+                                  />
+                                </div>
+                              </Watermark>
+                            ))}
+                          </Carousel>
+                        </div>
+                        <Divider />
                       </div>
-                      <Divider />
-                    </div>
-                  );
-                })}
+                    );
+                  })
+                ) : (
+                  <div className="min-h-[40vh] flex justify-center items-center">
+                    <Empty description="Chưa có review sản phẩm" />
+                  </div>
+                )}
               </div>
             ),
           },
