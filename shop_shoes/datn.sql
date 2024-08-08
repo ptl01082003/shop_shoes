@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.38, for macos14 (arm64)
+-- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
--- Host: localhost    Database: datn
+-- Host: 127.0.0.1    Database: datn
 -- ------------------------------------------------------
--- Server version	9.0.0
+-- Server version	8.0.37
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -92,13 +92,13 @@ CREATE TABLE `cart_items` (
   `quanity` int DEFAULT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
-  `amount` decimal(16,2) DEFAULT NULL,
+  `amount` int DEFAULT NULL,
   PRIMARY KEY (`cartItemId`),
   KEY `productDetailId` (`productDetailId`),
   KEY `cartId` (`cartId`),
-  CONSTRAINT `cart_items_ibfk_175` FOREIGN KEY (`productDetailId`) REFERENCES `product_details` (`productDetailId`) ON UPDATE CASCADE,
-  CONSTRAINT `cart_items_ibfk_176` FOREIGN KEY (`cartId`) REFERENCES `shopping_carts` (`cartId`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `cart_items_ibfk_229` FOREIGN KEY (`productDetailId`) REFERENCES `product_details` (`productDetailId`) ON UPDATE CASCADE,
+  CONSTRAINT `cart_items_ibfk_230` FOREIGN KEY (`cartId`) REFERENCES `shopping_carts` (`cartId`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -203,7 +203,7 @@ CREATE TABLE `order_details` (
   `orderDetailId` int NOT NULL AUTO_INCREMENT,
   `totals` int DEFAULT NULL,
   `orderCode` varchar(255) DEFAULT NULL,
-  `amount` decimal(16,2) DEFAULT NULL,
+  `amount` int DEFAULT NULL,
   `userId` int DEFAULT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
@@ -213,7 +213,7 @@ CREATE TABLE `order_details` (
   PRIMARY KEY (`orderDetailId`),
   KEY `userId` (`userId`),
   CONSTRAINT `order_details_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -222,7 +222,7 @@ CREATE TABLE `order_details` (
 
 LOCK TABLES `order_details` WRITE;
 /*!40000 ALTER TABLE `order_details` DISABLE KEYS */;
-INSERT INTO `order_details` VALUES (1,43,'544446BC',0.00,1160752695,'2024-07-29 14:44:10','2024-07-29 14:44:10','Iphone 1000','sfglsdfgsdfgsdfgdsfgsdfgsdf@gmail.com','369232003'),(2,3,'F24A5674',0.00,1160752695,'2024-07-29 14:45:05','2024-07-29 14:45:05','Iphone 1000','dsasdfadsfasdfsadf','369232003'),(3,2,'5F8EDDED',0.00,1160752695,'2024-07-30 11:35:12','2024-08-06 15:08:45','Toni Kross Euro 2024','lbeephamthanhlong@gmail.com','369232003'),(4,4,'E3EF03A8',18000000.00,1160752695,'2024-07-30 11:41:48','2024-07-30 11:41:48','Toni Kross Euro 2024','lbeephamthanhlong@gmail.com','369232003'),(5,3,'5E70C12F',3000.00,1160752695,'2024-07-30 11:44:53','2024-07-30 11:44:53','Toni Kross Euro 2024','lbeephamthanhlong@gmail.com','369232003'),(6,1,'AF208A00',1000.00,1160752695,'2024-08-02 11:02:18','2024-08-02 11:02:18','Toni Kross Euro 2024','lbeephamthanhlong@gmail.com','0369232003'),(7,2,'6DCB2E73',2000.00,1160752695,'2024-08-02 21:42:58','2024-08-02 21:43:31','Iphone 1000','sfglsdfgsdfgsdfgdsfgsdfgsdf@gmail.com','0369232003'),(8,2,'6BD3226C',2000.00,1160752695,'2024-08-03 20:23:23','2024-08-03 20:23:23','Toni Kross Euro 2024','lbeephamthanhlong@gmail.com','0369232003'),(9,3,'2CFE0FA7',3000.00,1160752695,'2024-08-03 21:17:48','2024-08-03 21:17:48','Toni Kross Euro 2024','lbeephamthanhlong@gmail.com','0369232003'),(10,2,'6C5AD412',2000.00,1160752695,'2024-08-06 13:05:49','2024-08-06 13:05:49','Iphone 1000','sfglsdfgsdfgsdfgdsfgsdfgsdf@gmail.com','0369232003'),(11,11,'BD55F242',11000.00,1861694536,'2024-08-06 19:24:06','2024-08-06 19:24:22','Phạm Thành Long','tuyen@dev.dev','0358091695'),(12,4,'13A44F26',8500.00,1861694536,'2024-08-06 19:29:10','2024-08-06 19:29:14','Phạm Thành Long','thupham@pt.vtv','0358096795');
+INSERT INTO `order_details` VALUES (13,3,'C0D2C43B',5500,1861694536,'2024-08-08 10:11:29','2024-08-08 10:11:30','phạm ngọc tuyên','tuyendev@dev.vn','0358091695');
 /*!40000 ALTER TABLE `order_details` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -240,17 +240,18 @@ CREATE TABLE `order_items` (
   `orderDetailId` int DEFAULT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
-  `amount` decimal(16,2) DEFAULT NULL,
+  `amount` int DEFAULT NULL,
   `status` varchar(255) DEFAULT 'CHO_THANH_TOAN',
   `userId` int DEFAULT NULL,
   `price` int DEFAULT NULL,
   `priceDiscount` int DEFAULT NULL,
+  `isReview` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`orderItemId`),
   KEY `productDetailId` (`productDetailId`),
   KEY `orderDetailId` (`orderDetailId`),
-  CONSTRAINT `order_items_ibfk_175` FOREIGN KEY (`productDetailId`) REFERENCES `product_details` (`productDetailId`) ON UPDATE CASCADE,
-  CONSTRAINT `order_items_ibfk_176` FOREIGN KEY (`orderDetailId`) REFERENCES `order_details` (`orderDetailId`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `order_items_ibfk_227` FOREIGN KEY (`productDetailId`) REFERENCES `product_details` (`productDetailId`) ON UPDATE CASCADE,
+  CONSTRAINT `order_items_ibfk_228` FOREIGN KEY (`orderDetailId`) REFERENCES `order_details` (`orderDetailId`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -259,7 +260,7 @@ CREATE TABLE `order_items` (
 
 LOCK TABLES `order_items` WRITE;
 /*!40000 ALTER TABLE `order_items` DISABLE KEYS */;
-INSERT INTO `order_items` VALUES (1,42,12,1,'2024-07-29 14:44:10','2024-07-29 14:44:10',0.00,'CHO_THANH_TOAN',NULL,NULL,NULL),(2,1,21,1,'2024-07-29 14:44:10','2024-07-29 14:44:10',0.00,'CHO_THANH_TOAN',NULL,NULL,NULL),(3,1,12,2,'2024-07-29 14:45:05','2024-07-29 14:45:05',0.00,'CHO_THANH_TOAN',NULL,NULL,NULL),(4,1,13,2,'2024-07-29 14:45:05','2024-07-29 14:45:05',0.00,'CHO_THANH_TOAN',NULL,NULL,NULL),(5,1,14,2,'2024-07-29 14:45:05','2024-07-29 14:45:05',0.00,'CHO_THANH_TOAN',NULL,NULL,NULL),(6,1,12,3,'2024-07-30 11:35:12','2024-07-30 11:35:12',0.00,'CHO_THANH_TOAN',NULL,NULL,NULL),(7,1,13,3,'2024-07-30 11:35:12','2024-07-30 11:35:12',0.00,'CHO_THANH_TOAN',NULL,NULL,NULL),(8,1,12,4,'2024-07-30 11:41:48','2024-07-30 11:41:48',18000000.00,'CHO_THANH_TOAN',NULL,NULL,NULL),(9,1,13,4,'2024-07-30 11:41:48','2024-07-30 11:41:48',18000000.00,'CHO_THANH_TOAN',NULL,NULL,NULL),(10,1,14,4,'2024-07-30 11:41:48','2024-07-30 11:41:48',18000000.00,'CHO_THANH_TOAN',NULL,NULL,NULL),(11,1,15,4,'2024-07-30 11:41:48','2024-07-30 11:41:48',18000000.00,'CHO_THANH_TOAN',NULL,NULL,NULL),(12,1,12,5,'2024-07-30 11:44:53','2024-07-30 11:45:51',3000.00,'CHO_LAY_HANG',NULL,NULL,NULL),(13,1,13,5,'2024-07-30 11:44:53','2024-07-30 11:45:51',3000.00,'CHO_LAY_HANG',NULL,NULL,NULL),(14,1,14,5,'2024-07-30 11:44:53','2024-07-30 11:45:51',3000.00,'CHO_LAY_HANG',NULL,NULL,NULL),(15,1,12,6,'2024-08-02 11:02:18','2024-08-02 11:02:18',1000.00,'CHO_THANH_TOAN',NULL,NULL,NULL),(16,1,12,7,'2024-08-02 21:42:58','2024-08-02 21:42:58',1000.00,'CHO_THANH_TOAN',NULL,NULL,NULL),(17,1,13,7,'2024-08-02 21:42:58','2024-08-02 21:42:58',1000.00,'CHO_THANH_TOAN',NULL,NULL,NULL),(18,1,12,8,'2024-08-03 20:23:23','2024-08-03 20:24:08',1000.00,'CHO_LAY_HANG',1160752695,NULL,NULL),(19,1,13,8,'2024-08-03 20:23:23','2024-08-03 20:24:08',1000.00,'CHO_LAY_HANG',1160752695,NULL,NULL),(20,1,12,9,'2024-08-03 21:17:48','2024-08-03 21:17:48',1000.00,'CHO_THANH_TOAN',1160752695,NULL,NULL),(21,1,13,9,'2024-08-03 21:17:48','2024-08-03 21:17:48',1000.00,'CHO_THANH_TOAN',1160752695,NULL,NULL),(22,1,14,9,'2024-08-03 21:17:49','2024-08-03 21:17:49',1000.00,'CHO_THANH_TOAN',1160752695,NULL,NULL),(23,1,13,10,'2024-08-06 13:05:49','2024-08-06 13:05:49',1000.00,'CHO_THANH_TOAN',1160752695,NULL,NULL),(24,1,12,10,'2024-08-06 13:05:49','2024-08-06 13:05:49',1000.00,'CHO_THANH_TOAN',1160752695,NULL,NULL),(25,6,12,11,'2024-08-06 19:24:06','2024-08-06 19:24:57',6000.00,'CHO_LAY_HANG',1861694536,1000,1000),(26,4,13,11,'2024-08-06 19:24:06','2024-08-06 19:24:57',4000.00,'CHO_LAY_HANG',1861694536,1000,1000),(27,1,14,11,'2024-08-06 19:24:06','2024-08-06 19:24:58',1000.00,'CHO_LAY_HANG',1861694536,1000,1000),(28,1,12,12,'2024-08-06 19:29:10','2024-08-06 19:29:14',1000.00,'CHO_THANH_TOAN',1861694536,1000,1000),(29,1,35,12,'2024-08-06 19:29:10','2024-08-06 19:29:14',2000.00,'CHO_THANH_TOAN',1861694536,2000,2000),(30,1,40,12,'2024-08-06 19:29:10','2024-08-06 19:29:14',2500.00,'CHO_THANH_TOAN',1861694536,2500,2500),(31,1,42,12,'2024-08-06 19:29:10','2024-08-06 19:29:14',3000.00,'CHO_THANH_TOAN',1861694536,3000,3000);
+INSERT INTO `order_items` VALUES (1,1,12,13,'2024-08-08 10:11:29','2024-08-08 11:49:59',1000,'DA_GIAO',1861694536,1000,1000,1),(2,1,35,13,'2024-08-08 10:11:30','2024-08-08 11:30:32',2000,'DA_GIAO',1861694536,2000,2000,0),(3,1,40,13,'2024-08-08 10:11:30','2024-08-08 11:30:32',2500,'DA_GIAO',1861694536,2500,2500,0);
 /*!40000 ALTER TABLE `order_items` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -325,14 +326,14 @@ CREATE TABLE `payment_details` (
   `paymentDetailId` int NOT NULL AUTO_INCREMENT,
   `orderDetailId` int DEFAULT NULL,
   `status` varchar(255) DEFAULT 'IDLE',
-  `amount` decimal(16,2) DEFAULT NULL,
+  `amount` int DEFAULT NULL,
   `provider` varchar(255) DEFAULT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   PRIMARY KEY (`paymentDetailId`),
   KEY `orderDetailId` (`orderDetailId`),
   CONSTRAINT `payment_details_ibfk_1` FOREIGN KEY (`orderDetailId`) REFERENCES `order_details` (`orderDetailId`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -341,7 +342,7 @@ CREATE TABLE `payment_details` (
 
 LOCK TABLES `payment_details` WRITE;
 /*!40000 ALTER TABLE `payment_details` DISABLE KEYS */;
-INSERT INTO `payment_details` VALUES (1,NULL,'IDLE',0.00,'MOMO','2024-07-29 14:44:10','2024-07-29 14:44:10'),(2,NULL,'IDLE',0.00,'MOMO','2024-07-29 14:45:05','2024-07-29 14:45:05'),(3,3,'IDLE',0.00,'MOMO','2024-07-30 11:35:12','2024-07-30 11:35:12'),(4,4,'IDLE',18000000.00,'MOMO','2024-07-30 11:41:48','2024-07-30 11:41:48'),(5,5,'SUCCESS',3000.00,'MOMO','2024-07-30 11:44:53','2024-07-30 11:45:51'),(6,6,'IDLE',1000.00,'MOMO','2024-08-02 11:02:18','2024-08-02 11:02:18'),(7,7,'IDLE',2000.00,'MOMO','2024-08-02 21:42:59','2024-08-02 21:42:59'),(8,8,'SUCCESS',2000.00,'MOMO','2024-08-03 20:23:23','2024-08-03 20:24:08'),(9,9,'IDLE',3000.00,'MOMO','2024-08-03 21:17:49','2024-08-03 21:17:49'),(10,10,'IDLE',2000.00,'MOMO','2024-08-06 13:05:49','2024-08-06 13:05:49'),(11,11,'SUCCESS',11000.00,'MOMO','2024-08-06 19:24:06','2024-08-06 19:24:58'),(12,12,'IDLE',8500.00,'MOMO','2024-08-06 19:29:10','2024-08-06 19:29:14');
+INSERT INTO `payment_details` VALUES (1,13,'CASH',5500,'CASH','2024-08-08 10:11:30','2024-08-08 10:11:30');
 /*!40000 ALTER TABLE `payment_details` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -364,8 +365,8 @@ CREATE TABLE `product_details` (
   PRIMARY KEY (`productDetailId`),
   KEY `sizeId` (`sizeId`),
   KEY `productId` (`productId`),
-  CONSTRAINT `product_details_ibfk_175` FOREIGN KEY (`sizeId`) REFERENCES `sizes` (`sizeId`) ON UPDATE CASCADE,
-  CONSTRAINT `product_details_ibfk_176` FOREIGN KEY (`productId`) REFERENCES `products` (`productId`) ON UPDATE CASCADE
+  CONSTRAINT `product_details_ibfk_229` FOREIGN KEY (`sizeId`) REFERENCES `sizes` (`sizeId`) ON UPDATE CASCADE,
+  CONSTRAINT `product_details_ibfk_230` FOREIGN KEY (`productId`) REFERENCES `products` (`productId`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -435,10 +436,10 @@ CREATE TABLE `products` (
   KEY `styleId` (`styleId`),
   KEY `materialId` (`materialId`),
   KEY `brandId` (`brandId`),
-  CONSTRAINT `products_ibfk_349` FOREIGN KEY (`originId`) REFERENCES `origins` (`originId`) ON UPDATE CASCADE,
-  CONSTRAINT `products_ibfk_350` FOREIGN KEY (`styleId`) REFERENCES `styles` (`styleId`) ON UPDATE CASCADE,
-  CONSTRAINT `products_ibfk_351` FOREIGN KEY (`materialId`) REFERENCES `materials` (`materialId`) ON UPDATE CASCADE,
-  CONSTRAINT `products_ibfk_352` FOREIGN KEY (`brandId`) REFERENCES `brands` (`brandId`) ON UPDATE CASCADE
+  CONSTRAINT `products_ibfk_457` FOREIGN KEY (`originId`) REFERENCES `origins` (`originId`) ON UPDATE CASCADE,
+  CONSTRAINT `products_ibfk_458` FOREIGN KEY (`styleId`) REFERENCES `styles` (`styleId`) ON UPDATE CASCADE,
+  CONSTRAINT `products_ibfk_459` FOREIGN KEY (`materialId`) REFERENCES `materials` (`materialId`) ON UPDATE CASCADE,
+  CONSTRAINT `products_ibfk_460` FOREIGN KEY (`brandId`) REFERENCES `brands` (`brandId`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=185895 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -462,11 +463,13 @@ DROP TABLE IF EXISTS `promotions`;
 CREATE TABLE `promotions` (
   `promotionId` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
-  `discount` double DEFAULT NULL,
   `startDay` datetime DEFAULT NULL,
   `endDay` datetime DEFAULT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
+  `discountPrice` decimal(16,2) DEFAULT NULL,
+  `status` varchar(255) DEFAULT 'ISACTIVE',
+  `productId` int DEFAULT NULL,
   PRIMARY KEY (`promotionId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -478,6 +481,69 @@ CREATE TABLE `promotions` (
 LOCK TABLES `promotions` WRITE;
 /*!40000 ALTER TABLE `promotions` DISABLE KEYS */;
 /*!40000 ALTER TABLE `promotions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `reviewer_photo`
+--
+
+DROP TABLE IF EXISTS `reviewer_photo`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `reviewer_photo` (
+  `photoId` int NOT NULL AUTO_INCREMENT,
+  `path` varchar(255) DEFAULT NULL,
+  `reviewerId` int DEFAULT NULL,
+  `createdAt` datetime NOT NULL,
+  `updatedAt` datetime NOT NULL,
+  PRIMARY KEY (`photoId`),
+  KEY `reviewerId` (`reviewerId`),
+  CONSTRAINT `reviewer_photo_ibfk_1` FOREIGN KEY (`reviewerId`) REFERENCES `reviewers` (`reviewerId`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `reviewer_photo`
+--
+
+LOCK TABLES `reviewer_photo` WRITE;
+/*!40000 ALTER TABLE `reviewer_photo` DISABLE KEYS */;
+INSERT INTO `reviewer_photo` VALUES (1,'public/Uploads/image-101815196469.png',1,'2024-08-08 11:49:59','2024-08-08 11:49:59');
+/*!40000 ALTER TABLE `reviewer_photo` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `reviewers`
+--
+
+DROP TABLE IF EXISTS `reviewers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `reviewers` (
+  `reviewerId` int NOT NULL AUTO_INCREMENT,
+  `stars` float DEFAULT NULL,
+  `contents` varchar(255) DEFAULT NULL,
+  `productId` int DEFAULT NULL,
+  `productDetailId` int DEFAULT NULL,
+  `createdAt` datetime NOT NULL,
+  `updatedAt` datetime NOT NULL,
+  `userId` int DEFAULT NULL,
+  PRIMARY KEY (`reviewerId`),
+  KEY `productDetailId` (`productDetailId`),
+  KEY `userId` (`userId`),
+  CONSTRAINT `reviewers_ibfk_1` FOREIGN KEY (`productDetailId`) REFERENCES `product_details` (`productDetailId`) ON UPDATE CASCADE,
+  CONSTRAINT `reviewers_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `reviewers`
+--
+
+LOCK TABLES `reviewers` WRITE;
+/*!40000 ALTER TABLE `reviewers` DISABLE KEYS */;
+INSERT INTO `reviewers` VALUES (1,5,'sản phẩm dễ dùng rất tốt',108523,12,'2024-08-08 11:49:59','2024-08-08 11:49:59',1861694536);
+/*!40000 ALTER TABLE `reviewers` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -516,14 +582,14 @@ DROP TABLE IF EXISTS `shopping_carts`;
 CREATE TABLE `shopping_carts` (
   `cartId` int NOT NULL AUTO_INCREMENT,
   `totals` int DEFAULT NULL,
-  `amount` decimal(16,2) DEFAULT NULL,
+  `amount` int DEFAULT NULL,
   `userId` int DEFAULT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   PRIMARY KEY (`cartId`),
   KEY `userId` (`userId`),
   CONSTRAINT `shopping_carts_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -532,6 +598,7 @@ CREATE TABLE `shopping_carts` (
 
 LOCK TABLES `shopping_carts` WRITE;
 /*!40000 ALTER TABLE `shopping_carts` DISABLE KEYS */;
+INSERT INTO `shopping_carts` VALUES (17,0,0,1861694536,'2024-08-08 10:27:25','2024-08-08 11:24:34');
 /*!40000 ALTER TABLE `shopping_carts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -630,20 +697,18 @@ DROP TABLE IF EXISTS `vouchers`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `vouchers` (
   `vouchersId` int NOT NULL AUTO_INCREMENT,
-  `describe` varchar(255) DEFAULT NULL,
-  `discountType` varchar(255) DEFAULT NULL,
-  `discount` double DEFAULT NULL,
-  `valueOder` decimal(12,2) DEFAULT NULL,
-  `discountMax` decimal(12,2) DEFAULT NULL,
   `startDay` datetime DEFAULT NULL,
   `endDay` datetime DEFAULT NULL,
   `quantity` int DEFAULT NULL,
-  `statusDelete` tinyint(1) DEFAULT NULL,
-  `formPay` int DEFAULT NULL,
-  `status` int DEFAULT NULL,
-  `objectuUse` int DEFAULT NULL,
+  `status` varchar(255) DEFAULT 'ISACTIVE',
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
+  `code` varchar(255) DEFAULT NULL,
+  `description` longtext,
+  `valueOrder` decimal(16,2) DEFAULT NULL,
+  `disscoutMax` decimal(16,2) DEFAULT NULL,
+  `typeValue` varchar(255) DEFAULT 'MONEY',
+  `productId` int DEFAULT NULL,
   PRIMARY KEY (`vouchersId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -666,4 +731,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-08-06 19:39:16
+-- Dump completed on 2024-08-08 11:52:07

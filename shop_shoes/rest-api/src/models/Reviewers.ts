@@ -12,6 +12,7 @@ import {
 } from "sequelize-typescript";
 import { ProductDetails } from "./ProductDetails";
 import { ReviewerPhoto } from "./ReviewerPhoto";
+import { Users } from "./Users";
 
 @Table({
     tableName: "reviewers",
@@ -37,8 +38,12 @@ export class Reviewers extends Model {
     @Column
     public productDetailId!: number;
 
-    @BelongsTo(() => ProductDetails)
-    public productsDetails!: ProductDetails;
+    @ForeignKey(() => Users)
+    @Column
+    public userId!: number;
+
+    @BelongsTo(() => Users)
+    public user!: Users;
 
     @HasMany(() => ReviewerPhoto)
     public reviewerPhoto?: ReviewerPhoto[];

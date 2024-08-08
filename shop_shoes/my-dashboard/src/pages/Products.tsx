@@ -97,7 +97,6 @@ const ProductPage: React.FC = () => {
     })();
   }, []);
 
-  console.log("fileList", fileList);
 
   const onFinish = async (values: any) => {
     try {

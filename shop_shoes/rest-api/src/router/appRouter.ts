@@ -10,16 +10,15 @@ import routerMaterial from "./MaterialsRouter";
 import routerOrigin from "./OriginsRouter";
 import paymentRouter from "./PaymentOnlineRouter";
 
-// import productsRouter from "./ProductsRouter";
 import productsRouter from "./ProductsRouter";
 
+import ordersRouter from "./OrdersRouter";
+import routerPromotion from "./PromotitonRouter";
 import routerSize from "./SizeRouter";
 import routerStyle from "./StylesRouter";
 import { uploadRouter } from "./uploadRouter";
 import userRouter from "./UserRouter";
-import routerPromotion from "./PromotitonRouter";
 import routerVouchers from "./VoucherRouter";
-import ordersRouter from "./OrdersRouter";
 
 const router = express.Router();
 
@@ -45,7 +44,7 @@ export function appRouter() {
     res.status(STATUS_CODE.NOT_FOUND).json(
       ResponseBody({
         code: RESPONSE_CODE.NOT_FOUND,
-        message: "Đường dẫn không tồn tại",
+        message: "Không tồn tại đường dẫn",
       })
     );
   });

@@ -1,6 +1,6 @@
 // routes/origins.ts
 import { Router } from "express";
-import PaymentOnlineController from "../controller/PaymentOnlineController";
+import OrdersController from "../controller/OrdersController";
 import { checkAuth } from "../middleware/checkAuth";
 
 const ordersRouter = Router();
@@ -8,7 +8,7 @@ const ordersRouter = Router();
 
 ordersRouter.use(checkAuth);
 
-ordersRouter.post("/lst-orders", PaymentOnlineController.getLstOders);
-
+ordersRouter.post("/lst-orders", OrdersController.getLstOders);
+ordersRouter.post("/create-review", OrdersController.createReview);
 
 export default ordersRouter;
