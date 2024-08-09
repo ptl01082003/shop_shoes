@@ -5,7 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 import Layout from "./components/Layout/Layout";
-import { PATH_ROUTER } from "./constants";
+import { KEY_STORAGE, PATH_ROUTER } from "./constants";
 import About from "./pages/About/About";
 import SignIn from "./pages/Account/SignIn";
 import SignUp from "./pages/Account/SignUp";
@@ -24,6 +24,17 @@ import PaymentInfo from "./pages/UserFeature/Components/PaymentInfo";
 import ProfileLogout from "./pages/UserFeature/Components/ProfileLogout";
 import UserInfo from "./pages/UserFeature/Components/UserInfo";
 import UserFeature from "./pages/UserFeature/UserFeature";
+import { io } from "socket.io-client";
+
+const socket = io.connect("http://localhost:5500", {
+  auth: {
+    token: localStorage.getItem(KEY_STORAGE.TOKEN),
+  },
+});
+
+socket.on("receiver", (data) => {
+  alert(data);
+});
 
 function App() {
   return (

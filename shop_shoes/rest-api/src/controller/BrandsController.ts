@@ -51,7 +51,7 @@ const BrandsController = {
         });
       }
     } catch (error) {
-      console.log(error);
+      
       let errorMessage = "Thực hiện thất bại";
       if (error instanceof Error) {
         errorMessage = error.message;
@@ -103,7 +103,7 @@ const BrandsController = {
         });
       }
     } catch (error) {
-      console.log(error);
+      
       let errorMessage = "Thực hiện thất bại";
       if (error instanceof Error) {
         errorMessage = error.message;

@@ -256,7 +256,6 @@ const CartsController = {
         cartsAmount += cartProduct["amount"];
       }
       transferCarts["amount"] = cartsAmount;
-      console.log(transferCarts);
       await redis.set(`carts-${userId}`, JSON.stringify(transferCarts));
 
       return res.status(STATUS_CODE.SUCCESS).json(

@@ -13,7 +13,7 @@ const FavoritesListController = {
 
       res.json({ data: newFavorite, message: "Favorite added successfully" });
     } catch (error) {
-      console.log(error);
+      
       next(error);
     }
   },
@@ -23,7 +23,7 @@ const FavoritesListController = {
       const favorites = await FavoritesList.findAll();
       res.json({ data: favorites });
     } catch (error) {
-      console.log(error);
+      
       next(error);
     }
   },
@@ -38,7 +38,7 @@ const FavoritesListController = {
         res.status(404).json({ message: "Favorite not found" });
       }
     } catch (error) {
-      console.log(error);
+      
       next(error);
     }
   },
@@ -56,7 +56,7 @@ const FavoritesListController = {
         res.status(404).json({ message: "Favorite not found" });
       }
     } catch (error) {
-      console.log(error);
+      
       next(error);
     }
   },
@@ -72,7 +72,7 @@ const FavoritesListController = {
         res.status(404).json({ message: "Favorite not found" });
       }
     } catch (error) {
-      console.log(error);
+      
       next(error);
     }
   },

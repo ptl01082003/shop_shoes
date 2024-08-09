@@ -157,7 +157,6 @@ const PaymentOnlineController = {
       //kiểm tra tính toàn vẹn dữ liệu của giao dịch , sử dụng các tham số trên url trả về
       //thực hiện tuần tự các bước như yêu cầu thanh toán và check với mã băm trả về
       if (secureHash === signed) {
-        console.log("vnp_Params", vnp_Params);
         res.redirect(process.env["payment_Success_Url"] as string);
       } else {
         //check đơn hàng tại đây và lưu vào database

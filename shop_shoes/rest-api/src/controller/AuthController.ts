@@ -92,7 +92,7 @@ const authCtrl = {
         );
       }
     } catch (error) {
-      console.log(error);
+      
       next(error);
     }
   },
@@ -159,7 +159,7 @@ const authCtrl = {
         );
       }
     } catch (error) {
-      console.log(error);
+      
       next(error);
     }
   },

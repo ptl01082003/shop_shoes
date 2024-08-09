@@ -9,6 +9,10 @@ import { redis } from "./config/ConnectRedis";
 import { RESPONSE_CODE, ResponseBody, STATUS_CODE } from "./constants";
 import { appRouter } from "./router/appRouter";
 import cron from "node-cron";
+import http from "http";
+import { Server, Socket as IOSocket } from "socket.io";
+import { checkSocket } from "./middleware/checkSocket";
+
 declare global {
   namespace Express {
     interface Request {
@@ -25,9 +29,33 @@ declare global {
       >;
     }
   }
+  namespace Socket {
+    interface ExternalSocket extends IOSocket {
+      userId: string;
+    }
+  }
 }
 
+
 export const app = express();
+
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: ["http://localhost:3001", "http://localhost:3000"],
+    methods: ["GET", "POST"],
+  },
+});
+
+io.use(checkSocket as any);
+
+io.on('connection', (socket) => {
+  const userId = (socket as Socket.ExternalSocket).userId;
+  console.log("userId", "userId");
+  socket.emit("receiver", "Chào mừng bạn đã đến với nhà của chúng tôi")
+});
+
 
 app.use(
   cors({
@@ -76,6 +104,6 @@ app.use("*", (_, res) => {
   );
 });
 
-app.listen(process.env.SERVER_PORT, () =>
+server.listen(process.env.SERVER_PORT, () =>
   console.log("The server is running on port:" + process.env.SERVER_PORT)
 );
