@@ -12,6 +12,7 @@ import { Op } from "sequelize";
 import { Reviewers } from "../models/Reviewers";
 import { Users } from "../models/Users";
 import { ReviewerPhoto } from "../models/ReviewerPhoto";
+import { Promotions } from "../models/Promotions";
 
 const ProductsController = {
   addProduct: async (req: Request, res: Response, next: NextFunction) => {
@@ -77,6 +78,7 @@ const ProductsController = {
   },
   getProducts: async (req: Request, res: Response, next: NextFunction) => {
     try {
+      // Lấy tất cả sản phẩm
       const products = await Products.findAll({
         include: [
           {
@@ -98,28 +100,56 @@ const ProductsController = {
         ],
       });
 
+      // Lấy tất cả khuyến mãi cho các sản phẩm hiện có
+      const productIds = products.map((product) => product.productId);
+      const promotions = await Promotions.findAll({
+        where: { productId: { [Op.in]: productIds } },
+      });
+
       const transferData = [];
 
-      for await (const product of products) {
+      for (const product of products) {
+        // Lấy thông tin chi tiết của sản phẩm
         const productDetails = await ProductDetails.findAll({
           where: { productId: product.productId },
           attributes: ["sizeId", "quantity"],
           include: [{ model: Sizes, attributes: ["name"] }],
         });
 
+        // Lấy hình ảnh của sản phẩm
         const images = await Images.findAll({
           where: { productId: product.productId },
           attributes: ["path"],
         });
 
+        // Đảm bảo giá trị price không phải là undefined và luôn là chuỗi
+        const originalPrice = parseFloat(product.price?.toString() ?? "0");
+
+        // Tính giá cuối cùng dựa trên khuyến mãi
+        let discount = 0;
+        const applicablePromotions = promotions.filter(
+          (promo) => promo.productId === product.productId
+        );
+        if (applicablePromotions.length > 0) {
+          discount = Math.max(
+            ...applicablePromotions.map((promo) =>
+              parseFloat(promo.discountPrice?.toString() ?? "0")
+            )
+          );
+        }
+
+        const finalPrice = Math.max(0, originalPrice - discount);
+
         transferData.push({
           ...product.toJSON(),
-          productDetails: productDetails.map((productDetails) => ({
-            productId: productDetails.productId,
-            sizeId: productDetails.sizeId,
-            quantity: productDetails.quantity,
+          productDetails: productDetails.map((detail) => ({
+            productId: detail.productId,
+            sizeId: detail.sizeId,
+            quantity: detail.quantity,
           })),
           gallery: images,
+          finalPrice: finalPrice.toFixed(2), // Giá cuối cùng sau khi áp dụng khuyến mãi, làm tròn đến 2 chữ số thập phân
+          originalPrice: originalPrice.toFixed(2), // Giá gốc, làm tròn đến 2 chữ số thập phân
         });
       }
 
@@ -256,18 +286,18 @@ const ProductsController = {
         const reviewers = await Reviewers.findAll({
           where: { productId: products.productId },
           attributes: ["contents", "stars", "reviewerId", "createdAt"],
-          order: [['createdAt', 'DESC']],
+          order: [["createdAt", "DESC"]],
           include: [
             {
               model: Users,
-              attributes: ["fullName"]
+              attributes: ["fullName"],
             },
             {
               model: ReviewerPhoto,
-              attributes: ["path"]
-            }
-          ]
-        })
+              attributes: ["path"],
+            },
+          ],
+        });
 
         res.json({
           message: "Thực hiện thành công",
@@ -276,7 +306,7 @@ const ProductsController = {
             gallery,
             sizes,
             ...products.toJSON(),
-            reviewers
+            reviewers,
           },
         });
       } else {
@@ -442,6 +472,66 @@ const ProductsController = {
       res.json({
         code: RESPONSE_CODE.SUCCESS,
         message: "Thực hiện thành công",
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  getDiscountedProducts: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const products = await Products.findAll({
+        where: { finalPrice: { [Op.ne]: null } }, // Lọc những sản phẩm đã được cập nhật giá
+        include: [
+          {
+            model: Materials,
+            attributes: ["name"],
+          },
+          {
+            model: Origins,
+            attributes: ["name"],
+          },
+          {
+            model: Styles,
+            attributes: ["name"],
+          },
+          {
+            model: Brands,
+            attributes: ["name"],
+          },
+          {
+            model: Images,
+            attributes: ["path"],
+          },
+        ],
+      });
+
+      const transferData = [];
+
+      for await (const product of products) {
+        const productDetails = await ProductDetails.findAll({
+          where: { productId: product.productId },
+          attributes: ["sizeId", "quantity"],
+          include: [{ model: Sizes, attributes: ["name"] }],
+        });
+
+        const productDetailsLevel = productDetails.map((detail) =>
+          detail.get({ plain: true })
+        );
+
+        transferData.push({
+          ...product.toJSON(),
+          productDetails: productDetailsLevel,
+        });
+      }
+
+      res.json({
+        message: "Thực hiện thành công",
+        code: RESPONSE_CODE.SUCCESS,
+        data: transferData,
       });
     } catch (error) {
       next(error);

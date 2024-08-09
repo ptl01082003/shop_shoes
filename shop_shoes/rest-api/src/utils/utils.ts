@@ -1,4 +1,58 @@
+import moment from "moment";
+import { Products } from "./../models/Products";
+import { Promotions, PROMOTIONS_STATUS } from "./../models/Promotions";
 import crypto from "crypto-js";
+
+const applyPromotionToProduct = async (product: any, promotion: any) => {
+  const startDay = moment(promotion.startDay);
+  const endDay = moment(promotion.endDay);
+  const currentTime = moment();
+
+  if (currentTime.isBetween(startDay, endDay, null, "[]")) {
+    await promotion.update({ status: PROMOTIONS_STATUS.ACTIVE });
+    const originalPrice = product.price;
+    const discountedPrice = originalPrice - promotion.discountPrice;
+    await product.update({ finalPrice: discountedPrice });
+
+    console.log(`Sản phẩm: ${product.name}`);
+    console.log(`Giá gốc: ${originalPrice}`);
+    console.log(`Giá sau khi giảm: ${discountedPrice}`);
+  } else if (currentTime.isBefore(startDay)) {
+    await promotion.update({ status: PROMOTIONS_STATUS.PRE_START });
+    console.log(`Khuyến mãi ID ${promotion.promotionId} chưa bắt đầu.`);
+  } else if (currentTime.isAfter(endDay)) {
+    await promotion.update({ status: PROMOTIONS_STATUS.EXPIRED });
+    console.log(`Khuyến mãi ID ${promotion.promotionId} đã hết hạn.`);
+  }
+};
+
+export const updateProductPrices = async () => {
+  try {
+    console.log(
+      "Bắt đầu cập nhật giá sản phẩm:",
+      moment().format("YYYY-MM-DD HH:mm:ss")
+    );
+    const products = await Products.findAll();
+    console.log(`Tổng số sản phẩm: ${products.length}`);
+
+    for (const product of products) {
+      const promotions = await Promotions.findAll({
+        where: { productId: product.productId },
+      });
+      console.log(
+        `Sản phẩm ID ${product.productId} có ${promotions.length} khuyến mãi`
+      );
+
+      for (const promotion of promotions) {
+        await applyPromotionToProduct(product, promotion);
+      }
+    }
+
+    console.log("Cập nhật giá sản phẩm hoàn tất.");
+  } catch (error) {
+    console.error("Lỗi khi cập nhật giá sản phẩm:", error);
+  }
+};
 
 export function generateUniqueUserId() {
   const min = 1000000000;
@@ -9,7 +63,6 @@ export function generateUniqueUserId() {
   const userId = min + (randomNumber % min);
   return userId;
 }
-
 
 export function genaratorProductsId() {
   const min = 100000;
@@ -30,7 +83,6 @@ export function genaratorImagesId() {
   const productsId = min + (randomNumber % min);
   return productsId;
 }
-
 
 export function sortObject(obj: any) {
   const sorted: any = {};

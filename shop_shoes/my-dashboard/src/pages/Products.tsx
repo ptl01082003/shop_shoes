@@ -69,9 +69,27 @@ const ProductPage: React.FC = () => {
   useEffect(() => {
     (async () => {
       const productResponse = await ProductService.getProducts();
+
       setProducts(productResponse.data || []);
     })();
   }, []);
+
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       // Lấy danh sách sản phẩm giảm giá từ API
+  //       const discountedProductsResponse =
+  //         await ProductService.getDiscountedProducts();
+
+  //       // Cập nhật trạng thái với danh sách sản phẩm giảm giá
+  //       setProducts(discountedProductsResponse.data || []);
+  //       console.log(discountedProductsResponse);
+  //     } catch (error) {
+  //       console.error("Lỗi khi lấy sản phẩm giảm giá:", error);
+  //       // Xử lý lỗi nếu cần thiết
+  //     }
+  //   })();
+  // }, []);
 
   useEffect(() => {
     (async () => {
@@ -96,7 +114,6 @@ const ProductPage: React.FC = () => {
       setOrigins(fetchData[4]?.data);
     })();
   }, []);
-
 
   const onFinish = async (values: any) => {
     try {

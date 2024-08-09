@@ -11,8 +11,9 @@ import {
 } from "sequelize-typescript";
 
 export enum PROMOTIONS_STATUS {
-  ISACTIVE = "ISACTIVE",
-  PERCENT = "PERCENT",
+  PRE_START = "PRE_START",
+  ACTIVE = "ACTIVE",
+  EXPIRED = "EXPIRED",
 }
 
 @Table({
@@ -29,7 +30,7 @@ export class Promotions extends Model {
   @Column
   public name!: string;
 
-  @Column(DataType.DECIMAL(16, 2))
+  @Column //(DataType.DECIMAL(16, 2))
   public discountPrice!: number;
 
   @Column(DataType.DATE)
@@ -38,9 +39,9 @@ export class Promotions extends Model {
   @Column(DataType.DATE)
   public endDay?: string;
 
-  @Default(PROMOTIONS_STATUS.ISACTIVE)
-  @Column
-  public status?: string;
+  @Default(PROMOTIONS_STATUS.PRE_START)
+  @Column(DataType.STRING) // Bạn có thể cần DataType.STRING hoặc kiểu khác tùy vào cấu hình cơ sở dữ liệu của bạn.
+  public status?: PROMOTIONS_STATUS;
 
   @Column
   public productId!: number;
