@@ -19,6 +19,7 @@ import { tableCustomizeStyle } from "../styles/styles";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { PROMOTIONS_STATUS } from "../constants/constants";
+import dayjs from "dayjs";
 const { Option } = Select;
 
 type FieldType = {
@@ -218,7 +219,11 @@ export default function PromotionsPage() {
             name="startDay"
             rules={[{ required: true, message: "Start Day is required!" }]}
           >
-            <DatePicker style={{ width: "100%" }} />
+            <DatePicker
+              style={{ width: "100%" }}
+              format="YYYY-MM-DD HH:mm:ss"
+              showTime={{ defaultValue: dayjs("00:00:00", "HH:mm:ss") }}
+            />
           </Form.Item>
           <Form.Item<FieldType>
             label="End Day"
@@ -293,7 +298,11 @@ export default function PromotionsPage() {
             name="startDay"
             rules={[{ required: true, message: "Start Day is required!" }]}
           >
-            <DatePicker style={{ width: "100%" }} />
+            <DatePicker
+              style={{ width: "100%" }}
+              format="YYYY-MM-DD HH:mm"
+              defaultValue={dayjs(openEditModal?.data?.startDay).toDate()}
+            />
           </Form.Item>
           <Form.Item<FieldType>
             label="End Day"
