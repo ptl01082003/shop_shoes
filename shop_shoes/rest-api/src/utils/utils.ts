@@ -8,21 +8,46 @@ const applyPromotionToProduct = async (product: any, promotion: any) => {
   const endDay = moment(promotion.endDay);
   const currentTime = moment();
 
-  if (currentTime.isBetween(startDay, endDay, null, "[]")) {
-    await promotion.update({ status: PROMOTIONS_STATUS.ACTIVE });
-    const originalPrice = product.price;
-    const discountedPrice = originalPrice - promotion.discountPrice;
-    await product.update({ finalPrice: discountedPrice });
+  try {
+    if (currentTime.isBetween(startDay, endDay, null, "[]")) {
+      await promotion.update({ status: PROMOTIONS_STATUS.ACTIVE });
+      const originalPrice = product.price;
+      const discountedPrice = originalPrice - promotion.discountPrice;
 
-    console.log(`Sản phẩm: ${product.name}`);
-    console.log(`Giá gốc: ${originalPrice}`);
-    console.log(`Giá sau khi giảm: ${discountedPrice}`);
-  } else if (currentTime.isBefore(startDay)) {
-    await promotion.update({ status: PROMOTIONS_STATUS.PRE_START });
-    console.log(`Khuyến mãi ID ${promotion.promotionId} chưa bắt đầu.`);
-  } else if (currentTime.isAfter(endDay)) {
-    await promotion.update({ status: PROMOTIONS_STATUS.EXPIRED });
-    console.log(`Khuyến mãi ID ${promotion.promotionId} đã hết hạn.`);
+      console.log(`Sản phẩm: ${product.name}`);
+      console.log(`Giá gốc: ${originalPrice}`);
+      console.log(`Giá sau khi giảm: ${discountedPrice}`);
+
+      
+      const [affectedRows] = await Products.update(
+        { priceDiscount: discountedPrice },
+        { where: { productId: product.productId } }
+      );
+
+      if (affectedRows > 0) {
+        console.log(`Giá sản phẩm ID ${product.productId} đã được cập nhật.`);
+      } else {
+        console.log(
+          `Không có bản ghi nào được cập nhật cho sản phẩm ID ${product.productId}.`
+        );
+      }
+    } else if (currentTime.isBefore(startDay)) {
+      await promotion.update({ status: PROMOTIONS_STATUS.PRE_START });
+      console.log(`Khuyến mãi ID ${promotion.promotionId} chưa bắt đầu.`);
+    } else if (currentTime.isAfter(endDay)) {
+      await promotion.update({ status: PROMOTIONS_STATUS.EXPIRED });
+
+      const originalPrice = product.price;
+
+      await Products.update(
+        { priceDiscount: originalPrice },
+        { where: { productId: product.productId } }
+      );
+
+      console.log(`Khuyến mãi ID ${promotion.promotionId} đã hết hạn.`);
+    }
+  } catch (error) {
+    console.error("Lỗi khi áp dụng khuyến mãi:", error);
   }
 };
 
