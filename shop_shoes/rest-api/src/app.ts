@@ -13,6 +13,10 @@ import http from "http";
 import { Server, Socket as IOSocket } from "socket.io";
 import { checkSocket } from "./middleware/checkSocket";
 
+import { Promotions, PROMOTIONS_STATUS } from "./models/Promotions";
+import { updateProductPrices } from "../src/utils/utils";
+import moment from "moment";
+
 declare global {
   namespace Express {
     interface Request {
@@ -90,9 +94,13 @@ cron.schedule(
   }
 );
 
-
-app.use((errors: any, _: Request, res: Response) => {
-  res.json(errors);
+cron.schedule("* * * * *", async () => {
+  console.log(`Cron job bắt đầu lúc: ${new Date().toLocaleString()}`);
+  try {
+    await updateProductPrices();
+  } catch (error) {
+    console.error("Lỗi khi thực hiện cron job:", error);
+  }
 });
 
 app.use("*", (_, res) => {
