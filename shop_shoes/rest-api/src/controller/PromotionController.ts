@@ -120,7 +120,6 @@ const PromotionsController = {
   deletePromotion: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { promotionId } = req.body;
-      console.log(promotionId);
       const promotion = await Promotions.findByPk(promotionId);
       if (promotion) {
         await promotion.destroy();

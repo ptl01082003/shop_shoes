@@ -20,7 +20,7 @@ const ImagesController = {
 
       res.json({ data: images, message: "Add new images successfully" });
     } catch (error) {
-      console.log(error);
+      
       next(error);
     }
   },
@@ -57,7 +57,7 @@ const ImagesController = {
         res.status(404).json({ message: "Image not found" });
       }
     } catch (error) {
-      console.log(error);
+      
       next(error);
     }
   },
@@ -83,7 +83,7 @@ const ImagesController = {
         res.status(404).json({ message: "Image not found" });
       }
     } catch (error) {
-      console.log(error);
+      
       next(error);
     }
   },
@@ -99,7 +99,7 @@ const ImagesController = {
         res.status(404).json({ message: "Image not found" });
       }
     } catch (error) {
-      console.log(error);
+      
       next(error);
     }
   },

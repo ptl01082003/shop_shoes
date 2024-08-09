@@ -13,7 +13,7 @@ const OriginsController = {
         data: origins,
       });
     } catch (error) {
-      console.log(error);
+      
       let errorMessage = "Thực hiện thất bại";
       if (error instanceof Error) {
         errorMessage = error.message;
@@ -45,7 +45,7 @@ const OriginsController = {
         data: originss,
       });
     } catch (error) {
-      console.log(error);
+      
       let errorMessage = "Thực hiện thất bại";
       if (error instanceof Error) {
         errorMessage = error.message;
@@ -75,7 +75,7 @@ const OriginsController = {
         });
       }
     } catch (error) {
-      console.log(error);
+      
       let errorMessage = "Thực hiện thất bại";
       if (error instanceof Error) {
         errorMessage = error.message;
@@ -107,7 +107,6 @@ const OriginsController = {
         });
       }
     } catch (error) {
-      console.log(error);
       let errorMessage = "Thực hiện thất bại";
       if (error instanceof Error) {
         errorMessage = error.message;
@@ -137,7 +136,6 @@ const OriginsController = {
         });
       }
     } catch (error) {
-      console.log(error);
       let errorMessage = "Thực hiện thất bại";
       if (error instanceof Error) {
         errorMessage = error.message;
