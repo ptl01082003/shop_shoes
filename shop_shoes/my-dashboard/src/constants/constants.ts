@@ -30,11 +30,12 @@ export enum Vouchers_STATUS {
   ISACTIVE = "ISACTIVE",
   EXPIRED = "EXPIRED",
 }
-export enum PROMOTIONS_STATUS {
-  ISACTIVE = "ISACTIVE",
-  PERCENT = "PERCENT",
-}
 
+export enum PROMOTIONS_STATUS {
+  PRE_START = "PRE_START",
+  ACTIVE = "ACTIVE",
+  EXPIRED = "EXPIRED",
+}
 export const PATH_ROUTER = {};
 
 export const TRANSFER_PRICE = (price: string) =>

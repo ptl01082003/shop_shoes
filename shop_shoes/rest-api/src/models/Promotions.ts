@@ -9,6 +9,7 @@ import {
   PrimaryKey,
   Table,
 } from "sequelize-typescript";
+import { Products } from "./Products";
 
 export enum PROMOTIONS_STATUS {
   PRE_START = "PRE_START",
@@ -27,10 +28,7 @@ export class Promotions extends Model {
   @Column
   public promotionId!: number;
 
-  @Column
-  public name!: string;
-
-  @Column //(DataType.DECIMAL(16, 2))
+  @Column(DataType.DECIMAL(16, 2))
   public discountPrice!: number;
 
   @Column(DataType.DATE)
@@ -40,9 +38,13 @@ export class Promotions extends Model {
   public endDay?: string;
 
   @Default(PROMOTIONS_STATUS.PRE_START)
-  @Column(DataType.STRING) // Bạn có thể cần DataType.STRING hoặc kiểu khác tùy vào cấu hình cơ sở dữ liệu của bạn.
+  @Column(DataType.STRING)
   public status?: PROMOTIONS_STATUS;
 
+  @ForeignKey(() => Products)
   @Column
   public productId!: number;
+
+  @BelongsTo(() => Products)
+  public products!: Products;
 }

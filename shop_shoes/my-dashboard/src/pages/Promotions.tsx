@@ -1,9 +1,6 @@
-/**@jsxImportSource @emotion/react */
-
 import {
   Button,
   Form,
-  FormProps,
   Input,
   Modal,
   Space,
@@ -15,24 +12,26 @@ import {
 } from "antd";
 import { useEffect, useState } from "react";
 import PromotionService from "../services/PromotionApi";
+import ProductService from "../services/ProductApi";
 import { tableCustomizeStyle } from "../styles/styles";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import moment from "moment";
 import { PROMOTIONS_STATUS } from "../constants/constants";
 import dayjs from "dayjs";
+import { FormProps } from "antd/lib";
+
 const { Option } = Select;
 
 type FieldType = {
-  name?: string;
   discountPrice?: number;
-  startDay?: moment.Moment;
-  endDay?: moment.Moment;
-  status?: string;
+  startDay?: dayjs.Dayjs;
+  endDay?: dayjs.Dayjs;
+  status?: PROMOTIONS_STATUS;
   productId?: number;
 };
 
 export default function PromotionsPage() {
   const [lstPromotions, setLstPromotions] = useState<any[]>([]);
+  const [lstProducts, setLstProducts] = useState<any[]>([]);
   const [shouldRender, setShouldRender] = useState<boolean>(false);
   const [isOpenCreateModal, setOpenCreateModal] = useState<boolean>(false);
   const [openEditModal, setOpenEditModal] = useState<any>({
@@ -47,52 +46,54 @@ export default function PromotionsPage() {
       key: "promotionId",
     },
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "Discount Price",
+      title: "Giá giảm",
       dataIndex: "discountPrice",
       key: "discountPrice",
     },
     {
-      title: "Start Day",
+      title: "Ngày bắt đầu",
       dataIndex: "startDay",
       key: "startDay",
-      render: (text: string) => moment(text).format("YYYY-MM-DD"),
+      render: (text: string) => dayjs(text).format("YYYY-MM-DD HH:mm:ss"),
     },
     {
-      title: "End Day",
+      title: "Ngày kết thúc",
       dataIndex: "endDay",
       key: "endDay",
-      render: (text: string) => moment(text).format("YYYY-MM-DD"),
+      render: (text: string) => dayjs(text).format("YYYY-MM-DD HH:mm:ss"),
     },
     {
-      title: "Status",
+      title: "Trạng thái",
       dataIndex: "status",
       key: "status",
+      render: (status: PROMOTIONS_STATUS) => (
+        <span>
+          {status === PROMOTIONS_STATUS.PRE_START && "Chưa bắt đầu"}
+          {status === PROMOTIONS_STATUS.ACTIVE && "Đang hoạt động"}
+          {status === PROMOTIONS_STATUS.EXPIRED && "Hết hạn"}
+        </span>
+      ),
     },
     {
-      title: "Product ID",
-      dataIndex: "productId",
-      key: "productId",
+      title: "Mã sản phẩm",
+      dataIndex: "code",
+      key: "code",
     },
     {
-      title: "Actions",
+      title: "Hành động",
       render: (_: any, record: any) => (
         <Space size="middle">
           <Button
             icon={<EditOutlined />}
             onClick={() => editPromotionItems(record)}
           >
-            Edit
+            Sửa
           </Button>
           <Button
             icon={<DeleteOutlined />}
             onClick={() => deletePromotionItems(record)}
           >
-            Delete
+            Xóa
           </Button>
         </Space>
       ),
@@ -101,28 +102,41 @@ export default function PromotionsPage() {
 
   useEffect(() => {
     (async () => {
-      const getPromotions = await PromotionService.getPromotions();
-      setLstPromotions(getPromotions?.data || []);
+      try {
+        const getPromotions = await PromotionService.getPromotions();
+        setLstPromotions(getPromotions?.data || []);
+
+        const getProducts = await ProductService.getProducts();
+        setLstProducts(getProducts?.data || []);
+      } catch (error) {
+        message.error("Lỗi khi tải dữ liệu khuyến mãi hoặc sản phẩm.");
+      }
     })();
   }, [shouldRender]);
 
   const deletePromotionItems = async (record: any) => {
-    const res: any = await PromotionService.deletePromotion(record.promotionId);
-    if (res.code === 0) {
-      message.success("Promotion deleted successfully");
-      setShouldRender((x) => !x);
-    } else {
-      message.error("Failed to delete promotion");
+    try {
+      const res: any = await PromotionService.deletePromotion(
+        record.promotionId
+      );
+      if (res.code === 0) {
+        message.success("Xóa khuyến mãi thành công");
+        setShouldRender((x) => !x);
+      } else {
+        message.error("Xóa khuyến mãi thất bại");
+      }
+    } catch (error) {
+      message.error("Lỗi khi xóa khuyến mãi.");
     }
   };
 
-  const editPromotionItems = async (record: any) => {
+  const editPromotionItems = (record: any) => {
     setOpenEditModal({
       open: true,
       data: {
         ...record,
-        startDay: moment(record.startDay),
-        endDay: moment(record.endDay),
+        startDay: dayjs(record.startDay),
+        endDay: dayjs(record.endDay),
       },
     });
   };
@@ -130,30 +144,49 @@ export default function PromotionsPage() {
   const onFinish: FormProps<FieldType>["onFinish"] = async (
     values: FieldType
   ) => {
-    const res = await PromotionService.createPromotion({
-      ...values,
-      startDay: values.startDay?.format("YYYY-MM-DD"),
-      endDay: values.endDay?.format("YYYY-MM-DD"),
-    });
-    if (res.code === 0) {
-      message.success("Promotion created successfully");
-      setOpenCreateModal(false);
-      setShouldRender((x) => !x);
-    } else {
-      message.error("Failed to create promotion");
+    try {
+      const product = lstProducts.find(
+        (prod) => prod.code === values.productId
+      );
+      const res = await PromotionService.createPromotion({
+        ...values,
+        productId: product?.productId,
+        startDay: values.startDay?.format("YYYY-MM-DD HH:mm:ss"),
+        endDay: values.endDay?.format("YYYY-MM-DD HH:mm:ss"),
+      });
+      if (res.code === 0) {
+        message.success("Tạo khuyến mãi thành công");
+        setOpenCreateModal(false);
+        setShouldRender((x) => !x);
+      } else {
+        message.error("Tạo khuyến mãi thất bại");
+      }
+    } catch (error) {
+      message.error("Lỗi khi tạo khuyến mãi.");
     }
   };
 
   const onEditFinish: FormProps<FieldType>["onFinish"] = async (
     values: FieldType
   ) => {
-    const res = await PromotionService.updatePromotion({
-      ...values,
-      promotionId: openEditModal?.data?.promotionId,
-    });
-    if (res.code === 0) {
-      setOpenEditModal(undefined);
-      setShouldRender((x) => !x);
+    try {
+      const product = lstProducts.find(
+        (prod) => prod.code === values.productId
+      );
+      const res = await PromotionService.updatePromotion({
+        ...values,
+        promotionId: openEditModal.data.promotionId,
+        productId: product?.productId,
+      });
+      if (res.code === 0) {
+        message.success("Cập nhật khuyến mãi thành công");
+        setOpenEditModal({ open: false, data: {} });
+        setShouldRender((x) => !x);
+      } else {
+        message.error("Cập nhật khuyến mãi thất bại");
+      }
+    } catch (error) {
+      message.error("Lỗi khi cập nhật khuyến mãi.");
     }
   };
 
@@ -163,36 +196,36 @@ export default function PromotionsPage() {
         <Button
           size="large"
           type="primary"
-          onClick={() => {
-            setOpenCreateModal(true);
-          }}
+          onClick={() => setOpenCreateModal(true)}
         >
-          ADD NEW
+          THÊM MỚI
         </Button>
       </div>
       <div css={tableCustomizeStyle} className="table-responsive">
         <Table
           columns={columns}
-          dataSource={lstPromotions}
+          dataSource={lstPromotions.map((promo) => ({
+            ...promo,
+            code: lstProducts.find((prod) => prod.productId === promo.productId)
+              ?.code,
+          }))}
           pagination={false}
           className="ant-border-space"
         />
       </div>
 
       <Modal
-        title=""
+        title="Tạo Khuyến Mãi"
         centered
         closable
         open={isOpenCreateModal}
         destroyOnClose={true}
-        onCancel={() => {
-          setOpenCreateModal(false);
-        }}
+        onCancel={() => setOpenCreateModal(false)}
         footer={false}
         width={750}
       >
         <Form
-          name="basic"
+          name="createPromotion"
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
           style={{ maxWidth: 600 }}
@@ -201,23 +234,16 @@ export default function PromotionsPage() {
           autoComplete="off"
         >
           <Form.Item<FieldType>
-            label="Name"
-            name="name"
-            rules={[{ required: true, message: "Name is required!" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item<FieldType>
-            label="Discount Price"
+            label="Giá giảm"
             name="discountPrice"
-            rules={[{ required: true, message: "Discount Price is required!" }]}
+            rules={[{ required: true, message: "Giá giảm là bắt buộc!" }]}
           >
             <InputNumber min={0} style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item<FieldType>
-            label="Start Day"
+            label="Ngày bắt đầu"
             name="startDay"
-            rules={[{ required: true, message: "Start Day is required!" }]}
+            rules={[{ required: true, message: "Ngày bắt đầu là bắt buộc!" }]}
           >
             <DatePicker
               style={{ width: "100%" }}
@@ -226,111 +252,123 @@ export default function PromotionsPage() {
             />
           </Form.Item>
           <Form.Item<FieldType>
-            label="End Day"
+            label="Ngày kết thúc"
             name="endDay"
-            rules={[{ required: true, message: "End Day is required!" }]}
+            rules={[{ required: true, message: "Ngày kết thúc là bắt buộc!" }]}
           >
-            <DatePicker style={{ width: "100%" }} />
+            <DatePicker
+              style={{ width: "100%" }}
+              format="YYYY-MM-DD HH:mm:ss"
+              showTime={{ defaultValue: dayjs("00:00:00", "HH:mm:ss") }}
+            />
           </Form.Item>
           <Form.Item<FieldType>
-            label="Status"
+            label="Trạng thái"
             name="status"
-            rules={[{ required: true, message: "Status is required!" }]}
+            rules={[{ required: true, message: "Trạng thái là bắt buộc!" }]}
           >
             <Select>
-              <Option value={PROMOTIONS_STATUS.ISACTIVE}>ISACTIVE</Option>
-              <Option value={PROMOTIONS_STATUS.PERCENT}>PERCENT</Option>
+              <Option value={PROMOTIONS_STATUS.PRE_START}>CHƯA BẮT ĐẦU</Option>
+              <Option value={PROMOTIONS_STATUS.ACTIVE}>ĐANG HOẠT ĐỘNG</Option>
+              <Option value={PROMOTIONS_STATUS.EXPIRED}>HẾT HẠN</Option>
             </Select>
           </Form.Item>
           <Form.Item<FieldType>
-            label="Product ID"
+            label="Mã sản phẩm"
             name="productId"
-            rules={[{ required: true, message: "Product ID is required!" }]}
+            rules={[{ required: true, message: "Mã sản phẩm là bắt buộc!" }]}
           >
-            <InputNumber min={0} style={{ width: "100%" }} />
+            <Select>
+              {lstProducts.map((prod) => (
+                <Option key={prod.productId} value={prod.code}>
+                  {prod.code}
+                </Option>
+              ))}
+            </Select>
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Button type="primary" htmlType="submit">
-              Add New
+              Tạo
             </Button>
           </Form.Item>
         </Form>
       </Modal>
 
-      {/* Form sửa */}
       <Modal
-        title=""
+        title="Sửa Khuyến Mãi"
         centered
         closable
-        open={openEditModal?.open}
+        open={openEditModal.open}
         destroyOnClose={true}
-        onCancel={() => {
-          setOpenEditModal(undefined);
-        }}
+        onCancel={() => setOpenEditModal({ open: false, data: {} })}
         footer={false}
         width={750}
       >
         <Form
-          name="basic"
+          name="editPromotion"
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
           style={{ maxWidth: 600 }}
-          initialValues={openEditModal?.data}
+          initialValues={openEditModal.data}
           onFinish={onEditFinish}
           autoComplete="off"
         >
           <Form.Item<FieldType>
-            label="Name"
-            name="name"
-            rules={[{ required: true, message: "Name is required!" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item<FieldType>
-            label="Discount Price"
+            label="Giá giảm"
             name="discountPrice"
-            rules={[{ required: true, message: "Discount Price is required!" }]}
+            rules={[{ required: true, message: "Giá giảm là bắt buộc!" }]}
           >
             <InputNumber min={0} style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item<FieldType>
-            label="Start Day"
+            label="Ngày bắt đầu"
             name="startDay"
-            rules={[{ required: true, message: "Start Day is required!" }]}
+            rules={[{ required: true, message: "Ngày bắt đầu là bắt buộc!" }]}
           >
             <DatePicker
               style={{ width: "100%" }}
-              format="YYYY-MM-DD HH:mm"
-              defaultValue={dayjs(openEditModal?.data?.startDay).toDate()}
+              format="YYYY-MM-DD HH:mm:ss"
+              showTime={{ defaultValue: dayjs("00:00:00", "HH:mm:ss") }}
             />
           </Form.Item>
           <Form.Item<FieldType>
-            label="End Day"
+            label="Ngày kết thúc"
             name="endDay"
-            rules={[{ required: true, message: "End Day is required!" }]}
+            rules={[{ required: true, message: "Ngày kết thúc là bắt buộc!" }]}
           >
-            <DatePicker style={{ width: "100%" }} />
+            <DatePicker
+              style={{ width: "100%" }}
+              format="YYYY-MM-DD HH:mm:ss"
+              showTime={{ defaultValue: dayjs("23:59:59", "HH:mm:ss") }}
+            />
           </Form.Item>
           <Form.Item<FieldType>
-            label="Status"
+            label="Trạng thái"
             name="status"
-            rules={[{ required: true, message: "Status is required!" }]}
+            rules={[{ required: true, message: "Trạng thái là bắt buộc!" }]}
           >
             <Select>
-              <Option value={PROMOTIONS_STATUS.ISACTIVE}>ISACTIVE</Option>
-              <Option value={PROMOTIONS_STATUS.PERCENT}>PERCENT</Option>
+              <Option value={PROMOTIONS_STATUS.PRE_START}>CHƯA BẮT ĐẦU</Option>
+              <Option value={PROMOTIONS_STATUS.ACTIVE}>ĐANG HOẠT ĐỘNG</Option>
+              <Option value={PROMOTIONS_STATUS.EXPIRED}>HẾT HẠN</Option>
             </Select>
           </Form.Item>
           <Form.Item<FieldType>
-            label="Product ID"
+            label="Mã sản phẩm"
             name="productId"
-            rules={[{ required: true, message: "Product ID is required!" }]}
+            rules={[{ required: true, message: "Mã sản phẩm là bắt buộc!" }]}
           >
-            <InputNumber min={0} style={{ width: "100%" }} />
+            <Select>
+              {lstProducts.map((prod) => (
+                <Option key={prod.productId} value={prod.code}>
+                  {prod.code}
+                </Option>
+              ))}
+            </Select>
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Button type="primary" htmlType="submit">
-              Save Changes
+              Cập nhật
             </Button>
           </Form.Item>
         </Form>

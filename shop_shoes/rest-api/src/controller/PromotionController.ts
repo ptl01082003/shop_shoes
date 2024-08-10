@@ -1,14 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import { RESPONSE_CODE, ResponseBody } from "../constants";
 import { Promotions } from "../models/Promotions";
+import { Products } from "../models/Products";
 
 const PromotionsController = {
   addPromotion: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { name, discountPrice, startDay, endDay, productId, status } =
-        req.body;
+      const { discountPrice, startDay, endDay, productId, status } = req.body;
       const promotion = await Promotions.create({
-        name,
         discountPrice,
         startDay: startDay ? new Date(startDay) : undefined,
         endDay: endDay ? new Date(endDay) : undefined,
@@ -29,7 +28,15 @@ const PromotionsController = {
 
   getPromotions: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const promotions = await Promotions.findAll();
+      const promotions = await Promotions.findAll({
+        include: [
+          {
+            model: Products,
+            // Alias cần khớp với khai báo trong mô hình Promotions
+            attributes: ["code"], // Chọn các thuộc tính cần thiết của Products
+          },
+        ],
+      });
       res.json(
         ResponseBody({
           code: RESPONSE_CODE.SUCCESS,
@@ -44,8 +51,17 @@ const PromotionsController = {
 
   getById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { promotionId } = req.body;
-      const promotion = await Promotions.findByPk(promotionId);
+      const { promotionId } = req.body; // Sử dụng req.params để lấy ID
+
+      const promotion = await Promotions.findByPk(promotionId, {
+        include: [
+          {
+            model: Products,
+            attributes: ["code"],
+          },
+        ],
+      });
+
       if (promotion) {
         res.status(200).json(
           ResponseBody({
@@ -70,7 +86,7 @@ const PromotionsController = {
       res.status(500).json(
         ResponseBody({
           code: RESPONSE_CODE.ERRORS,
-          message: "Thực hiện thất bại",
+          message: errorMessage,
         })
       );
     }
@@ -80,7 +96,6 @@ const PromotionsController = {
     try {
       const {
         promotionId,
-        name,
         discountPrice,
         startDay,
         endDay,
@@ -90,7 +105,6 @@ const PromotionsController = {
       const promotion = await Promotions.findByPk(promotionId);
       if (promotion) {
         await promotion.update({
-          name,
           discountPrice,
           startDay: startDay ? new Date(startDay) : undefined,
           endDay: endDay ? new Date(endDay) : undefined,
@@ -119,7 +133,7 @@ const PromotionsController = {
 
   deletePromotion: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { promotionId } = req.body;
+      const { promotionId } = req.body; // Sử dụng req.params để lấy ID
       const promotion = await Promotions.findByPk(promotionId);
       if (promotion) {
         await promotion.destroy();
@@ -145,7 +159,7 @@ const PromotionsController = {
       res.status(500).json(
         ResponseBody({
           code: RESPONSE_CODE.ERRORS,
-          message: "Thực hiện thất bại",
+          message: errorMessage,
         })
       );
     }
