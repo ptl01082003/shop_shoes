@@ -2,20 +2,15 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import "dotenv/config";
-import express, { Request, Response } from "express";
+import express from "express";
 import { Send } from "express-serve-static-core";
+import cron from "node-cron";
 import { connectDB } from "./config/ConnectDB";
 import { redis } from "./config/ConnectRedis";
 import { RESPONSE_CODE, ResponseBody, STATUS_CODE } from "./constants";
 import { appRouter } from "./router/appRouter";
-import cron from "node-cron";
-import http from "http";
-import { Server, Socket as IOSocket } from "socket.io";
-import { checkSocket } from "./middleware/checkSocket";
 
-import { Promotions, PROMOTIONS_STATUS } from "./models/Promotions";
 import { updateProductPrices } from "../src/utils/utils";
-import moment from "moment";
 
 declare global {
   namespace Express {
@@ -33,32 +28,12 @@ declare global {
       >;
     }
   }
-  namespace Socket {
-    interface ExternalSocket extends IOSocket {
-      userId: string;
-    }
-  }
 }
 
 
 export const app = express();
 
-const server = http.createServer(app);
 
-const io = new Server(server, {
-  cors: {
-    origin: ["http://localhost:3001", "http://localhost:3000"],
-    methods: ["GET", "POST"],
-  },
-});
-
-io.use(checkSocket as any);
-
-io.on('connection', (socket) => {
-  const userId = (socket as Socket.ExternalSocket).userId;
-  console.log("userId", "userId");
-  socket.emit("receiver", "Chào mừng bạn đã đến với nhà của chúng tôi")
-});
 
 
 app.use(
@@ -83,17 +58,6 @@ app.use(cookieParser());
 
 appRouter();
 
-cron.schedule(
-  "40 21 * * *",
-  () => {
-    console.log("hello");
-  },
-  {
-    scheduled: true,
-    timezone: "Asia/Ho_Chi_Minh",
-  }
-);
-
 cron.schedule("* * * * *", async () => {
   console.log(`Cron job bắt đầu lúc: ${new Date().toLocaleString()}`);
   try {
@@ -112,6 +76,6 @@ app.use("*", (_, res) => {
   );
 });
 
-server.listen(process.env.SERVER_PORT, () =>
+app.listen(process.env.SERVER_PORT, () =>
   console.log("The server is running on port:" + process.env.SERVER_PORT)
 );

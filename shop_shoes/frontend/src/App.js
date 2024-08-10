@@ -26,7 +26,7 @@ import UserInfo from "./pages/UserFeature/Components/UserInfo";
 import UserFeature from "./pages/UserFeature/UserFeature";
 import { io } from "socket.io-client";
 
-const socket = io.connect("http://localhost:5500", {
+const socket = io.connect("http://localhost:6500", {
   auth: {
     token: localStorage.getItem(KEY_STORAGE.TOKEN),
   },
