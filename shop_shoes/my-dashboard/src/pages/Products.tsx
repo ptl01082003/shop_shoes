@@ -552,7 +552,7 @@ const ProductPage: React.FC = () => {
               }}
             />
           </div>
-          <div className="flex justify-center col-span-2">
+          <div className="flex col-span-2 justify-center">
             <Form.Item>
               <Button
                 type="primary"

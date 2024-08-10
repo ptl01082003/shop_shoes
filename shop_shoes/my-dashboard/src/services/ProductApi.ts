@@ -21,7 +21,6 @@ const ProductService = {
         `${API_URL}`,
         productId
       );
-      console.log(response);
       return response;
     } catch (error) {
       console.error(`Lỗi khi lấy thông tin sản phẩm ${productId}`, error);

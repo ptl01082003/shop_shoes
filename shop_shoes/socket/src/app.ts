@@ -28,7 +28,6 @@ io.use(authSocket as any);
 
 io.on("connection", (socket) => {
   const userId = (socket as Socket.ExternalSocket).userId;
-  console.log("userId", "userId");
   socket.emit("receiver", "Chào mừng bạn đã đến với nhà của chúng tôi");
 });
 

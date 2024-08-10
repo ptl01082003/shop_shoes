@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import { Brands } from "../models/Brands";
 import { Users } from "../models/Users";
 
 const UserController = {
