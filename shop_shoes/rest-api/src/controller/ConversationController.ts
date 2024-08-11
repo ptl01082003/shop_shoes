@@ -29,9 +29,14 @@ const ConversationController = {
   addMessages: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.userId as number;
-      const { receiverId, contents, imageUrl } = req.body;
+      const receiver = (await Users.findOne({ where: { roleId: 3 } })) as Users;
+      
+      const { contents, imageUrl } = req.body;
 
-      const conversations = await findOrCreateConversation(userId, receiverId);
+      const conversations = await findOrCreateConversation(
+        userId,
+        receiver.userId
+      );
 
       const message = await Messages.create({
         userId,
@@ -62,21 +67,8 @@ const ConversationController = {
         where: {
           [Op.or]: [{ senderId: userId }, { receiverId: userId }],
         },
-        attributes: ["conversationId"],
+        attributes: ["conversationId", "senderId", "receiverId"],
         include: [
-          {
-            model: Messages,
-            as: "messages",
-            attributes: {
-              exclude: ["updatedAt", "conversationId"],
-            },
-            include: [
-              {
-                model: Users,
-                attributes: ["fullName"],
-              },
-            ],
-          },
           {
             model: Messages,
             as: "lastMessage",
@@ -100,7 +92,7 @@ const ConversationController = {
           data: lstConversations?.map((conversation) => ({
             ...conversation?.toJSON(),
             messages: conversation.messages?.sort(
-              (a, b) =>  a.createdAt.getTime() - b.createdAt.getTime()
+              (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
             ),
           })),
         })

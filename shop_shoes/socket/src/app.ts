@@ -47,14 +47,19 @@ io.on("connection", async (socket) => {
 
   io.emit("changelstOnlineUsers", Object.values(lstOnlineUsers));
 
-  socket.on("disconnect", () => {
+  socket.on("disconnect", async () => {
+    const lstonlineUsersInRedis = (await redis.get("lstOnlineUsers")) || "";
+    const lstOnlineUsers = lstonlineUsersInRedis
+      ? JSON.parse(lstonlineUsersInRedis)
+      : {};
+
     lstOnlineUsers[userId] = {
       roles,
       userId,
       online: false,
       recentTime: new Date().getTime(),
     };
-
+    await redis.set("lstOnlineUsers", JSON.stringify(lstOnlineUsers));
     io.emit("changelstOnlineUsers", Object.values(lstOnlineUsers));
   });
 });
