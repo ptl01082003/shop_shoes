@@ -29,13 +29,12 @@ const ConversationController = {
   addMessages: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.userId as number;
+      const { contents, imageUrl, receiverId } = req.body;
       const receiver = (await Users.findOne({ where: { roleId: 3 } })) as Users;
-      
-      const { contents, imageUrl } = req.body;
 
       const conversations = await findOrCreateConversation(
         userId,
-        receiver.userId
+        receiverId || receiver.userId
       );
 
       const message = await Messages.create({

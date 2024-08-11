@@ -22,18 +22,8 @@ export default function Supporter() {
   }, []);
 
   const isSupporterOnline = useMemo(() => {
-    if (conversation) {
-      const supporterId =
-        conversation?.receiverId === selUserInfo?.userId
-          ? conversation?.senderId
-          : conversation?.receiverId;
-      return selLstOnlineUsers?.find(
-        (onliner) => onliner?.userId === supporterId
-      )?.online;
-    } else {
-      return selLstOnlineUsers?.find((onliner) => onliner?.roles != "USER")
-        ?.online;
-    }
+    return selLstOnlineUsers?.find((onliner) => onliner?.roles === "ADMIN")
+      ?.online;
   }, [selLstOnlineUsers, selUserInfo]);
 
   return (
