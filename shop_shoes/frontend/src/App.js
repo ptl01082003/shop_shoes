@@ -32,8 +32,8 @@ const socket = io.connect("http://localhost:6500", {
   },
 });
 
-socket.on("receiver", (data) => {
-  alert(data);
+socket.on("changelstOnlineUsers", (data) => {
+  console.log(data)
 });
 
 function App() {

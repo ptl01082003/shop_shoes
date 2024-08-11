@@ -4,6 +4,7 @@ import http from "http";
 import { Socket as IOSocket, Server } from "socket.io";
 import { redis } from "./config/ConnectRedis";
 import { authSocket } from "./middleware/checkSocket";
+import { ROLE_TYPES } from "./constants";
 
 declare global {
   namespace Socket {
@@ -26,9 +27,36 @@ const io = new Server(server, {
 
 io.use(authSocket as any);
 
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
   const userId = (socket as Socket.ExternalSocket).userId;
-  socket.emit("receiver", "Chào mừng bạn đã đến với nhà của chúng tôi");
+  const roles = (await redis.get(`roles-${userId}`)) as keyof typeof ROLE_TYPES;
+
+  const lstonlineUsersInRedis = (await redis.get("lstOnlineUsers")) || "";
+
+  const lstOnlineUsers = lstonlineUsersInRedis
+    ? JSON.parse(lstonlineUsersInRedis)
+    : {};
+
+  lstOnlineUsers[userId] = {
+    roles,
+    userId,
+    online: true,
+    recentTime: new Date().getTime(),
+  };
+  await redis.set("lstOnlineUsers", JSON.stringify(lstOnlineUsers));
+
+  io.emit("changelstOnlineUsers", Object.values(lstOnlineUsers));
+
+  socket.on("disconnect", () => {
+    lstOnlineUsers[userId] = {
+      roles,
+      userId,
+      online: false,
+      recentTime: new Date().getTime(),
+    };
+
+    io.emit("changelstOnlineUsers", Object.values(lstOnlineUsers));
+  });
 });
 
 redis.initial();

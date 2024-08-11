@@ -3,22 +3,46 @@ import { RESPONSE_CODE, ResponseBody } from "../constants";
 import { Conversations } from "../models/Conversations";
 import { Messages } from "../models/Messages";
 import { Users } from "../models/Users";
+import { Op } from "sequelize";
+
+async function findOrCreateConversation(senderId: number, receiverId: number) {
+  let conversation = await Conversations.findOne({
+    where: {
+      [Op.or]: [
+        { senderId: senderId, receiverId: receiverId },
+        { senderId: receiverId, receiverId: senderId },
+      ],
+    },
+  });
+
+  if (!conversation) {
+    conversation = await Conversations.create({
+      senderId: senderId,
+      receiverId: receiverId,
+    });
+  }
+
+  return conversation;
+}
+
 const ConversationController = {
   addMessages: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const userId = req.userId;
+      const userId = req.userId as number;
       const { receiverId, contents, imageUrl } = req.body;
 
-      const [conversations] = await Conversations.findOrCreate({
-        where: { senderId: userId, receiverId },
-      });
+      const conversations = await findOrCreateConversation(userId, receiverId);
 
-      await Messages.create({
+      const message = await Messages.create({
         userId,
         contents,
         imageUrl,
         conversationId: conversations.conversationId,
       });
+      console.log(message.messagesId);
+      conversations.lastMessageId = message.messagesId;
+
+      await conversations.save();
 
       return res.json(
         ResponseBody({
@@ -35,14 +59,77 @@ const ConversationController = {
       const userId = req.userId;
 
       const lstConversations = await Conversations.findAll({
-        where: { senderId: userId },
+        where: {
+          [Op.or]: [{ senderId: userId }, { receiverId: userId }],
+        },
+        attributes: ["conversationId"],
+        include: [
+          {
+            model: Messages,
+            as: "messages",
+            attributes: {
+              exclude: ["updatedAt", "conversationId"],
+            },
+            include: [
+              {
+                model: Users,
+                attributes: ["fullName"],
+              },
+            ],
+          },
+          {
+            model: Messages,
+            as: "lastMessage",
+            attributes: {
+              exclude: ["updatedAt", "conversationId"],
+            },
+            include: [
+              {
+                model: Users,
+                attributes: ["fullName"],
+              },
+            ],
+          },
+        ],
+      });
+
+      return res.json(
+        ResponseBody({
+          code: RESPONSE_CODE.SUCCESS,
+          message: `Thêm mới thành công`,
+          data: lstConversations?.map((conversation) => ({
+            ...conversation?.toJSON(),
+            messages: conversation.messages?.sort(
+              (a, b) =>  a.createdAt.getTime() - b.createdAt.getTime()
+            ),
+          })),
+        })
+      );
+    } catch (error) {
+      next(error);
+    }
+  },
+  getMessages: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.userId;
+      const { conversationId } = req.body;
+
+      const lstConversations = await Conversations.findOne({
+        where: {
+          conversationId,
+          [Op.or]: [{ senderId: userId }, { receiverId: userId }],
+        },
         attributes: ["conversationId"],
         include: {
           model: Messages,
+          as: "messages",
+          attributes: {
+            exclude: ["conversationId", "updatedAt", "messagesId"],
+          },
           include: [
             {
               model: Users,
-              attributes: ["fullName"]
+              attributes: ["fullName"],
             },
           ],
         },

@@ -27,11 +27,14 @@ export class Messages extends Model {
   public userId!: number;
 
   @BelongsTo(() => Users)
-  public users!: Users;
+  public user!: Users;
 
   @ForeignKey(() => Conversations)
   @Column
   public conversationId!: number;
+
+  @BelongsTo(() => Conversations)
+  public conversation!: Conversations;
 
   @Column(DataType.TEXT("long"))
   public contents!: number;

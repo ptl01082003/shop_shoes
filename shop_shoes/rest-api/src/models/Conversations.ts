@@ -36,6 +36,13 @@ export class Conversations extends Model {
   @BelongsTo(() => Users)
   public receiver!: Users;
 
-  @HasMany(() => Messages)
+  @ForeignKey(() => Messages)
+  @Column
+  public lastMessageId!: number;
+
+  @BelongsTo(() => Messages, { as: 'lastMessage' })
+  public lastMessage!: Messages;
+
+  @HasMany(() => Messages, { as: 'messages' })
   public messages!: Messages[];
 }

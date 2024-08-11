@@ -7,7 +7,7 @@ const conversationsRouter = Router();
 conversationsRouter.use(checkAuth);
 
 conversationsRouter.post("/add-message", ConversationController.addMessages);
-
+conversationsRouter.post("/lst-messages", ConversationController.getMessages);
 conversationsRouter.post("/lst-conversations", ConversationController.getConversations);
 
 
