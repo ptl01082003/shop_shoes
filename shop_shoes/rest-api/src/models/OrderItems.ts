@@ -1,13 +1,14 @@
 import {
   AutoIncrement,
   BelongsTo,
+  BelongsToMany,
   Column,
   DataType,
   Default,
   ForeignKey,
   Model,
   PrimaryKey,
-  Table
+  Table,
 } from "sequelize-typescript";
 import { OrderDetails } from "./OrderDetails";
 import { ProductDetails } from "./ProductDetails";
@@ -51,7 +52,7 @@ export class OrderItems extends Model {
 
   @Default(false)
   @Column({
-    type: DataType.BOOLEAN
+    type: DataType.BOOLEAN,
   })
   public isReview!: boolean;
 

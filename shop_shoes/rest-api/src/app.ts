@@ -9,7 +9,6 @@ import { connectDB } from "./config/ConnectDB";
 import { redis } from "./config/ConnectRedis";
 import { RESPONSE_CODE, ResponseBody, STATUS_CODE } from "./constants";
 import { appRouter } from "./router/appRouter";
-
 import { updateProductPrices } from "../src/utils/utils";
 
 declare global {
@@ -30,11 +29,7 @@ declare global {
   }
 }
 
-
 export const app = express();
-
-
-
 
 app.use(
   cors({
@@ -58,14 +53,7 @@ app.use(cookieParser());
 
 appRouter();
 
-cron.schedule("* * * * *", async () => {
-  console.log(`Cron job bắt đầu lúc: ${new Date().toLocaleString()}`);
-  try {
-    await updateProductPrices();
-  } catch (error) {
-    console.error("Lỗi khi thực hiện cron job:", error);
-  }
-});
+import "../src/utils/CronJobVouchers";
 
 app.use("*", (_, res) => {
   res.status(STATUS_CODE.NOT_FOUND).json(

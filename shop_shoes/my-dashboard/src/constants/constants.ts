@@ -29,6 +29,14 @@ export enum Vouchers_TYPE {
 export enum Vouchers_STATUS {
   ISACTIVE = "ISACTIVE",
   EXPIRED = "EXPIRED",
+  UNUSED = "UNUSED",
+}
+
+export enum Voucher_RULE {
+  MIN_ORDER_VALUE = "MIN_ORDER_VALUE",
+  VALID_PRODUCTS = "VALID_PRODUCTS",
+  USER_LEVEL = "USER_LEVEL",
+  ORDER_COUNT = "ORDER_COUNT",
 }
 
 export enum PROMOTIONS_STATUS {
@@ -36,6 +44,7 @@ export enum PROMOTIONS_STATUS {
   ACTIVE = "ACTIVE",
   EXPIRED = "EXPIRED",
 }
+
 export const PATH_ROUTER = {};
 
 export const TRANSFER_PRICE = (price: string) =>

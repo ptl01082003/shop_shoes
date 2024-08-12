@@ -1,9 +1,8 @@
-/**@jsxImportSource @emotion/react */
+/** @jsxImportSource @emotion/react */
 
 import {
   Button,
   Form,
-  FormProps,
   Input,
   Modal,
   Space,
@@ -18,7 +17,12 @@ import VoucherService from "../services/VoucherApi";
 import { tableCustomizeStyle } from "../styles/styles";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import moment from "moment";
-import { Vouchers_STATUS, Vouchers_TYPE } from "../constants/constants";
+import {
+  Vouchers_STATUS,
+  Vouchers_TYPE,
+  Voucher_RULE,
+} from "../constants/constants";
+import { FormProps } from "antd/lib";
 
 const { Option } = Select;
 
@@ -30,8 +34,9 @@ type FieldType = {
   startDay?: moment.Moment;
   endDay?: moment.Moment;
   quantity?: number;
-  status?: string;
-  typeValue?: string;
+  status?: Vouchers_STATUS;
+  typeValue?: Vouchers_TYPE;
+  ruleType?: Voucher_RULE;
   productId?: number;
 };
 
@@ -46,77 +51,109 @@ export default function VouchersPage() {
 
   const columns = [
     {
-      title: "ID",
-      dataIndex: "voucherId",
-      key: "voucherId",
-    },
-    {
-      title: "Code",
+      title: "Mã giảm giá",
       dataIndex: "code",
       key: "code",
     },
     {
-      title: "Description",
+      title: "Mô tả",
       dataIndex: "description",
       key: "description",
     },
     {
-      title: "Value Order",
+      title: "Giá trị đơn hàng",
       dataIndex: "valueOrder",
       key: "valueOrder",
     },
     {
-      title: "Discount Max",
+      title: "Giảm giá tối đa",
       dataIndex: "disscoutMax",
       key: "disscoutMax",
     },
     {
-      title: "Start Day",
+      title: "Ngày bắt đầu",
       dataIndex: "startDay",
       key: "startDay",
-      render: (text: string) => moment(text).format("YYYY-MM-DD"),
+      render: (startDay: string) => moment(startDay).format("DD-MM-YYYY"),
     },
     {
-      title: "End Day",
+      title: "Ngày kết thúc",
       dataIndex: "endDay",
       key: "endDay",
-      render: (text: string) => moment(text).format("YYYY-MM-DD"),
+      render: (endDay: string) => moment(endDay).format("DD-MM-YYYY"),
     },
     {
-      title: "Quantity",
+      title: "Số lượng",
       dataIndex: "quantity",
       key: "quantity",
     },
     {
-      title: "Status",
+      title: "Trạng thái",
       dataIndex: "status",
       key: "status",
+      render: (status: Vouchers_STATUS) => {
+        switch (status) {
+          case Vouchers_STATUS.ISACTIVE:
+            return "Kích hoạt";
+          case Vouchers_STATUS.EXPIRED:
+            return "Hết hạn";
+          case Vouchers_STATUS.UNUSED:
+            return "Chưa sử dụng";
+          default:
+            return "Không xác định";
+        }
+      },
     },
     {
-      title: "Type Value",
+      title: "Loại giá trị",
       dataIndex: "typeValue",
       key: "typeValue",
+      render: (typeValue: Vouchers_TYPE) => {
+        switch (typeValue) {
+          case Vouchers_TYPE.MONEY:
+            return "Tiền";
+          case Vouchers_TYPE.PERCENT:
+            return "Phần trăm";
+          default:
+            return "Không xác định";
+        }
+      },
     },
     {
-      title: "Product ID",
-      dataIndex: "productId",
-      key: "productId",
+      title: "Quy tắc",
+      dataIndex: "ruleType",
+      key: "ruleType",
+      render: (ruleType: Voucher_RULE) => {
+        switch (ruleType) {
+          case Voucher_RULE.MIN_ORDER_VALUE:
+            return "Giá trị đơn hàng tối thiểu";
+          case Voucher_RULE.VALID_PRODUCTS:
+            return "Sản phẩm hợp lệ";
+          case Voucher_RULE.USER_LEVEL:
+            return "Cấp độ người dùng";
+          case Voucher_RULE.ORDER_COUNT:
+            return "Số đơn hàng";
+          default:
+            return "Không xác định";
+        }
+      },
     },
     {
-      title: "Actions",
+      title: "Thao tác",
+      key: "action",
       render: (_: any, record: any) => (
         <Space size="middle">
           <Button
             icon={<EditOutlined />}
             onClick={() => editVoucherItems(record)}
           >
-            Edit
+            Sửa
           </Button>
           <Button
             icon={<DeleteOutlined />}
             onClick={() => deleteVoucherItems(record)}
           >
-            Delete
+            Xóa
           </Button>
         </Space>
       ),
@@ -179,7 +216,7 @@ export default function VouchersPage() {
     });
     if (res.code === 0) {
       message.success("Voucher updated successfully");
-      setOpenEditModal(undefined);
+      setOpenEditModal({ open: false, data: {} });
       setShouldRender((x) => !x);
     } else {
       message.error("Failed to update voucher");
@@ -192,11 +229,9 @@ export default function VouchersPage() {
         <Button
           size="large"
           type="primary"
-          onClick={() => {
-            setOpenCreateModal(true);
-          }}
+          onClick={() => setOpenCreateModal(true)}
         >
-          ADD NEW
+          THÊM MỚI
         </Button>
       </div>
       <div css={tableCustomizeStyle} className="table-responsive">
@@ -209,19 +244,17 @@ export default function VouchersPage() {
       </div>
 
       <Modal
-        title=""
+        title="Tạo Voucher"
         centered
         closable
         open={isOpenCreateModal}
-        destroyOnClose={true}
-        onCancel={() => {
-          setOpenCreateModal(false);
-        }}
-        footer={false}
+        destroyOnClose
+        onCancel={() => setOpenCreateModal(false)}
+        footer={null}
         width={750}
       >
         <Form
-          name="basic"
+          name="createVoucher"
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
           style={{ maxWidth: 600 }}
@@ -230,184 +263,216 @@ export default function VouchersPage() {
           autoComplete="off"
         >
           <Form.Item<FieldType>
-            label="Code"
+            label="Mã giảm giá"
             name="code"
-            rules={[{ required: true, message: "Code is required!" }]}
+            rules={[{ required: true, message: "Mã giảm giá là bắt buộc!" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item<FieldType>
-            label="Description"
+            label="Mô tả"
             name="description"
-            rules={[{ required: true, message: "Description is required!" }]}
+            rules={[{ required: true, message: "Mô tả là bắt buộc!" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item<FieldType>
-            label="Value Order"
+            label="Giá trị đơn hàng"
             name="valueOrder"
-            rules={[{ required: true, message: "Value Order is required!" }]}
+            rules={[
+              { required: true, message: "Giá trị đơn hàng là bắt buộc!" },
+            ]}
           >
             <InputNumber min={0} style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item<FieldType>
-            label="Discount Max"
+            label="Giảm giá tối đa"
             name="disscoutMax"
-            rules={[{ required: true, message: "Discount Max is required!" }]}
+            rules={[
+              { required: true, message: "Giảm giá tối đa là bắt buộc!" },
+            ]}
           >
             <InputNumber min={0} style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item<FieldType>
-            label="Start Day"
+            label="Ngày bắt đầu"
             name="startDay"
-            rules={[{ required: true, message: "Start Day is required!" }]}
+            rules={[{ required: true, message: "Ngày bắt đầu là bắt buộc!" }]}
           >
             <DatePicker style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item<FieldType>
-            label="End Day"
+            label="Ngày kết thúc"
             name="endDay"
-            rules={[{ required: true, message: "End Day is required!" }]}
+            rules={[{ required: true, message: "Ngày kết thúc là bắt buộc!" }]}
           >
             <DatePicker style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item<FieldType>
-            label="Quantity"
+            label="Số lượng"
             name="quantity"
-            rules={[{ required: true, message: "Quantity is required!" }]}
+            rules={[{ required: true, message: "Số lượng là bắt buộc!" }]}
           >
             <InputNumber min={0} style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item<FieldType>
-            label="Status"
+            label="Trạng thái"
             name="status"
-            rules={[{ required: true, message: "Status is required!" }]}
+            rules={[{ required: true, message: "Trạng thái là bắt buộc!" }]}
           >
             <Select>
-              <Option value={Vouchers_STATUS.ISACTIVE}>ISACTIVE</Option>
-              <Option value={Vouchers_STATUS.EXPIRED}>PERCENT</Option>
+              <Option value={Vouchers_STATUS.ISACTIVE}>Kích hoạt</Option>
+              <Option value={Vouchers_STATUS.EXPIRED}>Hết hạn</Option>
+              <Option value={Vouchers_STATUS.UNUSED}>Chưa sử dụng</Option>
             </Select>
           </Form.Item>
           <Form.Item<FieldType>
-            label="Type Value"
+            label="Loại giá trị"
             name="typeValue"
-            rules={[{ required: true, message: "Type Value is required!" }]}
+            rules={[{ required: true, message: "Loại giá trị là bắt buộc!" }]}
           >
-            <Input />
+            <Select>
+              <Option value={Vouchers_TYPE.MONEY}>Tiền</Option>
+              <Option value={Vouchers_TYPE.PERCENT}>Phần trăm</Option>
+            </Select>
           </Form.Item>
           <Form.Item<FieldType>
-            label="Product ID"
-            name="productId"
-            rules={[{ required: true, message: "Product ID is required!" }]}
+            label="Quy tắc"
+            name="ruleType"
+            rules={[{ required: true, message: "Quy tắc là bắt buộc!" }]}
           >
-            <InputNumber min={0} style={{ width: "100%" }} />
+            <Select>
+              <Option value={Voucher_RULE.MIN_ORDER_VALUE}>
+                Giá trị đơn hàng tối thiểu
+              </Option>
+              <Option value={Voucher_RULE.VALID_PRODUCTS}>
+                Sản phẩm hợp lệ
+              </Option>
+              <Option value={Voucher_RULE.USER_LEVEL}>Cấp độ người dùng</Option>
+              <Option value={Voucher_RULE.ORDER_COUNT}>Số đơn hàng</Option>
+            </Select>
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Button type="primary" htmlType="submit">
-              Add New
+              Tạo Voucher
             </Button>
           </Form.Item>
         </Form>
       </Modal>
 
-      {/* Form sửa */}
       <Modal
-        title=""
+        title="Sửa Voucher"
         centered
         closable
         open={openEditModal.open}
-        destroyOnClose={true}
-        onCancel={() => {
-          setOpenEditModal(undefined);
-        }}
-        footer={false}
+        destroyOnClose
+        onCancel={() => setOpenEditModal({ open: false, data: {} })}
+        footer={null}
         width={750}
       >
         <Form
-          name="basic"
+          name="editVoucher"
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
           style={{ maxWidth: 600 }}
-          initialValues={openEditModal.data}
+          // initialValues={{ remember: true }}
           onFinish={onEditFinish}
           autoComplete="off"
+          initialValues={openEditModal.data}
         >
           <Form.Item<FieldType>
-            label="Code"
+            label="Mã giảm giá"
             name="code"
-            rules={[{ required: true, message: "Code is required!" }]}
+            rules={[{ required: true, message: "Mã giảm giá là bắt buộc!" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item<FieldType>
-            label="Description"
+            label="Mô tả"
             name="description"
-            rules={[{ required: true, message: "Description is required!" }]}
+            rules={[{ required: true, message: "Mô tả là bắt buộc!" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item<FieldType>
-            label="Value Order"
+            label="Giá trị đơn hàng"
             name="valueOrder"
-            rules={[{ required: true, message: "Value Order is required!" }]}
+            rules={[
+              { required: true, message: "Giá trị đơn hàng là bắt buộc!" },
+            ]}
           >
             <InputNumber min={0} style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item<FieldType>
-            label="Discount Max"
+            label="Giảm giá tối đa"
             name="disscoutMax"
-            rules={[{ required: true, message: "Discount Max is required!" }]}
+            rules={[
+              { required: true, message: "Giảm giá tối đa là bắt buộc!" },
+            ]}
           >
             <InputNumber min={0} style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item<FieldType>
-            label="Start Day"
+            label="Ngày bắt đầu"
             name="startDay"
-            rules={[{ required: true, message: "Start Day is required!" }]}
+            rules={[{ required: true, message: "Ngày bắt đầu là bắt buộc!" }]}
           >
             <DatePicker style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item<FieldType>
-            label="End Day"
+            label="Ngày kết thúc"
             name="endDay"
-            rules={[{ required: true, message: "End Day is required!" }]}
+            rules={[{ required: true, message: "Ngày kết thúc là bắt buộc!" }]}
           >
             <DatePicker style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item<FieldType>
-            label="Quantity"
+            label="Số lượng"
             name="quantity"
-            rules={[{ required: true, message: "Quantity is required!" }]}
+            rules={[{ required: true, message: "Số lượng là bắt buộc!" }]}
           >
             <InputNumber min={0} style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item<FieldType>
-            label="Status"
+            label="Trạng thái"
             name="status"
-            rules={[{ required: true, message: "Status is required!" }]}
+            rules={[{ required: true, message: "Trạng thái là bắt buộc!" }]}
           >
             <Select>
-              <Option value={Vouchers_STATUS.ISACTIVE}>ISACTIVE</Option>
-              <Option value={Vouchers_STATUS.EXPIRED}>PERCENT</Option>
+              <Option value={Vouchers_STATUS.ISACTIVE}>Kích hoạt</Option>
+              <Option value={Vouchers_STATUS.EXPIRED}>Hết hạn</Option>
+              <Option value={Vouchers_STATUS.UNUSED}>Chưa sử dụng</Option>
             </Select>
           </Form.Item>
           <Form.Item<FieldType>
-            label="Type Value"
+            label="Loại giá trị"
             name="typeValue"
-            rules={[{ required: true, message: "Type Value is required!" }]}
+            rules={[{ required: true, message: "Loại giá trị là bắt buộc!" }]}
           >
-            <Input />
+            <Select>
+              <Option value={Vouchers_TYPE.MONEY}>Tiền</Option>
+              <Option value={Vouchers_TYPE.PERCENT}>Phần trăm</Option>
+            </Select>
           </Form.Item>
           <Form.Item<FieldType>
-            label="Product ID"
-            name="productId"
-            rules={[{ required: true, message: "Product ID is required!" }]}
+            label="Quy tắc"
+            name="ruleType"
+            rules={[{ required: true, message: "Quy tắc là bắt buộc!" }]}
           >
-            <InputNumber min={0} style={{ width: "100%" }} />
+            <Select>
+              <Option value={Voucher_RULE.MIN_ORDER_VALUE}>
+                Giá trị đơn hàng tối thiểu
+              </Option>
+              <Option value={Voucher_RULE.VALID_PRODUCTS}>
+                Sản phẩm hợp lệ
+              </Option>
+              <Option value={Voucher_RULE.USER_LEVEL}>Cấp độ người dùng</Option>
+              <Option value={Voucher_RULE.ORDER_COUNT}>Số đơn hàng</Option>
+            </Select>
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Button type="primary" htmlType="submit">
-              Save Changes
+              Cập nhật
             </Button>
           </Form.Item>
         </Form>

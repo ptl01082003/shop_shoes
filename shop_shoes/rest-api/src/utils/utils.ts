@@ -14,11 +14,10 @@ const applyPromotionToProduct = async (product: any, promotion: any) => {
       const originalPrice = product.price;
       const discountedPrice = originalPrice - promotion.discountPrice;
 
-      console.log(`Sản phẩm: ${product.name}`);
-      console.log(`Giá gốc: ${originalPrice}`);
-      console.log(`Giá sau khi giảm: ${discountedPrice}`);
+      // console.log(`Sản phẩm: ${product.name}`);
+      // console.log(`Giá gốc: ${originalPrice}`);
+      // console.log(`Giá sau khi giảm: ${discountedPrice}`);
 
-      
       const [affectedRows] = await Products.update(
         { priceDiscount: discountedPrice },
         { where: { productId: product.productId } }
@@ -44,7 +43,7 @@ const applyPromotionToProduct = async (product: any, promotion: any) => {
         { where: { productId: product.productId } }
       );
 
-      console.log(`Khuyến mãi ID ${promotion.promotionId} đã hết hạn.`);
+      // console.log(`Khuyến mãi ID ${promotion.promotionId} đã hết hạn.`);
     }
   } catch (error) {
     console.error("Lỗi khi áp dụng khuyến mãi:", error);

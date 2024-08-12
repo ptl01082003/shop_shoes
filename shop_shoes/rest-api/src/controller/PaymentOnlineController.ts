@@ -21,6 +21,8 @@ import { Products } from "../models/Products";
 import { ShoppingCarts } from "../models/ShoppingCarts";
 import { Sizes } from "../models/Sizes";
 import { sortObject } from "../utils/utils";
+import { Vouchers, Vouchers_STATUS, Vouchers_TYPE } from "../models/Vouchers";
+import { UserVouchers } from "../models/UserVouchers";
 
 async function lockProductsById(
   keyName: string,
@@ -253,14 +255,13 @@ const PaymentOnlineController = {
   createOrder: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.userId;
-      const { provider, name, address, phone } = req.body;
+      const { provider, name, address, phone, voucherCode } = req.body;
       let ordersAmount = 0;
       const carts = await ShoppingCarts.findOne({
         where: { userId },
       });
 
       if (carts) {
-
         const newOrders = await OrderDetails.create({
           userId,
           amount: ordersAmount,
@@ -285,7 +286,9 @@ const PaymentOnlineController = {
         });
 
         for await (const products of cartItems) {
-          const productsAmount = products.quanity * Number(products.productDetails.products.priceDiscount);
+          const productsAmount =
+            products.quanity *
+            Number(products.productDetails.products.priceDiscount);
           await OrderItems.create({
             userId,
             amount: productsAmount,
@@ -294,17 +297,71 @@ const PaymentOnlineController = {
             productDetailId: products.productDetailId,
             price: products.productDetails.products.price,
             priceDiscount: products.productDetails.products.priceDiscount,
-            status: provider == PAYMENT_PROVIDER.CASH ? ODER_STATUS.CHO_XAC_NHAN : ODER_STATUS.CHO_THANH_TOAN,
+            status:
+              provider == PAYMENT_PROVIDER.CASH
+                ? ODER_STATUS.CHO_XAC_NHAN
+                : ODER_STATUS.CHO_THANH_TOAN,
           });
           ordersAmount += productsAmount;
           await products.destroy();
         }
 
+        // Thêm logic tính toán giảm giá từ voucher
+        let discount = 0;
+        if (voucherCode) {
+          const voucher = await Vouchers.findOne({
+            where: { code: voucherCode },
+          });
+
+          if (voucher && voucher.status === Vouchers_STATUS.UNUSED) {
+            const orderValue = ordersAmount;
+
+            // Kiểm tra điều kiện áp dụng voucher
+            if (voucher.minOrderValue && orderValue < voucher.minOrderValue) {
+              return res.status(400).json({
+                message: "Giá trị đơn hàng không đủ điều kiện áp dụng voucher",
+              });
+            }
+
+            // Tính toán giá trị giảm giá
+            if (voucher.typeValue === Vouchers_TYPE.MONEY) {
+              discount = Math.min(voucher.valueOrder, orderValue);
+            } else if (voucher.typeValue === Vouchers_TYPE.PERCENT) {
+              discount = (orderValue * voucher.valueOrder) / 100;
+              discount = Math.min(discount, orderValue);
+            }
+
+            // Cập nhật trạng thái voucher và lưu lại
+            voucher.status = Vouchers_STATUS.EXPIRED;
+            await voucher.save();
+
+            // Trừ giá trị giảm giá vào tổng giá trị đơn hàng
+            ordersAmount -= discount;
+
+            await UserVouchers.create({
+              userId,
+              voucherId: voucher.voucherId,
+              status: Vouchers_STATUS.UNUSED,
+            });
+          }
+        }
+
+        // Cập nhật giá trị đơn hàng sau khi áp dụng giảm giá
+        newOrders.amount = ordersAmount;
+        await newOrders.save();
+
+        // // Cập nhật tổng giá trị đơn hàng
+        // newOrders.amount = ordersAmount;
+        // await newOrders.save();
+
         await PaymentDetails.create({
           provider,
           amount: ordersAmount,
           orderDetailId: newOrders.orderDetailId,
-          status: provider == PAYMENT_PROVIDER.CASH ? PAYMENT_STATUS.CASH : PAYMENT_STATUS.IDLE,
+          status:
+            provider == PAYMENT_PROVIDER.CASH
+              ? PAYMENT_STATUS.CASH
+              : PAYMENT_STATUS.IDLE,
         });
 
         newOrders.amount = ordersAmount;
@@ -364,11 +421,10 @@ const PaymentOnlineController = {
         where: {
           userId,
           orderCode,
-        }
-      })
+        },
+      });
 
       if (oderDetails) {
-
         const orderItems = await OrderItems.findAll({
           where: { orderDetailId: oderDetails.orderDetailId },
           include: [
@@ -385,8 +441,11 @@ const PaymentOnlineController = {
 
         for await (const orders of orderItems) {
           orders.price = orders.productDetails.products.price || 0;
-          orders.priceDiscount = orders.productDetails.products.priceDiscount || 0;
-          ordersAmount += orders.quanity * Number(orders.productDetails.products.priceDiscount);
+          orders.priceDiscount =
+            orders.productDetails.products.priceDiscount || 0;
+          ordersAmount +=
+            orders.quanity *
+            Number(orders.productDetails.products.priceDiscount);
           await orders.save();
         }
 
@@ -398,9 +457,9 @@ const PaymentOnlineController = {
         await oderDetails.save();
         const payments = await PaymentDetails.findOne({
           where: {
-            orderDetailId: oderDetails?.orderDetailId
-          }
-        })
+            orderDetailId: oderDetails?.orderDetailId,
+          },
+        });
         payments!.amount = ordersAmount;
 
         await payments?.save();
@@ -426,8 +485,7 @@ const PaymentOnlineController = {
           ResponseBody({
             code: RESPONSE_CODE.ERRORS,
             data: null,
-            message:
-              "Đơn hàng không tồn tại",
+            message: "Đơn hàng không tồn tại",
           })
         );
       }
@@ -444,13 +502,13 @@ const PaymentOnlineController = {
       const oderDetails = await OrderDetails.findAll({
         where: { userId },
       });
-      if(oderDetails) {
+      if (oderDetails) {
         for await (const orders of oderDetails) {
           let ordersAmount = 0;
-          const paymentDetails = await PaymentDetails.findOne({
+          const paymentDetails = (await PaymentDetails.findOne({
             where: { orderDetailId: orders?.orderDetailId },
-          }) as PaymentDetails;
-  
+          })) as PaymentDetails;
+
           const orderItems = await OrderItems.findAll({
             where: { orderDetailId: orders.orderDetailId },
             include: [
@@ -475,22 +533,24 @@ const PaymentOnlineController = {
           // Trong trường hợp đơn hàng chưa được thanh toán cập nhật lại giá
           if (paymentDetails.status != PAYMENT_STATUS.SUCCESS) {
             for await (const products of orderItems) {
-              const productsAmount = products.quanity * Number(products.productDetails.products.priceDiscount);
+              const productsAmount =
+                products.quanity *
+                Number(products.productDetails.products.priceDiscount);
               products.price = products.productDetails.products.price || 0;
               products.amount = productsAmount;
-              products.priceDiscount = products.productDetails.products.priceDiscount || 0;
+              products.priceDiscount =
+                products.productDetails.products.priceDiscount || 0;
               ordersAmount += productsAmount;
               await products.save();
             }
-  
+
             orders.amount = ordersAmount;
             paymentDetails.amount = ordersAmount;
-  
+
             await orders.save();
             await paymentDetails.save();
           }
-  
-  
+
           const mergeProducts = orderItems.map((products) => {
             return {
               price: products.price,
@@ -504,15 +564,14 @@ const PaymentOnlineController = {
               path: products?.productDetails?.products?.gallery?.[0]?.path,
             };
           });
-  
-  
+
           transferData.push({
             ...orders?.toJSON(),
             ...paymentDetails?.toJSON(),
-            orderItems: mergeProducts
-          })
+            orderItems: mergeProducts,
+          });
         }
-  
+
         res.json(
           ResponseBody({
             code: RESPONSE_CODE.SUCCESS,
@@ -520,7 +579,7 @@ const PaymentOnlineController = {
             data: transferData,
           })
         );
-      }else {
+      } else {
         res.json(
           ResponseBody({
             code: RESPONSE_CODE.SUCCESS,
@@ -563,30 +622,35 @@ const PaymentOnlineController = {
           },
           {
             model: OrderDetails,
-          }
+          },
         ],
       });
       if (orderItems) {
         let transferData: any[] = [];
         for await (const orders of orderItems) {
           const payments = await PaymentDetails.findOne({
-            where: { orderDetailId: orders.orderDetailId }
-          })
+            where: { orderDetailId: orders.orderDetailId },
+          });
           const isPaid = payments?.status === PAYMENT_STATUS.SUCCESS;
           transferData.push({
             status: orders.status,
             isReview: orders.isReview,
             paymentStatus: payments?.status,
             price: isPaid ? orders.price : orders.productDetails.products.price,
-            amount: isPaid ? orders?.amount : orders.quanity * Number(orders.productDetails.products.priceDiscount),
+            amount: isPaid
+              ? orders?.amount
+              : orders.quanity *
+                Number(orders.productDetails.products.priceDiscount),
             quanity: orders?.quanity,
-            priceDiscount: isPaid ? orders.priceDiscount : orders.productDetails.products.priceDiscount,
+            priceDiscount: isPaid
+              ? orders.priceDiscount
+              : orders.productDetails.products.priceDiscount,
             productDetailId: orders?.productDetailId,
             name: orders?.productDetails?.products?.name,
             sizeName: orders?.productDetails?.sizes?.name,
             quanityLimit: orders?.productDetails?.quantity,
             path: orders?.productDetails?.products?.gallery?.[0]?.path,
-          })
+          });
         }
 
         res.json(
@@ -605,7 +669,6 @@ const PaymentOnlineController = {
           })
         );
       }
-
     } catch (error) {
       next(error);
     }

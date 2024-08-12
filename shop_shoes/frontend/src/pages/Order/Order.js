@@ -1,6 +1,6 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Checkbox, Divider } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import * as yup from "yup";
@@ -9,6 +9,7 @@ import { TRANSFER_PRICE, URL_IMAGE } from "../../constants";
 import AxiosClient from "../../networks/AxiosClient";
 import { changeCarts, selectCarts } from "../../redux/slices/cartsSlice";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const schema = yup
   .object({
@@ -24,6 +25,8 @@ const schema = yup
   })
   .required();
 
+
+
 const Oders = () => {
   const {
     register,
@@ -37,6 +40,28 @@ const Oders = () => {
   const navigation = useNavigate();
   const selCarts = useSelector(selectCarts);
   const [provider, setProvider] = useState("MOMO");
+  const [vouchers, setVouchers] = useState([]);
+  const [selectedVoucher, setSelectedVoucher] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+
+   useEffect(() => {
+    // Fetch vouchers for selection
+    const fetchVouchers = async () => {
+      try {
+        const response = await AxiosClient.get("/vouchers/by-user");
+        if (response?.data) {
+          setVouchers(response.data);
+        } else {
+          toast.error("Không thể tải danh sách voucher.");
+        }
+      } catch (error) {
+        console.error("Failed to fetch vouchers:", error);
+        toast.error("Có lỗi xảy ra khi tải danh sách voucher.");
+      }
+    };
+
+    fetchVouchers();
+  }, []);
 
   const createNewOders = async (params) => {
     const response = await AxiosClient.post("/payment-orders/create-order", {
