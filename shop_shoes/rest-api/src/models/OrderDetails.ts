@@ -4,17 +4,17 @@ import {
   BelongsTo,
   Column,
   DataType,
-  Default,
   ForeignKey,
   HasMany,
   Model,
   PrimaryKey,
-  Table,
+  Table
 } from "sequelize-typescript";
+import { v4 as uuidv4 } from "uuid";
 import { OrderItems } from "./OrderItems";
 import { Users } from "./Users";
-import { v4 as uuidv4 } from "uuid";
 import { Vouchers } from "./Vouchers";
+
 
 @Table({
   tableName: "order_details",
@@ -44,7 +44,7 @@ export class OrderDetails extends Model {
 
   @ForeignKey(() => Vouchers)
   @Column
-  public voucherId?: number;
+  public voucherId!: number;
 
   @BelongsTo(() => Vouchers)
   public voucher?: Vouchers;
