@@ -28,11 +28,11 @@ const io = new Server(server, {
 io.use(authSocket as any);
 
 io.on("connection", async (socket) => {
+  console.log(socket.id);
   const userId = (socket as Socket.ExternalSocket).userId;
   const roles = (await redis.get(`roles-${userId}`)) as keyof typeof ROLE_TYPES;
 
   const lstonlineUsersInRedis = (await redis.get("lstOnlineUsers")) || "";
-
   const lstOnlineUsers = lstonlineUsersInRedis
     ? JSON.parse(lstonlineUsersInRedis)
     : {};
@@ -41,11 +41,28 @@ io.on("connection", async (socket) => {
     roles,
     userId,
     online: true,
+    socketId: socket.id,
+
     recentTime: new Date().getTime(),
   };
+
+
   await redis.set("lstOnlineUsers", JSON.stringify(lstOnlineUsers));
 
   io.emit("changelstOnlineUsers", Object.values(lstOnlineUsers));
+
+  socket.on("newConversations", async (data: any) => {
+    const { receiverId } = data;
+    const lstonlineUsersInRedis = (await redis.get("lstOnlineUsers")) || "";
+    const lstOnlineUsers = lstonlineUsersInRedis
+      ? JSON.parse(lstonlineUsersInRedis)
+      : {};
+    const receiverOnline: any = Object.values(lstOnlineUsers).find((onliner: any) => onliner?.userId === receiverId);
+    // Kiểm tra TH người nhận online gửi socket messages
+    if (receiverOnline?.online) {
+      io.to(receiverOnline.socketId).emit("newConversations", {})
+    }
+  });
 
   socket.on("disconnect", async () => {
     const lstonlineUsersInRedis = (await redis.get("lstOnlineUsers")) || "";
@@ -57,6 +74,7 @@ io.on("connection", async (socket) => {
       roles,
       userId,
       online: false,
+      socketId: null,
       recentTime: new Date().getTime(),
     };
     await redis.set("lstOnlineUsers", JSON.stringify(lstOnlineUsers));

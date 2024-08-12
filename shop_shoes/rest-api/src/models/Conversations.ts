@@ -26,14 +26,14 @@ export class Conversations extends Model {
   @Column
   public senderId!: number;
 
-  @BelongsTo(() => Users)
+  @BelongsTo(() => Users, { as: 'sender', foreignKey: 'senderId' })
   public sender!: Users;
 
   @ForeignKey(() => Users)
   @Column
   public receiverId!: number;
 
-  @BelongsTo(() => Users)
+  @BelongsTo(() => Users, { as: 'receiver', foreignKey: 'receiverId' })
   public receiver!: Users;
 
   @ForeignKey(() => Messages)

@@ -81,6 +81,16 @@ const ConversationController = {
               },
             ],
           },
+          {
+            model: Users,
+            as: "sender",
+            attributes: ["fullName"],
+          },
+          {
+            model: Users,
+            as: "receiver",
+            attributes: ["fullName"],
+          },
         ],
       });
 

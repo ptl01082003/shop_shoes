@@ -1,17 +1,18 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import AxiosClient from "../../../networks/AxiosClient";
 import {
   selectLstOnlineUsers,
   selectUserInfo,
 } from "../../../redux/slices/usersSlice";
+import { socket } from "../../../App";
 
 export default function Supporter() {
   const selUserInfo = useSelector(selectUserInfo);
   const selLstOnlineUsers = useSelector(selectLstOnlineUsers);
-
   const [conversation, setConversation] = useState();
-  console.log(selLstOnlineUsers);
+  const [contentsInput, setContentsInput] = useState("");
+
   useEffect(() => {
     (async () => {
       const lstConversations = await AxiosClient.post(
@@ -21,13 +22,24 @@ export default function Supporter() {
     })();
   }, []);
 
-  const isSupporterOnline = useMemo(() => {
-    return selLstOnlineUsers?.find((onliner) => onliner?.roles === "ADMIN")
-      ?.online;
-  }, [selLstOnlineUsers, selUserInfo]);
+  const userReceive = useMemo(() => {
+    return selLstOnlineUsers?.find((onliner) => onliner?.roles === "ADMIN");
+  }, [selLstOnlineUsers]);
+
+  const isSupporterOnline = useMemo(() => userReceive?.online, [userReceive]);
+
+  const sendMessages = async () => {
+    await AxiosClient.post("/conversations/add-message", {
+      contents: contentsInput,
+    });
+    socket.emit("newConversations", {
+      receiverId: userReceive?.userId,
+    });
+    setContentsInput("");
+  };
 
   return (
-    <div className="flex flex-col min-h-[80vh] border border-[#000000] rounded-lg">
+    <div className="flex flex-col h-[80vh] border border-[#000000] rounded-lg">
       <div>
         <div className="h-[60px] flex justify-between border-b border-[#000000] items-center px-5">
           <h1>Hỗ trợ khách hàng</h1>
@@ -46,7 +58,16 @@ export default function Supporter() {
           </div>
         </div>
       </div>
-      <div class="flex-1"></div>
+      <div className="flex-1 relative overflow-y-auto"></div>
+      <div className="sticky right-0 w-full flex gap-4 bottom-0 px-3 py-4 border-t">
+        <input
+          value={contentsInput}
+          onChange={(e) => setContentsInput(e.target.value)}
+          className="flex-1 px-3 py-2 outline-none"
+          placeholder="Nhập tại đây"
+        />
+        <button onClick={sendMessages}>Gửi</button>
+      </div>
     </div>
   );
 }
