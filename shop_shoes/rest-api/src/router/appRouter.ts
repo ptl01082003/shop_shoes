@@ -19,6 +19,7 @@ import routerStyle from "./StylesRouter";
 import { uploadRouter } from "./uploadRouter";
 import userRouter from "./UserRouter";
 import routerVouchers from "./VoucherRouter";
+import conversationsRouter from "./ConversationsRouter";
 
 const router = express.Router();
 
@@ -32,13 +33,14 @@ export function appRouter() {
 
   router.use("/sizes", routerSize);
   router.use("/images", routerImage);
+  router.use("/orders", ordersRouter);
   router.use("/origins", routerOrigin);
+  router.use("/vouchers", routerVouchers);
   router.use("/products", productsRouter);
   router.use("/materials", routerMaterial);
   router.use("/promotions", routerPromotion);
-  router.use("/vouchers", routerVouchers);
   router.use("/payment-orders", paymentRouter);
-  router.use("/orders", ordersRouter);
+  router.use("/conversations", conversationsRouter);
 
   router.use("*", (_, res) => {
     res.status(STATUS_CODE.NOT_FOUND).json(

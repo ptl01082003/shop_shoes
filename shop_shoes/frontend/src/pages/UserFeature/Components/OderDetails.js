@@ -182,6 +182,7 @@ export default function OderDetails() {
   const [lstOders, setLstOders] = useState();
   const [orderStatus, setOrderStatus] = useState(ODER_STATUS.CHO_XAC_NHAN);
   const [shouldRender, setShouldRender] = useState(false);
+  
   useEffect(() => {
     (async () => {
       const lstOders = await AxiosClient.post("/orders/lst-orders", {
@@ -211,7 +212,7 @@ export default function OderDetails() {
     label: oders.label,
     icon: oders.icon,
     children: (
-      <div className="flex-1 space-y-8 mt-6">
+      <div className="flex-1 mt-6 space-y-8">
         {Array.isArray(lstOders) && lstOders?.length > 0 ? (
           lstOders?.map((items) => (
             <div>
@@ -235,7 +236,7 @@ export default function OderDetails() {
                       {TRANSFER_PRICE(items?.price)}
                     </h1>
                   ) : (
-                    <div className="flex mb-2 space-x-4 items-center">
+                    <div className="flex items-center mb-2 space-x-4">
                       <h1 className="text-xl">
                         <span>{items?.quanity} x </span>
                         {TRANSFER_PRICE(items?.priceDiscount)}
@@ -250,7 +251,7 @@ export default function OderDetails() {
                   </h1>
                 </div>
               </div>
-              <div className="flex w-full justify-end">
+              <div className="flex justify-end w-full">
                 {renderActionByOrderStatus(items)}
               </div>
               <Divider />

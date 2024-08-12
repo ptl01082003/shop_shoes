@@ -25,18 +25,26 @@ import ProfileLogout from "./pages/UserFeature/Components/ProfileLogout";
 import UserInfo from "./pages/UserFeature/Components/UserInfo";
 import UserFeature from "./pages/UserFeature/UserFeature";
 import { io } from "socket.io-client";
+import Supporter from "./pages/UserFeature/Components/Supporter";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { changelstOnlineUsers } from "./redux/slices/usersSlice";
 
-const socket = io.connect("http://localhost:6500", {
+export const socket = io.connect("http://localhost:6500", {
   auth: {
     token: localStorage.getItem(KEY_STORAGE.TOKEN),
   },
 });
 
-socket.on("receiver", (data) => {
-  alert(data);
-});
-
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    socket.on("changelstOnlineUsers", (data) => {
+        dispatch(changelstOnlineUsers(data));
+    });
+  }, []);
+  
   return (
     <div className="font-bodyFont">
       <ToastContainer
@@ -61,6 +69,7 @@ function App() {
               <Route path="" element={<UserInfo />} />
               <Route path="payment" element={<PaymentInfo />} />
               <Route path="orders" element={<OderDetails />} />
+              <Route path="supports" element={<Supporter />} />
               <Route path="logout" element={<ProfileLogout />} />
             </Route>
             <Route path="shop" element={<Shop />} />

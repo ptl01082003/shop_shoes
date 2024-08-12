@@ -1,4 +1,9 @@
-import { MailOutlined, ManOutlined, PieChartOutlined } from "@ant-design/icons";
+import {
+  MailOutlined,
+  ManOutlined,
+  MessageOutlined,
+  PieChartOutlined,
+} from "@ant-design/icons";
 import { Divider, Menu } from "antd";
 import { MenuProps } from "antd/lib";
 import { useNavigate } from "react-router-dom";
@@ -114,6 +119,11 @@ function Sidenav({ color }: { color: string }) {
       key: "/vouchers",
       label: "Voucher",
       icon: <PieChartOutlined />,
+    },
+    {
+      key: "/supports",
+      label: "Hỗ trợ Khách Hàng",
+      icon: <MessageOutlined />,
     },
   ];
 
