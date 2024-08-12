@@ -17,6 +17,7 @@ const ConversationsMessage = ({
   conversationId: number;
 }) => {
   const selUserInfo = useSelector(selectUserInfo);
+  const [contentsInput, setContentsInput] = useState("");
   const selLstOnlineUsers = useSelector(selectLstOnlineUsers);
 
   const [messages, setMessages] = useState<Array<any>>([]);
@@ -27,25 +28,61 @@ const ConversationsMessage = ({
         "/conversations/lst-messages",
         { conversationId }
       );
-      setMessages(lstMessages.data?.messages || []);
+      const messages = lstMessages.data?.messages || [];
+
+      setMessages(messages);
+
+      if (Array.isArray(messages) && messages.length > 0) {
+        const lastMessages = messages[messages.length - 1];
+        goToMessagesNodeById(lastMessages?.messagesId);
+      }
     })();
   }, [conversationId]);
 
   useEffect(() => {
-    socket.on("newMessages", async (messages: any) => {
-      if (messages?.conversationId === conversationId) {
+    socket.on("newMessages", async (data: any) => {
+      console.log(messages);
+      if (data?.conversationId === conversationId) {
         setMessages((previous) => {
-          previous.push(messages);
-          return previous;
+          const mergeData = [...previous, data];
+          return mergeData;
         });
+        goToMessagesNodeById(data?.messagesId);
       }
     });
   }, [conversationId]);
 
+  const goToMessagesNodeById = (id: number) => {
+    setTimeout(() => {
+      const node = document.getElementById(`messages-${id}`);
+      node && node.scrollIntoView({ behavior: "smooth", block: "end" });
+    }, 150);
+  };
+
   const isUserOnline = useMemo(() => {
     return selLstOnlineUsers?.find((onliner) => onliner?.userId === receiverId)
       ?.online;
-  }, [selLstOnlineUsers, selUserInfo]);
+  }, [selLstOnlineUsers, selUserInfo, receiverId]);
+
+  const sendMessages = async () => {
+    const resultMessage = await AxiosClient.post("/conversations/add-message", {
+      contents: contentsInput,
+      receiverId: receiverId,
+    });
+
+    socket.emit("newMessages", {
+      messages: resultMessage?.data,
+      receiverId: receiverId,
+    });
+
+    setMessages((previous) => {
+      previous.push(resultMessage?.data);
+      return previous;
+    });
+    setContentsInput("");
+
+    goToMessagesNodeById(resultMessage?.data?.messagesId);
+  };
 
   return (
     <>
@@ -65,36 +102,43 @@ const ConversationsMessage = ({
           )}
         </div>
       </div>
-      <div className="flex-1 w-full overflow-y-auto space-y-3 p-4">
+      <div className="flex-1 w-full p-4 space-y-3 overflow-y-auto">
         {messages?.map((message: any) => {
-          const isReceiver = selUserInfo.userId != message?.userId;
+          const isReceiver = selUserInfo?.userId != message?.userId;
 
           return (
-            <div>
+            <div id={`messages-${message?.messagesId}`}>
               {isReceiver ? (
-                <div>
+                <div className="flex flex-col items-start">
                   <div className="p-4 inline-block rounded-lg min-w-[15%] max-w-[70%] bg-slate-100">
                     {message?.contents}
                   </div>
+                  <h1 className="mt-1 text-xs italic">
+                    <TimeAgo time={message?.createdAt}></TimeAgo>
+                  </h1>
                 </div>
               ) : (
-                <div className="flex justify-end">
+                <div className="flex flex-col items-end">
                   <div className="p-4 inline-block rounded-lg max-w-[15%] bg-orange-200">
                     {message?.contents}
                   </div>
+                  <h1 className="mt-1 text-xs italic">
+                    <TimeAgo time={message?.createdAt}></TimeAgo>
+                  </h1>
                 </div>
               )}
-              <h1 className="text-xs italic mt-1"><TimeAgo time={message?.createdAt}></TimeAgo></h1>
             </div>
           );
         })}
       </div>
-      <div className=" w-full flex gap-4  px-3 py-4 border-t">
+      <div className="flex w-full gap-4 px-3 py-4 border-t ">
         <input
+          value={contentsInput}
+          onChange={(e) => setContentsInput(e.target.value)}
           className="flex-1 px-3 py-2 outline-none"
           placeholder="Nhập tại đây"
         />
-        <button>Gửi</button>
+        <button onClick={sendMessages}>Gửi</button>
       </div>
     </>
   );
@@ -166,7 +210,7 @@ export default function SupporterPage() {
                     {convertTextToShortName(users?.[senderKeyName]?.fullName)}
                   </Avatar>
                   <div className="flex-1">
-                    <div className="flex justify-between items-center mb-1">
+                    <div className="flex items-center justify-between mb-1">
                       <h3 className="italic">
                         {users?.[senderKeyName]?.fullName}
                       </h3>
@@ -180,7 +224,7 @@ export default function SupporterPage() {
                         </>
                       )}
                     </div>
-                    <h3 className="italic mb-1 line-clamp-1">
+                    <h3 className="mb-1 italic line-clamp-1">
                       {users?.lastMessage?.contents}
                     </h3>
                     <h3 className="text-xs">

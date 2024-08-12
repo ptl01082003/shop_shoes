@@ -129,7 +129,7 @@ const ConversationController = {
           model: Messages,
           as: "messages",
           attributes: {
-            exclude: ["conversationId", "updatedAt", "messagesId"],
+            exclude: ["conversationId", "updatedAt"],
           },
           include: [
             {
