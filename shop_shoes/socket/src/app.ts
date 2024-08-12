@@ -64,6 +64,19 @@ io.on("connection", async (socket) => {
     }
   });
 
+  socket.on("newMessages", async (data: any) => {
+    const { receiverId, messages } = data;
+    const lstonlineUsersInRedis = (await redis.get("lstOnlineUsers")) || "";
+    const lstOnlineUsers = lstonlineUsersInRedis
+      ? JSON.parse(lstonlineUsersInRedis)
+      : {};
+    const receiverOnline: any = Object.values(lstOnlineUsers).find((onliner: any) => onliner?.userId === receiverId);
+    // Kiểm tra TH người nhận online gửi socket messages
+    if (receiverOnline?.online) {
+      io.to(receiverOnline.socketId).emit("newMessages", messages)
+    }
+  })
+
   socket.on("disconnect", async () => {
     const lstonlineUsersInRedis = (await redis.get("lstOnlineUsers")) || "";
     const lstOnlineUsers = lstonlineUsersInRedis

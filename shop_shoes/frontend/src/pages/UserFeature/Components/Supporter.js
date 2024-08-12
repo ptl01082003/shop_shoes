@@ -12,6 +12,7 @@ export default function Supporter() {
   const selLstOnlineUsers = useSelector(selectLstOnlineUsers);
   const [conversation, setConversation] = useState();
   const [contentsInput, setContentsInput] = useState("");
+  
 
   useEffect(() => {
     (async () => {
@@ -26,16 +27,24 @@ export default function Supporter() {
     return selLstOnlineUsers?.find((onliner) => onliner?.roles === "ADMIN");
   }, [selLstOnlineUsers]);
 
-  const isSupporterOnline = useMemo(() => userReceive?.online, [userReceive]);
+
+  const isSupporterOnline = useMemo(
+    () => userReceive?.online,
+    [userReceive]
+  );
 
   const sendMessages = async () => {
-    await AxiosClient.post("/conversations/add-message", {
-      contents: contentsInput,
+   const resultMessage = await AxiosClient.post("/conversations/add-message", {
+      contents: contentsInput
     });
     socket.emit("newConversations", {
-      receiverId: userReceive?.userId,
+      receiverId: userReceive?.userId
     });
-    setContentsInput("");
+    socket.emit("newMessages", {
+      messages: resultMessage?.data,
+      receiverId: userReceive?.userId,
+    })
+    setContentsInput("")
   };
 
   return (
@@ -61,8 +70,8 @@ export default function Supporter() {
       <div className="flex-1 relative overflow-y-auto"></div>
       <div className="sticky right-0 w-full flex gap-4 bottom-0 px-3 py-4 border-t">
         <input
-          value={contentsInput}
-          onChange={(e) => setContentsInput(e.target.value)}
+        value={contentsInput}
+        onChange={e => setContentsInput(e.target.value)}
           className="flex-1 px-3 py-2 outline-none"
           placeholder="Nhập tại đây"
         />

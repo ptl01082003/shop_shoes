@@ -43,7 +43,7 @@ const ConversationController = {
         imageUrl,
         conversationId: conversations.conversationId,
       });
-      console.log(message.messagesId);
+
       conversations.lastMessageId = message.messagesId;
 
       await conversations.save();
@@ -51,6 +51,10 @@ const ConversationController = {
       return res.json(
         ResponseBody({
           code: RESPONSE_CODE.SUCCESS,
+          data: {
+            ...message.toJSON(),
+            conversationId: conversations.conversationId
+          },
           message: `Thêm mới thành công`,
         })
       );

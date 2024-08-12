@@ -41,3 +41,16 @@ export const TRANSFER_PRICE = (price: string) =>
   new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" })
     .format(parseFloat(price))
     ?.replace("₫", "VNĐ") || "";
+
+
+export function convertTextToShortName(fullName?: string) {
+  if (!fullName) {
+    return 'NM'; 
+  }
+
+  return fullName
+    .split(' ')
+    .filter(word => word.length > 0)
+    .map(word => word[0].toUpperCase())
+    .join('');
+}
