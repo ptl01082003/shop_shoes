@@ -19,9 +19,7 @@ routerVouchers.post("/", VouchersController.getVouchers);
 // );
 
 routerVouchers.post("/create", VouchersController.addVoucher);
-
 routerVouchers.post("/edit", VouchersController.updateVoucher);
 routerVouchers.post("/remove", VouchersController.deleteVoucher);
-
-routerVouchers.post("/", VouchersController.getById);
+// routerVouchers.post("/", VouchersController.getById);
 export default routerVouchers;

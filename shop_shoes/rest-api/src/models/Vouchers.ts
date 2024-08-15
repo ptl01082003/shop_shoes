@@ -1,6 +1,5 @@
 import {
   AutoIncrement,
-  BelongsTo,
   Column,
   DataType,
   Default,
@@ -9,8 +8,6 @@ import {
   PrimaryKey,
   Table,
 } from "sequelize-typescript";
-import { OrderItems } from "./OrderItems";
-import { Users } from "./Users";
 import { UserVouchers } from "./UserVouchers";
 import { OrderDetails } from "./OrderDetails";
 
@@ -27,8 +24,7 @@ export enum Vouchers_STATUS {
 
 export enum Voucher_RULE {
   MIN_ORDER_VALUE = "MIN_ORDER_VALUE",
-  VALID_PRODUCTS = "VALID_PRODUCTS",
-  USER_LEVEL = "USER_LEVEL",
+  NEW_ACCOUNT = "NEW_ACCOUNT",
   ORDER_COUNT = "ORDER_COUNT",
 }
 
@@ -61,6 +57,9 @@ export class Vouchers extends Model {
   @Column(DataType.DATE)
   public endDay!: string;
 
+  @Column(DataType.DECIMAL(16, 2))
+  public discountValue!: number;
+
   @Column
   public quantity!: number;
 
@@ -78,20 +77,11 @@ export class Vouchers extends Model {
   @Column(DataType.DECIMAL(16, 2))
   public minOrderValue?: number;
 
-  @Column(DataType.JSON)
-  public validProducts?: number[];
-
-  @Column
-  public userLevel?: string;
-
   @Column
   public minOrderCount?: number;
 
   @Column
   public maxOrderCount?: number;
-
-  @Column
-  public productId!: number;
 
   @HasMany(() => UserVouchers)
   public userVouchers!: UserVouchers[];

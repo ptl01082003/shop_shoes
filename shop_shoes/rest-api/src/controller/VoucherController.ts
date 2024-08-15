@@ -2,38 +2,38 @@ import { NextFunction, Request, Response } from "express";
 import { RESPONSE_CODE, ResponseBody } from "../constants";
 import { Vouchers } from "../models/Vouchers";
 import { UserVouchers } from "../models/UserVouchers";
-import { Users } from "../models/Users";
+import { VectorAlgorithms } from "redis";
 
 const VouchersController = {
-  // Tạo mới một voucher
   addVoucher: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const {
         code,
         description,
         valueOrder,
-        disscoutMax,
+        discountMax,
         startDay,
         endDay,
+        discountValue,
         quantity,
-        status,
-        typeValue,
+        status = "ISACTIVE", // default value
+        typeValue = "MONEY", // default value
         ruleType,
         minOrderValue,
         validProducts,
         userLevel,
         minOrderCount,
         maxOrderCount,
-        productId,
       } = req.body;
 
       const voucher = await Vouchers.create({
         code,
         description,
         valueOrder,
-        disscoutMax,
+        discountMax,
         startDay,
         endDay,
+        discountValue,
         quantity,
         status,
         typeValue,
@@ -43,14 +43,13 @@ const VouchersController = {
         userLevel,
         minOrderCount,
         maxOrderCount,
-        productId,
       });
 
       res.json(
         ResponseBody({
           code: RESPONSE_CODE.SUCCESS,
           data: voucher,
-          message: "Thực hiện thành công",
+          message: "Voucher created successfully",
         })
       );
     } catch (error) {
@@ -58,7 +57,6 @@ const VouchersController = {
     }
   },
 
-  // Lấy tất cả các voucher
   getVouchers: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const vouchers = await Vouchers.findAll();
@@ -66,7 +64,7 @@ const VouchersController = {
         ResponseBody({
           code: RESPONSE_CODE.SUCCESS,
           data: vouchers,
-          message: "Thực hiện thành công",
+          message: "Fetched vouchers successfully",
         })
       );
     } catch (error) {
@@ -74,43 +72,49 @@ const VouchersController = {
     }
   },
 
-  // Lấy một voucher theo ID
   getById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { voucherId } = req.params;
+      const { voucherId } = req.body;
       const voucher = await Vouchers.findByPk(voucherId);
+
       if (voucher) {
         res.json(
           ResponseBody({
             code: RESPONSE_CODE.SUCCESS,
             data: voucher,
-            message: "Thực hiện thành công",
+            message: "Voucher fetched successfully",
           })
         );
       } else {
-        res.status(404).json(
-          ResponseBody({
-            code: RESPONSE_CODE.NOT_FOUND,
-            message: "Voucher không tồn tại",
-          })
-        );
+        res.status(404).json({
+          message: "Voucher not found",
+          code: RESPONSE_CODE.NOT_FOUND,
+        });
       }
     } catch (error) {
-      next(error);
+      let errorMessage = "Fetching voucher failed";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Fetching voucher failed",
+        code: RESPONSE_CODE.ERRORS,
+        error: errorMessage,
+      });
     }
   },
 
-  // Cập nhật một voucher theo ID
   updateVoucher: async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const { voucherId } = req.body;
       const {
-        voucherId,
         code,
         description,
         valueOrder,
-        disscoutMax,
+        discountMax,
         startDay,
         endDay,
+        discountValue,
         quantity,
         status,
         typeValue,
@@ -120,18 +124,19 @@ const VouchersController = {
         userLevel,
         minOrderCount,
         maxOrderCount,
-        productId,
       } = req.body;
 
       const voucher = await Vouchers.findByPk(voucherId);
+
       if (voucher) {
         await voucher.update({
           code,
           description,
           valueOrder,
-          disscoutMax,
+          discountMax,
           startDay,
           endDay,
+          discountValue,
           quantity,
           status,
           typeValue,
@@ -141,52 +146,55 @@ const VouchersController = {
           userLevel,
           minOrderCount,
           maxOrderCount,
-          productId,
         });
 
         res.json(
           ResponseBody({
             code: RESPONSE_CODE.SUCCESS,
             data: voucher,
-            message: "Thực hiện thành công",
+            message: "Voucher updated successfully",
           })
         );
       } else {
-        res.status(404).json(
-          ResponseBody({
-            code: RESPONSE_CODE.NOT_FOUND,
-            message: "Voucher không tồn tại",
-          })
-        );
+        res.status(404).json({
+          message: "Voucher not found",
+          code: RESPONSE_CODE.NOT_FOUND,
+        });
       }
     } catch (error) {
       next(error);
     }
   },
 
-  // Xóa một voucher theo ID
   deleteVoucher: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { voucherId } = req.params;
+      const { voucherId } = req.body;
       const voucher = await Vouchers.findByPk(voucherId);
+
       if (voucher) {
         await voucher.destroy();
         res.json(
           ResponseBody({
             code: RESPONSE_CODE.SUCCESS,
-            message: "Thực hiện thành công",
+            message: "Voucher deleted successfully",
           })
         );
       } else {
-        res.status(404).json(
-          ResponseBody({
-            code: RESPONSE_CODE.NOT_FOUND,
-            message: "Voucher không tồn tại",
-          })
-        );
+        res.status(404).json({
+          message: "Voucher not found",
+          code: RESPONSE_CODE.NOT_FOUND,
+        });
       }
     } catch (error) {
-      next(error);
+      let errorMessage = "Deleting voucher failed";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      res.status(401).json({
+        message: "Deleting voucher failed",
+        code: RESPONSE_CODE.ERRORS,
+        error: errorMessage,
+      });
     }
   },
   getVoucherByUserId: async (
@@ -195,7 +203,7 @@ const VouchersController = {
     next: NextFunction
   ) => {
     try {
-      const userId = req.userId; // Kiểm tra xem `req.userId` có giá trị không
+      const userId = req.userId;
 
       if (!userId) {
         return res.status(400).json({
@@ -204,20 +212,11 @@ const VouchersController = {
         });
       }
 
-      // Lấy danh sách voucher của người dùng
       const userVouchers = await UserVouchers.findAll({
-        where: { userId }, // Sử dụng `userId` trong câu truy vấn
-        include: [
-          {
-            model: Vouchers,
-          },
-        ],
+        where: { userId },
+        include: [{ model: Vouchers }],
       });
 
-      // Ghi log dữ liệu để kiểm tra
-      console.log("User Vouchers:", JSON.stringify(userVouchers, null, 2));
-
-      // Xử lý dữ liệu và trả về
       const vouchersDetails = userVouchers.map((userVoucher) => ({
         id: userVoucher.id,
         userId: userVoucher.userId,
@@ -230,6 +229,9 @@ const VouchersController = {
           code: userVoucher.vouchers.code,
           description: userVoucher.vouchers.description,
           valueOrder: userVoucher.vouchers.valueOrder,
+          discountValue: userVoucher.vouchers.discountValue,
+          ruleType: userVoucher.vouchers.ruleType,
+          typeValue: userVoucher.vouchers.typeValue,
         },
       }));
 

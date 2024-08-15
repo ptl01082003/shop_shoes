@@ -269,6 +269,7 @@ const PaymentOnlineController = {
           address,
           phone,
           totals: carts.totals,
+          voucherId: undefined,
         });
 
         const cartItems = await CartItems.findAll({
@@ -284,7 +285,6 @@ const PaymentOnlineController = {
             },
           ],
         });
-
         for await (const products of cartItems) {
           const productsAmount =
             products.quanity *
@@ -306,53 +306,51 @@ const PaymentOnlineController = {
           await products.destroy();
         }
 
-        // Thêm logic tính toán giảm giá từ voucher
+        let voucherId: number | undefined = undefined;
         let discount = 0;
         if (voucherCode) {
           const voucher = await Vouchers.findOne({
             where: { code: voucherCode },
           });
-
-          if (voucher && voucher.status === Vouchers_STATUS.UNUSED) {
+          console.log(voucher);
+          if (voucher && voucher.status === Vouchers_STATUS.ISACTIVE) {
             const orderValue = ordersAmount;
+            console.log(ordersAmount);
 
-            // Kiểm tra điều kiện áp dụng voucher
             if (voucher.minOrderValue && orderValue < voucher.minOrderValue) {
               return res.status(400).json({
                 message: "Giá trị đơn hàng không đủ điều kiện áp dụng voucher",
               });
             }
 
-            // Tính toán giá trị giảm giá
             if (voucher.typeValue === Vouchers_TYPE.MONEY) {
-              discount = Math.min(voucher.valueOrder, orderValue);
+              discount = Math.min(voucher.discountValue, orderValue);
             } else if (voucher.typeValue === Vouchers_TYPE.PERCENT) {
-              discount = (orderValue * voucher.valueOrder) / 100;
-              discount = Math.min(discount, orderValue);
+              discount = (orderValue * voucher.discountValue) / 100;
+              discount = Math.min(discount, voucher.discountMax);
             }
 
-            // Cập nhật trạng thái voucher và lưu lại
-            voucher.status = Vouchers_STATUS.EXPIRED;
-            await voucher.save();
-
-            // Trừ giá trị giảm giá vào tổng giá trị đơn hàng
             ordersAmount -= discount;
+
+            voucher.quantity -= 1;
+            if (voucher.quantity === 0) {
+              voucher.status = Vouchers_STATUS.EXPIRED;
+            }
+            await voucher.save();
 
             await UserVouchers.create({
               userId,
               voucherId: voucher.voucherId,
               status: Vouchers_STATUS.UNUSED,
             });
+
+            voucherId = voucher.voucherId;
           }
         }
 
-        // Cập nhật giá trị đơn hàng sau khi áp dụng giảm giá
+        newOrders.voucherId = voucherId;
         newOrders.amount = ordersAmount;
         await newOrders.save();
-
-        // // Cập nhật tổng giá trị đơn hàng
-        // newOrders.amount = ordersAmount;
-        // await newOrders.save();
 
         await PaymentDetails.create({
           provider,
@@ -363,8 +361,6 @@ const PaymentOnlineController = {
               ? PAYMENT_STATUS.CASH
               : PAYMENT_STATUS.IDLE,
         });
-
-        newOrders.amount = ordersAmount;
 
         await newOrders.save();
 

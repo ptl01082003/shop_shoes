@@ -37,6 +37,8 @@ const ConversationController = {
         receiverId || receiver.userId
       );
 
+      console.log(conversations.conversationId);
+
       const message = await Messages.create({
         userId,
         contents,
@@ -53,7 +55,7 @@ const ConversationController = {
           code: RESPONSE_CODE.SUCCESS,
           data: {
             ...message.toJSON(),
-            conversationId: conversations.conversationId
+            conversationId: conversations.conversationId,
           },
           message: `Thêm mới thành công`,
         })

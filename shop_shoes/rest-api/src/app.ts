@@ -53,7 +53,9 @@ app.use(cookieParser());
 
 appRouter();
 
-import "../src/utils/CronJobVouchers";
+import "./utils/CronJobs";
+
+
 
 app.use("*", (_, res) => {
   res.status(STATUS_CODE.NOT_FOUND).json(

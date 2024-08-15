@@ -31,31 +31,6 @@ const authCtrl = {
         password: hashPassword,
       });
 
-      const defaultVoucher = await Vouchers.findOne({
-        where: { code: "DEFAULT_VOUCHER_CODE" },
-      });
-
-      if (defaultVoucher) {
-        const voucherStatus = await checkVocherStatus(defaultVoucher.voucherId);
-        console.log(voucherStatus);
-        if (voucherStatus === Vouchers_STATUS.ISACTIVE) {
-          await UserVouchers.create({
-            userId: newUser.userId,
-            voucherId: defaultVoucher.voucherId,
-            receivedAt: new Date(),
-            status: Vouchers_STATUS.UNUSED,
-          });
-        } else {
-          return res.json(
-            ResponseBody({
-              data: null,
-              code: RESPONSE_CODE.ERRORS,
-              message: "Voucher không hợp lệ",
-            })
-          );
-        }
-      }
-
       return res.json(
         ResponseBody({
           data: null,
@@ -269,7 +244,7 @@ const authCtrl = {
     return jwt.sign(params, process.env.AC_RFTOKEN_KEY as string, {
       expiresIn: "7d",
     });
-  },  
+  },
 };
 
 const checkVocherStatus = async (

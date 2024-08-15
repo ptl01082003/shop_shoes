@@ -32,8 +32,7 @@ const PromotionsController = {
         include: [
           {
             model: Products,
-            // Alias cần khớp với khai báo trong mô hình Promotions
-            attributes: ["code"], // Chọn các thuộc tính cần thiết của Products
+            attributes: ["code"],
           },
         ],
       });
@@ -51,7 +50,7 @@ const PromotionsController = {
 
   getById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { promotionId } = req.body; // Sử dụng req.params để lấy ID
+      const { promotionId } = req.body;
 
       const promotion = await Promotions.findByPk(promotionId, {
         include: [
@@ -133,7 +132,7 @@ const PromotionsController = {
 
   deletePromotion: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { promotionId } = req.body; // Sử dụng req.params để lấy ID
+      const { promotionId } = req.body;
       const promotion = await Promotions.findByPk(promotionId);
       if (promotion) {
         await promotion.destroy();

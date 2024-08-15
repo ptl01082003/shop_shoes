@@ -17,7 +17,7 @@ export async function connectDB() {
   });
 
   await sequelize.authenticate();
-  await sequelize.sync({ force: false, alter: false });
+  await sequelize.sync({ force: false, alter: true });
 
   console.log("Connection has been established successfully.");
 }

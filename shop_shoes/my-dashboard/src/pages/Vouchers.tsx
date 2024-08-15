@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-
 import {
   Button,
   Form,
@@ -30,14 +28,17 @@ type FieldType = {
   code?: string;
   description?: string;
   valueOrder?: number;
-  disscoutMax?: number;
+  discountValue?: number;
+  discountMax?: number;
   startDay?: moment.Moment;
   endDay?: moment.Moment;
   quantity?: number;
   status?: Vouchers_STATUS;
   typeValue?: Vouchers_TYPE;
   ruleType?: Voucher_RULE;
-  productId?: number;
+  minOrderValue?: number;
+  minOrderCount?: number;
+  maxOrderCount?: number;
 };
 
 export default function VouchersPage() {
@@ -48,6 +49,10 @@ export default function VouchersPage() {
     open: false,
     data: {},
   });
+  const [form] = Form.useForm();
+  const [selectedRuleType, setSelectedRuleType] = useState<
+    Voucher_RULE | undefined
+  >(undefined);
 
   const columns = [
     {
@@ -61,26 +66,31 @@ export default function VouchersPage() {
       key: "description",
     },
     {
+      title: "Giá trị giảm giá",
+      dataIndex: "discountValue",
+      key: "discountValue",
+    },
+    {
       title: "Giá trị đơn hàng",
       dataIndex: "valueOrder",
       key: "valueOrder",
     },
     {
-      title: "Giảm giá tối đa",
-      dataIndex: "disscoutMax",
-      key: "disscoutMax",
+      title: "Giới hạn giảm giá",
+      dataIndex: "discountMax",
+      key: "discountMax",
     },
     {
       title: "Ngày bắt đầu",
       dataIndex: "startDay",
       key: "startDay",
-      render: (startDay: string) => moment(startDay).format("DD-MM-YYYY"),
+      render: (text: any) => moment(text).format("DD-MM-YYYY"),
     },
     {
       title: "Ngày kết thúc",
       dataIndex: "endDay",
       key: "endDay",
-      render: (endDay: string) => moment(endDay).format("DD-MM-YYYY"),
+      render: (text: any) => moment(text).format("DD-MM-YYYY"),
     },
     {
       title: "Số lượng",
@@ -91,70 +101,20 @@ export default function VouchersPage() {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
-      render: (status: Vouchers_STATUS) => {
-        switch (status) {
-          case Vouchers_STATUS.ISACTIVE:
-            return "Kích hoạt";
-          case Vouchers_STATUS.EXPIRED:
-            return "Hết hạn";
-          case Vouchers_STATUS.UNUSED:
-            return "Chưa sử dụng";
-          default:
-            return "Không xác định";
-        }
-      },
     },
     {
-      title: "Loại giá trị",
-      dataIndex: "typeValue",
-      key: "typeValue",
-      render: (typeValue: Vouchers_TYPE) => {
-        switch (typeValue) {
-          case Vouchers_TYPE.MONEY:
-            return "Tiền";
-          case Vouchers_TYPE.PERCENT:
-            return "Phần trăm";
-          default:
-            return "Không xác định";
-        }
-      },
-    },
-    {
-      title: "Quy tắc",
-      dataIndex: "ruleType",
-      key: "ruleType",
-      render: (ruleType: Voucher_RULE) => {
-        switch (ruleType) {
-          case Voucher_RULE.MIN_ORDER_VALUE:
-            return "Giá trị đơn hàng tối thiểu";
-          case Voucher_RULE.VALID_PRODUCTS:
-            return "Sản phẩm hợp lệ";
-          case Voucher_RULE.USER_LEVEL:
-            return "Cấp độ người dùng";
-          case Voucher_RULE.ORDER_COUNT:
-            return "Số đơn hàng";
-          default:
-            return "Không xác định";
-        }
-      },
-    },
-    {
-      title: "Thao tác",
+      title: "Hành động",
       key: "action",
-      render: (_: any, record: any) => (
+      render: (_, record: any) => (
         <Space size="middle">
           <Button
             icon={<EditOutlined />}
             onClick={() => editVoucherItems(record)}
-          >
-            Sửa
-          </Button>
+          />
           <Button
             icon={<DeleteOutlined />}
             onClick={() => deleteVoucherItems(record)}
-          >
-            Xóa
-          </Button>
+          />
         </Space>
       ),
     },
@@ -167,17 +127,33 @@ export default function VouchersPage() {
     })();
   }, [shouldRender]);
 
+  useEffect(() => {
+    if (openEditModal.open) {
+      const { ruleType } = openEditModal.data;
+      setSelectedRuleType(ruleType);
+      form.setFieldsValue({
+        ...openEditModal.data,
+        startDay: moment(openEditModal.data.startDay),
+        endDay: moment(openEditModal.data.endDay),
+      });
+    }
+  }, [openEditModal, form]);
+
   const deleteVoucherItems = async (record: any) => {
-    const res: any = await VoucherService.deleteVoucher(record.voucherId);
-    if (res.code === 0) {
-      message.success("Voucher deleted successfully");
-      setShouldRender((x) => !x);
-    } else {
-      message.error("Failed to delete voucher");
+    try {
+      const res: any = await VoucherService.deleteVoucher(record.voucherId);
+      if (res.code === 0) {
+        message.success("Voucher deleted successfully");
+        setShouldRender((x) => !x);
+      } else {
+        message.error("Failed to delete voucher");
+      }
+    } catch (error) {
+      message.error("An error occurred while deleting voucher");
     }
   };
 
-  const editVoucherItems = async (record: any) => {
+  const editVoucherItems = (record: any) => {
     setOpenEditModal({
       open: true,
       data: {
@@ -191,36 +167,48 @@ export default function VouchersPage() {
   const onFinish: FormProps<FieldType>["onFinish"] = async (
     values: FieldType
   ) => {
-    const res = await VoucherService.createVoucher({
-      ...values,
-      startDay: values.startDay?.format("YYYY-MM-DD"),
-      endDay: values.endDay?.format("YYYY-MM-DD"),
-    });
-    if (res.code === 0) {
-      message.success("Voucher created successfully");
-      setOpenCreateModal(false);
-      setShouldRender((x) => !x);
-    } else {
-      message.error("Failed to create voucher");
+    try {
+      const res = await VoucherService.createVoucher({
+        ...values,
+        startDay: values.startDay?.format("YYYY-MM-DD"),
+        endDay: values.endDay?.format("YYYY-MM-DD"),
+      });
+      if (res.code === 0) {
+        message.success("Voucher created successfully");
+        setOpenCreateModal(false);
+        setShouldRender((x) => !x);
+      } else {
+        message.error("Failed to create voucher");
+      }
+    } catch (error) {
+      message.error("An error occurred while creating voucher");
     }
   };
 
   const onEditFinish: FormProps<FieldType>["onFinish"] = async (
     values: FieldType
   ) => {
-    const res = await VoucherService.updateVoucher({
-      ...values,
-      voucherId: openEditModal?.data?.voucherId,
-      startDay: values.startDay?.format("YYYY-MM-DD"),
-      endDay: values.endDay?.format("YYYY-MM-DD"),
-    });
-    if (res.code === 0) {
-      message.success("Voucher updated successfully");
-      setOpenEditModal({ open: false, data: {} });
-      setShouldRender((x) => !x);
-    } else {
-      message.error("Failed to update voucher");
+    try {
+      const res = await VoucherService.updateVoucher({
+        ...values,
+        voucherId: openEditModal?.data?.voucherId,
+        startDay: values.startDay?.format("YYYY-MM-DD"),
+        endDay: values.endDay?.format("YYYY-MM-DD"),
+      });
+      if (res.code === 0) {
+        message.success("Voucher updated successfully");
+        setOpenEditModal({ open: false, data: {} });
+        setShouldRender((x) => !x);
+      } else {
+        message.error("Failed to update voucher");
+      }
+    } catch (error) {
+      message.error("An error occurred while updating voucher");
     }
+  };
+
+  const handleRuleTypeChange = (value: Voucher_RULE) => {
+    setSelectedRuleType(value);
   };
 
   return (
@@ -254,6 +242,7 @@ export default function VouchersPage() {
         width={750}
       >
         <Form
+          form={form}
           name="createVoucher"
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
@@ -269,6 +258,7 @@ export default function VouchersPage() {
           >
             <Input />
           </Form.Item>
+
           <Form.Item<FieldType>
             label="Mô tả"
             name="description"
@@ -276,6 +266,17 @@ export default function VouchersPage() {
           >
             <Input />
           </Form.Item>
+
+          <Form.Item<FieldType>
+            label="Giá trị giảm giá"
+            name="discountValue"
+            rules={[
+              { required: true, message: "Giá trị giảm giá là bắt buộc!" },
+            ]}
+          >
+            <InputNumber min={0} style={{ width: "100%" }} />
+          </Form.Item>
+
           <Form.Item<FieldType>
             label="Giá trị đơn hàng"
             name="valueOrder"
@@ -285,29 +286,33 @@ export default function VouchersPage() {
           >
             <InputNumber min={0} style={{ width: "100%" }} />
           </Form.Item>
+
           <Form.Item<FieldType>
-            label="Giảm giá tối đa"
-            name="disscoutMax"
+            label="Giới hạn giảm giá"
+            name="discountMax"
             rules={[
-              { required: true, message: "Giảm giá tối đa là bắt buộc!" },
+              { required: true, message: "Giới hạn giảm giá là bắt buộc!" },
             ]}
           >
             <InputNumber min={0} style={{ width: "100%" }} />
           </Form.Item>
+
           <Form.Item<FieldType>
             label="Ngày bắt đầu"
             name="startDay"
             rules={[{ required: true, message: "Ngày bắt đầu là bắt buộc!" }]}
           >
-            <DatePicker style={{ width: "100%" }} />
+            <DatePicker style={{ width: "100%" }} format="DD-MM-YYYY" />
           </Form.Item>
+
           <Form.Item<FieldType>
             label="Ngày kết thúc"
             name="endDay"
             rules={[{ required: true, message: "Ngày kết thúc là bắt buộc!" }]}
           >
-            <DatePicker style={{ width: "100%" }} />
+            <DatePicker style={{ width: "100%" }} format="DD-MM-YYYY" />
           </Form.Item>
+
           <Form.Item<FieldType>
             label="Số lượng"
             name="quantity"
@@ -315,53 +320,109 @@ export default function VouchersPage() {
           >
             <InputNumber min={0} style={{ width: "100%" }} />
           </Form.Item>
+
           <Form.Item<FieldType>
             label="Trạng thái"
             name="status"
             rules={[{ required: true, message: "Trạng thái là bắt buộc!" }]}
           >
-            <Select>
-              <Option value={Vouchers_STATUS.ISACTIVE}>Kích hoạt</Option>
-              <Option value={Vouchers_STATUS.EXPIRED}>Hết hạn</Option>
-              <Option value={Vouchers_STATUS.UNUSED}>Chưa sử dụng</Option>
+            <Select placeholder="Chọn trạng thái">
+              {Object.values(Vouchers_STATUS).map((status) => (
+                <Option key={status} value={status}>
+                  {status}
+                </Option>
+              ))}
             </Select>
           </Form.Item>
+
           <Form.Item<FieldType>
-            label="Loại giá trị"
+            label="Loại Voucher"
             name="typeValue"
-            rules={[{ required: true, message: "Loại giá trị là bắt buộc!" }]}
+            rules={[{ required: true, message: "Loại voucher là bắt buộc!" }]}
           >
-            <Select>
-              <Option value={Vouchers_TYPE.MONEY}>Tiền</Option>
-              <Option value={Vouchers_TYPE.PERCENT}>Phần trăm</Option>
+            <Select placeholder="Chọn loại voucher">
+              {Object.values(Vouchers_TYPE).map((type) => (
+                <Option key={type} value={type}>
+                  {type}
+                </Option>
+              ))}
             </Select>
           </Form.Item>
+
           <Form.Item<FieldType>
-            label="Quy tắc"
+            label="Loại Quy Tắc"
             name="ruleType"
-            rules={[{ required: true, message: "Quy tắc là bắt buộc!" }]}
+            rules={[{ required: true, message: "Loại quy tắc là bắt buộc!" }]}
           >
-            <Select>
-              <Option value={Voucher_RULE.MIN_ORDER_VALUE}>
-                Giá trị đơn hàng tối thiểu
-              </Option>
-              <Option value={Voucher_RULE.VALID_PRODUCTS}>
-                Sản phẩm hợp lệ
-              </Option>
-              <Option value={Voucher_RULE.USER_LEVEL}>Cấp độ người dùng</Option>
-              <Option value={Voucher_RULE.ORDER_COUNT}>Số đơn hàng</Option>
+            <Select
+              placeholder="Chọn loại quy tắc"
+              onChange={handleRuleTypeChange}
+            >
+              {Object.values(Voucher_RULE).map((rule) => (
+                <Option key={rule} value={rule}>
+                  {rule}
+                </Option>
+              ))}
             </Select>
           </Form.Item>
+
+          {(selectedRuleType === Voucher_RULE.MIN_ORDER_VALUE ||
+            selectedRuleType === Voucher_RULE.ORDER_COUNT) && (
+            <Form.Item<FieldType>
+              label={
+                selectedRuleType === Voucher_RULE.MIN_ORDER_VALUE
+                  ? "Giá trị đơn hàng tối thiểu"
+                  : "Số đơn hàng tối thiểu"
+              }
+              name={
+                selectedRuleType === Voucher_RULE.MIN_ORDER_VALUE
+                  ? "minOrderValue"
+                  : "minOrderCount"
+              }
+              rules={[
+                {
+                  required: true,
+                  message: `${
+                    selectedRuleType === Voucher_RULE.MIN_ORDER_VALUE
+                      ? "Giá trị đơn hàng tối thiểu"
+                      : "Số đơn hàng tối thiểu"
+                  } là bắt buộc!`,
+                },
+              ]}
+            >
+              <InputNumber
+                min={0}
+                style={{ width: "100%" }}
+                disabled={selectedRuleType !== Voucher_RULE.MIN_ORDER_VALUE}
+              />
+            </Form.Item>
+          )}
+
+          {selectedRuleType === Voucher_RULE.ORDER_COUNT && (
+            <Form.Item<FieldType>
+              label="Số đơn hàng tối đa"
+              name="maxOrderCount"
+              rules={[
+                { required: true, message: "Số đơn hàng tối đa là bắt buộc!" },
+              ]}
+            >
+              <InputNumber min={0} style={{ width: "100%" }} />
+            </Form.Item>
+          )}
+
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            <Button type="primary" htmlType="submit">
-              Tạo Voucher
+            <Button type="primary" htmlType="submit" style={{ marginRight: 8 }}>
+              Tạo
+            </Button>
+            <Button type="default" onClick={() => setOpenCreateModal(false)}>
+              Hủy
             </Button>
           </Form.Item>
         </Form>
       </Modal>
 
       <Modal
-        title="Sửa Voucher"
+        title="Chỉnh sửa Voucher"
         centered
         closable
         open={openEditModal.open}
@@ -371,14 +432,14 @@ export default function VouchersPage() {
         width={750}
       >
         <Form
+          form={form}
           name="editVoucher"
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
           style={{ maxWidth: 600 }}
-          // initialValues={{ remember: true }}
+          initialValues={{ remember: true }}
           onFinish={onEditFinish}
           autoComplete="off"
-          initialValues={openEditModal.data}
         >
           <Form.Item<FieldType>
             label="Mã giảm giá"
@@ -387,6 +448,7 @@ export default function VouchersPage() {
           >
             <Input />
           </Form.Item>
+
           <Form.Item<FieldType>
             label="Mô tả"
             name="description"
@@ -394,6 +456,17 @@ export default function VouchersPage() {
           >
             <Input />
           </Form.Item>
+
+          <Form.Item<FieldType>
+            label="Giá trị giảm giá"
+            name="discountValue"
+            rules={[
+              { required: true, message: "Giá trị giảm giá là bắt buộc!" },
+            ]}
+          >
+            <InputNumber min={0} style={{ width: "100%" }} />
+          </Form.Item>
+
           <Form.Item<FieldType>
             label="Giá trị đơn hàng"
             name="valueOrder"
@@ -403,29 +476,33 @@ export default function VouchersPage() {
           >
             <InputNumber min={0} style={{ width: "100%" }} />
           </Form.Item>
+
           <Form.Item<FieldType>
-            label="Giảm giá tối đa"
-            name="disscoutMax"
+            label="Giới hạn giảm giá"
+            name="discountMax"
             rules={[
-              { required: true, message: "Giảm giá tối đa là bắt buộc!" },
+              { required: true, message: "Giới hạn giảm giá là bắt buộc!" },
             ]}
           >
             <InputNumber min={0} style={{ width: "100%" }} />
           </Form.Item>
+
           <Form.Item<FieldType>
             label="Ngày bắt đầu"
             name="startDay"
             rules={[{ required: true, message: "Ngày bắt đầu là bắt buộc!" }]}
           >
-            <DatePicker style={{ width: "100%" }} />
+            <DatePicker style={{ width: "100%" }} format="DD-MM-YYYY" />
           </Form.Item>
+
           <Form.Item<FieldType>
             label="Ngày kết thúc"
             name="endDay"
             rules={[{ required: true, message: "Ngày kết thúc là bắt buộc!" }]}
           >
-            <DatePicker style={{ width: "100%" }} />
+            <DatePicker style={{ width: "100%" }} format="DD-MM-YYYY" />
           </Form.Item>
+
           <Form.Item<FieldType>
             label="Số lượng"
             name="quantity"
@@ -433,46 +510,105 @@ export default function VouchersPage() {
           >
             <InputNumber min={0} style={{ width: "100%" }} />
           </Form.Item>
+
           <Form.Item<FieldType>
             label="Trạng thái"
             name="status"
             rules={[{ required: true, message: "Trạng thái là bắt buộc!" }]}
           >
-            <Select>
-              <Option value={Vouchers_STATUS.ISACTIVE}>Kích hoạt</Option>
-              <Option value={Vouchers_STATUS.EXPIRED}>Hết hạn</Option>
-              <Option value={Vouchers_STATUS.UNUSED}>Chưa sử dụng</Option>
+            <Select placeholder="Chọn trạng thái">
+              {Object.values(Vouchers_STATUS).map((status) => (
+                <Option key={status} value={status}>
+                  {status}
+                </Option>
+              ))}
             </Select>
           </Form.Item>
+
           <Form.Item<FieldType>
-            label="Loại giá trị"
+            label="Loại Voucher"
             name="typeValue"
-            rules={[{ required: true, message: "Loại giá trị là bắt buộc!" }]}
+            rules={[{ required: true, message: "Loại voucher là bắt buộc!" }]}
           >
-            <Select>
-              <Option value={Vouchers_TYPE.MONEY}>Tiền</Option>
-              <Option value={Vouchers_TYPE.PERCENT}>Phần trăm</Option>
+            <Select placeholder="Chọn loại voucher">
+              {Object.values(Vouchers_TYPE).map((type) => (
+                <Option key={type} value={type}>
+                  {type}
+                </Option>
+              ))}
             </Select>
           </Form.Item>
+
           <Form.Item<FieldType>
-            label="Quy tắc"
+            label="Loại Quy Tắc"
             name="ruleType"
-            rules={[{ required: true, message: "Quy tắc là bắt buộc!" }]}
+            rules={[{ required: true, message: "Loại quy tắc là bắt buộc!" }]}
           >
-            <Select>
-              <Option value={Voucher_RULE.MIN_ORDER_VALUE}>
-                Giá trị đơn hàng tối thiểu
-              </Option>
-              <Option value={Voucher_RULE.VALID_PRODUCTS}>
-                Sản phẩm hợp lệ
-              </Option>
-              <Option value={Voucher_RULE.USER_LEVEL}>Cấp độ người dùng</Option>
-              <Option value={Voucher_RULE.ORDER_COUNT}>Số đơn hàng</Option>
+            <Select
+              placeholder="Chọn loại quy tắc"
+              onChange={handleRuleTypeChange}
+            >
+              {Object.values(Voucher_RULE).map((rule) => (
+                <Option key={rule} value={rule}>
+                  {rule}
+                </Option>
+              ))}
             </Select>
           </Form.Item>
+
+          {(selectedRuleType === Voucher_RULE.MIN_ORDER_VALUE ||
+            selectedRuleType === Voucher_RULE.ORDER_COUNT) && (
+            <Form.Item<FieldType>
+              label={
+                selectedRuleType === Voucher_RULE.MIN_ORDER_VALUE
+                  ? "Giá trị đơn hàng tối thiểu"
+                  : "Số đơn hàng tối thiểu"
+              }
+              name={
+                selectedRuleType === Voucher_RULE.MIN_ORDER_VALUE
+                  ? "minOrderValue"
+                  : "minOrderCount"
+              }
+              rules={[
+                {
+                  required: true,
+                  message: `${
+                    selectedRuleType === Voucher_RULE.MIN_ORDER_VALUE
+                      ? "Giá trị đơn hàng tối thiểu"
+                      : "Số đơn hàng tối thiểu"
+                  } là bắt buộc!`,
+                },
+              ]}
+            >
+              <InputNumber
+                min={0}
+                style={{ width: "100%" }}
+                disabled={selectedRuleType !== Voucher_RULE.MIN_ORDER_VALUE}
+              />
+            </Form.Item>
+          )}
+
+          {selectedRuleType === Voucher_RULE.ORDER_COUNT && (
+            <Form.Item<FieldType>
+              label="Số đơn hàng tối đa"
+              name="maxOrderCount"
+              rules={[
+                { required: true, message: "Số đơn hàng tối đa là bắt buộc!" },
+              ]}
+            >
+              <InputNumber min={0} style={{ width: "100%" }} />
+            </Form.Item>
+          )}
+
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            <Button type="primary" htmlType="submit">
-              Cập nhật
+            <Button type="primary" htmlType="submit" style={{ marginRight: 8 }}>
+              Lưu
+            </Button>
+            <Button
+              type="default"
+              onClick={() => setOpenEditModal({ open: false, data: {} })}
+            >
+              Hủy
             </Button>
           </Form.Item>
         </Form>

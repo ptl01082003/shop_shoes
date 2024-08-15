@@ -34,8 +34,7 @@ export enum Vouchers_STATUS {
 
 export enum Voucher_RULE {
   MIN_ORDER_VALUE = "MIN_ORDER_VALUE",
-  VALID_PRODUCTS = "VALID_PRODUCTS",
-  USER_LEVEL = "USER_LEVEL",
+  NEW_ACCOUNT = "NEW_ACCOUNT",
   ORDER_COUNT = "ORDER_COUNT",
 }
 
@@ -52,15 +51,14 @@ export const TRANSFER_PRICE = (price: string) =>
     .format(parseFloat(price))
     ?.replace("₫", "VNĐ") || "";
 
-
 export function convertTextToShortName(fullName?: string) {
   if (!fullName) {
-    return 'NM'; 
+    return "NM";
   }
 
   return fullName
-    .split(' ')
-    .filter(word => word.length > 0)
-    .map(word => word[0].toUpperCase())
-    .join('');
+    .split(" ")
+    .filter((word) => word.length > 0)
+    .map((word) => word[0].toUpperCase())
+    .join("");
 }

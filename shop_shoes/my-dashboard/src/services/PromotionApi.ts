@@ -2,7 +2,7 @@
 
 import AxiosClient from "../networks/AxiosRequest";
 import { Response } from "../constants/constants";
-const API_URL = "/promotions"; // Đảm bảo rằng URL tương ứng với API của bạn
+const API_URL = "/promotions";
 
 const PromotionService = {
   getPromotions: async () => {
@@ -21,7 +21,7 @@ const PromotionService = {
         `${API_URL}`,
         promotionId
       );
-      return response; // Sử dụng response.data để trả về dữ liệu chính xác
+      return response;
     } catch (error) {
       console.error(`Error fetching promotion ${promotionId}`, error);
       throw error;
