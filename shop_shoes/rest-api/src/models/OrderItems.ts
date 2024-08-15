@@ -1,6 +1,7 @@
 import {
   AutoIncrement,
   BelongsTo,
+  BelongsToMany,
   Column,
   DataType,
   Default,
@@ -13,11 +14,14 @@ import { OrderDetails } from "./OrderDetails";
 import { ProductDetails } from "./ProductDetails";
 
 export enum ODER_STATUS {
-  CHO_THANH_TOAN = "CHO_THANH_TOAN",
-  CHO_LAY_HANG = "CHO_LAY_HANG",
-  CHO_GIAO_HANG = "CHO_GIAO_HANG",
-  KHONG_DU_SO_LUONG = "KHONG_DU_SO_LUONG",
   DA_GIAO = "DA_GIAO",
+  DA_HUY = "DA_HUY",
+  TRA_HANG = "TRA_HANG",
+  CHO_LAY_HANG = "CHO_LAY_HANG",
+  CHO_XAC_NHAN = "CHO_XAC_NHAN",
+  CHO_GIAO_HANG = "CHO_GIAO_HANG",
+  CHO_THANH_TOAN = "CHO_THANH_TOAN",
+  KHONG_DU_SO_LUONG = "KHONG_DU_SO_LUONG",
 }
 
 @Table({
@@ -45,6 +49,12 @@ export class OrderItems extends Model {
 
   @Column
   public userId!: number;
+
+  @Default(false)
+  @Column({
+    type: DataType.BOOLEAN,
+  })
+  public isReview!: boolean;
 
   @Column
   public quanity!: number;

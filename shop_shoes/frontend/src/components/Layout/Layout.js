@@ -1,13 +1,11 @@
 import React, { useEffect } from "react";
-import Footer from "../home/Footer/Footer";
-import FooterBottom from "../home/Footer/FooterBottom";
-import Header from "../home/Header/Header";
-import SpecialCase from "../SpecialCase/SpecialCase";
-import { Outlet } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { Outlet } from "react-router-dom";
 import { KEY_STORAGE } from "../../constants";
-import { fetchGetUserInfo } from "../../redux/thunks/userThunk";
 import { fetchGetLstCarts } from "../../redux/thunks/cartThunk";
+import { fetchGetUserInfo } from "../../redux/thunks/userThunk";
+import Footer from "../home/Footer/Footer";
+import Header from "../home/Header/Header";
 
 export default function Layout(props) {
   const dispatch = useDispatch();
@@ -19,10 +17,13 @@ export default function Layout(props) {
       dispatch(fetchGetLstCarts());
     }
   }, []);
+  
   return (
     <>
       <Header />
-      <Outlet/>
+      <div className="min-h-[60vh]">
+        <Outlet />
+      </div>
       <Footer />
     </>
   );

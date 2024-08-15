@@ -1,8 +1,7 @@
-// controllers/ProductDetailsController.ts
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
 import { ProductDetails } from "../models/ProductDetails";
-import { Sizes } from "../models/Sizes";
 import { Products } from "../models/Products";
+import { Sizes } from "../models/Sizes";
 
 const ProductDetailsController = {
   // Create a new ProductDetail

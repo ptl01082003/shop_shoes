@@ -5,6 +5,8 @@ import { redis } from "../config/ConnectRedis";
 import { RESPONSE_CODE, ResponseBody } from "../constants";
 import { ROLE_TYPES, Roles } from "../models/Roles";
 import { Users } from "../models/Users";
+import { Vouchers, Vouchers_STATUS } from "../models/Vouchers";
+import { UserVouchers } from "../models/UserVouchers";
 
 const authCtrl = {
   register: async (req: Request, res: Response, next: NextFunction) => {
@@ -21,13 +23,14 @@ const authCtrl = {
         );
       }
       const hashPassword = await bcrypt.hash(password, 10);
-      await Users.create({
+      const newUser = await Users.create({
         fullName,
         phone,
         email,
         userName,
         password: hashPassword,
       });
+
       return res.json(
         ResponseBody({
           data: null,
@@ -92,7 +95,6 @@ const authCtrl = {
         );
       }
     } catch (error) {
-      console.log(error);
       next(error);
     }
   },
@@ -159,7 +161,6 @@ const authCtrl = {
         );
       }
     } catch (error) {
-      console.log(error);
       next(error);
     }
   },
@@ -244,45 +245,25 @@ const authCtrl = {
       expiresIn: "7d",
     });
   },
-
-  //   sendMail: async (req: AuthRequest, res: Response, next: NextFunction) => {
-  //     try {
-  //       const { email } = req.body;
-  //       const user = await Staff.findOne({ where: { Email: email } });
-  //       if (!user) return res.status(404).json({ message: "User not found" });
-
-  //       // Add your SendMail, GenerateSecret, GenerateOtp, ArraySecret functions implementation
-  //       const secret = GenerateSecret();
-  //       const otp = GenerateOtp(secret);
-  //       const mang = ArraySecret(email, secret, otp, arrSecret);
-  //       arrSecret = mang;
-  //       await SendMail(email, user.HoVaTen, otp);
-
-  //       return res.json({ err: "Check the verification code in the email" });
-  //     } catch (error) {
-  //       next(error);
-  //     }
-  //   },
-
-  //   verifyOtp: async (req: AuthRequest, res: Response, next: NextFunction) => {
-  //     try {
-  //       const { email, otp, password } = req.body;
-  //       const a = ArraySecret(email, otp, password, arrSecret);
-  //       if (a === "success") {
-  //         arrSecret = [];
-  //         const passwordHash = await bcrypt.hash(password, 10);
-  //         await Staff.update(
-  //           { Password: passwordHash },
-  //           { where: { Email: email } }
-  //         );
-  //         return res.json({ message: "Password updated successfully" });
-  //       } else {
-  //         return res.json({ message: "OTP verification failed" });
-  //       }
-  //     } catch (error) {
-  //       next(error);
-  //     }
-  //   },
 };
 
+const checkVocherStatus = async (
+  voucherId: number
+): Promise<Vouchers_STATUS> => {
+  const voucher = await Vouchers.findByPk(voucherId);
+  if (voucher) {
+    const now = new Date().getTime();
+    const voucherStartDay = new Date(voucher.startDay).getTime();
+    const voucherEndDay = new Date(voucher.endDay).getTime();
+    const voucherEndDayExtended = voucherEndDay + 24 * 60 * 60 * 1000;
+    if (now < voucherStartDay) {
+      return Vouchers_STATUS.UNUSED;
+    } else if (now > voucherEndDayExtended) {
+      return Vouchers_STATUS.EXPIRED;
+    } else {
+      return Vouchers_STATUS.ISACTIVE;
+    }
+  }
+  return Vouchers_STATUS.EXPIRED;
+};
 export default authCtrl;

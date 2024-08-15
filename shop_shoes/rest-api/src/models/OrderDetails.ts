@@ -4,16 +4,16 @@ import {
   BelongsTo,
   Column,
   DataType,
-  Default,
   ForeignKey,
   HasMany,
   Model,
   PrimaryKey,
   Table,
 } from "sequelize-typescript";
+import { v4 as uuidv4 } from "uuid";
 import { OrderItems } from "./OrderItems";
 import { Users } from "./Users";
-import { v4 as uuidv4 } from "uuid";
+import { Vouchers } from "./Vouchers";
 
 @Table({
   tableName: "order_details",
@@ -40,6 +40,13 @@ export class OrderDetails extends Model {
 
   @Column(DataType.STRING(500))
   public address!: string;
+
+  @ForeignKey(() => Vouchers)
+  @Column
+  public voucherId?: number;
+
+  @BelongsTo(() => Vouchers)
+  public voucher?: Vouchers;
 
   @Column
   public phone!: string;

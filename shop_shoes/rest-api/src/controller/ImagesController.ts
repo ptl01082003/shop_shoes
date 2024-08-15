@@ -1,7 +1,6 @@
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
 import { Images } from "../models/Images";
 import { Products } from "../models/Products";
-import { Op } from "sequelize";
 
 const ImagesController = {
   addImage: async (req: Request, res: Response, next: NextFunction) => {
@@ -20,7 +19,7 @@ const ImagesController = {
 
       res.json({ data: images, message: "Add new images successfully" });
     } catch (error) {
-      console.log(error);
+      
       next(error);
     }
   },
@@ -57,7 +56,7 @@ const ImagesController = {
         res.status(404).json({ message: "Image not found" });
       }
     } catch (error) {
-      console.log(error);
+      
       next(error);
     }
   },
@@ -83,7 +82,7 @@ const ImagesController = {
         res.status(404).json({ message: "Image not found" });
       }
     } catch (error) {
-      console.log(error);
+      
       next(error);
     }
   },
@@ -99,7 +98,7 @@ const ImagesController = {
         res.status(404).json({ message: "Image not found" });
       }
     } catch (error) {
-      console.log(error);
+      
       next(error);
     }
   },

@@ -2,13 +2,15 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import "dotenv/config";
-import express, { Request, Response } from "express";
+import express from "express";
 import { Send } from "express-serve-static-core";
+import cron from "node-cron";
 import { connectDB } from "./config/ConnectDB";
 import { redis } from "./config/ConnectRedis";
 import { RESPONSE_CODE, ResponseBody, STATUS_CODE } from "./constants";
 import { appRouter } from "./router/appRouter";
-import cron from "node-cron";
+import { updateProductPrices } from "../src/utils/utils";
+
 declare global {
   namespace Express {
     interface Request {
@@ -51,21 +53,9 @@ app.use(cookieParser());
 
 appRouter();
 
-cron.schedule(
-  "40 21 * * *",
-  () => {
-    console.log("hello");
-  },
-  {
-    scheduled: true,
-    timezone: "Asia/Ho_Chi_Minh",
-  }
-);
+import "./utils/CronJobs";
 
 
-app.use((errors: any, _: Request, res: Response) => {
-  res.json(errors);
-});
 
 app.use("*", (_, res) => {
   res.status(STATUS_CODE.NOT_FOUND).json(

@@ -3,15 +3,18 @@ import {
   BelongsTo,
   Column,
   DataType,
+  Default,
   ForeignKey,
   Model,
   PrimaryKey,
   Table,
 } from "sequelize-typescript";
+import { Products } from "./Products";
 
 export enum PROMOTIONS_STATUS {
-  ISACTIVE = "ISACTIVE",
-  PERCENT = "PERCENT",
+  PRE_START = "PRE_START",
+  ACTIVE = "ACTIVE",
+  EXPIRED = "EXPIRED",
 }
 
 @Table({
@@ -25,9 +28,6 @@ export class Promotions extends Model {
   @Column
   public promotionId!: number;
 
-  @Column
-  public name!: string;
-
   @Column(DataType.DECIMAL(16, 2))
   public discountPrice!: number;
 
@@ -37,6 +37,14 @@ export class Promotions extends Model {
   @Column(DataType.DATE)
   public endDay?: string;
 
+  @Default(PROMOTIONS_STATUS.PRE_START)
+  @Column(DataType.STRING)
+  public status?: PROMOTIONS_STATUS;
+
+  @ForeignKey(() => Products)
   @Column
   public productId!: number;
+
+  @BelongsTo(() => Products)
+  public products!: Products;
 }

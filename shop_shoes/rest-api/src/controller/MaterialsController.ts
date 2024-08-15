@@ -1,7 +1,7 @@
-import { Request, Response, NextFunction } from "express";
-import { Materials } from "../models/Materials";
+import { NextFunction, Request, Response } from "express";
 import { Op } from "sequelize";
 import { RESPONSE_CODE, ResponseBody } from "../constants";
+import { Materials } from "../models/Materials";
 
 const MaterialsController = {
   addMaterial: async (req: Request, res: Response, next: NextFunction) => {
@@ -37,7 +37,7 @@ const MaterialsController = {
         data: materialss,
       });
     } catch (error) {
-      console.log(error);
+      
       let errorMessage = "Thực hiện thất bại";
       if (error instanceof Error) {
         errorMessage = error.message;
@@ -67,7 +67,7 @@ const MaterialsController = {
         });
       }
     } catch (error) {
-      console.log(error);
+      
       let errorMessage = "Thực hiện thất bại";
       if (error instanceof Error) {
         errorMessage = error.message;
@@ -98,7 +98,7 @@ const MaterialsController = {
         });
       }
     } catch (error) {
-      console.log(error);
+      
       let errorMessage = "Thực hiện thất bại";
       if (error instanceof Error) {
         errorMessage = error.message;
@@ -128,7 +128,7 @@ const MaterialsController = {
         });
       }
     } catch (error) {
-      console.log(error);
+      
       let errorMessage = "Thực hiện thất bại";
       if (error instanceof Error) {
         errorMessage = error.message;

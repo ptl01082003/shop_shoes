@@ -6,28 +6,31 @@ const BrandsController = {
   addBrand: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { name } = req.body;
-      console.log(name);
       const brands = await Brands.create({ name });
-      res.json(ResponseBody({
-        code: RESPONSE_CODE.SUCCESS,
-        data: brands,
-        message: "Thực hiện thành công",
-      }))
+      res.json(
+        ResponseBody({
+          code: RESPONSE_CODE.SUCCESS,
+          data: brands,
+          message: "Thực hiện thành công",
+        })
+      );
     } catch (error) {
-      next(error)
+      next(error);
     }
   },
 
   getBrands: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const brands = await Brands.findAll();
-      res.json(ResponseBody({
-        code: RESPONSE_CODE.SUCCESS,
-        data: brands,
-        message: "Thực hiện thành công",
-      }))
+      res.json(
+        ResponseBody({
+          code: RESPONSE_CODE.SUCCESS,
+          data: brands,
+          message: "Thực hiện thành công",
+        })
+      );
     } catch (error) {
-      next(error)
+      next(error);
     }
   },
 
@@ -48,7 +51,7 @@ const BrandsController = {
         });
       }
     } catch (error) {
-      console.log(error);
+      
       let errorMessage = "Thực hiện thất bại";
       if (error instanceof Error) {
         errorMessage = error.message;
@@ -79,14 +82,13 @@ const BrandsController = {
         });
       }
     } catch (error) {
-      next(error)
+      next(error);
     }
   },
 
   deleteBrand: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { brandId } = req.body;
-
       const brands = await Brands.findByPk(brandId);
       if (brands) {
         await brands.destroy();
@@ -101,7 +103,7 @@ const BrandsController = {
         });
       }
     } catch (error) {
-      console.log(error);
+      
       let errorMessage = "Thực hiện thất bại";
       if (error instanceof Error) {
         errorMessage = error.message;

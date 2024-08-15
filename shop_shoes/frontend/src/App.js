@@ -5,7 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 import Layout from "./components/Layout/Layout";
-import { PATH_ROUTER } from "./constants";
+import { KEY_STORAGE, PATH_ROUTER } from "./constants";
 import About from "./pages/About/About";
 import SignIn from "./pages/Account/SignIn";
 import SignUp from "./pages/Account/SignUp";
@@ -14,18 +14,37 @@ import Contact from "./pages/Contact/Contact";
 import Home from "./pages/Home/Home";
 import Journal from "./pages/Journal/Journal";
 import Offer from "./pages/Offer/Offer";
+import Oders from "./pages/Order/Order";
 import Payment from "./pages/payment/Payment";
+import PaymentStatus from "./pages/PaymentStatus/PaymentStatus";
 import ProductDetails from "./pages/ProductDetails/ProductDetails";
 import Shop from "./pages/Shop/Shop";
-import Oders from "./pages/Order/Order";
-import SuccessPayment from "./pages/SuccessPayment";
-import UserFeature from "./pages/UserFeature/UserFeature";
-import UserInfo from "./pages/UserFeature/Components/UserInfo";
-import PaymentInfo from "./pages/UserFeature/Components/PaymentInfo";
 import OderDetails from "./pages/UserFeature/Components/OderDetails";
+import PaymentInfo from "./pages/UserFeature/Components/PaymentInfo";
 import ProfileLogout from "./pages/UserFeature/Components/ProfileLogout";
+import UserInfo from "./pages/UserFeature/Components/UserInfo";
+import UserFeature from "./pages/UserFeature/UserFeature";
+import { io } from "socket.io-client";
+import Supporter from "./pages/UserFeature/Components/Supporter";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { changelstOnlineUsers } from "./redux/slices/usersSlice";
+
+export const socket = io.connect("http://localhost:6500", {
+  auth: {
+    token: localStorage.getItem(KEY_STORAGE.TOKEN),
+  },
+});
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    socket.on("changelstOnlineUsers", (data) => {
+        dispatch(changelstOnlineUsers(data));
+    });
+  }, []);
+  
   return (
     <div className="font-bodyFont">
       <ToastContainer
@@ -50,10 +69,11 @@ function App() {
               <Route path="" element={<UserInfo />} />
               <Route path="payment" element={<PaymentInfo />} />
               <Route path="orders" element={<OderDetails />} />
+              <Route path="supports" element={<Supporter />} />
               <Route path="logout" element={<ProfileLogout />} />
             </Route>
             <Route path="shop" element={<Shop />} />
-            <Route path="success-payment" element={<SuccessPayment />} />
+            <Route path="payment" element={<PaymentStatus />} />
             <Route path="about" element={<About />} />
             <Route path="contact" element={<Contact />} />
             <Route path="journal" element={<Journal />} />

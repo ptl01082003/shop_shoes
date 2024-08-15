@@ -11,6 +11,7 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Tables from "./pages/Tables";
 
+import * as io from "socket.io-client";
 import { ToastContainer } from "react-toastify";
 import PrivateRouter from "./components/privateRouter/PrivateRouter";
 import BrandsPage from "./pages/Brands";
@@ -20,8 +21,36 @@ import OriginsPage from "./pages/Origins";
 import SizePage from "./pages/Sizes";
 import PromotionsPage from "./pages/Promotions";
 import ProductPage from "./pages/Products";
+import VouchersPage from "./pages/Vouchers";
+import { KEY_STORAGE } from "./constants/constants";
+import SupporterPage from "./pages/Supporter";
+import { useAppDispatch } from "./app/hooks";
+import { useEffect } from "react";
+import { changelstOnlineUsers } from "./app/slice/userSlice";
+import { fetchGetUserInfo } from "./app/thunks/UserThunk";
+
+export const socket = io.connect("http://localhost:6500", {
+  auth: {
+    token: localStorage.getItem(KEY_STORAGE.TOKEN),
+  },
+});
 
 function App() {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const token = localStorage.getItem(KEY_STORAGE.TOKEN);
+    if (token) {
+      dispatch(fetchGetUserInfo());
+    }
+  }, []);
+
+  useEffect(() => {
+    socket.on("changelstOnlineUsers", (data) => {
+      dispatch(changelstOnlineUsers(data));
+    });
+  }, []);
+
   return (
     <div className="App">
       <ToastContainer
@@ -54,6 +83,8 @@ function App() {
             <Route path={"sizes"} element={<SizePage />} />
             <Route path={"promotions"} element={<PromotionsPage />} />
             <Route path={"products"} element={<ProductPage />} />
+            <Route path={"vouchers"} element={<VouchersPage />} />
+            <Route path={"supports"} element={<SupporterPage />} />
             {/* <Route path={"product-details"} element={<ProductDetailsPage />} /> */}
           </Route>
         </Routes>

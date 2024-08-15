@@ -88,7 +88,7 @@ export class Products extends Model {
   public brand?: Brands;
 
   @HasMany(() => ProductDetails)
-  public productDetails?: ProductDetails;
+  public productDetails?: ProductDetails[];
 
   @HasMany(() => Images)
   public gallery!: Images[];

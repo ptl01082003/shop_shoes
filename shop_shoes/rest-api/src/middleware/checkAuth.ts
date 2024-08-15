@@ -1,7 +1,7 @@
-import jwt, { Secret } from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
-import { RESPONSE_CODE, ResponseBody, STATUS_CODE } from "../constants";
+import jwt, { Secret } from "jsonwebtoken";
 import { redis } from "../config/ConnectRedis";
+import { RESPONSE_CODE, ResponseBody } from "../constants";
 
 export const checkAuth = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -51,3 +51,5 @@ export const checkAuth = (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
+
+

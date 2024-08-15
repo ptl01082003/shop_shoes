@@ -1,6 +1,8 @@
 import {
   MailOutlined,
-  PieChartOutlined
+  ManOutlined,
+  MessageOutlined,
+  PieChartOutlined,
 } from "@ant-design/icons";
 import { Divider, Menu } from "antd";
 import { MenuProps } from "antd/lib";
@@ -107,6 +109,21 @@ function Sidenav({ color }: { color: string }) {
           icon: <MailOutlined />,
         },
       ],
+    },
+    {
+      key: "/promotions",
+      label: "Khuyến mãi",
+      icon: <PieChartOutlined />,
+    },
+    {
+      key: "/vouchers",
+      label: "Voucher",
+      icon: <PieChartOutlined />,
+    },
+    {
+      key: "/supports",
+      label: "Hỗ trợ Khách Hàng",
+      icon: <MessageOutlined />,
     },
   ];
 

@@ -106,17 +106,15 @@ const signin = [
 export default class SignUp extends Component {
   render() {
     const onFinish = (values: any) => {
-      console.log("Success:", values);
     };
 
     const onFinishFailed = (errorInfo: any) => {
-      console.log("Failed:", errorInfo);
     };
     return (
       <>
-        <div className="layout-default ant-layout layout-sign-up">
+        <div className="ant-layout layout-default layout-sign-up">
           <Header>
-            <div className="header-col header-brand">
+            <div className="header-brand header-col">
               <h5>Muse Dashboard</h5>
             </div>
             <div className="header-col header-nav">
@@ -147,7 +145,7 @@ export default class SignUp extends Component {
                 </Menu.Item>
               </Menu>
             </div>
-            <div className="header-col header-btn">
+            <div className="header-btn header-col">
               <Button>FREE DOWNLOAD</Button>
             </div>
           </Header>
@@ -164,7 +162,7 @@ export default class SignUp extends Component {
             </div>
 
             <Card
-              className="card-signup header-solid h-full ant-card pt-0"
+              className="ant-card card-signup header-solid h-full pt-0"
               title={<h5>Register With</h5>}
             >
               <div className="sign-up-gateways">
@@ -178,7 +176,7 @@ export default class SignUp extends Component {
                   <img src={logo3} alt="logo 3" />
                 </Button>
               </div>
-              <p className="text-center my-25 font-semibold text-muted">Or</p>
+              <p className="my-25 text-muted font-semibold text-center">Or</p>
               <Form
                 name="basic"
                 initialValues={{ remember: true }}
@@ -214,7 +212,7 @@ export default class SignUp extends Component {
                 <Form.Item name="remember" valuePropName="checked">
                   <Checkbox>
                     I agree the{" "}
-                    <a href="#pablo" className="font-bold text-dark">
+                    <a href="#pablo" className="text-dark font-bold">
                       Terms and Conditions
                     </a>
                   </Checkbox>
@@ -230,9 +228,9 @@ export default class SignUp extends Component {
                   </Button>
                 </Form.Item>
               </Form>
-              <p className="font-semibold text-muted text-center">
+              <p className="text-muted font-semibold text-center">
                 Already have an account?{" "}
-                <Link to="/sign-in" className="font-bold text-dark">
+                <Link to="/sign-in" className="text-dark font-bold">
                   Sign In
                 </Link>
               </p>

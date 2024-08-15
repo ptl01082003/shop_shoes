@@ -1,16 +1,20 @@
 import {
   BeforeCreate,
   BelongsTo,
+  BelongsToMany,
   Column,
   DataType,
   Default,
   ForeignKey,
+  HasMany,
   Model,
   PrimaryKey,
   Table,
 } from "sequelize-typescript";
 import { generateUniqueUserId } from "../utils/utils";
 import { Roles } from "./Roles";
+import { Vouchers } from "./Vouchers";
+import { UserVouchers } from "./UserVouchers";
 
 @Table({
   tableName: "users",
@@ -46,6 +50,9 @@ export class Users extends Model {
   @Default(1)
   @Column
   public roleId!: number;
+
+  @HasMany(() => UserVouchers)
+  public userVouchers!: UserVouchers[];
 
   @BelongsTo(() => Roles)
   public roles!: Roles;
