@@ -111,6 +111,7 @@ const PaymentOnlineController = {
       vnp_Params["vnp_Version"] = "2.1.0";
       vnp_Params["vnp_Command"] = "pay";
       vnp_Params["vnp_Locale"] = "vn";
+      vnp_Params["vnp_BankCode"] = "NCB";
       vnp_Params["vnp_CurrCode"] = "VND";
       vnp_Params["vnp_TxnRef"] = orderId;
       vnp_Params["vnp_TmnCode"] = process.env["vnp_TmnCode"];
@@ -141,13 +142,12 @@ const PaymentOnlineController = {
   checkout: async (req: Request, res: Response, next: NextFunction) => {
     try {
       let vnp_Params: any = req.query;
-
+      console.log(vnp_Params);
       const secureHash = vnp_Params["vnp_SecureHash"];
 
-      delete vnp_Params["vnp_SecureHash"];
-      delete vnp_Params["vnp_ResponseCode"];
-      delete vnp_Params["vnp_TransactionStatus"];
-
+      delete vnp_Params['vnp_SecureHash'];
+      delete vnp_Params['vnp_SecureHashType'];
+  
       vnp_Params = sortObject(vnp_Params);
 
       var signData = querystring.stringify(vnp_Params);
@@ -156,8 +156,9 @@ const PaymentOnlineController = {
         process.env["vnp_HashSecret"] as string
       );
       var signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
-      //kiểm tra tính toàn vẹn dữ liệu của giao dịch , sử dụng các tham số trên url trả về
-      //thực hiện tuần tự các bước như yêu cầu thanh toán và check với mã băm trả về
+
+      return res.json({data: secureHash === signed});
+
       if (secureHash === signed) {
         res.redirect(process.env["payment_Success_Url"] as string);
       } else {
@@ -173,11 +174,9 @@ const PaymentOnlineController = {
       const accessKey = "F8BBA842ECF85";
       const secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
       let momoQuery = req.query;
-
       const orderId = momoQuery["orderId"];
       const requestId = momoQuery["requestId"];
       const partnerCode = momoQuery["partnerCode"];
-
       const signature = crypto
         .createHmac("sha256", secretKey)
         .update(
@@ -203,6 +202,8 @@ const PaymentOnlineController = {
         const oderDetails = (await OrderDetails.findOne({
           where: { orderCode },
         })) as OrderDetails;
+
+        oderDetails.transId = momoQuery["transId"] as string;
 
         const orderItems = (await OrderItems.findAll({
           where: { orderDetailId: oderDetails?.orderDetailId },
@@ -312,10 +313,8 @@ const PaymentOnlineController = {
           const voucher = await Vouchers.findOne({
             where: { code: voucherCode },
           });
-          console.log(voucher);
           if (voucher && voucher.status === Vouchers_STATUS.ISACTIVE) {
             const orderValue = ordersAmount;
-            console.log(ordersAmount);
 
             if (voucher.minOrderValue && orderValue < voucher.minOrderValue) {
               return res.status(400).json({
@@ -490,6 +489,110 @@ const PaymentOnlineController = {
     }
   },
 
+  transactionRefund: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.userId;
+      const { orderItemId } = req.body;
+      const orderItem = await OrderItems.findOne({
+        where: {
+          orderItemId,
+          userId
+        },
+      })
+      if (!orderItem || orderItem.status !== ODER_STATUS.CHO_LAY_HANG) {
+        res.json(
+          ResponseBody({
+            code: RESPONSE_CODE.ERRORS,
+            message: "Không tồn tại đơn hàng hoặc không được thanh toán online",
+          })
+        );
+      } else {
+        const orderDetails = await OrderDetails.findOne({
+          where: {
+            userId,
+            orderDetailId: orderItem.orderDetailId,
+          }
+        });
+        const paymentDetails = await PaymentDetails.findOne({
+          where: {
+            orderDetailId: orderDetails?.orderDetailId
+          }
+        })
+        if (orderDetails && paymentDetails) {
+          if (paymentDetails?.provider != PAYMENT_PROVIDER.CASH) {
+            const partnerCode = "MOMO";
+            const accessKey = "F8BBA842ECF85";
+            const transId = Number(orderDetails?.transId);
+            const secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
+            const amount = orderItem.amount;
+            const requestId = `${uuidv4().slice(0, 8).toUpperCase()}`;
+            const orderId = `${uuidv4().slice(0, 8).toUpperCase()}`;
+            const description = `Hoàn tiền giao dịch ${orderId}`;
+
+            const rawSignature = `accessKey=${accessKey}&amount=${amount}&description=${description}&orderId=${orderId}&partnerCode=${partnerCode}&requestId=${requestId}&transId=${transId}`;
+
+            // Tạo chữ ký
+            const signature = crypto
+              .createHmac("sha256", secretKey)
+              .update(rawSignature)
+              .digest("hex");
+
+            const refund = await axios.post(
+              process.env["momo_refund"] as string,
+              {
+                partnerCode,
+                orderId,
+                requestId,
+                amount,
+                transId,
+                lang: "vi",
+                description,
+                signature
+              }
+            );
+            console.log(refund.data, transId);
+            if (refund.data?.resultCode === 0) {
+              orderItem.status = ODER_STATUS.DA_HUY;
+              orderDetails.amount -= orderItem.amount;
+              await orderItem.save();
+              await orderDetails.save();
+              res.json(
+                ResponseBody({
+                  code: RESPONSE_CODE.SUCCESS,
+                  message: "Thực hiện thành công",
+                })
+              );
+            } else {
+              res.json(
+                ResponseBody({
+                  code: RESPONSE_CODE.ERRORS,
+                  message: "Hoàn tiền thất bại, có lỗi trong quá trình xử lý",
+                })
+              );
+            }
+          } else {
+            res.json(
+              ResponseBody({
+                code: RESPONSE_CODE.ERRORS,
+                message: "Không đúng phương thức thanh toán",
+              })
+            );
+          }
+        } else {
+          res.json(
+            ResponseBody({
+              code: RESPONSE_CODE.ERRORS,
+              message: "Không tồn tại đơn hàng",
+            })
+          );
+        }
+
+      }
+    } catch (error: any) {
+      next(error);
+    }
+  },
+
   getLstPayments: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.userId;
@@ -527,7 +630,7 @@ const PaymentOnlineController = {
             ],
           });
           // Trong trường hợp đơn hàng chưa được thanh toán cập nhật lại giá
-          if (paymentDetails.status != PAYMENT_STATUS.SUCCESS) {
+          if (paymentDetails?.status != PAYMENT_STATUS.SUCCESS) {
             for await (const products of orderItems) {
               const productsAmount =
                 products.quanity *
@@ -636,7 +739,7 @@ const PaymentOnlineController = {
             amount: isPaid
               ? orders?.amount
               : orders.quanity *
-                Number(orders.productDetails.products.priceDiscount),
+              Number(orders.productDetails.products.priceDiscount),
             quanity: orders?.quanity,
             priceDiscount: isPaid
               ? orders.priceDiscount

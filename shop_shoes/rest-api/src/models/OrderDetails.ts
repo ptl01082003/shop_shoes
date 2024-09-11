@@ -38,6 +38,9 @@ export class OrderDetails extends Model {
   @Column
   public name!: string;
 
+  @Column
+  public transId!: string;
+
   @Column(DataType.STRING(500))
   public address!: string;
 
