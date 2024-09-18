@@ -27,7 +27,6 @@ export enum Voucher_RULE {
   NEW_ACCOUNT = "NEW_ACCOUNT",
   ORDER_COUNT = "ORDER_COUNT",
 }
-
 @Table({
   tableName: "vouchers",
   modelName: "Vouchers",

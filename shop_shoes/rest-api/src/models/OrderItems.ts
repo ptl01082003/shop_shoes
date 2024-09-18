@@ -10,7 +10,7 @@ import {
   PrimaryKey,
   Table,
 } from "sequelize-typescript";
-import { OrderDetails } from "./OrderDetails";
+import { OrderDetails, REFUND_STATUS } from "./OrderDetails";
 import { ProductDetails } from "./ProductDetails";
 
 export enum ODER_STATUS {
@@ -22,6 +22,12 @@ export enum ODER_STATUS {
   CHO_GIAO_HANG = "CHO_GIAO_HANG",
   CHO_THANH_TOAN = "CHO_THANH_TOAN",
   KHONG_DU_SO_LUONG = "KHONG_DU_SO_LUONG",
+}
+
+export enum RETURN_STATUS {
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
 }
 
 @Table({
@@ -41,6 +47,9 @@ export class OrderItems extends Model {
   @Default(ODER_STATUS.CHO_THANH_TOAN)
   @Column
   public status!: string;
+
+  @Column
+  public returnStatus?: REFUND_STATUS;
 
   @Column
   public price!: number;

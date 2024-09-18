@@ -41,6 +41,7 @@ export function appRouter() {
   router.use("/promotions", routerPromotion);
   router.use("/payment-orders", paymentRouter);
   router.use("/conversations", conversationsRouter);
+  router.use("/return-request", conversationsRouter);
 
   router.use("*", (_, res) => {
     res.status(STATUS_CODE.NOT_FOUND).json(

@@ -537,6 +537,8 @@ const ProductsController = {
       next(error);
     }
   },
+
+  
 };
 
 export default ProductsController;

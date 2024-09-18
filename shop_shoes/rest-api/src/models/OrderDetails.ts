@@ -15,6 +15,12 @@ import { OrderItems } from "./OrderItems";
 import { Users } from "./Users";
 import { Vouchers } from "./Vouchers";
 
+export enum REFUND_STATUS {
+  PENDING = "PENDING",
+  COMPLETED = "COMPLETED",
+  FAILED = "FAILED",
+}
+
 @Table({
   tableName: "order_details",
   modelName: "OrderDetails",
@@ -63,6 +69,12 @@ export class OrderDetails extends Model {
 
   @HasMany(() => OrderItems)
   public orderItems!: OrderItems[];
+
+  @Column
+  public refundStatus?: REFUND_STATUS;
+ 
+  @Column
+  public refundAmount?: number;
 
   @BeforeCreate
   static genaratorOrderCode(instance: OrderDetails) {
