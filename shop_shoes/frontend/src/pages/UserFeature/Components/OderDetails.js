@@ -1,5 +1,16 @@
 import { PlusOutlined } from "@ant-design/icons";
-import { Divider, Empty, Image, Input, Modal, Rate, Tabs, Upload } from "antd";
+import {
+  Button,
+  Divider,
+  Empty,
+  Image,
+  Input,
+  Modal,
+  Rate,
+  Spin,
+  Tabs,
+  Upload,
+} from "antd";
 
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -9,6 +20,7 @@ import {
   URL_IMAGE,
 } from "../../../constants";
 import AxiosClient from "../../../networks/AxiosClient";
+import { toast } from "react-toastify";
 
 const desc = ["Tệ", "Không hài lòng", "Bình thường", "Hài lòng", "Tuyệt vời"];
 
@@ -182,7 +194,8 @@ export default function OderDetails() {
   const [lstOders, setLstOders] = useState();
   const [orderStatus, setOrderStatus] = useState(ODER_STATUS.CHO_XAC_NHAN);
   const [shouldRender, setShouldRender] = useState(false);
-  
+  const [isFetchData, setFetchData] = useState(false);
+
   useEffect(() => {
     (async () => {
       const lstOders = await AxiosClient.post("/orders/lst-orders", {
@@ -196,11 +209,39 @@ export default function OderDetails() {
     setOrderStatus(status);
   };
 
+  const transactionRefund = async (orders) => {
+    setFetchData(true);
+    const refund = await AxiosClient.post("/payment-orders/refund", {
+      orderItemId: orders?.orderItemId,
+    });
+    if (refund?.code != 0) {
+      toast.error(refund?.message);
+      return;
+    }
+    setShouldRender((x) => !x);
+    setTimeout(() => {
+      setFetchData(false);
+    }, 100);
+  };
+
   const renderActionByOrderStatus = (orders) => {
+    console.log(orders);
     switch (orderStatus) {
       case ODER_STATUS.DA_GIAO:
         return (
           <DeliveredOrders orders={orders} setShouldRender={setShouldRender} />
+        );
+      case ODER_STATUS.CHO_XAC_NHAN:
+      case ODER_STATUS.CHO_LAY_HANG:
+        return (
+          <button
+            onClick={() => {
+              transactionRefund(orders);
+            }}
+            className="min-w-[120px] text-center text-white bg-red-500 py-3 cursor-pointer rounded-lg font-bold"
+          >
+            Hủy
+          </button>
         );
       default:
         return <></>;
@@ -212,57 +253,61 @@ export default function OderDetails() {
     label: oders.label,
     icon: oders.icon,
     children: (
-      <div className="flex-1 mt-6 space-y-8">
-        {Array.isArray(lstOders) && lstOders?.length > 0 ? (
-          lstOders?.map((items) => (
-            <div>
-              <div className="flex items-start gap-5">
-                <div className="w-[120px] aspect-square flex-shrink-0">
-                  <img
-                    src={URL_IMAGE(items?.path)}
-                    className="object-cover w-full h-full rounded-xl"
-                  />
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-start gap-4 mb-4">
-                    <h1 className="flex-1 text-lg font-bold">{items?.name}</h1>
-                    <h1 className="flex-shrink-0 text-lg font-bold">
-                      {TRANSFER_PRICE(items?.amount)}
-                    </h1>
+      <Spin spinning={isFetchData}>
+        <div className="flex-1 mt-6 space-y-8">
+          {Array.isArray(lstOders) && lstOders?.length > 0 ? (
+            lstOders?.map((items) => (
+              <div>
+                <div className="flex items-start gap-5">
+                  <div className="w-[120px] aspect-square flex-shrink-0">
+                    <img
+                      src={URL_IMAGE(items?.path)}
+                      className="object-cover w-full h-full rounded-xl"
+                    />
                   </div>
-                  {items?.priceDiscount === items?.price ? (
-                    <h1 className="mb-2 text-xl">
-                      <span>{items?.quanity} x </span>
-                      {TRANSFER_PRICE(items?.price)}
-                    </h1>
-                  ) : (
-                    <div className="flex items-center mb-2 space-x-4">
-                      <h1 className="text-xl">
-                        <span>{items?.quanity} x </span>
-                        {TRANSFER_PRICE(items?.priceDiscount)}
+                  <div className="flex-1">
+                    <div className="flex items-start gap-4 mb-4">
+                      <h1 className="flex-1 text-lg font-bold">
+                        {items?.name}
                       </h1>
-                      <h1 className="text-lg line-through">
-                        {TRANSFER_PRICE(items?.price)}
+                      <h1 className="flex-shrink-0 text-lg font-bold">
+                        {TRANSFER_PRICE(items?.amount)}
                       </h1>
                     </div>
-                  )}
-                  <h1 className="mb-4 text-xl">
-                    Size: <span>{items?.sizeName}</span>
-                  </h1>
+                    {items?.priceDiscount === items?.price ? (
+                      <h1 className="mb-2 text-xl">
+                        <span>{items?.quanity} x </span>
+                        {TRANSFER_PRICE(items?.price)}
+                      </h1>
+                    ) : (
+                      <div className="flex items-center mb-2 space-x-4">
+                        <h1 className="text-xl">
+                          <span>{items?.quanity} x </span>
+                          {TRANSFER_PRICE(items?.priceDiscount)}
+                        </h1>
+                        <h1 className="text-lg line-through">
+                          {TRANSFER_PRICE(items?.price)}
+                        </h1>
+                      </div>
+                    )}
+                    <h1 className="mb-4 text-xl">
+                      Size: <span>{items?.sizeName}</span>
+                    </h1>
+                  </div>
                 </div>
+                <div className="flex justify-end w-full">
+                  {renderActionByOrderStatus(items)}
+                </div>
+                <Divider />
               </div>
-              <div className="flex justify-end w-full">
-                {renderActionByOrderStatus(items)}
-              </div>
-              <Divider />
+            ))
+          ) : (
+            <div className="min-h-[40vh] flex justify-center items-center">
+              <Empty description="Không có dữ liệu" />
             </div>
-          ))
-        ) : (
-          <div className="min-h-[40vh] flex justify-center items-center">
-            <Empty description="Không có dữ liệu" />
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      </Spin>
     ),
   }));
 

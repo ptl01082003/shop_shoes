@@ -32,6 +32,19 @@ export default function PaymentStatus() {
             </h1>
           </>
         );
+        case "reject":
+          return (
+            <>
+              <iframe
+                width={400}
+                height={400}
+                src="https://lottie.host/embed/a6124f74-f58b-4d5d-8523-3033b17fc014/3ZIkuvXxGw.json"
+              />
+              <h1 className="text-xl font-bold">
+                Thanh toán đơn hàng thất bại, vui lòng thử lại.
+              </h1>
+            </>
+          );
     }
   };
 

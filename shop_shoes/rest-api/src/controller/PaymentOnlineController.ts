@@ -147,7 +147,7 @@ const PaymentOnlineController = {
 
       delete vnp_Params['vnp_SecureHash'];
       delete vnp_Params['vnp_SecureHashType'];
-  
+
       vnp_Params = sortObject(vnp_Params);
 
       var signData = querystring.stringify(vnp_Params);
@@ -157,7 +157,7 @@ const PaymentOnlineController = {
       );
       var signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
 
-      return res.json({data: secureHash === signed});
+      return res.json({ data: secureHash === signed });
 
       if (secureHash === signed) {
         res.redirect(process.env["payment_Success_Url"] as string);
@@ -173,10 +173,12 @@ const PaymentOnlineController = {
     try {
       const accessKey = "F8BBA842ECF85";
       const secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
+
       let momoQuery = req.query;
       const orderId = momoQuery["orderId"];
       const requestId = momoQuery["requestId"];
       const partnerCode = momoQuery["partnerCode"];
+
       const signature = crypto
         .createHmac("sha256", secretKey)
         .update(
@@ -196,7 +198,7 @@ const PaymentOnlineController = {
         requestBody
       );
 
-      const { orderId: orderCode, amount } = transaction?.data;
+      const { orderId: orderCode } = transaction?.data;
       if (transaction?.data.resultCode == 0) {
         let refundAmount = 0;
         const oderDetails = (await OrderDetails.findOne({
@@ -235,19 +237,24 @@ const PaymentOnlineController = {
             oderDetails.amount = amountDetails - Number(orders.amount);
             orders.status = ODER_STATUS.KHONG_DU_SO_LUONG;
           }
-          await oderDetails.save();
           await orders.save();
         }
 
+        oderDetails.revenue = oderDetails.amount;
+
         paymentDetails.status = PAYMENT_STATUS.SUCCESS;
+
+        await oderDetails.save();
         await paymentDetails.save();
 
         //Thực hiện logic refund tiền về momo thanh toán của người dùng
         if (refundAmount > 0) {
         }
+
+        res.redirect(`${process.env["paymen_Url"]}?type=success`);
       } else {
+        res.redirect(`${process.env["paymen_Url"]}?type=reject`);
       }
-      res.redirect(`${process.env["paymen_Url"]}?type=success`);
     } catch (error) {
       next(error);
     }
@@ -499,14 +506,8 @@ const PaymentOnlineController = {
           userId
         },
       })
-      if (!orderItem || orderItem.status !== ODER_STATUS.CHO_LAY_HANG) {
-        res.json(
-          ResponseBody({
-            code: RESPONSE_CODE.ERRORS,
-            message: "Không tồn tại đơn hàng hoặc không được thanh toán online",
-          })
-        );
-      } else {
+
+      if (orderItem && (orderItem.status == ODER_STATUS.CHO_LAY_HANG || orderItem.status == ODER_STATUS.CHO_XAC_NHAN)) {
         const orderDetails = await OrderDetails.findOne({
           where: {
             userId,
@@ -550,43 +551,53 @@ const PaymentOnlineController = {
                 signature
               }
             );
-            console.log(refund.data, transId);
             if (refund.data?.resultCode === 0) {
               orderItem.status = ODER_STATUS.DA_HUY;
               orderDetails.amount -= orderItem.amount;
+              orderDetails.revenue = orderDetails.amount;
               await orderItem.save();
               await orderDetails.save();
-              res.json(
+              return res.json(
                 ResponseBody({
                   code: RESPONSE_CODE.SUCCESS,
                   message: "Thực hiện thành công",
                 })
               );
             } else {
-              res.json(
+              return res.json(
                 ResponseBody({
                   code: RESPONSE_CODE.ERRORS,
-                  message: "Hoàn tiền thất bại, có lỗi trong quá trình xử lý",
+                  message: "Có lỗi xảy ra, hoàn tiền thất bại",
                 })
               );
             }
           } else {
-            res.json(
+            orderItem.status = ODER_STATUS.DA_HUY;
+            orderDetails.amount -= orderItem.amount;
+            await orderItem.save();
+            await orderDetails.save();
+            return res.json(
               ResponseBody({
-                code: RESPONSE_CODE.ERRORS,
-                message: "Không đúng phương thức thanh toán",
+                code: RESPONSE_CODE.SUCCESS,
+                message: "Thực hiện thành công",
               })
             );
           }
         } else {
-          res.json(
+          return res.json(
             ResponseBody({
               code: RESPONSE_CODE.ERRORS,
               message: "Không tồn tại đơn hàng",
             })
           );
         }
-
+      } else {
+        return res.json(
+          ResponseBody({
+            code: RESPONSE_CODE.ERRORS,
+            message: "Bạn không thể hủy đơn hàng này",
+          })
+        );
       }
     } catch (error: any) {
       next(error);

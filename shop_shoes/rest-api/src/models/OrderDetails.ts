@@ -4,6 +4,7 @@ import {
   BelongsTo,
   Column,
   DataType,
+  Default,
   ForeignKey,
   HasMany,
   Model,
@@ -40,6 +41,10 @@ export class OrderDetails extends Model {
 
   @Column
   public amount!: number;
+
+  @Default(0)
+  @Column
+  public revenue!: number;
 
   @Column
   public name!: string;

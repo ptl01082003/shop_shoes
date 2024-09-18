@@ -242,7 +242,7 @@ export default function UserFeature() {
           </ul>
         </div>
       </div>
-      <div className="flex-1 min-h-[60vh]">
+      <div className="flex-1 min-h-[60vh] overflow-auto">
         <Outlet />
       </div>
     </div>
